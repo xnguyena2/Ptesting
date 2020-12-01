@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Base64;
+import java.util.UUID;
 
 @RestController
 public class MyController {
@@ -120,13 +121,14 @@ public class MyController {
             String encoded = Base64.getEncoder().encodeToString(file.getBytes());
 
             Statement stmt = connection.createStatement();
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS IMAGE (ImgID AUTOINCREMENT PRIMARY KEY, Content TEXT)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS IMAGE (ImgID CHAR(50) PRIMARY KEY, Content TEXT)");
             //ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
 
             NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
             MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
             mapSqlParameterSource.addValue("content", encoded);
-            jdbcTemplate.update("INSERT INTO IMAGE (Content) VALUES (:content)",mapSqlParameterSource);
+            mapSqlParameterSource.addValue("id", UUID.randomUUID().toString());
+            jdbcTemplate.update("INSERT INTO IMAGE (ImgID, Content) VALUES (:id, :content)",mapSqlParameterSource);
 
             //storageService.save(file);
             //System.out.println(encoded);
