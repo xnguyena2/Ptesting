@@ -133,6 +133,8 @@ public class MyController {
             //message = "Uploaded the file successfully: " + file.getOriginalFilename();
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
             message = "Could not upload the file: " + file.getOriginalFilename() + "!";
             return  ResponseEntity.badRequest().build();
         }
