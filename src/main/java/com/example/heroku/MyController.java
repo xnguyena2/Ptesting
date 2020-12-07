@@ -120,8 +120,8 @@ public class MyController {
         try (Connection connection = dataSource.getConnection()){
             String encoded = Base64.getEncoder().encodeToString(file.getBytes());
 
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS IMAGE (ImgID CHAR(50) PRIMARY KEY, Content TEXT)");
+            //Statement stmt = connection.createStatement();
+            //stmt.executeUpdate("CREATE TABLE IF NOT EXISTS IMAGE (ImgID CHAR(50) PRIMARY KEY, Content TEXT)");
             //ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
 
             NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);

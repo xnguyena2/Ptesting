@@ -42,6 +42,15 @@ public class HerokuApplication {
   @Value("${spring.datasource.url}")
   private String dbUrl;
 
+  @Value("${spring.datasource.username}")
+  private String userName;
+
+  @Value("${spring.datasource.password}")
+  private String password;
+
+  @Value("${spring.datasource.driverClassName}")
+  private String driver;
+
   @Autowired
   private DataSource dataSource;
 
@@ -76,14 +85,23 @@ public class HerokuApplication {
   }
 
   @Bean
-  public DataSource dataSource() throws SQLException {
-    System.out.println(dbUrl);
-    if (dbUrl == null || dbUrl.isEmpty()) {
-      return new HikariDataSource();
-    } else {
-      HikariConfig config = new HikariConfig();
-      config.setJdbcUrl(dbUrl);
-      return new HikariDataSource(config);
+  public DataSource dataSource() {
+    try{
+      System.out.println(dbUrl);
+      if (dbUrl == null || dbUrl.isEmpty()) {
+        return new HikariDataSource();
+      } else {
+        HikariConfig config = new HikariConfig();
+        config.setDriverClassName(driver);
+        config.setUsername(userName);
+        config.setPassword(password);
+        config.setJdbcUrl(dbUrl);
+        return new HikariDataSource(config);
+      }
+    }catch (Exception ex){
+      System.out.println(ex);
+      ex.printStackTrace();
+      throw ex;
     }
   }
 
