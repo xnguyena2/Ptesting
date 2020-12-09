@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -105,4 +107,9 @@ public class HerokuApplication {
     }
   }
 
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    System.out.println("PasswordEncoder");
+    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  }
 }
