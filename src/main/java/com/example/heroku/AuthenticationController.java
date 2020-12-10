@@ -4,6 +4,9 @@ package com.example.heroku;
 import com.example.heroku.jwt.JwtTokenProvider;
 import com.example.heroku.request.data.AuthenticationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +30,9 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
+    @Value("${authentication.auth.accessTokenCookieName}")
+    private String accessTokenCookieName;
+
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -49,7 +55,15 @@ public class AuthenticationController {
             Map<Object, Object> model = new HashMap<>();
             model.put("username", username);
             model.put("token", token);
-            return ok(model);
+            ResponseCookie cookie = ResponseCookie.from(accessTokenCookieName, token)
+                    .httpOnly(true)
+                    .secure(false)///// must true
+                    .maxAge(3600)
+                    .build();
+
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.add(HttpHeaders.SET_COOKIE, cookie.toString());
+            return ok().headers(responseHeaders).body(model);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
         }

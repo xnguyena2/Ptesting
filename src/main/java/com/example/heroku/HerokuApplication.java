@@ -28,6 +28,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -63,6 +65,11 @@ public class HerokuApplication {
   @RequestMapping("/")
   String index() {
     return "index";
+  }
+
+  @RequestMapping("/login")
+  String login() {
+    return "login/index";
   }
 
   @RequestMapping("/db")
@@ -112,4 +119,21 @@ public class HerokuApplication {
     System.out.println("PasswordEncoder");
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
+
+  // only for setup cors
+  /*
+  @Bean
+  public WebMvcConfigurer cors() {
+    return new WebMvcConfigurer() {
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:4200") //current angular host, later will be changed
+                .allowCredentials(true)
+                .allowedHeaders("*");
+      }
+    };
+  }
+*/
+
 }

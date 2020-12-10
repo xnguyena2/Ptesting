@@ -6,9 +6,11 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +25,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtTokenProvider {
+
+    @Value("${authentication.auth.cookie}")
+    private Boolean fromCookie;
+
+    @Value("${authentication.auth.accessTokenCookieName}")
+    private String accessTokenCookieName;
 
     @Autowired JwtProperties jwtProperties;
 
@@ -62,9 +70,24 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest req) {
-        String bearerToken = req.getHeader("Authorization");
+        String bearerToken = null;
+        if (fromCookie) {
+            Cookie[] cookies = req.getCookies();
+            if (cookies == null) {
+                return null;
+            }
+            for (Cookie cookie : cookies) {
+                if (accessTokenCookieName.equals(cookie.getName())) {
+                    String accessToken = cookie.getValue();
+                    if (accessToken == null) return null;
+                    return accessToken;
+                }
+            }
+        } else {
+            bearerToken = req.getHeader("Authorization");
+        }
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
+            return bearerToken.substring(7);
         }
         return null;
     }

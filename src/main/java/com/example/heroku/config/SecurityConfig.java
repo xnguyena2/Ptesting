@@ -34,10 +34,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers("/").permitAll()
+                .antMatchers("/favicon.ico").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/img/**").permitAll()
+                .antMatchers("/styles/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/stylesheets/**").permitAll()
                 .antMatchers("/auth/signin").permitAll()
+
+
+                //will delete this soon
                 .antMatchers(HttpMethod.GET, "/vehicles/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/vehicles/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/v1/vehicles/**").permitAll()
+
+
+
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtSecurityConfigurer(jwtTokenProvider));

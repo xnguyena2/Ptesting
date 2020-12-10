@@ -14,14 +14,10 @@ import java.util.Arrays;
 @Slf4j
 public class DataInitializer implements CommandLineRunner {
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+        System.out.println("initializing vehicles data...");
         log.debug("initializing vehicles data...");
-        System.out.println(this.passwordEncoder.encode("password"));
         /*
         this.users.save(User.builder()
                 .username("user")
