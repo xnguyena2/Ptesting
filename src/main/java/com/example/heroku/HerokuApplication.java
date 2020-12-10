@@ -121,19 +121,19 @@ public class HerokuApplication {
   }
 
   // only for setup cors
-  /*
+
   @Bean
   public WebMvcConfigurer cors() {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200") //current angular host, later will be changed
+                .allowedOrigins("http://localhost:5000")
+                .allowedOrigins("https://ancient-coast-10757.herokuapp.com")
                 .allowCredentials(true)
                 .allowedHeaders("*");
       }
     };
   }
-*/
 
 }
