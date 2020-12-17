@@ -61,8 +61,6 @@ public class AuthenticationController {
             responseHeaders.add(HttpHeaders.SET_COOKIE, cookie.toString());
             return ok().headers(responseHeaders).body(model);
         } catch (AuthenticationException e) {
-            System.out.println(e);
-            e.printStackTrace();
             throw new BadCredentialsException("Invalid username/password supplied");
         }
     }
