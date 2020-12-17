@@ -43,6 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/stylesheets/**").permitAll()
                 .antMatchers("/auth/signin").permitAll()
 
+                .antMatchers("/angular/**").permitAll()
+                .antMatchers("/carousel/**").permitAll()
+                .antMatchers("/db").permitAll()
 
                 //will delete this soon
                 .antMatchers(HttpMethod.GET, "/vehicles/**").permitAll()

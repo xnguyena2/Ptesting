@@ -16,28 +16,32 @@
 
 package com.example.heroku;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import com.example.heroku.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @SpringBootApplication
@@ -72,6 +76,11 @@ public class HerokuApplication {
     return "login/index";
   }
 
+  @RequestMapping("/angular")
+  String angular() {
+    return "angular/index";
+  }
+
   @RequestMapping("/db")
   String db(Map<String, Object> model) {
     try (Connection connection = dataSource.getConnection()) {
@@ -92,7 +101,7 @@ public class HerokuApplication {
       return "error";
     }
   }
-
+/*
   @Bean
   public DataSource dataSource() {
     try{
@@ -113,7 +122,7 @@ public class HerokuApplication {
       throw ex;
     }
   }
-
+*/
   @Bean
   public PasswordEncoder passwordEncoder() {
     System.out.println("PasswordEncoder");
@@ -127,13 +136,28 @@ public class HerokuApplication {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
+        System.out.println("CORS setup");
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5000")
-                .allowedOrigins("https://ancient-coast-10757.herokuapp.com")
                 .allowCredentials(true)
-                .allowedHeaders("*");
+                .allowedHeaders("*")
+
+                .allowedOrigins("http://localhost:4200/");
       }
     };
   }
 
+  @Configuration
+  @EnableJpaAuditing
+  class DataJpaConfig {
+
+    @Bean
+    public AuditorAware<User> auditor() {
+      System.out.println("Audit entity!");
+      return () -> Optional.ofNullable(SecurityContextHolder.getContext())
+              .map(SecurityContext::getAuthentication)
+              .filter(Authentication::isAuthenticated)
+              .map(Authentication::getPrincipal)
+              .map(User.class::cast);
+    }
+  }
 }

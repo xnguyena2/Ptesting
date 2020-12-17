@@ -2,6 +2,7 @@ package com.example.heroku;
 
 
 import com.example.heroku.jwt.JwtTokenProvider;
+import com.example.heroku.model.repository.UserRepository;
 import com.example.heroku.request.data.AuthenticationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,10 +16,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,17 +38,13 @@ public class AuthenticationController {
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
-/*
-    @Autowired
-    UserRepository users;
-*/
+
     @PostMapping("/signin")
     public ResponseEntity signin(@RequestBody AuthenticationRequest data) {
 
         try {
             String username = data.getUsername();
-            System.out.println(username);
-            System.out.println(data.getPassword());
+
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword()));
             String token = jwtTokenProvider.createToken(username, Arrays.asList("ROLE_ADMIN", "ROLE_USER"));
 
@@ -65,6 +61,8 @@ public class AuthenticationController {
             responseHeaders.add(HttpHeaders.SET_COOKIE, cookie.toString());
             return ok().headers(responseHeaders).body(model);
         } catch (AuthenticationException e) {
+            System.out.println(e);
+            e.printStackTrace();
             throw new BadCredentialsException("Invalid username/password supplied");
         }
     }
