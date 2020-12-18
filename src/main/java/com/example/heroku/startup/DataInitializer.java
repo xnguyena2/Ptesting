@@ -37,6 +37,7 @@ public class DataInitializer implements CommandLineRunner {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate("CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START 1");
 
+            //stmt.executeUpdate("DROP TABLE IMAGE");
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS IMAGE (ImgID CHAR(50) PRIMARY KEY, Content TEXT, Category CHAR(50), CreateAt TIMESTAMP)");
 
             //stmt.executeUpdate("DROP TABLE USERS");

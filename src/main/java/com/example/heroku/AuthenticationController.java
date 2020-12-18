@@ -2,7 +2,6 @@ package com.example.heroku;
 
 
 import com.example.heroku.jwt.JwtTokenProvider;
-import com.example.heroku.model.repository.UserRepository;
 import com.example.heroku.request.data.AuthenticationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +15,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -52,6 +50,7 @@ public class AuthenticationController {
             model.put("username", username);
             model.put("token", token);
             ResponseCookie cookie = ResponseCookie.from(accessTokenCookieName, token)
+                    .path("/")
                     .httpOnly(true)
                     .secure(false)///// must true
                     .maxAge(3600)
