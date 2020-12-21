@@ -42,11 +42,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/stylesheets/**").permitAll()
                 .antMatchers("/auth/signin").permitAll()
+                .antMatchers("/js/**").permitAll()
 
                 .antMatchers("/angular/**").permitAll()
                 .antMatchers("/carousel/**").permitAll()
                 .antMatchers("/db").permitAll()
-                //.antMatchers("/image/**").hasRole("USER")
+                .antMatchers("/image/**").permitAll()
 
                 //will delete this soon
                 .antMatchers(HttpMethod.GET, "/vehicles/**").permitAll()

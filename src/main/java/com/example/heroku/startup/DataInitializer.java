@@ -38,13 +38,15 @@ public class DataInitializer implements CommandLineRunner {
             stmt.executeUpdate("CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START 1");
 
             //stmt.executeUpdate("DROP TABLE IMAGE");
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS IMAGE (ImgID CHAR(50) PRIMARY KEY, Content TEXT, Category CHAR(50), CreateAt TIMESTAMP)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS IMAGE (ImgID CHAR(50) PRIMARY KEY, Content TEXT, Category CHAR(50), CreateAT TIMESTAMP)");
 
             //stmt.executeUpdate("DROP TABLE USERS");
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS USERS (ID BIGINT PRIMARY KEY, Username CHAR(50), Password CHAR(100), Roles CHAR(100))");
 
+            //stmt.executeUpdate("DROP TABLE BEER");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS BEER (ID CHAR(50) PRIMARY KEY, Name CHAR(250), Detail TEXT, Discount FLOAT, DícountEX TIMESTAMP, CreateAT TIMESTAMP)");
             /*
-            String pass = this.passwordEncoder.encode("hoduongvuong123");
+            String pass = this.passwordEncoder.encode(Util.getInstance().HashPassword("hoduongvuong123"));
             System.out.println(pass);
 
 

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="IMAGE")
@@ -26,4 +27,7 @@ public class Image {
 
     @Column(name="Category")
     private String category;
+
+    @Column(name="CreateAT")
+    private Date createAt;
 }

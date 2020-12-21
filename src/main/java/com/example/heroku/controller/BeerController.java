@@ -17,15 +17,22 @@ import java.util.stream.Collectors;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping("/carousel")
-public class CarouselController {
+@RequestMapping("/beer")
+public class BeerController {
 
     @Autowired
     ImageRepository imageRepository;
 
-    @PostMapping("/upload")
+    @GetMapping("/generateid")
+    @Transactional(readOnly = true)
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity generateID(){
+        return ok(Format.builder().response(Util.getInstance().GenerateID()).build());
+    }
+
+    @PostMapping("/{id}/img/upload")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<Object> uploadIMG(@RequestParam("file") MultipartFile file, @PathVariable("id") String beerID) {
         String message = "";
         try {
             String imageID = Util.getInstance().GenerateID();
@@ -33,7 +40,7 @@ public class CarouselController {
             this.imageRepository.save(Image.builder()
                     .ImgID(imageID)
                     .content(file.getBytes())
-                    .category("Carousel")
+                    .category(beerID)
                     .createAt(new Date())
                     .build()
             );
@@ -46,9 +53,9 @@ public class CarouselController {
         }
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/{id}/img/delete")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Object> uploadFile(@RequestParam("img") String imageID) {
+    public ResponseEntity<Object> deleteIMG(@RequestParam("img") String imageID) {
         String message = "";
         try {
             this.imageRepository.deleteById(imageID);
@@ -61,11 +68,11 @@ public class CarouselController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping("/{id}/img/all")
     @Transactional(readOnly = true)
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity getAll(){
-        List<String> allCarousel = this.imageRepository.getImgID("Carousel").map(String::trim).collect(Collectors.toList());
+    public ResponseEntity getIMGbyID(@PathVariable("id") String beerID){
+        List<String> allCarousel = this.imageRepository.getImgID(beerID).map(String::trim).collect(Collectors.toList());
         return ok(allCarousel);
     }
 }
