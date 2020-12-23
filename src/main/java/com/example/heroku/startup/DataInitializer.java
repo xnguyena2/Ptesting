@@ -54,7 +54,6 @@ public class DataInitializer {
                 );
 
 
-        System.out.println(Util.getInstance().HashPassword("hoduongvuong123"));
         String pass = this.passwordEncoder.encode(Util.getInstance().HashPassword("hoduongvuong123"));
         System.out.println(pass);
 

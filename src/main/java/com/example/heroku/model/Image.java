@@ -26,6 +26,6 @@ public class Image {
     @Column(name="Category")
     private String category;
 
-    @Column(name="CreateAT")
-    private Date createAt;
+    @Column(name="Createat")
+    private Date createat;
 }

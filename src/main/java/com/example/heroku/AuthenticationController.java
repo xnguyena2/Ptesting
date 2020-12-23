@@ -33,6 +33,9 @@ public class AuthenticationController {
     @Value("${authentication.auth.accessTokenCookieName}")
     private String accessTokenCookieName;
 
+    @Value("${authentication.auth.httponlysecure}")
+    private boolean httponlysecure;
+
     private final ReactiveAuthenticationManager authenticationManager;
 
     @Autowired
@@ -55,7 +58,7 @@ public class AuthenticationController {
                         ResponseCookie cookie = ResponseCookie.from(accessTokenCookieName, jwt)
                                 .path("/")
                                 .httpOnly(true)
-                                .secure(false)///// must true
+                                .secure(httponlysecure)///// must true
                                 .maxAge(3600)
                                 .build();
                         httpHeaders.add(HttpHeaders.SET_COOKIE, cookie.toString());
