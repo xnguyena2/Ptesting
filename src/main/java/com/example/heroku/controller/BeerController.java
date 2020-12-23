@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,6 @@ public class BeerController {
             String imageID = Util.getInstance().GenerateID();
 
             this.imageRepository.save(Image.builder()
-                    .ImgID(imageID)
                     .content(file.getBytes())
                     .category(beerID)
                     .createAt(new Date())
@@ -71,8 +71,7 @@ public class BeerController {
     @GetMapping("/{id}/img/all")
     @Transactional(readOnly = true)
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity getIMGbyID(@PathVariable("id") String beerID){
-        List<String> allCarousel = this.imageRepository.getImgID(beerID).map(String::trim).collect(Collectors.toList());
-        return ok(allCarousel);
+    public Mono<String> getIMGbyID(@PathVariable("id") String beerID){
+        return this.imageRepository.getImgID(beerID).map(String::trim);
     }
 }

@@ -1,38 +1,28 @@
 package com.example.heroku.jwt;
 
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.util.StringUtils;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
-public class JwtTokenAuthenticationFilter extends GenericFilterBean {
+@RequiredArgsConstructor
+public class JwtTokenAuthenticationFilter implements WebFilter {
 
-    private JwtTokenProvider jwtTokenProvider;
-
-    public JwtTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private final JwtTokenProvider tokenProvider;
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
-            throws IOException, ServletException {
-        System.out.println("doFilter");
-
-        String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            Authentication auth = jwtTokenProvider.getAuthentication(token);
-
-            if (auth != null) {
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            }
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        String token = this.tokenProvider.resolveToken(exchange.getRequest());
+        if (StringUtils.hasText(token) && this.tokenProvider.validateToken(token)) {
+            Authentication authentication = this.tokenProvider.getAuthentication(token);
+            return chain.filter(exchange)
+                    .subscriberContext(ReactiveSecurityContextHolder.withAuthentication(authentication));
         }
-        filterChain.doFilter(req, res);
+        return chain.filter(exchange);
     }
 }

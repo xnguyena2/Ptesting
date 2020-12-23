@@ -1,12 +1,12 @@
 package com.example.heroku.model.repository;
 
-import com.example.heroku.model.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.heroku.model.Users;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Mono;
 
-import java.util.Optional;
+public interface UserRepository extends ReactiveCrudRepository<Users, String> {
 
-public interface UserRepository extends JpaRepository<User, Long> {
-
-    Optional<User> findByUsername(String username);
+    //@Query(value = "SELECT * FROM USERS WHERE Username = $1")//, nativeQuery = true)
+    Mono<Users> findByUsername(String username);
 
 }

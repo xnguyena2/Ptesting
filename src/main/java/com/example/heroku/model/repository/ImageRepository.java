@@ -1,16 +1,17 @@
 package com.example.heroku.model.repository;
 
 import com.example.heroku.model.Image;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public interface ImageRepository extends JpaRepository<Image, String> {
-    Optional<Image> findById(String id);
+public interface ImageRepository extends ReactiveCrudRepository<Image, String> {
+    Mono<Image> findById(String id);
 
-    @Query(value = "SELECT i.ImgID FROM IMAGE i WHERE i.Category = 'Carousel'", nativeQuery = true)
-    Stream<String> getImgID(@Param("carousel") String lastname);
+    @Query(value = "SELECT i.Id FROM image i WHERE i.Category = :carousel")//, nativeQuery = true)
+    Mono<String> getImgID(@Param("carousel") String carousel);
 }

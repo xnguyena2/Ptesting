@@ -1,5 +1,6 @@
 package com.example.heroku.controller;
 
+import com.example.heroku.error.EmptyException;
 import com.example.heroku.model.Image;
 import com.example.heroku.model.repository.ImageRepository;
 import com.example.heroku.response.Format;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.util.Date;
 import java.util.List;
@@ -31,7 +33,6 @@ public class CarouselController {
             String imageID = Util.getInstance().GenerateID();
 
             this.imageRepository.save(Image.builder()
-                    .ImgID(imageID)
                     .content(file.getBytes())
                     .category("Carousel")
                     .createAt(new Date())
@@ -64,8 +65,9 @@ public class CarouselController {
     @GetMapping("/all")
     @Transactional(readOnly = true)
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity getAll(){
-        List<String> allCarousel = this.imageRepository.getImgID("Carousel").map(String::trim).collect(Collectors.toList());
-        return ok(allCarousel);
+    public Mono<String> getAll(){
+        return this.imageRepository.getImgID("Carousel")
+                .switchIfEmpty(Mono.error(new EmptyException()))
+                .map(String::trim);
     }
 }

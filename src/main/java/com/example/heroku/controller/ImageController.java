@@ -5,6 +5,7 @@ import com.example.heroku.model.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
@@ -23,9 +24,9 @@ public class ImageController {
     public @ResponseBody
     byte[] getImg(@PathVariable String id) throws UnsupportedEncodingException {
         System.out.println("get img: "+id);
-        Optional<Image> result = imageRepository.findById(id);
-        if(result.isPresent()){
-            return result.get().getContent();
+        Mono<Image> result = imageRepository.findById(id);
+        if(result.block()!=null){
+            return result.block().getContent();
         }
         return null;
     }

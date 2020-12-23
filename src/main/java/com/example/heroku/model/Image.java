@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,12 +18,9 @@ import java.util.Date;
 @AllArgsConstructor
 public class Image {
     @Id
-    @Column(name="ImgID")
-    private String ImgID;
-
+    String id;
 
     @Column(name="Content")
-    @Convert(converter = Base64byteConverter.class)
     private byte[] content;
 
     @Column(name="Category")
