@@ -8,4 +8,8 @@ import lombok.Data;
 @Builder
 public class Format {
     private String response;
+
+    public void setResponse(int response) {
+        this.response = String.valueOf(response);
+    }
 }

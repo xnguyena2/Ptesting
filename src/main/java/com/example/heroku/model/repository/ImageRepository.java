@@ -8,8 +8,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ImageRepository extends ReactiveCrudRepository<Image, String> {
-    Mono<Image> findById(String id);
+    @Query(value = "SELECT image.id, image.content, image.category, image.createat FROM image WHERE image.id = :id")
+    Mono<Image> findById(@Param("id")int id);
 
     @Query(value = "SELECT i.Id FROM image i WHERE i.Category = :catetory")//, nativeQuery = true)
     Flux<Image> findByCategory(@Param("catetory")String catetory);
+
+    @Query(value = "DELETE FROM image WHERE image.id = :id")
+    Mono<Image> deleteById(@Param("id")int id);
 }

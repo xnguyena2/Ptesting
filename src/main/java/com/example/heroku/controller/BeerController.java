@@ -6,15 +6,9 @@ import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -26,7 +20,6 @@ public class BeerController {
     ImageRepository imageRepository;
 
     @GetMapping("/generateid")
-    @Transactional(readOnly = true)
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity generateID(){
         return ok(Format.builder().response(Util.getInstance().GenerateID()).build());
@@ -42,7 +35,7 @@ public class BeerController {
             this.imageRepository.save(Image.builder()
                     .content(file.getBytes())
                     .category(beerID)
-                    .createat(new Date())
+                    .createat(java.time.LocalDateTime.now())
                     .build()
             );
             return ResponseEntity.ok().body(Format.builder().response(imageID).build());
@@ -56,11 +49,11 @@ public class BeerController {
 
     @PostMapping("/{id}/img/delete")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Object> deleteIMG(@RequestParam("img") String imageID) {
+    public ResponseEntity<Object> deleteIMG(@RequestParam("img") int imageID) {
         String message = "";
         try {
             this.imageRepository.deleteById(imageID);
-            return ResponseEntity.ok().body(Format.builder().response(imageID).build());
+            return ResponseEntity.ok().body(Format.builder().response(imageID+"").build());
         } catch (Exception e) {
             System.out.println(e);
             e.printStackTrace();
@@ -70,9 +63,8 @@ public class BeerController {
     }
 
     @GetMapping("/{id}/img/all")
-    @Transactional(readOnly = true)
     @CrossOrigin(origins = "http://localhost:4200")
-    public Flux<String> getIMGbyID(@PathVariable("id") String beerID){
-        return this.imageRepository.findByCategory(beerID).map(x->x.getId().trim());
+    public Flux<Object> getIMGbyID(@PathVariable("id") String beerID){
+        return this.imageRepository.findByCategory(beerID).map(x->x.getId());
     }
 }

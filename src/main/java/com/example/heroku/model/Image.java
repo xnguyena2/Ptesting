@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="IMAGE")
@@ -27,5 +27,5 @@ public class Image {
     private String category;
 
     @Column(name="Createat")
-    private Date createat;
+    private LocalDateTime createat;
 }

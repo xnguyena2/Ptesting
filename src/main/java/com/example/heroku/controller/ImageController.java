@@ -7,9 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/image")
 public class ImageController {
@@ -22,7 +19,7 @@ public class ImageController {
             produces = MediaType.IMAGE_PNG_VALUE
     )
     public @ResponseBody
-    byte[] getImg(@PathVariable String id) throws UnsupportedEncodingException {
+    byte[] getImg(@PathVariable int id) {
         System.out.println("get img: "+id);
         Mono<Image> result = imageRepository.findById(id);
         if(result.block()!=null){
