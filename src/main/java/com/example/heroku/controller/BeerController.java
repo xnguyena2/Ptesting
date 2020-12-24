@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -21,8 +22,8 @@ public class BeerController {
 
     @GetMapping("/generateid")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity generateID(){
-        return ok(Format.builder().response(Util.getInstance().GenerateID()).build());
+    public Mono<ResponseEntity> generateID(){
+        return Mono.just(ok(Format.builder().response(Util.getInstance().GenerateID()).build()));
     }
 
     @PostMapping("/{id}/img/upload")

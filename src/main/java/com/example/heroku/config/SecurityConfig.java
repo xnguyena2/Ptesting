@@ -53,6 +53,7 @@ public class SecurityConfig {
 
                         .pathMatchers("/angular/**").permitAll()
                         .pathMatchers("/carousel/**").permitAll()
+                        .pathMatchers("/beer/**").permitAll()
                         .pathMatchers("/db").permitAll()
                         .pathMatchers("/image/**").permitAll()
 
