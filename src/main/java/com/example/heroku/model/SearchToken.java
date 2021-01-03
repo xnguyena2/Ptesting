@@ -8,21 +8,16 @@ import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
 
 @Entity
-@Table(name="IMAGE")
+@Table(name="search_token")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Image {
+public class SearchToken {
     @Id
     String id;
 
-    private byte[] content;
-
-    private String category;
-
-    private Timestamp createat;
+    private String beer_second_id;
 }

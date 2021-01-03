@@ -1,7 +1,7 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.Image;
-import com.example.heroku.request.carousel.DeleteImg;
+import com.example.heroku.request.carousel.IDContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
@@ -27,8 +27,8 @@ public class CarouselController {
 
     @PostMapping("/delete")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Mono<Object> uploadFile(@Valid @ModelAttribute DeleteImg img) {
-        System.out.println("Delete img: " + img.getImg());
+    public Mono<Object> uploadFile(@Valid @ModelAttribute IDContainer img) {
+        System.out.println("Delete img: " + img.getId());
         return imageAPI.Delete(img);
     }
 

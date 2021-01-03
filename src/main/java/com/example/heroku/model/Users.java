@@ -1,22 +1,20 @@
 package com.example.heroku.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,8 +76,7 @@ public class Users implements UserDetails {
     private boolean active = true;
 
     @CreatedDate
-    @Column("Createat")
-    private Date createat;
+    private Timestamp createat;
 
     public List<String> getRoles() {
         return roles.stream().map(x -> x.replace("{","").replace("}","")).collect(Collectors.toList());

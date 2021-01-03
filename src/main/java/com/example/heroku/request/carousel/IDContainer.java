@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteImg {
-    private String img;
+public class IDContainer {
+    private String id;
 }

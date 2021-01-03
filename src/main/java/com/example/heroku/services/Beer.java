@@ -1,0 +1,105 @@
+package com.example.heroku.services;
+
+import com.example.heroku.model.BeerUnit;
+import com.example.heroku.model.repository.BeerRepository;
+import com.example.heroku.model.repository.BeerUnitRepository;
+import com.example.heroku.model.repository.SearchTokenRepository;
+import com.example.heroku.request.beer.BeerInfo;
+import com.example.heroku.response.Format;
+import com.example.heroku.util.Util;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import javax.validation.Valid;
+import java.util.ArrayList;
+
+import static org.springframework.http.ResponseEntity.ok;
+
+@Component
+public class Beer {
+    @Autowired
+    SearchTokenRepository searchBeer;
+
+    @Autowired
+    BeerRepository beerRepository;
+
+    @Autowired
+    BeerUnitRepository beerUnitRepository;
+
+    public Mono<Object> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
+        return Mono.just(info)
+                .flatMap(beerInfo ->
+                        this.beerRepository.deleteBySecondId(beerInfo.getBeer().getBeer_second_id())
+                )
+                .then(Mono.just(info)
+                        .flatMap(
+                                beerInfo ->
+                                        this.beerUnitRepository.deleteByBeerId(info.getBeer().getBeer_second_id())
+                        )
+                )
+                .thenMany(Flux.just(info.getBeerUnit())
+                        .flatMap(beerUnit ->
+                                this.beerUnitRepository.save(beerUnit.AutoFill())
+                        )
+                )
+                .then(Mono.just(info)
+                        .flatMap(beerInfo ->
+                                this.beerRepository.save(beerInfo.getBeer().UpdateMetaSearch().AutoFill())
+                        )
+                )
+                .flatMap(beer ->
+                        this.searchBeer.deleteBySecondId(beer.getBeer_second_id())
+                )
+                .then(Mono.just(info)
+                        .flatMap(beerInfo ->
+                                this.searchBeer.saveToken(beerInfo.getBeer().getBeer_second_id(),
+                                        beerInfo.getBeer().getTokens()
+                                        )
+                        )
+                )
+                .then(Mono.just(ok(Format.builder().response(info.getBeer().getBeer_second_id()).build())));
+    }
+
+    public Mono<BeerInfo> GetBeerByID(String id){
+        return beerRepository.findBySecondID(id)
+                .map(beer ->
+                        BeerInfo.builder().beer(beer).build()
+                )
+                .flatMap(beerInfo ->
+                    Mono.just(new ArrayList<BeerUnit>())
+                            .flatMap(beerUnits ->
+                                    beerUnitRepository.findByBeerID(id)
+                                            .map(beerUnit ->
+                                                    beerUnits.add(beerUnit)
+                                            )
+                                            .then(
+                                                    Mono.just(beerUnits)
+                                            )
+                                            .map(bUnits->
+                                                    beerInfo.SetBeerUnit(bUnits)
+                                            )
+                            )
+                );
+    }
+
+    public Flux<com.example.heroku.model.Beer> GetAllBeer(int page, int size){
+        return this.beerRepository.findAll(page, size);
+    }
+
+    public Flux<com.example.heroku.model.Beer> SearchBeer(String txt) {
+        txt = Util.getInstance().RemoveAccent(txt);
+        if (txt.contains("&"))
+            return this.beerRepository.searchBeer(txt);
+        return this.beerRepository.searchBeerLike("%" + txt + "%");
+    }
+
+    public Flux<com.example.heroku.model.Beer> GetAllBeerByCategory(com.example.heroku.model.Beer.Category category, int page, int size){
+        Sort sort = Sort.by(Sort.Direction.DESC, "createat");
+        return this.beerRepository.findByCategory(category, PageRequest.of(page, size, sort));
+    }
+}
