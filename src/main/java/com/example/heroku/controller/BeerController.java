@@ -1,7 +1,6 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.Image;
-import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.response.Format;
@@ -59,10 +58,13 @@ public class BeerController {
 
 
 
+
     @PostMapping("/create")
     @CrossOrigin(origins = "http://localhost:4200")
     public Mono<Object> addBeerInfo(@RequestBody @Valid BeerSubmitData beerInfo) {
         System.out.println("add or update beer: "+beerInfo.GetBeerInfo().getBeer().getName());
         return beerAPI.CreateBeer(beerInfo.GetBeerInfo());
     }
+
+
 }

@@ -37,6 +37,8 @@ public class Beer {
 
     private Timestamp createat;
 
+    private Status status;
+
     public String getTokens() {
         if(name == null && detail == null)
             return "";
@@ -55,6 +57,44 @@ public class Beer {
     public Beer AutoFill(){
         this.createat = new Timestamp(new Date().getTime());
         return this;
+    }
+
+    public enum Status{
+        AVARIABLE("avariable"),
+        NOT_FOR_SELL("not_for_sell"),
+        SOLD_OUT("sold_out");
+
+
+
+        private String name;
+
+        Status(String name){
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        private static final Map<String, Status> lookup = new HashMap<>();
+
+        static
+        {
+            for(Status sts : Status.values())
+            {
+                lookup.put(sts.getName(), sts);
+            }
+        }
+
+        public static Status get(String text)
+        {
+            return lookup.get(text);
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
     }
 
     public enum Category {
@@ -78,9 +118,9 @@ public class Beer {
 
         static
         {
-            for(Category env : Category.values())
+            for(Category ctg : Category.values())
             {
-                lookup.put(env.getName(), env);
+                lookup.put(ctg.getName(), ctg);
             }
         }
 

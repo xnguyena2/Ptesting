@@ -5,7 +5,6 @@ import com.example.heroku.model.BeerUnit;
 import com.example.heroku.model.repository.BeerRepository;
 import com.example.heroku.request.beer.BeerInfo;
 import lombok.Builder;
-import org.springframework.beans.factory.annotation.Autowired;
 import reactor.test.StepVerifier;
 
 import java.sql.Timestamp;
@@ -92,7 +91,7 @@ public class BeerTest {
                 )
                 .verifyComplete();
 
-        this.beerAPI.SearchBeer("ha")
+        this.beerAPI.SearchBeer("ha%oai")
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                             assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
@@ -108,7 +107,7 @@ public class BeerTest {
                 )
                 .verifyComplete();
 
-        this.beerAPI.SearchBeer("bia&ngoai&nhap")
+        this.beerAPI.SearchBeer("bi:*&ngo:*&nhap:*")
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                             assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");

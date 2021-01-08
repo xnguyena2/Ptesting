@@ -1,16 +1,15 @@
 package com.example.heroku.request.beer;
 
 import com.example.heroku.model.Beer;
-import com.example.heroku.model.BeerUnit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 @Data
 @Builder
@@ -33,7 +32,8 @@ public class BeerSubmitData {
                     .beer(this.beerSecondID)
                     .price(beerUnit.price)
                     .discount(beerUnit.discount)
-                    .ship_price(beerUnit.shipPrice)
+                    .volumetric(beerUnit.volumetric)
+                    .weight(beerUnit.weight)
                     .date_expire(beerUnit.GetExpirDateTime())
                     .build());
         }
@@ -63,7 +63,8 @@ public class BeerSubmitData {
         private float price;
         private float discount;
         private NgbDateStruct dateExpir;
-        private String shipPrice;
+        private float volumetric;
+        private float weight;
 
         public Timestamp GetExpirDateTime() {
             if (dateExpir == null)

@@ -9,39 +9,21 @@ import org.springframework.data.annotation.Id;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.sql.Timestamp;
-import java.util.Date;
 
 @Entity
-@Table(name="beer_unit")
+@Table(name="beer_view_count")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BeerUnit {
+public class BeerViewCount {
 
     @Id
     String id;
 
-    private String beer;
+    private String beer_id;
 
-    private String name;
-
-    private float price;
-
-    private float discount;
-
-    private Timestamp date_expire;
-
-    private float volumetric;
-
-    private float weight;
+    private String device_id;
 
     private Timestamp createat;
-
-
-    public BeerUnit AutoFill(){
-        this.createat = new Timestamp(new Date().getTime());
-        return this;
-    }
 }
-

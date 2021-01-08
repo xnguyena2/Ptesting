@@ -12,36 +12,34 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
-@Table(name="beer_unit")
+@Table(name="user_device")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BeerUnit {
+public class UserDevice {
 
     @Id
     String id;
 
-    private String beer;
+    private String device_id;
 
-    private String name;
+    private String user_first_name;
 
-    private float price;
+    private String user_last_name;
 
-    private float discount;
-
-    private Timestamp date_expire;
-
-    private float volumetric;
-
-    private float weight;
+    private Status status;
 
     private Timestamp createat;
 
-
-    public BeerUnit AutoFill(){
+    public UserDevice AutoFill(){
         this.createat = new Timestamp(new Date().getTime());
         return this;
     }
-}
 
+    public enum Status {
+        ACTIVE,
+        BLOCK
+    }
+
+}

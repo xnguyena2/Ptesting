@@ -50,6 +50,8 @@ public class SecurityConfig {
                         .pathMatchers("/stylesheets/**").permitAll()
                         .pathMatchers("/auth/signin").permitAll()
                         .pathMatchers("/js/**").permitAll()
+                        .pathMatchers("/deviceconfig/**").permitAll()
+                        .pathMatchers("/shippingprovider/**").permitAll()
 
                         .pathMatchers("/angular/**").permitAll()
                         .pathMatchers("/carousel/**").permitAll()

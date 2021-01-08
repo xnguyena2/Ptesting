@@ -17,10 +17,8 @@ public class DeviceConfig {
     DeviceConfigRepository deviceConfigRepository;
 
     public Mono<Object> UpdateConfig(@Valid @ModelAttribute com.example.heroku.model.DeviceConfig config) {
-        return Mono.just(config)
-                .flatMap(deviceConfig ->
-                        this.deviceConfigRepository.deleteAll()
-                )
+        return
+                this.deviceConfigRepository.deleteAll()
                 .then(Mono.just(config)
                         .flatMap(deviceConfig ->
                                 this.deviceConfigRepository.save(config)

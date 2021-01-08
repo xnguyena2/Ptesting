@@ -10,7 +10,6 @@ public class AppConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        System.out.println("Get password encoder!");
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 

@@ -1,0 +1,29 @@
+package com.example.heroku.controller;
+
+import com.example.heroku.services.DeviceConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+
+import javax.validation.Valid;
+
+@RestController
+@RequestMapping("/deviceconfig")
+public class DeviceConfigController {
+
+    @Autowired
+    DeviceConfig deviceConfigAPI;
+
+    @PostMapping("/changecolor")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Mono<Object> updateDeviceColor(@RequestBody @Valid com.example.heroku.model.DeviceConfig config) {
+        System.out.println("update color: "+config.getColor());
+        return deviceConfigAPI.UpdateConfig(config);
+    }
+
+    @GetMapping("/get")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Mono<com.example.heroku.model.DeviceConfig> getDeviceColor(){
+        return deviceConfigAPI.GetConfig();
+    }
+}

@@ -1,0 +1,3378 @@
+{
+  "regions": [
+    {
+      "id": 294,
+      "name": "Hồ Chí Minh",
+      "districts": {
+        "data": [
+          {
+            "id": 484,
+            "name": "Quận 1",
+            "wards": {
+              "data": [
+                {
+                  "id": 10379,
+                  "name": "Phường Bến Nghé"
+                },
+                {
+                  "id": 10380,
+                  "name": "Phường Bến Thành"
+                },
+                {
+                  "id": 10381,
+                  "name": "Phường Cầu Kho"
+                },
+                {
+                  "id": 10382,
+                  "name": "Phường Cầu Ông Lãnh"
+                },
+                {
+                  "id": 10383,
+                  "name": "Phường Cô Giang"
+                },
+                {
+                  "id": 10384,
+                  "name": "Phường Đa Kao"
+                },
+                {
+                  "id": 10385,
+                  "name": "Phường Nguyễn Cư Trinh"
+                },
+                {
+                  "id": 10386,
+                  "name": "Phường Nguyễn Thái Bình"
+                },
+                {
+                  "id": 10387,
+                  "name": "Phường Phạm Ngũ Lão"
+                },
+                {
+                  "id": 10388,
+                  "name": "Phường Tân Định"
+                }
+              ]
+            }
+          },
+          {
+            "id": 485,
+            "name": "Quận 2",
+            "wards": {
+              "data": [
+                {
+                  "id": 10431,
+                  "name": "Phường An Khánh"
+                },
+                {
+                  "id": 10432,
+                  "name": "Phường An Lợi Đông"
+                },
+                {
+                  "id": 10433,
+                  "name": "Phường An Phú"
+                },
+                {
+                  "id": 10434,
+                  "name": "Phường Bình An"
+                },
+                {
+                  "id": 10435,
+                  "name": "Phường Bình Khánh"
+                },
+                {
+                  "id": 10436,
+                  "name": "Phường Bình Trưng Đông"
+                },
+                {
+                  "id": 10437,
+                  "name": "Phường Bình Trưng Tây"
+                },
+                {
+                  "id": 10438,
+                  "name": "Phường Cát Lái"
+                },
+                {
+                  "id": 10439,
+                  "name": "Phường Thạnh Mỹ Lợi"
+                },
+                {
+                  "id": 10440,
+                  "name": "Phường Thảo Điền"
+                },
+                {
+                  "id": 10441,
+                  "name": "Phường Thủ Thiêm"
+                }
+              ]
+            }
+          },
+          {
+            "id": 497,
+            "name": "Quận Bình Thạnh",
+            "wards": {
+              "data": [
+                {
+                  "id": 10549,
+                  "name": "Phường 01"
+                },
+                {
+                  "id": 10557,
+                  "name": "Phường 02"
+                },
+                {
+                  "id": 10565,
+                  "name": "Phường 03"
+                },
+                {
+                  "id": 10566,
+                  "name": "Phường 05"
+                },
+                {
+                  "id": 10567,
+                  "name": "Phường 06"
+                },
+                {
+                  "id": 10568,
+                  "name": "Phường 07"
+                },
+                {
+                  "id": 10550,
+                  "name": "Phường 11"
+                },
+                {
+                  "id": 10551,
+                  "name": "Phường 12"
+                },
+                {
+                  "id": 10552,
+                  "name": "Phường 13"
+                },
+                {
+                  "id": 10553,
+                  "name": "Phường 14"
+                },
+                {
+                  "id": 10554,
+                  "name": "Phường 15"
+                },
+                {
+                  "id": 10555,
+                  "name": "Phường 17"
+                },
+                {
+                  "id": 10556,
+                  "name": "Phường 19"
+                },
+                {
+                  "id": 10558,
+                  "name": "Phường 21"
+                },
+                {
+                  "id": 10559,
+                  "name": "Phường 22"
+                },
+                {
+                  "id": 10560,
+                  "name": "Phường 24"
+                },
+                {
+                  "id": 10561,
+                  "name": "Phường 25"
+                },
+                {
+                  "id": 10562,
+                  "name": "Phường 26"
+                },
+                {
+                  "id": 10563,
+                  "name": "Phường 27"
+                },
+                {
+                  "id": 10564,
+                  "name": "Phường 28"
+                }
+              ]
+            }
+          },
+          {
+            "id": 498,
+            "name": "Quận Gò Vấp",
+            "wards": {
+              "data": [
+                {
+                  "id": 10569,
+                  "name": "Phường 01"
+                },
+                {
+                  "id": 10578,
+                  "name": "Phường 03"
+                },
+                {
+                  "id": 10579,
+                  "name": "Phường 04"
+                },
+                {
+                  "id": 10580,
+                  "name": "Phường 05"
+                },
+                {
+                  "id": 10581,
+                  "name": "Phường 06"
+                },
+                {
+                  "id": 10582,
+                  "name": "Phường 07"
+                },
+                {
+                  "id": 10583,
+                  "name": "Phường 08"
+                },
+                {
+                  "id": 10584,
+                  "name": "Phường 09"
+                },
+                {
+                  "id": 10570,
+                  "name": "Phường 10"
+                },
+                {
+                  "id": 10571,
+                  "name": "Phường 11"
+                },
+                {
+                  "id": 10572,
+                  "name": "Phường 12"
+                },
+                {
+                  "id": 10573,
+                  "name": "Phường 13"
+                },
+                {
+                  "id": 10574,
+                  "name": "Phường 14"
+                },
+                {
+                  "id": 10575,
+                  "name": "Phường 15"
+                },
+                {
+                  "id": 10576,
+                  "name": "Phường 16"
+                },
+                {
+                  "id": 10577,
+                  "name": "Phường 17"
+                }
+              ]
+            }
+          },
+          {
+            "id": 504,
+            "name": "Huyện Cần Giờ",
+            "wards": {
+              "data": [
+                {
+                  "id": 10332,
+                  "name": "Thị trấn Cần Thạnh"
+                },
+                {
+                  "id": 10333,
+                  "name": "Xã An Thới Đông"
+                },
+                {
+                  "id": 10334,
+                  "name": "Xã Bình Khánh"
+                },
+                {
+                  "id": 10335,
+                  "name": "Xã Long Hòa"
+                },
+                {
+                  "id": 10336,
+                  "name": "Xã Lý Nhơn"
+                },
+                {
+                  "id": 10337,
+                  "name": "Xã Tam Thôn Hiệp"
+                },
+                {
+                  "id": 10338,
+                  "name": "Xã Thạnh An"
+                }
+              ]
+            }
+          },
+          {
+            "id": 505,
+            "name": "Huyện Củ Chi",
+            "wards": {
+              "data": [
+                {
+                  "id": 10347,
+                  "name": "Thị trấn Củ Chi"
+                },
+                {
+                  "id": 10353,
+                  "name": "Xã An Nhơn Tây"
+                },
+                {
+                  "id": 10357,
+                  "name": "Xã An Phú"
+                },
+                {
+                  "id": 10349,
+                  "name": "Xã Bình Mỹ"
+                },
+                {
+                  "id": 10342,
+                  "name": "Xã Hòa Phú"
+                },
+                {
+                  "id": 10348,
+                  "name": "Xã Nhuận Đức"
+                },
+                {
+                  "id": 10356,
+                  "name": "Xã Phạm Văn Cội"
+                },
+                {
+                  "id": 10340,
+                  "name": "Xã Phú Hòa Đông"
+                },
+                {
+                  "id": 10341,
+                  "name": "Xã Phú Mỹ Hưng"
+                },
+                {
+                  "id": 10358,
+                  "name": "Xã Phước Hiệp"
+                },
+                {
+                  "id": 10354,
+                  "name": "Xã Phước Thạnh"
+                },
+                {
+                  "id": 10355,
+                  "name": "Xã Phước Vĩnh An"
+                },
+                {
+                  "id": 10339,
+                  "name": "Xã Tân An Hội"
+                },
+                {
+                  "id": 10343,
+                  "name": "Xã Tân Phú Trung"
+                },
+                {
+                  "id": 10344,
+                  "name": "Xã Tân Thạnh Đông"
+                },
+                {
+                  "id": 10345,
+                  "name": "Xã Tân Thạnh Tây"
+                },
+                {
+                  "id": 10346,
+                  "name": "Xã Tân Thông Hội"
+                },
+                {
+                  "id": 10350,
+                  "name": "Xã Thái Mỹ"
+                },
+                {
+                  "id": 10351,
+                  "name": "Xã Trung An"
+                },
+                {
+                  "id": 10359,
+                  "name": "Xã Trung Lập Hạ"
+                },
+                {
+                  "id": 10352,
+                  "name": "Xã Trung Lập Thượng"
+                }
+              ]
+            }
+          },
+          {
+            "id": 506,
+            "name": "Huyện Hóc Môn",
+            "wards": {
+              "data": [
+                {
+                  "id": 10360,
+                  "name": "Thị trấn Hóc Môn"
+                },
+                {
+                  "id": 10361,
+                  "name": "Xã Bà Điểm"
+                },
+                {
+                  "id": 10362,
+                  "name": "Xã Đông Thạnh"
+                },
+                {
+                  "id": 10363,
+                  "name": "Xã Nhị Bình"
+                },
+                {
+                  "id": 10364,
+                  "name": "Xã Tân Hiệp"
+                },
+                {
+                  "id": 10365,
+                  "name": "Xã Tân Thới Nhì"
+                },
+                {
+                  "id": 10366,
+                  "name": "Xã Tân Xuân"
+                },
+                {
+                  "id": 10367,
+                  "name": "Xã Thới Tam Thôn"
+                },
+                {
+                  "id": 10368,
+                  "name": "Xã Trung Chánh"
+                },
+                {
+                  "id": 10369,
+                  "name": "Xã Xuân Thới Đông"
+                },
+                {
+                  "id": 10370,
+                  "name": "Xã Xuân Thới Sơn"
+                },
+                {
+                  "id": 10371,
+                  "name": "Xã Xuân Thới Thượng"
+                }
+              ]
+            }
+          },
+          {
+            "id": 507,
+            "name": "Huyện Nhà Bè",
+            "wards": {
+              "data": [
+                {
+                  "id": 10372,
+                  "name": "Thị trấn Nhà Bè"
+                },
+                {
+                  "id": 10373,
+                  "name": "Xã Hiệp Phước"
+                },
+                {
+                  "id": 10374,
+                  "name": "Xã Long Thới"
+                },
+                {
+                  "id": 10375,
+                  "name": "Xã Nhơn Đức"
+                },
+                {
+                  "id": 10376,
+                  "name": "Xã Phú Xuân"
+                },
+                {
+                  "id": 10377,
+                  "name": "Xã Phước Kiển"
+                },
+                {
+                  "id": 10378,
+                  "name": "Xã Phước Lộc"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 297,
+      "name": "Hà Nội",
+      "districts": {
+        "data": [
+          {
+            "id": 1,
+            "name": "Quận Ba Đình",
+            "wards": {
+              "data": [
+                {
+                  "id": 3564,
+                  "name": "Phường Cống Vị"
+                },
+                {
+                  "id": 3565,
+                  "name": "Phường Điện Biên"
+                },
+                {
+                  "id": 3566,
+                  "name": "Phường Đội Cấn"
+                },
+                {
+                  "id": 3567,
+                  "name": "Phường Giảng Võ"
+                },
+                {
+                  "id": 3568,
+                  "name": "Phường Kim Mã"
+                },
+                {
+                  "id": 3569,
+                  "name": "Phường Liễu Giai"
+                },
+                {
+                  "id": 3570,
+                  "name": "Phường Ngọc Hà"
+                },
+                {
+                  "id": 3571,
+                  "name": "Phường Ngọc Khánh"
+                },
+                {
+                  "id": 3563,
+                  "name": "Phường Nguyễn Trung Trực"
+                },
+                {
+                  "id": 3572,
+                  "name": "Phường Phúc Xá"
+                },
+                {
+                  "id": 3573,
+                  "name": "Phường Quán Thánh"
+                },
+                {
+                  "id": 3574,
+                  "name": "Phường Thành Công"
+                },
+                {
+                  "id": 3575,
+                  "name": "Phường Trúc Bạch"
+                },
+                {
+                  "id": 3576,
+                  "name": "Phường Vĩnh Phúc"
+                }
+              ]
+            }
+          },
+          {
+            "id": 10,
+            "name": "Quận Hoàn Kiếm",
+            "wards": {
+              "data": [
+                {
+                  "id": 3656,
+                  "name": "Phường Chương Dương Độ"
+                },
+                {
+                  "id": 3657,
+                  "name": "Phường Cửa Đông"
+                },
+                {
+                  "id": 3658,
+                  "name": "Phường Cửa Nam"
+                },
+                {
+                  "id": 3659,
+                  "name": "Phường Đồng Xuân"
+                },
+                {
+                  "id": 3660,
+                  "name": "Phường Hàng Bạc"
+                },
+                {
+                  "id": 3661,
+                  "name": "Phường Hàng Bài"
+                },
+                {
+                  "id": 3662,
+                  "name": "Phường Hàng Bồ"
+                },
+                {
+                  "id": 3663,
+                  "name": "Phường Hàng Bông"
+                },
+                {
+                  "id": 3664,
+                  "name": "Phường Hàng Buồm"
+                },
+                {
+                  "id": 3665,
+                  "name": "Phường Hàng Đào"
+                },
+                {
+                  "id": 3666,
+                  "name": "Phường Hàng Gai"
+                },
+                {
+                  "id": 3667,
+                  "name": "Phường Hàng Mã"
+                },
+                {
+                  "id": 3668,
+                  "name": "Phường Hàng Trống"
+                },
+                {
+                  "id": 3669,
+                  "name": "Phường Lý Thái Tổ"
+                },
+                {
+                  "id": 3670,
+                  "name": "Phường Phan Chu Trinh"
+                },
+                {
+                  "id": 3671,
+                  "name": "Phường Phúc Tân"
+                },
+                {
+                  "id": 3673,
+                  "name": "Phường Tràng Tiền"
+                },
+                {
+                  "id": 3672,
+                  "name": "Phường Trần Hưng Đạo"
+                }
+              ]
+            }
+          },
+          {
+            "id": 11,
+            "name": "Quận Hai Bà Trưng",
+            "wards": {
+              "data": [
+                {
+                  "id": 3636,
+                  "name": "Phường Bạch Đằng"
+                },
+                {
+                  "id": 3637,
+                  "name": "Phường Bách Khoa"
+                },
+                {
+                  "id": 3638,
+                  "name": "Phường Bạch Mai"
+                },
+                {
+                  "id": 3639,
+                  "name": "Phường Bùi Thị Xuân"
+                },
+                {
+                  "id": 3640,
+                  "name": "Phường Cầu Dền"
+                },
+                {
+                  "id": 3641,
+                  "name": "Phường Đống Mác"
+                },
+                {
+                  "id": 3642,
+                  "name": "Phường Đồng Nhân"
+                },
+                {
+                  "id": 3643,
+                  "name": "Phường Đồng Tâm"
+                },
+                {
+                  "id": 3644,
+                  "name": "Phường Lê Đại Hành"
+                },
+                {
+                  "id": 3645,
+                  "name": "Phường Minh Khai"
+                },
+                {
+                  "id": 3646,
+                  "name": "Phường Ngô Thì Nhậm"
+                },
+                {
+                  "id": 3647,
+                  "name": "Phường Nguyễn Du"
+                },
+                {
+                  "id": 3648,
+                  "name": "Phường Phạm Đình Hổ"
+                },
+                {
+                  "id": 3649,
+                  "name": "Phường Phố Huế"
+                },
+                {
+                  "id": 3650,
+                  "name": "Phường Quỳnh Lôi"
+                },
+                {
+                  "id": 3651,
+                  "name": "Phường Quỳnh Mai"
+                },
+                {
+                  "id": 3652,
+                  "name": "Phường Thanh Lương"
+                },
+                {
+                  "id": 3653,
+                  "name": "Phường Thanh Nhàn"
+                },
+                {
+                  "id": 3654,
+                  "name": "Phường Trương Định"
+                },
+                {
+                  "id": 3655,
+                  "name": "Phường Vĩnh Tuy"
+                }
+              ]
+            }
+          },
+          {
+            "id": 12,
+            "name": "Quận Đống Đa",
+            "wards": {
+              "data": [
+                {
+                  "id": 3598,
+                  "name": "Phường Cát Linh"
+                },
+                {
+                  "id": 3599,
+                  "name": "Phường Hàng Bột"
+                },
+                {
+                  "id": 3600,
+                  "name": "Phường Khâm Thiên"
+                },
+                {
+                  "id": 3601,
+                  "name": "Phường Khương Thượng"
+                },
+                {
+                  "id": 3602,
+                  "name": "Phường Kim Liên"
+                },
+                {
+                  "id": 3603,
+                  "name": "Phường Láng Hạ"
+                },
+                {
+                  "id": 3604,
+                  "name": "Phường Láng Thượng"
+                },
+                {
+                  "id": 3605,
+                  "name": "Phường Nam Đồng"
+                },
+                {
+                  "id": 3606,
+                  "name": "Phường Ngã Tư Sở"
+                },
+                {
+                  "id": 3607,
+                  "name": "Phường Ô Chợ Dừa"
+                },
+                {
+                  "id": 3608,
+                  "name": "Phường Phương Liên"
+                },
+                {
+                  "id": 3609,
+                  "name": "Phường Phương Mai"
+                },
+                {
+                  "id": 3610,
+                  "name": "Phường Quang Trung"
+                },
+                {
+                  "id": 3611,
+                  "name": "Phường Quốc Tử Giám"
+                },
+                {
+                  "id": 3612,
+                  "name": "Phường Thịnh Quang"
+                },
+                {
+                  "id": 3613,
+                  "name": "Phường Thổ Quan"
+                },
+                {
+                  "id": 3614,
+                  "name": "Phường Trung Liệt"
+                },
+                {
+                  "id": 3615,
+                  "name": "Phường Trung Phụng"
+                },
+                {
+                  "id": 3616,
+                  "name": "Phường Trung Tự"
+                },
+                {
+                  "id": 3617,
+                  "name": "Phường Văn Chương"
+                },
+                {
+                  "id": 3618,
+                  "name": "Phường Văn Miếu"
+                }
+              ]
+            }
+          },
+          {
+            "id": 13,
+            "name": "Quận Cầu Giấy",
+            "wards": {
+              "data": [
+                {
+                  "id": 3590,
+                  "name": "Phường Dịch Vọng"
+                },
+                {
+                  "id": 3591,
+                  "name": "Phường Dịch Vọng Hậu"
+                },
+                {
+                  "id": 3592,
+                  "name": "Phường Mai Dịch"
+                },
+                {
+                  "id": 3593,
+                  "name": "Phường Nghĩa Đô"
+                },
+                {
+                  "id": 3594,
+                  "name": "Phường Nghĩa Tân"
+                },
+                {
+                  "id": 3595,
+                  "name": "Phường Quan Hoa"
+                },
+                {
+                  "id": 3596,
+                  "name": "Phường Trung Hoà"
+                },
+                {
+                  "id": 3597,
+                  "name": "Phường Yên Hoà"
+                }
+              ]
+            }
+          },
+          {
+            "id": 14,
+            "name": "Quận Long Biên",
+            "wards": {
+              "data": [
+                {
+                  "id": 3688,
+                  "name": "Phường Bồ Đề"
+                },
+                {
+                  "id": 3689,
+                  "name": "Phường Cự Khối"
+                },
+                {
+                  "id": 3690,
+                  "name": "Phường Đức Giang"
+                },
+                {
+                  "id": 3691,
+                  "name": "Phường Gia Thụy"
+                },
+                {
+                  "id": 3692,
+                  "name": "Phường Giang Biên"
+                },
+                {
+                  "id": 3693,
+                  "name": "Phường Long Biên"
+                },
+                {
+                  "id": 3694,
+                  "name": "Phường Ngọc Lâm"
+                },
+                {
+                  "id": 3695,
+                  "name": "Phường Ngọc Thụy"
+                },
+                {
+                  "id": 3696,
+                  "name": "Phường Phúc Đồng"
+                },
+                {
+                  "id": 3697,
+                  "name": "Phường Phúc Lợi"
+                },
+                {
+                  "id": 3698,
+                  "name": "Phường Sài Đồng"
+                },
+                {
+                  "id": 3699,
+                  "name": "Phường Thạch Bàn"
+                },
+                {
+                  "id": 3700,
+                  "name": "Phường Thượng Thanh"
+                },
+                {
+                  "id": 3701,
+                  "name": "Phường Việt Hưng"
+                }
+              ]
+            }
+          },
+          {
+            "id": 2,
+            "name": "Quận Hoàng Mai",
+            "wards": {
+              "data": [
+                {
+                  "id": 3674,
+                  "name": "Phường Đại Kim"
+                },
+                {
+                  "id": 3675,
+                  "name": "Phường Định Công"
+                },
+                {
+                  "id": 3676,
+                  "name": "Phường Giáp Bát"
+                },
+                {
+                  "id": 3677,
+                  "name": "Phường Hoàng Liệt"
+                },
+                {
+                  "id": 3678,
+                  "name": "Phường Hoàng Văn Thụ"
+                },
+                {
+                  "id": 3679,
+                  "name": "Phường Lĩnh Nam"
+                },
+                {
+                  "id": 3680,
+                  "name": "Phường Mai Động"
+                },
+                {
+                  "id": 3681,
+                  "name": "Phường Tân Mai"
+                },
+                {
+                  "id": 3682,
+                  "name": "Phường Thanh Trì"
+                },
+                {
+                  "id": 3683,
+                  "name": "Phường Thịnh Liệt"
+                },
+                {
+                  "id": 3684,
+                  "name": "Phường Trần Phú"
+                },
+                {
+                  "id": 3685,
+                  "name": "Phường Tương Mai"
+                },
+                {
+                  "id": 3686,
+                  "name": "Phường Vĩnh Hưng"
+                },
+                {
+                  "id": 3687,
+                  "name": "Phường Yên Sở"
+                }
+              ]
+            }
+          },
+          {
+            "id": 3,
+            "name": "Huyện Sóc Sơn",
+            "wards": {
+              "data": [
+                {
+                  "id": 3403,
+                  "name": "Thị trấn Sóc Sơn"
+                },
+                {
+                  "id": 3404,
+                  "name": "Xã Bắc Phú"
+                },
+                {
+                  "id": 3405,
+                  "name": "Xã Bắc Sơn"
+                },
+                {
+                  "id": 3406,
+                  "name": "Xã Đông Xuân"
+                },
+                {
+                  "id": 3407,
+                  "name": "Xã Đức Hoà"
+                },
+                {
+                  "id": 3408,
+                  "name": "Xã Hiền Ninh"
+                },
+                {
+                  "id": 3409,
+                  "name": "Xã Hồng Kỳ"
+                },
+                {
+                  "id": 3410,
+                  "name": "Xã Kim Lũ"
+                },
+                {
+                  "id": 3411,
+                  "name": "Xã Mai Đình"
+                },
+                {
+                  "id": 3412,
+                  "name": "Xã Minh Phú"
+                },
+                {
+                  "id": 3413,
+                  "name": "Xã Minh Trí"
+                },
+                {
+                  "id": 3414,
+                  "name": "Xã Nam Sơn"
+                },
+                {
+                  "id": 3415,
+                  "name": "Xã Phú Cường"
+                },
+                {
+                  "id": 3416,
+                  "name": "Xã Phù Linh"
+                },
+                {
+                  "id": 3417,
+                  "name": "Xã Phù Lỗ"
+                },
+                {
+                  "id": 3418,
+                  "name": "Xã Phú Minh"
+                },
+                {
+                  "id": 3419,
+                  "name": "Xã Quang Tiến"
+                },
+                {
+                  "id": 3420,
+                  "name": "Xã Tân Dân"
+                },
+                {
+                  "id": 3421,
+                  "name": "Xã Tân Hưng"
+                },
+                {
+                  "id": 3422,
+                  "name": "Xã Tân Minh"
+                },
+                {
+                  "id": 3423,
+                  "name": "Xã Thanh Xuân"
+                },
+                {
+                  "id": 3424,
+                  "name": "Xã Tiên Dược"
+                },
+                {
+                  "id": 3425,
+                  "name": "Xã Trung Giã"
+                },
+                {
+                  "id": 3426,
+                  "name": "Xã Việt Long"
+                },
+                {
+                  "id": 3427,
+                  "name": "Xã Xuân Giang"
+                },
+                {
+                  "id": 3428,
+                  "name": "Xã Xuân Thu"
+                }
+              ]
+            }
+          },
+          {
+            "id": 4,
+            "name": "Quận Bắc Từ Liêm",
+            "wards": {
+              "data": [
+                {
+                  "id": 3586,
+                  "name": "Phường Cổ Nhuế 1"
+                },
+                {
+                  "id": 3587,
+                  "name": "Phường Cổ Nhuế 2"
+                },
+                {
+                  "id": 3581,
+                  "name": "Phường Đông Ngạc"
+                },
+                {
+                  "id": 3578,
+                  "name": "Phường Đức Thắng"
+                },
+                {
+                  "id": 3584,
+                  "name": "Phường Liên Mạc"
+                },
+                {
+                  "id": 3582,
+                  "name": "Phường Minh Khai"
+                },
+                {
+                  "id": 3577,
+                  "name": "Phường Phú Diễn"
+                },
+                {
+                  "id": 3580,
+                  "name": "Phường Phúc Diễn"
+                },
+                {
+                  "id": 3579,
+                  "name": "Phường Tây Tựu"
+                },
+                {
+                  "id": 3589,
+                  "name": "Phường Thụy Phương"
+                },
+                {
+                  "id": 3588,
+                  "name": "Phường Thượng Cát"
+                },
+                {
+                  "id": 3532,
+                  "name": "Phường Xuân Đỉnh"
+                },
+                {
+                  "id": 3585,
+                  "name": "Phường Xuân Tảo"
+                }
+              ]
+            }
+          },
+          {
+            "id": 5,
+            "name": "Huyện Thanh Trì",
+            "wards": {
+              "data": [
+                {
+                  "id": 3473,
+                  "name": "Thị trấn Văn Điển"
+                },
+                {
+                  "id": 3476,
+                  "name": "Xã Duyên Hà"
+                },
+                {
+                  "id": 3474,
+                  "name": "Xã Đại áng"
+                },
+                {
+                  "id": 3475,
+                  "name": "Xã Đông Mỹ"
+                },
+                {
+                  "id": 3477,
+                  "name": "Xã Hữu Hoà"
+                },
+                {
+                  "id": 3478,
+                  "name": "Xã Liên Ninh"
+                },
+                {
+                  "id": 3479,
+                  "name": "Xã Ngọc Hồi"
+                },
+                {
+                  "id": 3480,
+                  "name": "Xã Ngũ Hiệp"
+                },
+                {
+                  "id": 3481,
+                  "name": "Xã Tả Thanh Oai"
+                },
+                {
+                  "id": 3482,
+                  "name": "Xã Tam Hiệp"
+                },
+                {
+                  "id": 3483,
+                  "name": "Xã Tân Triều"
+                },
+                {
+                  "id": 3484,
+                  "name": "Xã Thanh Liệt"
+                },
+                {
+                  "id": 3485,
+                  "name": "Xã Tứ Hiệp"
+                },
+                {
+                  "id": 3486,
+                  "name": "Xã Vạn Phúc"
+                },
+                {
+                  "id": 3487,
+                  "name": "Xã Vĩnh Quỳnh"
+                },
+                {
+                  "id": 3488,
+                  "name": "Xã Yên Mỹ"
+                }
+              ]
+            }
+          },
+          {
+            "id": 6,
+            "name": "Huyện Gia Lâm",
+            "wards": {
+              "data": [
+                {
+                  "id": 3266,
+                  "name": "Thị trấn Trâu Quỳ"
+                },
+                {
+                  "id": 3249,
+                  "name": "Thị trấn Yên Viên"
+                },
+                {
+                  "id": 3250,
+                  "name": "Xã Bát Tràng"
+                },
+                {
+                  "id": 3251,
+                  "name": "Xã Cổ Bi"
+                },
+                {
+                  "id": 3256,
+                  "name": "Xã Dương Hà"
+                },
+                {
+                  "id": 3257,
+                  "name": "Xã Dương Quang"
+                },
+                {
+                  "id": 3258,
+                  "name": "Xã Dương Xá"
+                },
+                {
+                  "id": 3252,
+                  "name": "Xã Đa Tốn"
+                },
+                {
+                  "id": 3253,
+                  "name": "Xã Đặng Xá"
+                },
+                {
+                  "id": 3254,
+                  "name": "Xã Đình Xuyên"
+                },
+                {
+                  "id": 3255,
+                  "name": "Xã Đông Dư"
+                },
+                {
+                  "id": 3259,
+                  "name": "Xã Kiêu Kỵ"
+                },
+                {
+                  "id": 3260,
+                  "name": "Xã Kim Lan"
+                },
+                {
+                  "id": 3261,
+                  "name": "Xã Kim Sơn"
+                },
+                {
+                  "id": 3262,
+                  "name": "Xã Lệ Chi"
+                },
+                {
+                  "id": 3263,
+                  "name": "Xã Ninh Hiệp"
+                },
+                {
+                  "id": 3264,
+                  "name": "Xã Phù Đổng"
+                },
+                {
+                  "id": 3265,
+                  "name": "Xã Phú Thị"
+                },
+                {
+                  "id": 3267,
+                  "name": "Xã Trung Mầu"
+                },
+                {
+                  "id": 3268,
+                  "name": "Xã Văn Đức"
+                },
+                {
+                  "id": 3269,
+                  "name": "Xã Yên Thường"
+                },
+                {
+                  "id": 3270,
+                  "name": "Xã Yên Viên"
+                }
+              ]
+            }
+          },
+          {
+            "id": 676,
+            "name": "Huyện Ba Vì",
+            "wards": {
+              "data": [
+                {
+                  "id": 3146,
+                  "name": "Thị trấn Tây Đằng"
+                },
+                {
+                  "id": 3147,
+                  "name": "Xã Ba Trại"
+                },
+                {
+                  "id": 3148,
+                  "name": "Xã Ba Vì"
+                },
+                {
+                  "id": 3150,
+                  "name": "Xã Cam Thượng"
+                },
+                {
+                  "id": 3149,
+                  "name": "Xã Cẩm Lĩnh"
+                },
+                {
+                  "id": 3151,
+                  "name": "Xã Châu Sơn"
+                },
+                {
+                  "id": 3152,
+                  "name": "Xã Chu Minh"
+                },
+                {
+                  "id": 3153,
+                  "name": "Xã Cổ Đô"
+                },
+                {
+                  "id": 3154,
+                  "name": "Xã Đông Quang"
+                },
+                {
+                  "id": 3155,
+                  "name": "Xã Đồng Thái"
+                },
+                {
+                  "id": 3156,
+                  "name": "Xã Khánh Thượng"
+                },
+                {
+                  "id": 3157,
+                  "name": "Xã Minh Châu"
+                },
+                {
+                  "id": 3158,
+                  "name": "Xã Minh Quang"
+                },
+                {
+                  "id": 3159,
+                  "name": "Xã Phong Vân"
+                },
+                {
+                  "id": 3160,
+                  "name": "Xã Phú Châu"
+                },
+                {
+                  "id": 3161,
+                  "name": "Xã Phú Cường"
+                },
+                {
+                  "id": 3162,
+                  "name": "Xã Phú Đông"
+                },
+                {
+                  "id": 3163,
+                  "name": "Xã Phú Phương"
+                },
+                {
+                  "id": 3164,
+                  "name": "Xã Phú Sơn"
+                },
+                {
+                  "id": 3165,
+                  "name": "Xã Sơn Đà"
+                },
+                {
+                  "id": 3166,
+                  "name": "Xã Tản Hồng"
+                },
+                {
+                  "id": 3167,
+                  "name": "Xã Tản Lĩnh"
+                },
+                {
+                  "id": 3168,
+                  "name": "Xã Thái Hòa"
+                },
+                {
+                  "id": 3169,
+                  "name": "Xã Thuần Mỹ"
+                },
+                {
+                  "id": 3170,
+                  "name": "Xã Thụy An"
+                },
+                {
+                  "id": 3171,
+                  "name": "Xã Tiên Phong"
+                },
+                {
+                  "id": 3172,
+                  "name": "Xã Tòng Bạt"
+                },
+                {
+                  "id": 3174,
+                  "name": "Xã Vạn Thắng"
+                },
+                {
+                  "id": 3173,
+                  "name": "Xã Vân Hòa"
+                },
+                {
+                  "id": 3175,
+                  "name": "Xã Vật Lại"
+                },
+                {
+                  "id": 3176,
+                  "name": "Xã Yên Bài"
+                }
+              ]
+            }
+          },
+          {
+            "id": 677,
+            "name": "Huyện Chương Mỹ",
+            "wards": {
+              "data": [
+                {
+                  "id": 3177,
+                  "name": "Thị trấn Chúc Sơn"
+                },
+                {
+                  "id": 3178,
+                  "name": "Thị trấn Xuân Mai"
+                },
+                {
+                  "id": 3179,
+                  "name": "Xã Đại Yên"
+                },
+                {
+                  "id": 3180,
+                  "name": "Xã Đồng Lạc"
+                },
+                {
+                  "id": 3181,
+                  "name": "Xã Đồng Phú"
+                },
+                {
+                  "id": 3182,
+                  "name": "Xã Đông Phương Yên"
+                },
+                {
+                  "id": 3183,
+                  "name": "Xã Đông Sơn"
+                },
+                {
+                  "id": 3184,
+                  "name": "Xã Hòa Chính"
+                },
+                {
+                  "id": 3185,
+                  "name": "Xã Hoàng Diệu"
+                },
+                {
+                  "id": 3186,
+                  "name": "Xã Hoàng Văn Thụ"
+                },
+                {
+                  "id": 3187,
+                  "name": "Xã Hồng Phong"
+                },
+                {
+                  "id": 3188,
+                  "name": "Xã Hợp Đồng"
+                },
+                {
+                  "id": 3189,
+                  "name": "Xã Hữu Văn"
+                },
+                {
+                  "id": 3190,
+                  "name": "Xã Lam Điền"
+                },
+                {
+                  "id": 3191,
+                  "name": "Xã Mỹ Lương"
+                },
+                {
+                  "id": 3192,
+                  "name": "Xã Nam Phương Tiến"
+                },
+                {
+                  "id": 3193,
+                  "name": "Xã Ngọc Hòa"
+                },
+                {
+                  "id": 3194,
+                  "name": "Xã Phú Nam An"
+                },
+                {
+                  "id": 3195,
+                  "name": "Xã Phú Nghĩa"
+                },
+                {
+                  "id": 3196,
+                  "name": "Xã Phụng Châu"
+                },
+                {
+                  "id": 3197,
+                  "name": "Xã Quảng Bị"
+                },
+                {
+                  "id": 3198,
+                  "name": "Xã Tân Tiến"
+                },
+                {
+                  "id": 3199,
+                  "name": "Xã Thanh Bình"
+                },
+                {
+                  "id": 3201,
+                  "name": "Xã Thụy Hương"
+                },
+                {
+                  "id": 3202,
+                  "name": "Xã Thủy Xuân Tiên"
+                },
+                {
+                  "id": 3200,
+                  "name": "Xã Thượng Vực"
+                },
+                {
+                  "id": 3203,
+                  "name": "Xã Tiên Phương"
+                },
+                {
+                  "id": 3204,
+                  "name": "Xã Tốt Động"
+                },
+                {
+                  "id": 3205,
+                  "name": "Xã Trần Phú"
+                },
+                {
+                  "id": 3206,
+                  "name": "Xã Trung Hòa"
+                },
+                {
+                  "id": 3207,
+                  "name": "Xã Trường Yên"
+                },
+                {
+                  "id": 3208,
+                  "name": "Xã Văn Võ"
+                }
+              ]
+            }
+          },
+          {
+            "id": 678,
+            "name": "Huyện Đan Phượng",
+            "wards": {
+              "data": [
+                {
+                  "id": 3209,
+                  "name": "Thị trấn Phùng"
+                },
+                {
+                  "id": 3210,
+                  "name": "Xã Đan Phượng"
+                },
+                {
+                  "id": 3211,
+                  "name": "Xã Đồng Tháp"
+                },
+                {
+                  "id": 3212,
+                  "name": "Xã Hạ Mỗ"
+                },
+                {
+                  "id": 3213,
+                  "name": "Xã Hồng Hà"
+                },
+                {
+                  "id": 3214,
+                  "name": "Xã Liên Hà"
+                },
+                {
+                  "id": 3215,
+                  "name": "Xã Liên Hồng"
+                },
+                {
+                  "id": 3216,
+                  "name": "Xã Liên Trung"
+                },
+                {
+                  "id": 3217,
+                  "name": "Xã Phương Đình"
+                },
+                {
+                  "id": 3218,
+                  "name": "Xã Song Phượng"
+                },
+                {
+                  "id": 3219,
+                  "name": "Xã Tân Hội"
+                },
+                {
+                  "id": 3220,
+                  "name": "Xã Tân Lập"
+                },
+                {
+                  "id": 3221,
+                  "name": "Xã Thọ An"
+                },
+                {
+                  "id": 3222,
+                  "name": "Xã Thọ Xuân"
+                },
+                {
+                  "id": 3223,
+                  "name": "Xã Thượng Mỗ"
+                },
+                {
+                  "id": 3224,
+                  "name": "Xã Trung Châu"
+                }
+              ]
+            }
+          },
+          {
+            "id": 679,
+            "name": "Huyện Hoài Đức",
+            "wards": {
+              "data": [
+                {
+                  "id": 3271,
+                  "name": "Thị trấn Trạm Trôi"
+                },
+                {
+                  "id": 3272,
+                  "name": "Xã An Khánh"
+                },
+                {
+                  "id": 3273,
+                  "name": "Xã An Thượng"
+                },
+                {
+                  "id": 3274,
+                  "name": "Xã Cát Quế"
+                },
+                {
+                  "id": 3276,
+                  "name": "Xã Di Trạch"
+                },
+                {
+                  "id": 3280,
+                  "name": "Xã Dương Liễu"
+                },
+                {
+                  "id": 3275,
+                  "name": "Xã Đắc Sở"
+                },
+                {
+                  "id": 3277,
+                  "name": "Xã Đông La"
+                },
+                {
+                  "id": 3278,
+                  "name": "Xã Đức Giang"
+                },
+                {
+                  "id": 3279,
+                  "name": "Xã Đức Thượng"
+                },
+                {
+                  "id": 3281,
+                  "name": "Xã Kim Chung"
+                },
+                {
+                  "id": 3282,
+                  "name": "Xã La Phù"
+                },
+                {
+                  "id": 3283,
+                  "name": "Xã Lại Yên"
+                },
+                {
+                  "id": 3284,
+                  "name": "Xã Minh Khai"
+                },
+                {
+                  "id": 3286,
+                  "name": "Xã Song Phương"
+                },
+                {
+                  "id": 3285,
+                  "name": "Xã Sơn Đồng"
+                },
+                {
+                  "id": 3287,
+                  "name": "Xã Tiền Yên"
+                },
+                {
+                  "id": 3288,
+                  "name": "Xã Vân Canh"
+                },
+                {
+                  "id": 3289,
+                  "name": "Xã Vân Côn"
+                },
+                {
+                  "id": 3290,
+                  "name": "Xã Yên Sở"
+                }
+              ]
+            }
+          },
+          {
+            "id": 680,
+            "name": "Huyện Mỹ Đức",
+            "wards": {
+              "data": [
+                {
+                  "id": 3309,
+                  "name": "Thị trấn Đại Nghĩa"
+                },
+                {
+                  "id": 3310,
+                  "name": "Xã An Mỹ"
+                },
+                {
+                  "id": 3311,
+                  "name": "Xã An Phú"
+                },
+                {
+                  "id": 3312,
+                  "name": "Xã An Tiến"
+                },
+                {
+                  "id": 3313,
+                  "name": "Xã Bột Xuyên"
+                },
+                {
+                  "id": 3314,
+                  "name": "Xã Đại Hưng"
+                },
+                {
+                  "id": 3315,
+                  "name": "Xã Đốc Tín"
+                },
+                {
+                  "id": 3316,
+                  "name": "Xã Đồng Tâm"
+                },
+                {
+                  "id": 3317,
+                  "name": "Xã Hồng Sơn"
+                },
+                {
+                  "id": 3318,
+                  "name": "Xã Hợp Thanh"
+                },
+                {
+                  "id": 3319,
+                  "name": "Xã Hợp Tiến"
+                },
+                {
+                  "id": 3320,
+                  "name": "Xã Hùng Tiến"
+                },
+                {
+                  "id": 3321,
+                  "name": "Xã Hương Sơn"
+                },
+                {
+                  "id": 3322,
+                  "name": "Xã Lê Thanh"
+                },
+                {
+                  "id": 3323,
+                  "name": "Xã Mỹ Thành"
+                },
+                {
+                  "id": 3324,
+                  "name": "Xã Phù Lưu Tế"
+                },
+                {
+                  "id": 3325,
+                  "name": "Xã Phúc Lâm"
+                },
+                {
+                  "id": 3326,
+                  "name": "Xã Phùng Xá"
+                },
+                {
+                  "id": 3327,
+                  "name": "Xã Thượng Lâm"
+                },
+                {
+                  "id": 3328,
+                  "name": "Xã Tuy Lai"
+                },
+                {
+                  "id": 3329,
+                  "name": "Xã Vạn Kim"
+                },
+                {
+                  "id": 3330,
+                  "name": "Xã Xuy Xá"
+                }
+              ]
+            }
+          },
+          {
+            "id": 681,
+            "name": "Huyện Phú Xuyên",
+            "wards": {
+              "data": [
+                {
+                  "id": 3331,
+                  "name": "Thị trấn Phú Minh"
+                },
+                {
+                  "id": 3332,
+                  "name": "Thị trấn Phú Xuyên"
+                },
+                {
+                  "id": 3333,
+                  "name": "Xã Bạch Hạ"
+                },
+                {
+                  "id": 3334,
+                  "name": "Xã Châu Can"
+                },
+                {
+                  "id": 3335,
+                  "name": "Xã Chuyên Mỹ"
+                },
+                {
+                  "id": 3336,
+                  "name": "Xã Đại Thắng"
+                },
+                {
+                  "id": 3337,
+                  "name": "Xã Đại Xuyên"
+                },
+                {
+                  "id": 3338,
+                  "name": "Xã Hoàng Long"
+                },
+                {
+                  "id": 3339,
+                  "name": "Xã Hồng Minh"
+                },
+                {
+                  "id": 3340,
+                  "name": "Xã Hồng Thái"
+                },
+                {
+                  "id": 3341,
+                  "name": "Xã Khai Thái"
+                },
+                {
+                  "id": 3342,
+                  "name": "Xã Minh Tân"
+                },
+                {
+                  "id": 3343,
+                  "name": "Xã Nam Phong"
+                },
+                {
+                  "id": 3344,
+                  "name": "Xã Nam Triều"
+                },
+                {
+                  "id": 3345,
+                  "name": "Xã Phú Túc"
+                },
+                {
+                  "id": 3346,
+                  "name": "Xã Phú Yên"
+                },
+                {
+                  "id": 3347,
+                  "name": "Xã Phúc Tiến"
+                },
+                {
+                  "id": 3348,
+                  "name": "Xã Phượng Dực"
+                },
+                {
+                  "id": 3349,
+                  "name": "Xã Quang Lãng"
+                },
+                {
+                  "id": 3350,
+                  "name": "Xã Quang Trung"
+                },
+                {
+                  "id": 3351,
+                  "name": "Xã Sơn Hà"
+                },
+                {
+                  "id": 3352,
+                  "name": "Xã Tân Dân"
+                },
+                {
+                  "id": 3353,
+                  "name": "Xã Thụy Phú"
+                },
+                {
+                  "id": 3354,
+                  "name": "Xã Tri Thủy"
+                },
+                {
+                  "id": 3355,
+                  "name": "Xã Tri Trung"
+                },
+                {
+                  "id": 3356,
+                  "name": "Xã Văn Hoàng"
+                },
+                {
+                  "id": 3357,
+                  "name": "Xã Văn Nhân"
+                },
+                {
+                  "id": 3358,
+                  "name": "Xã Vân Từ"
+                }
+              ]
+            }
+          },
+          {
+            "id": 682,
+            "name": "Huyện Phúc Thọ",
+            "wards": {
+              "data": [
+                {
+                  "id": 3359,
+                  "name": "Thị trấn Phúc Thọ"
+                },
+                {
+                  "id": 3360,
+                  "name": "Xã Cẩm Đình"
+                },
+                {
+                  "id": 3361,
+                  "name": "Xã Hát Môn"
+                },
+                {
+                  "id": 3362,
+                  "name": "Xã Hiệp Thuận"
+                },
+                {
+                  "id": 3363,
+                  "name": "Xã Liên Hiệp"
+                },
+                {
+                  "id": 3364,
+                  "name": "Xã Long Xuyên"
+                },
+                {
+                  "id": 3365,
+                  "name": "Xã Ngọc Tảo"
+                },
+                {
+                  "id": 3366,
+                  "name": "Xã Phúc Hòa"
+                },
+                {
+                  "id": 3367,
+                  "name": "Xã Phụng Thượng"
+                },
+                {
+                  "id": 3368,
+                  "name": "Xã Phương Độ"
+                },
+                {
+                  "id": 3369,
+                  "name": "Xã Sen Chiểu"
+                },
+                {
+                  "id": 3370,
+                  "name": "Xã Tam Hiệp"
+                },
+                {
+                  "id": 3371,
+                  "name": "Xã Tam Thuấn"
+                },
+                {
+                  "id": 3372,
+                  "name": "Xã Thanh Đa"
+                },
+                {
+                  "id": 3373,
+                  "name": "Xã Thọ Lộc"
+                },
+                {
+                  "id": 3374,
+                  "name": "Xã Thượng Cốc"
+                },
+                {
+                  "id": 3375,
+                  "name": "Xã Tích Giang"
+                },
+                {
+                  "id": 3376,
+                  "name": "Xã Trạch Mỹ Lộc"
+                },
+                {
+                  "id": 3377,
+                  "name": "Xã Vân Hà"
+                },
+                {
+                  "id": 3378,
+                  "name": "Xã Vân Nam"
+                },
+                {
+                  "id": 3379,
+                  "name": "Xã Vân Phúc"
+                },
+                {
+                  "id": 3380,
+                  "name": "Xã Võng Xuyên"
+                },
+                {
+                  "id": 3381,
+                  "name": "Xã Xuân Phú"
+                }
+              ]
+            }
+          },
+          {
+            "id": 683,
+            "name": "Huyện Quốc Oai",
+            "wards": {
+              "data": [
+                {
+                  "id": 3382,
+                  "name": "Thị trấn Quốc Oai"
+                },
+                {
+                  "id": 3383,
+                  "name": "Xã Cấn Hữu"
+                },
+                {
+                  "id": 3384,
+                  "name": "Xã Cộng Hòa"
+                },
+                {
+                  "id": 3385,
+                  "name": "Xã Đại Thành"
+                },
+                {
+                  "id": 3386,
+                  "name": "Xã Đồng Quang"
+                },
+                {
+                  "id": 3387,
+                  "name": "Xã Đông Xuân"
+                },
+                {
+                  "id": 3388,
+                  "name": "Xã Đông Yên"
+                },
+                {
+                  "id": 3389,
+                  "name": "Xã Hòa Thạch"
+                },
+                {
+                  "id": 3390,
+                  "name": "Xã Liệp Tuyết"
+                },
+                {
+                  "id": 3391,
+                  "name": "Xã Nghĩa Hương"
+                },
+                {
+                  "id": 3392,
+                  "name": "Xã Ngọc Liệp"
+                },
+                {
+                  "id": 3393,
+                  "name": "Xã Ngọc Mỹ"
+                },
+                {
+                  "id": 3394,
+                  "name": "Xã Phú Cát"
+                },
+                {
+                  "id": 3395,
+                  "name": "Xã Phú Mãn"
+                },
+                {
+                  "id": 3396,
+                  "name": "Xã Phượng Cách"
+                },
+                {
+                  "id": 3397,
+                  "name": "Xã Sài Sơn"
+                },
+                {
+                  "id": 3398,
+                  "name": "Xã Tân Hòa"
+                },
+                {
+                  "id": 3399,
+                  "name": "Xã Tân Phú"
+                },
+                {
+                  "id": 3400,
+                  "name": "Xã Thạch Thán"
+                },
+                {
+                  "id": 3401,
+                  "name": "Xã Tuyết Nghĩa"
+                },
+                {
+                  "id": 3402,
+                  "name": "Xã Yên Sơn"
+                }
+              ]
+            }
+          },
+          {
+            "id": 684,
+            "name": "Huyện Thạch Thất",
+            "wards": {
+              "data": [
+                {
+                  "id": 3429,
+                  "name": "Thị trấn Liên Quan"
+                },
+                {
+                  "id": 3430,
+                  "name": "Xã Bình Phú"
+                },
+                {
+                  "id": 3431,
+                  "name": "Xã Bình Yên"
+                },
+                {
+                  "id": 3434,
+                  "name": "Xã Canh Nậu"
+                },
+                {
+                  "id": 3432,
+                  "name": "Xã Cẩm Yên"
+                },
+                {
+                  "id": 3433,
+                  "name": "Xã Cần Kiệm"
+                },
+                {
+                  "id": 3435,
+                  "name": "Xã Chàng Sơn"
+                },
+                {
+                  "id": 3437,
+                  "name": "Xã Dị Nậu"
+                },
+                {
+                  "id": 3436,
+                  "name": "Xã Đại Đồng"
+                },
+                {
+                  "id": 3438,
+                  "name": "Xã Đồng Trúc"
+                },
+                {
+                  "id": 3439,
+                  "name": "Xã Hạ Bằng"
+                },
+                {
+                  "id": 3440,
+                  "name": "Xã Hương Ngải"
+                },
+                {
+                  "id": 3441,
+                  "name": "Xã Hữu Bằng"
+                },
+                {
+                  "id": 3442,
+                  "name": "Xã Kim Quan"
+                },
+                {
+                  "id": 3443,
+                  "name": "Xã Lại Thượng"
+                },
+                {
+                  "id": 3444,
+                  "name": "Xã Phú Kim"
+                },
+                {
+                  "id": 3445,
+                  "name": "Xã Phùng Xá"
+                },
+                {
+                  "id": 3446,
+                  "name": "Xã Tân Xã"
+                },
+                {
+                  "id": 3447,
+                  "name": "Xã Thạch Hoà"
+                },
+                {
+                  "id": 3448,
+                  "name": "Xã Thạch Xá"
+                },
+                {
+                  "id": 3449,
+                  "name": "Xã Tiến Xuân"
+                },
+                {
+                  "id": 3450,
+                  "name": "Xã Yên Bình"
+                },
+                {
+                  "id": 3451,
+                  "name": "Xã Yên Trung"
+                }
+              ]
+            }
+          },
+          {
+            "id": 685,
+            "name": "Huyện Thanh Oai",
+            "wards": {
+              "data": [
+                {
+                  "id": 3452,
+                  "name": "Thị trấn Kim Bài"
+                },
+                {
+                  "id": 3453,
+                  "name": "Xã Bích Hòa"
+                },
+                {
+                  "id": 3454,
+                  "name": "Xã Bình Minh"
+                },
+                {
+                  "id": 3455,
+                  "name": "Xã Cao Dương"
+                },
+                {
+                  "id": 3456,
+                  "name": "Xã Cao Viên"
+                },
+                {
+                  "id": 3457,
+                  "name": "Xã Cự Khê"
+                },
+                {
+                  "id": 3458,
+                  "name": "Xã Dân Hòa"
+                },
+                {
+                  "id": 3459,
+                  "name": "Xã Đỗ Động"
+                },
+                {
+                  "id": 3460,
+                  "name": "Xã Hồng Dương"
+                },
+                {
+                  "id": 3461,
+                  "name": "Xã Kim An"
+                },
+                {
+                  "id": 3462,
+                  "name": "Xã Kim Thư"
+                },
+                {
+                  "id": 3463,
+                  "name": "Xã Liên Châu"
+                },
+                {
+                  "id": 3464,
+                  "name": "Xã Mỹ Hưng"
+                },
+                {
+                  "id": 3465,
+                  "name": "Xã Phương Trung"
+                },
+                {
+                  "id": 3466,
+                  "name": "Xã Tam Hưng"
+                },
+                {
+                  "id": 3467,
+                  "name": "Xã Tân Ước"
+                },
+                {
+                  "id": 3468,
+                  "name": "Xã Thanh Cao"
+                },
+                {
+                  "id": 3469,
+                  "name": "Xã Thanh Mai"
+                },
+                {
+                  "id": 3470,
+                  "name": "Xã Thanh Thùy"
+                },
+                {
+                  "id": 3471,
+                  "name": "Xã Thanh Văn"
+                },
+                {
+                  "id": 3472,
+                  "name": "Xã Xuân Dương"
+                }
+              ]
+            }
+          },
+          {
+            "id": 686,
+            "name": "Huyện Thường Tín",
+            "wards": {
+              "data": [
+                {
+                  "id": 3489,
+                  "name": "Thị trấn Thường Tín"
+                },
+                {
+                  "id": 3490,
+                  "name": "Xã Chương Dương"
+                },
+                {
+                  "id": 3491,
+                  "name": "Xã Dũng Tiến"
+                },
+                {
+                  "id": 3492,
+                  "name": "Xã Duyên Thái"
+                },
+                {
+                  "id": 3493,
+                  "name": "Xã Hà Hồi"
+                },
+                {
+                  "id": 3494,
+                  "name": "Xã Hiền Giang"
+                },
+                {
+                  "id": 3495,
+                  "name": "Xã Hòa Bình"
+                },
+                {
+                  "id": 3496,
+                  "name": "Xã Hồng Vân"
+                },
+                {
+                  "id": 3497,
+                  "name": "Xã Khánh Hà"
+                },
+                {
+                  "id": 3498,
+                  "name": "Xã Lê Lợi"
+                },
+                {
+                  "id": 3499,
+                  "name": "Xã Liên Phương"
+                },
+                {
+                  "id": 3500,
+                  "name": "Xã Minh Cường"
+                },
+                {
+                  "id": 3501,
+                  "name": "Xã Nghiêm Xuyên"
+                },
+                {
+                  "id": 3502,
+                  "name": "Xã Nguyễn Trãi"
+                },
+                {
+                  "id": 3503,
+                  "name": "Xã Nhị Khê"
+                },
+                {
+                  "id": 3504,
+                  "name": "Xã Ninh Sở"
+                },
+                {
+                  "id": 3505,
+                  "name": "Xã Quất Động"
+                },
+                {
+                  "id": 3506,
+                  "name": "Xã Tân Minh"
+                },
+                {
+                  "id": 3507,
+                  "name": "Xã Thắng Lợi"
+                },
+                {
+                  "id": 3508,
+                  "name": "Xã Thống Nhất"
+                },
+                {
+                  "id": 3509,
+                  "name": "Xã Thư Phú"
+                },
+                {
+                  "id": 3510,
+                  "name": "Xã Tiền Phong"
+                },
+                {
+                  "id": 3511,
+                  "name": "Xã Tô Hiệu"
+                },
+                {
+                  "id": 3512,
+                  "name": "Xã Tự Nhiên"
+                },
+                {
+                  "id": 3514,
+                  "name": "Xã Vạn Điểm"
+                },
+                {
+                  "id": 3513,
+                  "name": "Xã Văn Bình"
+                },
+                {
+                  "id": 3515,
+                  "name": "Xã Văn Phú"
+                },
+                {
+                  "id": 3517,
+                  "name": "Xã Văn Tự"
+                },
+                {
+                  "id": 3516,
+                  "name": "Xã Vân Tảo"
+                }
+              ]
+            }
+          },
+          {
+            "id": 687,
+            "name": "Huyện Ứng Hòa",
+            "wards": {
+              "data": [
+                {
+                  "id": 3534,
+                  "name": "Thị trấn Vân Đình"
+                },
+                {
+                  "id": 3535,
+                  "name": "Xã Cao Thành"
+                },
+                {
+                  "id": 3536,
+                  "name": "Xã Đại Cường"
+                },
+                {
+                  "id": 3537,
+                  "name": "Xã Đại Hùng"
+                },
+                {
+                  "id": 3538,
+                  "name": "Xã Đội Bình"
+                },
+                {
+                  "id": 3539,
+                  "name": "Xã Đông Lỗ"
+                },
+                {
+                  "id": 3540,
+                  "name": "Xã Đồng Tân"
+                },
+                {
+                  "id": 3541,
+                  "name": "Xã Đồng Tiến"
+                },
+                {
+                  "id": 3542,
+                  "name": "Xã Hòa Lâm"
+                },
+                {
+                  "id": 3543,
+                  "name": "Xã Hòa Nam"
+                },
+                {
+                  "id": 3544,
+                  "name": "Xã Hòa Phú"
+                },
+                {
+                  "id": 3545,
+                  "name": "Xã Hoa Sơn"
+                },
+                {
+                  "id": 3546,
+                  "name": "Xã Hòa Xá"
+                },
+                {
+                  "id": 3547,
+                  "name": "Xã Hồng Quang"
+                },
+                {
+                  "id": 3548,
+                  "name": "Xã Kim Đường"
+                },
+                {
+                  "id": 3549,
+                  "name": "Xã Liên Bạt"
+                },
+                {
+                  "id": 3550,
+                  "name": "Xã Lưu Hoàng"
+                },
+                {
+                  "id": 3551,
+                  "name": "Xã Minh Đức"
+                },
+                {
+                  "id": 3552,
+                  "name": "Xã Phù Lưu"
+                },
+                {
+                  "id": 3553,
+                  "name": "Xã Phương Tú"
+                },
+                {
+                  "id": 3554,
+                  "name": "Xã Quảng Phú Cầu"
+                },
+                {
+                  "id": 3555,
+                  "name": "Xã Sơn Công"
+                },
+                {
+                  "id": 3556,
+                  "name": "Xã Tảo Dương Văn"
+                },
+                {
+                  "id": 3557,
+                  "name": "Xã Trầm Lộng"
+                },
+                {
+                  "id": 3558,
+                  "name": "Xã Trung Tú"
+                },
+                {
+                  "id": 3559,
+                  "name": "Xã Trường Thịnh"
+                },
+                {
+                  "id": 3560,
+                  "name": "Xã Vạn Thái"
+                },
+                {
+                  "id": 3561,
+                  "name": "Xã Viên An"
+                },
+                {
+                  "id": 3562,
+                  "name": "Xã Viên Nội"
+                }
+              ]
+            }
+          },
+          {
+            "id": 688,
+            "name": "Huyện Mê Linh",
+            "wards": {
+              "data": [
+                {
+                  "id": 3291,
+                  "name": "Thị trấn Chi Đông"
+                },
+                {
+                  "id": 3292,
+                  "name": "Thị trấn Quang Minh"
+                },
+                {
+                  "id": 3293,
+                  "name": "Xã Chu Phan"
+                },
+                {
+                  "id": 3294,
+                  "name": "Xã Đại Thịnh"
+                },
+                {
+                  "id": 3295,
+                  "name": "Xã Hoàng Kim"
+                },
+                {
+                  "id": 3296,
+                  "name": "Xã Kim Hoa"
+                },
+                {
+                  "id": 3297,
+                  "name": "Xã Liên Mạc"
+                },
+                {
+                  "id": 3298,
+                  "name": "Xã Mê Linh"
+                },
+                {
+                  "id": 3299,
+                  "name": "Xã Tam Đồng"
+                },
+                {
+                  "id": 3300,
+                  "name": "Xã Thạch Đà"
+                },
+                {
+                  "id": 3301,
+                  "name": "Xã Thanh Lâm"
+                },
+                {
+                  "id": 3302,
+                  "name": "Xã Tiền Phong"
+                },
+                {
+                  "id": 3303,
+                  "name": "Xã Tiến Thắng"
+                },
+                {
+                  "id": 3304,
+                  "name": "Xã Tiến Thịnh"
+                },
+                {
+                  "id": 3305,
+                  "name": "Xã Tráng Việt"
+                },
+                {
+                  "id": 3306,
+                  "name": "Xã Tự Lập"
+                },
+                {
+                  "id": 3308,
+                  "name": "Xã Vạn Yên"
+                },
+                {
+                  "id": 3307,
+                  "name": "Xã Văn Khê"
+                }
+              ]
+            }
+          },
+          {
+            "id": 689,
+            "name": "Quận Hà Đông",
+            "wards": {
+              "data": [
+                {
+                  "id": 3619,
+                  "name": "Phường Biên Giang"
+                },
+                {
+                  "id": 3621,
+                  "name": "Phường Dương Nội"
+                },
+                {
+                  "id": 3620,
+                  "name": "Phường Đồng Mai"
+                },
+                {
+                  "id": 3623,
+                  "name": "Phường Hà Cầu"
+                },
+                {
+                  "id": 3622,
+                  "name": "Phường Kiến Hưng"
+                },
+                {
+                  "id": 3624,
+                  "name": "Phường La Khê"
+                },
+                {
+                  "id": 3625,
+                  "name": "Phường Mộ Lao"
+                },
+                {
+                  "id": 3626,
+                  "name": "Phường Nguyễn Trãi"
+                },
+                {
+                  "id": 3627,
+                  "name": "Phường Phú La"
+                },
+                {
+                  "id": 3633,
+                  "name": "Phường Phú Lãm"
+                },
+                {
+                  "id": 3634,
+                  "name": "Phường Phú Lương"
+                },
+                {
+                  "id": 3628,
+                  "name": "Phường Phúc La"
+                },
+                {
+                  "id": 3629,
+                  "name": "Phường Quang Trung"
+                },
+                {
+                  "id": 3630,
+                  "name": "Phường Vạn Phúc"
+                },
+                {
+                  "id": 3631,
+                  "name": "Phường Văn Quán"
+                },
+                {
+                  "id": 3635,
+                  "name": "Phường Yên Nghĩa"
+                },
+                {
+                  "id": 3632,
+                  "name": "Phường Yết Kiêu"
+                }
+              ]
+            }
+          },
+          {
+            "id": 690,
+            "name": "Thị xã Sơn Tây",
+            "wards": {
+              "data": [
+                {
+                  "id": 3743,
+                  "name": "Phường Lê Lợi"
+                },
+                {
+                  "id": 3744,
+                  "name": "Phường Ngô Quyền"
+                },
+                {
+                  "id": 3745,
+                  "name": "Phường Phú Thịnh"
+                },
+                {
+                  "id": 3746,
+                  "name": "Phường Quang Trung"
+                },
+                {
+                  "id": 3747,
+                  "name": "Phường Sơn Lộc"
+                },
+                {
+                  "id": 3748,
+                  "name": "Phường Trung Hưng"
+                },
+                {
+                  "id": 3749,
+                  "name": "Phường Trung Sơn Trầm"
+                },
+                {
+                  "id": 3750,
+                  "name": "Phường Viên Sơn"
+                },
+                {
+                  "id": 3751,
+                  "name": "Phường Xuân Khanh"
+                },
+                {
+                  "id": 3740,
+                  "name": "Xã Cổ Đông"
+                },
+                {
+                  "id": 3741,
+                  "name": "Xã Đường Lâm"
+                },
+                {
+                  "id": 3742,
+                  "name": "Xã Kim Sơn"
+                },
+                {
+                  "id": 3752,
+                  "name": "Xã Sơn Đông"
+                },
+                {
+                  "id": 3753,
+                  "name": "Xã Thanh Mỹ"
+                },
+                {
+                  "id": 3754,
+                  "name": "Xã Xuân Sơn"
+                }
+              ]
+            }
+          },
+          {
+            "id": 7,
+            "name": "Huyện Đông Anh",
+            "wards": {
+              "data": [
+                {
+                  "id": 3225,
+                  "name": "Thị trấn Đông Anh"
+                },
+                {
+                  "id": 3226,
+                  "name": "Xã Bắc Hồng"
+                },
+                {
+                  "id": 3227,
+                  "name": "Xã Cổ Loa"
+                },
+                {
+                  "id": 3230,
+                  "name": "Xã Dục Tú"
+                },
+                {
+                  "id": 3228,
+                  "name": "Xã Đại Mạch"
+                },
+                {
+                  "id": 3229,
+                  "name": "Xã Đông Hội"
+                },
+                {
+                  "id": 3231,
+                  "name": "Xã Hải Bối"
+                },
+                {
+                  "id": 3232,
+                  "name": "Xã Kim Chung"
+                },
+                {
+                  "id": 3233,
+                  "name": "Xã Kim Nỗ"
+                },
+                {
+                  "id": 3234,
+                  "name": "Xã Liên Hà"
+                },
+                {
+                  "id": 3235,
+                  "name": "Xã Mai Lâm"
+                },
+                {
+                  "id": 3236,
+                  "name": "Xã Nam Hồng"
+                },
+                {
+                  "id": 3237,
+                  "name": "Xã Nguyên Khê"
+                },
+                {
+                  "id": 3238,
+                  "name": "Xã Tầm Xá"
+                },
+                {
+                  "id": 3239,
+                  "name": "Xã Thuỵ Lâm"
+                },
+                {
+                  "id": 3240,
+                  "name": "Xã Tiên Dương"
+                },
+                {
+                  "id": 3241,
+                  "name": "Xã Uy Nỗ"
+                },
+                {
+                  "id": 3242,
+                  "name": "Xã Vân Hà"
+                },
+                {
+                  "id": 3243,
+                  "name": "Xã Vân Nội"
+                },
+                {
+                  "id": 3244,
+                  "name": "Xã Việt Hùng"
+                },
+                {
+                  "id": 3245,
+                  "name": "Xã Vĩnh Ngọc"
+                },
+                {
+                  "id": 3246,
+                  "name": "Xã Võng La"
+                },
+                {
+                  "id": 3247,
+                  "name": "Xã Xuân Canh"
+                },
+                {
+                  "id": 3248,
+                  "name": "Xã Xuân Nộn"
+                }
+              ]
+            }
+          },
+          {
+            "id": 724,
+            "name": "Quận Nam Từ Liêm",
+            "wards": {
+              "data": [
+                {
+                  "id": 3702,
+                  "name": "Phường Cầu Diễn"
+                },
+                {
+                  "id": 3706,
+                  "name": "Phường Đại Mỗ"
+                },
+                {
+                  "id": 3719,
+                  "name": "Phường Mễ Trì"
+                },
+                {
+                  "id": 3708,
+                  "name": "Phường Mỹ Đình 1"
+                },
+                {
+                  "id": 3709,
+                  "name": "Phường Mỹ Đình 2"
+                },
+                {
+                  "id": 3704,
+                  "name": "Phường Phú Đô"
+                },
+                {
+                  "id": 3717,
+                  "name": "Phường Phương Canh"
+                },
+                {
+                  "id": 3705,
+                  "name": "Phường Tây Mỗ"
+                },
+                {
+                  "id": 3715,
+                  "name": "Phường Trung Văn"
+                },
+                {
+                  "id": 3714,
+                  "name": "Phường Xuân Phương"
+                }
+              ]
+            }
+          },
+          {
+            "id": 8,
+            "name": "Quận Thanh Xuân",
+            "wards": {
+              "data": [
+                {
+                  "id": 3729,
+                  "name": "Phường Hạ Đình"
+                },
+                {
+                  "id": 3730,
+                  "name": "Phường Khương Đình"
+                },
+                {
+                  "id": 3731,
+                  "name": "Phường Khương Mai"
+                },
+                {
+                  "id": 3732,
+                  "name": "Phường Khương Trung"
+                },
+                {
+                  "id": 3733,
+                  "name": "Phường Kim Giang"
+                },
+                {
+                  "id": 3734,
+                  "name": "Phường Nhân Chính"
+                },
+                {
+                  "id": 3735,
+                  "name": "Phường Phương Liệt"
+                },
+                {
+                  "id": 3736,
+                  "name": "Phường Thanh Xuân Bắc"
+                },
+                {
+                  "id": 3737,
+                  "name": "Phường Thanh Xuân Nam"
+                },
+                {
+                  "id": 3738,
+                  "name": "Phường Thanh Xuân Trung"
+                },
+                {
+                  "id": 3739,
+                  "name": "Phường Thượng Đình"
+                }
+              ]
+            }
+          },
+          {
+            "id": 9,
+            "name": "Quận Tây Hồ",
+            "wards": {
+              "data": [
+                {
+                  "id": 3721,
+                  "name": "Phường Bưởi"
+                },
+                {
+                  "id": 3722,
+                  "name": "Phường Nhật Tân"
+                },
+                {
+                  "id": 3723,
+                  "name": "Phường Phú Thượng"
+                },
+                {
+                  "id": 3724,
+                  "name": "Phường Quảng An"
+                },
+                {
+                  "id": 3725,
+                  "name": "Phường Thụy Khuê"
+                },
+                {
+                  "id": 3726,
+                  "name": "Phường Tứ Liên"
+                },
+                {
+                  "id": 3727,
+                  "name": "Phường Xuân La"
+                },
+                {
+                  "id": 3728,
+                  "name": "Phường Yên Phụ"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 291,
+      "name": "Đà Nẵng",
+      "districts": {
+        "data": [
+          {
+            "id": 371,
+            "name": "Huyện Hoàng Sa",
+            "wards": {
+              "data": [
+                {
+                  "id": 1865,
+                  "name": "Xã Hoàng Sa"
+                }
+              ]
+            }
+          },
+          {
+            "id": 372,
+            "name": "Quận Thanh Khê",
+            "wards": {
+              "data": [
+                {
+                  "id": 1903,
+                  "name": "Phường An Khê"
+                },
+                {
+                  "id": 1904,
+                  "name": "Phường Chính Gián"
+                },
+                {
+                  "id": 1905,
+                  "name": "Phường Hòa Khê"
+                },
+                {
+                  "id": 1906,
+                  "name": "Phường Tam Thuận"
+                },
+                {
+                  "id": 1907,
+                  "name": "Phường Tân Chính"
+                },
+                {
+                  "id": 1908,
+                  "name": "Phường Thạc Gián"
+                },
+                {
+                  "id": 1909,
+                  "name": "Phường Thanh Khê Đông"
+                },
+                {
+                  "id": 1910,
+                  "name": "Phường Thanh Khê Tây"
+                },
+                {
+                  "id": 1911,
+                  "name": "Phường Vĩnh Trung"
+                },
+                {
+                  "id": 1912,
+                  "name": "Phường Xuân Hà"
+                }
+              ]
+            }
+          },
+          {
+            "id": 373,
+            "name": "Huyện Hòa Vang",
+            "wards": {
+              "data": [
+                {
+                  "id": 1854,
+                  "name": "Xã Hòa Bắc"
+                },
+                {
+                  "id": 1855,
+                  "name": "Xã Hòa Châu"
+                },
+                {
+                  "id": 1856,
+                  "name": "Xã Hòa Khương"
+                },
+                {
+                  "id": 1857,
+                  "name": "Xã Hòa Liên"
+                },
+                {
+                  "id": 1858,
+                  "name": "Xã Hòa Nhơn"
+                },
+                {
+                  "id": 1859,
+                  "name": "Xã Hòa Ninh"
+                },
+                {
+                  "id": 1860,
+                  "name": "Xã Hòa Phong"
+                },
+                {
+                  "id": 1861,
+                  "name": "Xã Hòa Phú"
+                },
+                {
+                  "id": 1862,
+                  "name": "Xã Hòa Phước"
+                },
+                {
+                  "id": 1863,
+                  "name": "Xã Hòa Sơn"
+                },
+                {
+                  "id": 1864,
+                  "name": "Xã Hòa Tiến"
+                }
+              ]
+            }
+          },
+          {
+            "id": 374,
+            "name": "Quận Sơn Trà",
+            "wards": {
+              "data": [
+                {
+                  "id": 1896,
+                  "name": "Phường An Hải Bắc"
+                },
+                {
+                  "id": 1897,
+                  "name": "Phường An Hải Đông"
+                },
+                {
+                  "id": 1898,
+                  "name": "Phường An Hải Tây"
+                },
+                {
+                  "id": 1899,
+                  "name": "Phường Mân Thái"
+                },
+                {
+                  "id": 1900,
+                  "name": "Phường Nại Hiên Đông"
+                },
+                {
+                  "id": 1901,
+                  "name": "Phường Phước Mỹ"
+                },
+                {
+                  "id": 1902,
+                  "name": "Phường Thọ Quang"
+                }
+              ]
+            }
+          },
+          {
+            "id": 375,
+            "name": "Quận Liên Chiểu",
+            "wards": {
+              "data": [
+                {
+                  "id": 1887,
+                  "name": "Phường Hòa Hiệp Bắc"
+                },
+                {
+                  "id": 1888,
+                  "name": "Phường Hòa Hiệp Nam"
+                },
+                {
+                  "id": 1889,
+                  "name": "Phường Hòa Khánh Bắc"
+                },
+                {
+                  "id": 1890,
+                  "name": "Phường Hòa Khánh Nam"
+                },
+                {
+                  "id": 1891,
+                  "name": "Phường Hòa Minh"
+                }
+              ]
+            }
+          },
+          {
+            "id": 376,
+            "name": "Quận Hải Châu",
+            "wards": {
+              "data": [
+                {
+                  "id": 1872,
+                  "name": "Phường Bình Hiên"
+                },
+                {
+                  "id": 1873,
+                  "name": "Phường Bình Thuận"
+                },
+                {
+                  "id": 1874,
+                  "name": "Phường Hải Châu I"
+                },
+                {
+                  "id": 1875,
+                  "name": "Phường Hải Châu II"
+                },
+                {
+                  "id": 1877,
+                  "name": "Phường Hòa Cường Bắc"
+                },
+                {
+                  "id": 1878,
+                  "name": "Phường Hòa Cường Nam"
+                },
+                {
+                  "id": 1880,
+                  "name": "Phường Hòa Thuận Đông"
+                },
+                {
+                  "id": 1881,
+                  "name": "Phường Hòa Thuận Tây"
+                },
+                {
+                  "id": 1882,
+                  "name": "Phường Nam Dương"
+                },
+                {
+                  "id": 1883,
+                  "name": "Phường Phước Ninh"
+                },
+                {
+                  "id": 1884,
+                  "name": "Phường Thạch Thang"
+                },
+                {
+                  "id": 1885,
+                  "name": "Phường Thanh Bình"
+                },
+                {
+                  "id": 1886,
+                  "name": "Phường Thuận Phước"
+                }
+              ]
+            }
+          },
+          {
+            "id": 377,
+            "name": "Quận Cẩm Lệ",
+            "wards": {
+              "data": [
+                {
+                  "id": 1866,
+                  "name": "Phường Hòa An"
+                },
+                {
+                  "id": 1867,
+                  "name": "Phường Hòa Phát"
+                },
+                {
+                  "id": 1868,
+                  "name": "Phường Hòa Thọ Đông"
+                },
+                {
+                  "id": 1869,
+                  "name": "Phường Hòa Thọ Tây"
+                },
+                {
+                  "id": 1870,
+                  "name": "Phường Hòa Xuân"
+                },
+                {
+                  "id": 1871,
+                  "name": "Phường Khuê Trung"
+                }
+              ]
+            }
+          },
+          {
+            "id": 378,
+            "name": "Quận Ngũ Hành Sơn",
+            "wards": {
+              "data": [
+                {
+                  "id": 1892,
+                  "name": "Phường Hoà Hải"
+                },
+                {
+                  "id": 1893,
+                  "name": "Phường Hoà Quý"
+                },
+                {
+                  "id": 1894,
+                  "name": "Phường Khuê Mỹ"
+                },
+                {
+                  "id": 1895,
+                  "name": "Phường Mỹ An"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+    ],
+  "districts": [],
+  "wards": []
+}
