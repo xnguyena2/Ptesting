@@ -58,6 +58,9 @@ public class ApplicationTest {
     @Autowired
     UserAddress userAddressAPI;
 
+    @Autowired
+    Voucher voucherAPI;
+
     @Test
     public void BeerTest() {
         BeerTest.builder().beerAPI(beerAPI).beerRepository(beerRepository).build().saveBeerTest();
@@ -116,5 +119,10 @@ public class ApplicationTest {
     @Test
     public void testUserAddress(){
         UserAddressTest.builder().userAddressAPI(userAddressAPI).build().UserAddressTest();
+    }
+
+    @Test
+    public void testVoucher(){
+        VoucherTest.builder().voucherAPI(voucherAPI).build().VoucherTest();
     }
 }

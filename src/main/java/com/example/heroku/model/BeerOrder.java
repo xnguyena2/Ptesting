@@ -28,7 +28,7 @@ public class BeerOrder {
 
     private String user_id;
 
-    private int voucher_id;
+    private String voucher_second_id;
 
     private int number_unit;
 

@@ -1,5 +1,6 @@
 package com.example.heroku.model;
 
+import com.example.heroku.util.Util;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,8 @@ public class BeerUnit {
     @Id
     String id;
 
+    private String beer_unit_second_id;
+
     private String beer;
 
     private String name;
@@ -40,6 +43,8 @@ public class BeerUnit {
 
 
     public BeerUnit AutoFill(){
+        if(this.beer_unit_second_id==null || this.beer_unit_second_id == "")
+            this.beer_unit_second_id = Util.getInstance().GenerateID();
         this.createat = new Timestamp(new Date().getTime());
         return this;
     }

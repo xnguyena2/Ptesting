@@ -18,11 +18,8 @@ public class UserDevice {
 
     public Mono<Object> CreateUserDevice(@Valid @ModelAttribute com.example.heroku.model.UserDevice info) {
         return Mono.just(info)
-                .map(userDevice -> {
-                    if(userDevice.getDevice_id() == "" || userDevice.getDevice_id() == null)
-                        return null;
-                    return userDevice;
-                })
+                .filter(userDevice ->
+                        userDevice.getDevice_id() != null && !userDevice.getDevice_id().equals(""))
                 .flatMap(userDevice ->
                         userDeviceRepository.findByDeviceId(userDevice.getDevice_id())
                                 .switchIfEmpty(userDeviceRepository.save(userDevice.AutoFill()))

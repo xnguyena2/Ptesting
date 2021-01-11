@@ -31,21 +31,10 @@ public class Beer {
     @Autowired
     BeerUnitRepository beerUnitRepository;
 
-    public Mono<Object> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
+    public Flux<BeerUnit> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
         return Mono.just(info)
                 .flatMap(beerInfo ->
                         this.beerRepository.deleteBySecondId(beerInfo.getBeer().getBeer_second_id())
-                )
-                .then(Mono.just(info)
-                        .flatMap(
-                                beerInfo ->
-                                        this.beerUnitRepository.deleteByBeerId(info.getBeer().getBeer_second_id())
-                        )
-                )
-                .thenMany(Flux.just(info.getBeerUnit())
-                        .flatMap(beerUnit ->
-                                this.beerUnitRepository.save(beerUnit.AutoFill())
-                        )
                 )
                 .then(Mono.just(info)
                         .flatMap(beerInfo ->
@@ -62,7 +51,17 @@ public class Beer {
                                         )
                         )
                 )
-                .then(Mono.just(ok(Format.builder().response(info.getBeer().getBeer_second_id()).build())));
+                .then(Mono.just(info)
+                        .flatMap(
+                                beerInfo ->
+                                        this.beerUnitRepository.deleteByBeerId(info.getBeer().getBeer_second_id())
+                        )
+                )
+                .thenMany(Flux.just(info.getBeerUnit())
+                        .flatMap(beerUnit ->
+                                this.beerUnitRepository.save(beerUnit.AutoFill())
+                        )
+                );
     }
 
     public Mono<BeerInfo> GetBeerByID(String id){

@@ -48,8 +48,7 @@ public class Image {
     }
 
     public Flux<com.example.heroku.model.Image> GetAll(String category){
-        return this.imageRepository.findByCategory(category)
-                .switchIfEmpty(Flux.empty());
+        return this.imageRepository.findByCategory(category);
     }
 
     public Mono<Void> DeleteAll(){

@@ -9,6 +9,7 @@ import reactor.test.StepVerifier;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,8 +22,7 @@ public class BeerTest {
     public void saveBeerTest() {
 
         this.beerRepository.deleteAll()
-                .then()
-                .then(beerAPI.CreateBeer(
+                .thenMany(beerAPI.CreateBeer(
                         BeerInfo
                                 .builder()
                                 .beerUnit(new BeerUnit[]{
@@ -39,7 +39,10 @@ public class BeerTest {
                                 )
                                 .build()
                 ))
-                .block();
+                .blockLast();
+
+        AtomicReference<String> beerUnit1ID = new AtomicReference<String>();
+        AtomicReference<String> beerUnit2ID = new AtomicReference<String>();
 
         beerAPI.CreateBeer(
                 BeerInfo
@@ -69,7 +72,57 @@ public class BeerTest {
                         )
                         .build()
         )
-                .block();
+                .as(StepVerifier::create)
+                .consumeNextWith(beerUnit -> {
+                    beerUnit1ID.set(beerUnit.getBeer_unit_second_id());
+                    assertThat(beerUnit.getBeer_unit_second_id()).isNotNull();
+
+                })
+                .consumeNextWith(beerUnit -> {
+                    beerUnit2ID.set(beerUnit.getBeer_unit_second_id());
+                    assertThat(beerUnit.getBeer_unit_second_id()).isNotNull();
+                })
+                .verifyComplete();
+
+        beerAPI.CreateBeer(
+                BeerInfo
+                        .builder()
+                        .beerUnit(new BeerUnit[]{
+                                BeerUnit
+                                        .builder()
+                                        .beer_unit_second_id(beerUnit1ID.get())
+                                        .beer("456")
+                                        .name("thung")
+                                        .build(),
+                                BeerUnit
+                                        .builder()
+                                        .beer_unit_second_id(beerUnit2ID.get())
+                                        .beer("456")
+                                        .name("lon")
+                                        .build()
+                        })
+                        .beer(Beer
+                                .builder()
+                                .category(Beer.Category.ALCOHOL)
+                                .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
+                                        "- bia thơm ngon\n" +
+                                        "- bia nhập ngoại\n" +
+                                        "- bia sản xuất từ hà lan")
+                                .name("beer tiger")
+                                .createat(new Timestamp(new Date().getTime()))
+                                .beer_second_id("456").build()
+                        )
+                        .build()
+        )
+                .as(StepVerifier::create)
+                .consumeNextWith(beerUnit -> {
+                    assertThat(beerUnit.getBeer_unit_second_id()).isEqualTo(beerUnit1ID.get());
+
+                })
+                .consumeNextWith(beerUnit -> {
+                    assertThat(beerUnit.getBeer_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                })
+                .verifyComplete();
 
         this.beerAPI.GetBeerByID("123")
                 .as(StepVerifier::create)
