@@ -43,7 +43,7 @@ public class BeerUnit {
 
 
     public BeerUnit AutoFill(){
-        if(this.beer_unit_second_id==null || this.beer_unit_second_id == "")
+        if(this.beer_unit_second_id==null || this.beer_unit_second_id.equals(""))
             this.beer_unit_second_id = Util.getInstance().GenerateID();
         this.createat = new Timestamp(new Date().getTime());
         return this;

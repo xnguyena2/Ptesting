@@ -3,6 +3,7 @@ package com.example.heroku.util;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.UUID;
@@ -72,5 +73,11 @@ public class Util {
             sb.setCharAt(i, RemoveAccent(sb.charAt(i)));
         }
         return sb.toString().toLowerCase();
+    }
+
+    public int DiffirentDays(Timestamp t1, Timestamp t2) {
+        if(t1 == null || t2 == null)
+            return 9999;
+        return (int)((t1.getTime() - t2.getTime()) / (1000 * 60 * 60 * 24));
     }
 }

@@ -12,12 +12,12 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
-@Table(name="beer_order")
+@Table(name="beer_unit_order")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BeerOrder {
+public class BeerUnitOrder {
     @Id
     String id;
 
@@ -25,15 +25,17 @@ public class BeerOrder {
 
     private String beer_second_id;
 
-    private String voucher_second_id;
+    private String beer_unit_second_id;
 
-    private float total_price;
+    private int number_unit;
 
-    private float ship_price;
+    private float price;
+
+    private float total_discount;
 
     private Timestamp createat;
 
-    public BeerOrder AutoFill(String packageOrderSecondID){
+    public BeerUnitOrder AutoFill(String packageOrderSecondID) {
         this.package_order_second_id = packageOrderSecondID;
         this.createat = new Timestamp(new Date().getTime());
         return this;

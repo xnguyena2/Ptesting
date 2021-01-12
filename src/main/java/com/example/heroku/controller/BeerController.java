@@ -1,11 +1,11 @@
 package com.example.heroku.controller;
 
+import com.example.heroku.model.Beer;
 import com.example.heroku.model.BeerUnit;
 import com.example.heroku.model.Image;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.carousel.IDContainer;
-import com.example.heroku.response.Format;
-import com.example.heroku.util.Util;
+import com.example.heroku.request.page.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +15,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-
-import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/beer")
@@ -31,7 +29,7 @@ public class BeerController {
     @GetMapping("/generateid")
     @CrossOrigin(origins = "http://localhost:4200")
     public Mono<ResponseEntity> generateID(){
-        return Mono.just(ok(Format.builder().response(Util.getInstance().GenerateID()).build()));
+        return beerAPI.generateID();
     }
 
 
@@ -67,5 +65,11 @@ public class BeerController {
         return beerAPI.CreateBeer(beerInfo.GetBeerInfo());
     }
 
+    @PostMapping("/getall")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Flux<Beer> getAll(@RequestBody @Valid Page page) {
+        System.out.println("get all beer: "+page.getPage());
+        return beerAPI.GetAllBeer(page.getPage(), page.getSize());
+    }
 
 }

@@ -20,9 +20,9 @@ public class NotificationRelateUserDevice {
     @Id
     String id;
 
-    private int notification_id;
+    private String notification_second_id;
 
-    private String user_device;
+    private String user_device_id;
 
     private Timestamp createat;
 

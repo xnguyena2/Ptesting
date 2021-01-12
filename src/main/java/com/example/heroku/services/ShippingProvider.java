@@ -1,8 +1,6 @@
 package com.example.heroku.services;
 
-import com.example.heroku.model.UserPackage;
 import com.example.heroku.model.repository.ShippingProviderRepository;
-import com.example.heroku.request.beer.BeerPackage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -38,6 +36,18 @@ public class ShippingProvider {
 
     public Mono<com.example.heroku.model.ShippingProvider> GetShipProvider(String id){
         return shippingProviderRepository.findByProviderId(id);
+    }
+    public Mono<GHN> GetGHNShippingProvider() {
+        return shippingProviderRepository.findByProviderId(GHN.ID)
+                .map(shippingProvider -> {
+                            try {
+                                return new ObjectMapper().readValue(shippingProvider.getConfig(), GHN.class);
+                            } catch (JsonProcessingException e) {
+                                e.printStackTrace();
+                                return null;
+                            }
+                        }
+                );
     }
 
     public Mono<Price> GetShippingPrice(String providerID, float packageWeight, float packageVolumetric, int region, int district) {

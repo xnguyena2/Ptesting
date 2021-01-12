@@ -15,4 +15,7 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<BeerUnit, Str
 
     @Query(value = "SELECT * FROM beer_unit WHERE beer_unit.beer = :id")
     Flux<BeerUnit> findByBeerID(@Param("id")String id);
+
+    @Query(value = "SELECT * FROM beer_unit WHERE beer_unit.beer_unit_second_id = :id")
+    Mono<BeerUnit> findByBeerUnitID(@Param("id")String id);
 }

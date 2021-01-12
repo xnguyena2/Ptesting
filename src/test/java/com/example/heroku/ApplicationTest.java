@@ -1,6 +1,7 @@
 package com.example.heroku;
 
 import com.example.heroku.model.repository.BeerRepository;
+import com.example.heroku.model.repository.BeerUnitRepository;
 import com.example.heroku.model.repository.ImageRepository;
 import com.example.heroku.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -32,9 +33,6 @@ public class ApplicationTest {
     ImageRepository imageRepository;
 
     @Autowired
-    private BeerRepository beerRepository;
-
-    @Autowired
     com.example.heroku.services.Beer beerAPI;
 
     @Autowired
@@ -63,7 +61,7 @@ public class ApplicationTest {
 
     @Test
     public void BeerTest() {
-        BeerTest.builder().beerAPI(beerAPI).beerRepository(beerRepository).build().saveBeerTest();
+        BeerTest.builder().beerAPI(beerAPI).build().saveBeerTest();
     }
 
     @Test
@@ -125,4 +123,5 @@ public class ApplicationTest {
     public void testVoucher(){
         VoucherTest.builder().voucherAPI(voucherAPI).build().VoucherTest();
     }
+
 }

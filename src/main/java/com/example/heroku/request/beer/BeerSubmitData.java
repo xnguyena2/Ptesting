@@ -1,6 +1,7 @@
 package com.example.heroku.request.beer;
 
 import com.example.heroku.model.Beer;
+import com.example.heroku.request.datetime.NgbDateStruct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,6 +35,7 @@ public class BeerSubmitData {
                     .discount(beerUnit.discount)
                     .volumetric(beerUnit.volumetric)
                     .weight(beerUnit.weight)
+                    .beer_unit_second_id(beerUnit.beer_unit_second_id)
                     .date_expire(beerUnit.GetExpirDateTime())
                     .build());
         }
@@ -65,23 +67,12 @@ public class BeerSubmitData {
         private NgbDateStruct dateExpir;
         private float volumetric;
         private float weight;
+        private String beer_unit_second_id;
 
         public Timestamp GetExpirDateTime() {
             if (dateExpir == null)
                 return null;
-            Calendar cal = Calendar.getInstance();
-            cal.set(dateExpir.year, dateExpir.month, dateExpir.day);
-            return new Timestamp(cal.getTime().getTime());
-        }
-
-
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
-        public static class NgbDateStruct {
-            private int day;
-            private int month;
-            private int year;
+            return dateExpir.ToDateTime();
         }
     }
 }

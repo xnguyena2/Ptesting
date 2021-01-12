@@ -20,6 +20,8 @@ public class Notification {
     @Id
     String id;
 
+    private String notification_second_id;
+
     private String title;
 
     private String detail;

@@ -2,44 +2,38 @@ package com.example.heroku;
 
 import com.example.heroku.model.Beer;
 import com.example.heroku.model.BeerUnit;
-import com.example.heroku.model.repository.BeerRepository;
 import com.example.heroku.request.beer.BeerInfo;
 import lombok.Builder;
 import reactor.test.StepVerifier;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Builder
 public class BeerTest {
-    private BeerRepository beerRepository;
 
     com.example.heroku.services.Beer beerAPI;
 
     public void saveBeerTest() {
 
-        this.beerRepository.deleteAll()
-                .thenMany(beerAPI.CreateBeer(
-                        BeerInfo
+        beerAPI.CreateBeer(
+                BeerInfo
+                        .builder()
+                        .beerUnit(new BeerUnit[]{
+                                BeerUnit.builder().beer("123").name("thung").build(),
+                                BeerUnit.builder().beer("123").name("lon").build()
+                        })
+                        .beer(Beer
                                 .builder()
-                                .beerUnit(new BeerUnit[]{
-                                        BeerUnit.builder().beer("123").name("thung").build(),
-                                        BeerUnit.builder().beer("123").name("lon").build()
-                                })
-                                .beer(Beer
-                                        .builder()
-                                        .category(Beer.Category.ALCOHOL)
-                                        .name("beer tiger")
-                                        .beer_second_id("123")
-                                        .createat(new Timestamp(new Date().getTime()))
-                                        .build()
-                                )
+                                .category(Beer.Category.ALCOHOL)
+                                .name("beer tiger")
+                                .beer_second_id("123")
                                 .build()
-                ))
-                .blockLast();
+                                .AutoFill()
+                        )
+                        .build()
+        ).blockLast();
 
         AtomicReference<String> beerUnit1ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit2ID = new AtomicReference<String>();
@@ -67,8 +61,8 @@ public class BeerTest {
                                         "- bia nhập ngoại\n" +
                                         "- bia sản xuất từ hà lan")
                                 .name("beer tiger")
-                                .createat(new Timestamp(new Date().getTime()))
                                 .beer_second_id("456").build()
+                                .AutoFill()
                         )
                         .build()
         )
@@ -109,8 +103,8 @@ public class BeerTest {
                                         "- bia nhập ngoại\n" +
                                         "- bia sản xuất từ hà lan")
                                 .name("beer tiger")
-                                .createat(new Timestamp(new Date().getTime()))
                                 .beer_second_id("456").build()
+                                .AutoFill()
                         )
                         .build()
         )
