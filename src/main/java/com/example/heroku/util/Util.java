@@ -4,9 +4,8 @@ import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Util {
     private static final char[] SOURCE_CHARACTERS = {'À', 'Á', 'Â', 'Ã', 'È', 'É',
@@ -46,6 +45,58 @@ public class Util {
         return instance;
     }
 
+    public Map<String, String> synchronizedHashMap = Collections.synchronizedMap(new HashMap<String, String>());//WeakHashMap
+
+    public Map<String, Integer> counterSession = Collections.synchronizedMap(new HashMap<String, Integer>());//new ConcurrentHashMap<String, String>();
+
+    public Map<String, Integer> concurrentVoucherReuse = Collections.synchronizedMap(new HashMap<String, Integer>());//new ConcurrentHashMap<String, Integer>();
+
+    public int getVoucher(String id){
+        Integer value = concurrentVoucherReuse.get(id);
+        if(value == null){
+            return -1;
+        }
+        return value;
+    }
+
+    public Integer obserVoucher(String id) {
+        //increase only when have same device and new Voucher ID
+        return counterSession.compute(id, (k, v) -> (v == null) ? 1 : v + 1);
+    }
+
+    public void setVoucher(String id, Integer value) {
+        concurrentVoucherReuse.put(id, value);
+    }
+
+    public boolean CleanMap(String id) {
+        boolean exist = concurrentVoucherReuse.containsKey(id);
+        if (exist) {
+            Integer currentSession = counterSession.get(id);
+            if (currentSession != null && currentSession > 1) {
+                exist = false;
+                counterSession.put(id, currentSession - 1);
+            } else {
+                exist = true;
+            }
+        } else {
+            counterSession.remove(id);
+        }
+        synchronizedHashMap.remove(id);
+        return exist;
+    }
+
+    public int CleanReuse(String id) {
+        counterSession.remove(id);
+        Integer reuse = concurrentVoucherReuse.remove(id);
+        if (reuse == null)
+            reuse = 0;
+        return reuse;
+    }
+
+    public String GetMap(String id) {
+        return synchronizedHashMap.compute(id, (k, v) -> (v == null) ? GenerateID() : v);
+    }
+
     public String GenerateID(){
         return UUID.randomUUID().toString().replaceAll("-","");
     }
@@ -75,9 +126,11 @@ public class Util {
         return sb.toString().toLowerCase();
     }
 
-    public int DiffirentDays(Timestamp t1, Timestamp t2) {
-        if(t1 == null || t2 == null)
+    public int DiffirentDays(Timestamp t1, Timestamp current) {
+        if(t1 == null)
             return 9999;
-        return (int)((t1.getTime() - t2.getTime()) / (1000 * 60 * 60 * 24));
+        if(current == null)
+            return -9999;
+        return (int)((t1.getTime() - current.getTime()) / (1000 * 60 * 60 * 24));
     }
 }

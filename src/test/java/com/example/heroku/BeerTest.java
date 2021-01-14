@@ -68,15 +68,24 @@ public class BeerTest {
         )
                 .as(StepVerifier::create)
                 .consumeNextWith(beerUnit -> {
-                    beerUnit1ID.set(beerUnit.getBeer_unit_second_id());
+                    if(beerUnit.getName().equals("lon")) {
+                        beerUnit1ID.set(beerUnit.getBeer_unit_second_id());
+                    }else{
+                        beerUnit2ID.set(beerUnit.getBeer_unit_second_id());
+                    }
                     assertThat(beerUnit.getBeer_unit_second_id()).isNotNull();
 
                 })
                 .consumeNextWith(beerUnit -> {
-                    beerUnit2ID.set(beerUnit.getBeer_unit_second_id());
+                    if(beerUnit.getName().equals("lon")) {
+                        beerUnit1ID.set(beerUnit.getBeer_unit_second_id());
+                    }else{
+                        beerUnit2ID.set(beerUnit.getBeer_unit_second_id());
+                    }
                     assertThat(beerUnit.getBeer_unit_second_id()).isNotNull();
                 })
                 .verifyComplete();
+
 
         beerAPI.CreateBeer(
                 BeerInfo
@@ -110,80 +119,71 @@ public class BeerTest {
         )
                 .as(StepVerifier::create)
                 .consumeNextWith(beerUnit -> {
-                    assertThat(beerUnit.getBeer_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(beerUnit.getBeer_unit_second_id()).isEqualTo(beerUnit2ID.get());
 
                 })
                 .consumeNextWith(beerUnit -> {
-                    assertThat(beerUnit.getBeer_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(beerUnit.getBeer_unit_second_id()).isEqualTo(beerUnit1ID.get());
                 })
                 .verifyComplete();
 
         this.beerAPI.GetBeerByID("123")
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                            assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("123");
-                            assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.ALCOHOL);
-                            assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
-                            assertThat(beerInfo.getBeerUnit()[0].getName()).isEqualTo("thung");
-                            assertThat(beerInfo.getBeerUnit()[1].getName()).isEqualTo("lon");
-                        }
-                )
+                    assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("123");
+                    assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.ALCOHOL);
+                    assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getBeerUnit()[1].getName()).isEqualTo("lon");
+                    assertThat(beerInfo.getBeerUnit()[0].getName()).isEqualTo("thung");
+                })
                 .verifyComplete();
 
         this.beerAPI.SearchBeer("hà")
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                            assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
-                        }
-                )
+                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
+                })
                 .verifyComplete();
 
         this.beerAPI.SearchBeer("ha%oai")
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                            assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
-                        }
-                )
+                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
+                })
                 .verifyComplete();
 
         this.beerAPI.SearchBeer("bia&ha&lan")
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                            assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
-                        }
-                )
+                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
+                })
                 .verifyComplete();
 
         this.beerAPI.SearchBeer("bi:*&ngo:*&nhap:*")
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                            assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
-                        }
-                )
+                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
+                })
                 .verifyComplete();
 
         this.beerAPI.GetAllBeer(0, 100)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                            assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
-                        }
-                )
+                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
+                })
                 .consumeNextWith(beerInfo -> {
-                            assertThat(beerInfo.getBeer_second_id()).isEqualTo("123");
-                        }
-                )
+                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("123");
+                })
                 .verifyComplete();
 
         this.beerAPI.GetAllBeerByCategory(Beer.Category.ALCOHOL, 0, 100)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                            assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
-                        }
-                )
+                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
+                })
                 .consumeNextWith(beerInfo -> {
-                            assertThat(beerInfo.getBeer_second_id()).isEqualTo("123");
-                        }
-                )
+                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("123");
+                })
                 .verifyComplete();
     }
 }

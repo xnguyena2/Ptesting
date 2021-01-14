@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "POSTGRESQL_HOST=ec2-52-203-165-126.compute-1.amazonaws.com",
         "USER_NAME=pnkrlyomnugskb",
         "PASSWORD=4b16a191f30c89f36908193809d12d3a8d4c3ffb73277357e1b0e0515169cea2",
-        "POSTGRESQL_POOLSIZE=1",
+        "POSTGRESQL_POOLSIZE=5",
         "POSTGRESQL_TIMEIDLE=10000",
         "HTTPONLY_SECURE=false"})
 public class OrderPackageTest {
@@ -64,7 +64,47 @@ public class OrderPackageTest {
         createProvider();
         createBeer();
         createVoucher();
-        orderTest();
+
+        Thread[] threads = new Thread[30];
+
+        for (int i = 0; i < threads.length; i++) {
+            final int i1 = i;
+            threads[i] = new Thread(() -> {
+                System.out.println("Thread Running: " + (i1 + 1));
+                orderTest();
+            });
+            //Thread.sleep(5000);
+            threads[i].start();
+        }
+        for (Thread t :
+                threads) {
+            t.join();
+        }
+
+        voucherAPI.getAllMyVoucher("iphone")
+                .as(StepVerifier::create)
+                .consumeNextWith(voucher -> {
+                    System.out.println(voucher.getVoucher_second_id());
+                    System.out.println(voucher.getReuse());
+                })
+                .consumeNextWith(voucher -> {
+                    System.out.println(voucher.getVoucher_second_id());
+                    System.out.println(voucher.getReuse());
+                })
+                .consumeNextWith(voucher -> {
+                    System.out.println(voucher.getVoucher_second_id());
+                    System.out.println(voucher.getReuse());
+                })
+                .consumeNextWith(voucher -> {
+                    System.out.println(voucher.getVoucher_second_id());
+                    System.out.println(voucher.getReuse());
+                })
+                .consumeNextWith(voucher -> {
+                    System.out.println(voucher.getVoucher_second_id());
+                    System.out.println(voucher.getReuse());
+                })
+                .verifyComplete();
+        //orderTest();
     }
 
     void orderTest() {
@@ -72,11 +112,32 @@ public class OrderPackageTest {
         AtomicReference<BeerUnit> beerUnit1= new AtomicReference<BeerUnit>();
         AtomicReference<BeerUnit> beerUnit2 = new AtomicReference<BeerUnit>();
 
+        AtomicReference<BeerUnit> beerUnit3= new AtomicReference<BeerUnit>();
+        AtomicReference<BeerUnit> beerUnit4 = new AtomicReference<BeerUnit>();
+
         beerUnitRepository.findByBeerID("beer_order1")
                 .as(StepVerifier::create)
                 .consumeNextWith(beerUnit1::set)
                 .consumeNextWith(beerUnit2::set)
         .verifyComplete();
+
+        beerUnitRepository.findByBeerID("beer_order2")
+                .as(StepVerifier::create)
+                .consumeNextWith(beerUnit3::set)
+                .consumeNextWith(beerUnit4::set)
+                .verifyComplete();
+
+        if(beerUnit2.get().getName().equals("thung")){
+            BeerUnit temp = beerUnit2.get();
+            beerUnit2.set(beerUnit1.get());
+            beerUnit1.set(temp);
+        }
+
+        if(beerUnit4.get().getName().equals("thung")){
+            BeerUnit temp = beerUnit4.get();
+            beerUnit4.set(beerUnit3.get());
+            beerUnit3.set(temp);
+        }
 
         PackageOrderData packageOrderData = PackageOrderData
                 .builder()
@@ -180,8 +241,306 @@ public class OrderPackageTest {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
-                    assertThat(packageOrder.getTotal_price()).isEqualTo(117);// 10*10*0.9 + 20*1*0.8
+                    //assertThat(packageOrder.getTotal_price()).isEqualTo(117);// 10*10*0.9 + 20*1*0.8
+                    //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
+                })
+                .verifyComplete();
+
+        packageOrderData = PackageOrderData
+                .builder()
+                .packageOrder(
+                        PackageOrder
+                                .builder()
+                                .region_id(294)
+                                .district_id(484)
+                                .phone_number("1234567890")
+                                .reciver_fullname("Nguyen Phong")
+                                .reciver_address("232 bau cat, tan binh")
+                                .user_device_id("android")
+                                .build()
+                )
+                .preOrder(false)
+                .beerOrders(
+                        new PackageOrderData.BeerOrderData[]{
+                                PackageOrderData.BeerOrderData
+                                        .builder()
+                                        .beerOrder(
+                                                com.example.heroku.model.BeerOrder
+                                                        .builder()
+                                                        .beer_second_id("beer_order1")
+                                                        .voucher_second_id("ORDER_GIAM_5Kk")
+                                                        .build()
+                                        )
+                                        .beerUnitOrders(
+                                                new BeerUnitOrder[]{
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit1.get().getBeer())
+                                                                .number_unit(10)
+                                                                .build(),
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit2.get().getBeer())
+                                                                .number_unit(2)
+                                                                .build()
+                                                }
+                                        )
+                                        .build()
+                        }
+                )
+                .build();
+
+        beerOrder.createOrder(packageOrderData)
+                .as(StepVerifier::create)
+                .consumeNextWith(packageOrder -> {
+                    assertThat(packageOrder.getTotal_price()).isEqualTo(122);// 10*10*0.9 + 20*1*0.8
                     assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
+                })
+                .verifyComplete();
+
+        packageOrderData = PackageOrderData
+                .builder()
+                .packageOrder(
+                        PackageOrder
+                                .builder()
+                                .region_id(294)
+                                .district_id(484)
+                                .phone_number("1234567890")
+                                .reciver_fullname("Nguyen Phong")
+                                .reciver_address("232 bau cat, tan binh")
+                                .user_device_id("iphone")
+                                .build()
+                )
+                .preOrder(false)
+                .beerOrders(
+                        new PackageOrderData.BeerOrderData[]{
+                                PackageOrderData.BeerOrderData
+                                        .builder()
+                                        .beerOrder(
+                                                com.example.heroku.model.BeerOrder
+                                                        .builder()
+                                                        .beer_second_id("beer_order1")
+                                                        .voucher_second_id("ORDER_GIAM_30%")
+                                                        .build()
+                                        )
+                                        .beerUnitOrders(
+                                                new BeerUnitOrder[]{
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit1.get().getBeer())
+                                                                .number_unit(10)
+                                                                .build(),
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit2.get().getBeer())
+                                                                .number_unit(2)
+                                                                .build()
+                                                }
+                                        )
+                                        .build()
+                                ,
+                                PackageOrderData.BeerOrderData
+                                        .builder()
+                                        .beerOrder(
+                                                com.example.heroku.model.BeerOrder
+                                                        .builder()
+                                                        .beer_second_id("beer_order2")
+                                                        .voucher_second_id("ORDER_GIAM_30%")
+                                                        .build()
+                                        )
+                                        .beerUnitOrders(
+                                                new BeerUnitOrder[]{
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit3.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit3.get().getBeer())
+                                                                .number_unit(10)
+                                                                .build(),
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit4.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit4.get().getBeer())
+                                                                .number_unit(5)
+                                                                .build()
+                                                }
+                                        )
+                                        .build()
+                        }
+                )
+                .build();
+
+        beerOrder.createOrder(packageOrderData)
+                .as(StepVerifier::create)
+                .consumeNextWith(packageOrder -> {
+                    //assertThat(packageOrder.getTotal_price()).isEqualTo(365.4f);// 10*10*0.9 + 20*1*0.8
+                    //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
+                })
+                .verifyComplete();
+
+        packageOrderData = PackageOrderData
+                .builder()
+                .packageOrder(
+                        PackageOrder
+                                .builder()
+                                .region_id(294)
+                                .district_id(484)
+                                .phone_number("1234567890")
+                                .reciver_fullname("Nguyen Phong")
+                                .reciver_address("232 bau cat, tan binh")
+                                .user_device_id("iphone")
+                                .build()
+                )
+                .preOrder(false)
+                .beerOrders(
+                        new PackageOrderData.BeerOrderData[]{
+                                PackageOrderData.BeerOrderData
+                                        .builder()
+                                        .beerOrder(
+                                                com.example.heroku.model.BeerOrder
+                                                        .builder()
+                                                        .beer_second_id("beer_order1")
+                                                        .voucher_second_id("ORDER_GIAM_30%")
+                                                        .build()
+                                        )
+                                        .beerUnitOrders(
+                                                new BeerUnitOrder[]{
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit1.get().getBeer())
+                                                                .number_unit(10)
+                                                                .build(),
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit2.get().getBeer())
+                                                                .number_unit(2)
+                                                                .build()
+                                                }
+                                        )
+                                        .build()
+                                ,
+                                PackageOrderData.BeerOrderData
+                                        .builder()
+                                        .beerOrder(
+                                                com.example.heroku.model.BeerOrder
+                                                        .builder()
+                                                        .beer_second_id("beer_order2")
+                                                        .voucher_second_id("ORDER_GIAM_30%")
+                                                        .build()
+                                        )
+                                        .beerUnitOrders(
+                                                new BeerUnitOrder[]{
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit3.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit3.get().getBeer())
+                                                                .number_unit(10)
+                                                                .build(),
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit4.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit4.get().getBeer())
+                                                                .number_unit(5)
+                                                                .build()
+                                                }
+                                        )
+                                        .build()
+                        }
+                )
+                .build();
+
+        beerOrder.createOrder(packageOrderData)
+                .as(StepVerifier::create)
+                .consumeNextWith(packageOrder -> {
+                    //assertThat(packageOrder.getTotal_price()).isEqualTo(485.4f);// 10*10*0.9 + 20*1*0.8
+                    //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
+                })
+                .verifyComplete();
+
+
+        packageOrderData = PackageOrderData
+                .builder()
+                .packageOrder(
+                        PackageOrder
+                                .builder()
+                                .region_id(294)
+                                .district_id(484)
+                                .phone_number("1234567890")
+                                .reciver_fullname("Nguyen Phong")
+                                .reciver_address("232 bau cat, tan binh")
+                                .user_device_id("iphone")
+                                .build()
+                )
+                .preOrder(false)
+                .beerOrders(
+                        new PackageOrderData.BeerOrderData[]{
+                                PackageOrderData.BeerOrderData
+                                        .builder()
+                                        .beerOrder(
+                                                com.example.heroku.model.BeerOrder
+                                                        .builder()
+                                                        .beer_second_id("beer_order1")
+                                                        .voucher_second_id("ORDER_GIAM_30%")
+                                                        .build()
+                                        )
+                                        .beerUnitOrders(
+                                                new BeerUnitOrder[]{
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit1.get().getBeer())
+                                                                .number_unit(10)
+                                                                .build(),
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit2.get().getBeer())
+                                                                .number_unit(2)
+                                                                .build()
+                                                }
+                                        )
+                                        .build()
+                                ,
+                                PackageOrderData.BeerOrderData
+                                        .builder()
+                                        .beerOrder(
+                                                com.example.heroku.model.BeerOrder
+                                                        .builder()
+                                                        .beer_second_id("beer_order2")
+                                                        .voucher_second_id("ORDER_GIAM_30%")
+                                                        .build()
+                                        )
+                                        .beerUnitOrders(
+                                                new BeerUnitOrder[]{
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit3.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit3.get().getBeer())
+                                                                .number_unit(10)
+                                                                .build(),
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit4.get().getBeer_unit_second_id())
+                                                                .beer_second_id(beerUnit4.get().getBeer())
+                                                                .number_unit(5)
+                                                                .build()
+                                                }
+                                        )
+                                        .build()
+                        }
+                )
+                .build();
+
+        beerOrder.createOrder(packageOrderData)
+                .as(StepVerifier::create)
+                .consumeNextWith(packageOrder -> {
+                    //assertThat(packageOrder.getTotal_price()).isEqualTo(522f);// 10*10*0.9 + 20*1*0.8
+                    //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
     }
@@ -198,7 +557,7 @@ public class OrderPackageTest {
                                         .voucher_second_id("ORDER_GIAM_5K")
                                         .detail("Giảm 5k trên toàn bộ sản phẩm")
                                         .amount(5)
-                                        .reuse(5)
+                                        .reuse(25)
                                         .build()
                         )
                         .build())
@@ -212,7 +571,7 @@ public class OrderPackageTest {
                                         .for_all_beer(true)
                                         .voucher_second_id("ORDER_GIAM_30%")
                                         .discount(30)
-                                        .reuse(1)
+                                        .reuse(200)
                                         .detail("Giảm 30% trên toàn bộ sản phẩm, chỉ áp dụng cho ai nhận được.")
                                         .build()
                         )

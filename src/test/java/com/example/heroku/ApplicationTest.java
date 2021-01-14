@@ -23,7 +23,7 @@ import java.io.IOException;
         "POSTGRESQL_HOST=ec2-52-203-165-126.compute-1.amazonaws.com",
         "USER_NAME=pnkrlyomnugskb",
         "PASSWORD=4b16a191f30c89f36908193809d12d3a8d4c3ffb73277357e1b0e0515169cea2",
-        "POSTGRESQL_POOLSIZE=1",
+        "POSTGRESQL_POOLSIZE=5",
         "POSTGRESQL_TIMEIDLE=10000",
         "HTTPONLY_SECURE=false"})
 public class ApplicationTest {

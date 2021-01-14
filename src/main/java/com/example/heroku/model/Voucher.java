@@ -1,5 +1,6 @@
 package com.example.heroku.model;
 
+import com.example.heroku.util.Util;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,13 +43,34 @@ public class Voucher {
 
     private boolean for_all_user;
 
-    public Voucher AutoFill(){
+    public Voucher AutoFill() {
         this.createat = new Timestamp(new Date().getTime());
         return this;
     }
 
-    public enum Status{
+    public void comsumeVoucherSync(String transactionKey, SyncRunner runner) {
+        String key = transactionKey + this.getVoucher_second_id();
+        synchronized (Util.getInstance().GetMap(key)) {
+            System.out.println("Begin consume!");
+            int shareResue = Util.getInstance().getVoucher(key);
+            if (shareResue == -1) {
+                shareResue = this.reuse;
+            }
+            System.out.println("ID: " + key + ", resue: " + shareResue);
+            if (shareResue > 0) {
+                runner.doSync(shareResue);
+                shareResue--;
+                Util.getInstance().setVoucher(key, shareResue);
+            }
+            System.out.println("End consume!");
+        }
+    }
+
+    public enum Status {
 
     }
 
+    public interface SyncRunner {
+        void doSync(int reuse);
+    }
 }

@@ -9,14 +9,17 @@ import reactor.core.publisher.Mono;
 
 public interface VoucherRelateUserDeviceRepository extends ReactiveCrudRepository<VoucherRelateUserDevice, String> {
     @Query(value = "DELETE FROM voucher_relate_user_device WHERE voucher_relate_user_device.voucher_second_id = :id")
-    Mono<VoucherRelateUserDevice> deleteByVoucherSecondId(@Param("id")String id);
+    Mono<VoucherRelateUserDevice> deleteByVoucherSecondId(@Param("id") String id);
 
     @Query(value = "SELECT * FROM voucher_relate_user_device WHERE voucher_relate_user_device.voucher_second_id = :id")
-    Flux<VoucherRelateUserDevice> getByVoucherSecondId(@Param("id")String id);
+    Flux<VoucherRelateUserDevice> getByVoucherSecondId(@Param("id") String id);
 
     @Query(value = "DELETE FROM voucher_relate_user_device WHERE voucher_relate_user_device.voucher_second_id = :id AND voucher_relate_user_device.device_id = :device_id")
-    Mono<VoucherRelateUserDevice> deleteByVoucherSecondIdAndUserDeviceID(@Param("id")String voucherSecondID, @Param("device_id")String userDeviceID);
+    Mono<VoucherRelateUserDevice> deleteByVoucherSecondIdAndUserDeviceID(@Param("id") String voucherSecondID, @Param("device_id") String userDeviceID);
 
     @Query(value = "SELECT * FROM voucher_relate_user_device WHERE voucher_relate_user_device.voucher_second_id = :id AND voucher_relate_user_device.device_id = :device_id")
-    Mono<VoucherRelateUserDevice> getByVoucherSecondIdAndUserDeviceID(@Param("id")String voucherSecondID, @Param("device_id")String userDeviceID);
+    Mono<VoucherRelateUserDevice> getByVoucherSecondIdAndUserDeviceID(@Param("id") String voucherSecondID, @Param("device_id") String userDeviceID);
+
+    @Query(value = "INSERT INTO voucher_relate_user_device(voucher_second_id, reuse, device_id, createat) VALUES(:id, :reuse, :device_id, NOW()) ON CONFLICT(voucher_second_id, device_id) DO UPDATE SET reuse=:reuse, createat=NOW()")
+    Mono<VoucherRelateUserDevice> updateOrInsert(@Param("id") String voucherSecondID, @Param("device_id") String userDeviceID, @Param("reuse") int reuse);
 }

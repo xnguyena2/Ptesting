@@ -40,6 +40,11 @@ public class VoucherRelateUserDevice {
         return this;
     }
 
+    public VoucherRelateUserDevice ForceSetupReuse(int reuse){
+        this.reuse = reuse;
+        return this;
+    }
+
     public VoucherRelateUserDevice AutoFill(){
         this.createat = new Timestamp(new Date().getTime());
         return this;

@@ -109,6 +109,14 @@ public class Voucher {
                 );
     }
 
+    /*
+    only call this function if the voucher alredy consume
+     */
+    public Mono<VoucherRelateUserDevice> ForceSaveVoucher(String voucherSecondID, String userDeviceID, int resue) {
+        System.out.println("Save voucher: " + voucherSecondID + ", reuse: " + resue);
+        return voucherRelateUserDeviceRepository.updateOrInsert(voucherSecondID, userDeviceID, resue);
+    }
+
     public Flux<com.example.heroku.model.Voucher> getAllMyVoucher(String userDeviceID){
         return voucherRepository.getAllVoucherOfUserDevice(userDeviceID);
     }
