@@ -1,8 +1,10 @@
 package com.example.heroku.services;
 
 import com.example.heroku.model.repository.ImageRepository;
+import com.example.heroku.photo.PhotoLib;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.response.Format;
+import com.example.heroku.util.Util;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.multipart.FilePart;
@@ -23,23 +25,19 @@ public class Image {
     @Autowired
     ImageRepository imageRepository;
 
-    public Mono<Object> Upload(Flux<FilePart> file, String category){
+    public Mono<Object> Upload(Flux<FilePart> file, String category) {
         return file.flatMap(f -> f.content().map(it -> it.asInputStream()))
                 .reduce(SequenceInputStream::new)
                 .flatMap(initialStream -> {
-                    try {
-                        byte[] content = IOUtils.toByteArray(initialStream);
-                        return this.imageRepository.save(com.example.heroku.model.Image.builder()
-                                .content(content)
-                                .category(category)
-                                .createat(new Timestamp(new Date().getTime()))
-                                .build());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
+                    String id = Util.getInstance().GenerateID();
+                    PhotoLib.getInstance().uploadFile(initialStream, "/" + id);
+                    return this.imageRepository.save(com.example.heroku.model.Image.builder()
+                            .imgid(id)
+                            .category(category)
+                            .createat(new Timestamp(new Date().getTime()))
+                            .build());
                 })
-                .map(save -> ok(Format.builder().response(save.getId()).build()));
+                .map(save -> ok(Format.builder().response(save.getImgid()).build()));
     }
 
     public Mono<Object> Delete(IDContainer img){

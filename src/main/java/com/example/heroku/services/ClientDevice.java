@@ -19,13 +19,13 @@ public class ClientDevice {
 
         return Mono.just(
                 BootStrapData.builder()
-                        .listCarousel(new ArrayList<>())
+                        .carousel(new ArrayList<>())
                         .build()
         )
                 .flatMap(bootStrapData ->
                                 imageAPI.GetAll("Carousel")
                                         .map(image ->
-                                                bootStrapData.getListCarousel().add(image.getId())
+                                                bootStrapData.getCarousel().add(image.getImgid())
                                         ).then(
                                         Mono.just(bootStrapData)
                                                 .flatMap(data->

@@ -20,7 +20,7 @@ public class Image {
     @Id
     String id;
 
-    private byte[] content;
+    private String imgid;
 
     private String category;
 

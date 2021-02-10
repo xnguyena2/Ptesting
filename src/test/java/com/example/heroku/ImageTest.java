@@ -2,6 +2,7 @@ package com.example.heroku;
 
 import com.example.heroku.converter.Base64byteConverter;
 import com.example.heroku.model.repository.ImageRepository;
+import com.example.heroku.photo.PhotoLib;
 import lombok.Builder;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -55,31 +56,30 @@ public class ImageTest {
         };
 
         imageAPI.DeleteAll()
-                .thenMany(Flux.just("1","2","3","4")
-                        .flatMap(name->
+                .thenMany(Flux.just("1", "2", "3", "4")
+                        .flatMap(name ->
                                 imageAPI.Upload(Flux.just(filePart), "Carousel")
                         )
                 )
                 .then()
                 .block();
         imageAPI.GetAll("Carousel")
-                .map(image -> Integer.parseInt(image.getId()))
-                .flatMap(id -> this.imageRepository.findById(id))
+                .map(image -> PhotoLib.getInstance().downloadFile(image.getImgid()))
                 .as(StepVerifier::create)
-                .consumeNextWith(image -> {
-                            assertThat(image.getContent()).isEqualTo(new Base64byteConverter().convertToEntityAttribute(imageContent));
+                .consumeNextWith(imagecontent -> {
+                            assertThat(imagecontent).isEqualTo(new Base64byteConverter().convertToEntityAttribute(imageContent));
                         }
                 )
-                .consumeNextWith(image -> {
-                            assertThat(image.getContent()).isEqualTo(new Base64byteConverter().convertToEntityAttribute(imageContent));
+                .consumeNextWith(imagecontent -> {
+                            assertThat(imagecontent).isEqualTo(new Base64byteConverter().convertToEntityAttribute(imageContent));
                         }
                 )
-                .consumeNextWith(image -> {
-                            assertThat(image.getContent()).isEqualTo(new Base64byteConverter().convertToEntityAttribute(imageContent));
+                .consumeNextWith(imagecontent -> {
+                            assertThat(imagecontent).isEqualTo(new Base64byteConverter().convertToEntityAttribute(imageContent));
                         }
                 )
-                .consumeNextWith(image -> {
-                            assertThat(image.getContent()).isEqualTo(new Base64byteConverter().convertToEntityAttribute(imageContent));
+                .consumeNextWith(imagecontent -> {
+                            assertThat(imagecontent).isEqualTo(new Base64byteConverter().convertToEntityAttribute(imageContent));
                         }
                 )
                 .verifyComplete();

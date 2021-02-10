@@ -42,12 +42,7 @@ public class DeviceConfigTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(config -> {
                             assertThat(config.getDeviceConfig().getColor()).isEqualTo("#333333");
-                            assertThat(config.getListCarousel()).isEqualTo(new ArrayList<String>() {{
-                                add("1");
-                                add("2");
-                                add("3");
-                                add("4");
-                            }});
+                            assertThat((long) config.getCarousel().size()).isEqualTo(4);
                         }
                 )
                 .verifyComplete();
