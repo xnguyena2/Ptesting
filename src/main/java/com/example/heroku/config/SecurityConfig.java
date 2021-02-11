@@ -72,6 +72,7 @@ public class SecurityConfig {
                 )
                 .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
 
+                /*
                 //may be remove later
                 .exceptionHandling()
                 .authenticationEntryPoint((ServerAuthenticationEntryPoint) (exchange, e) -> {
@@ -80,7 +81,7 @@ public class SecurityConfig {
                 })
                 .and()
                 ///////////////////////
-
+                 */
 
                 .build();
     }
