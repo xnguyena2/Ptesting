@@ -45,7 +45,7 @@ public class SecurityConfig {
 
 
                         .pathMatchers("/").permitAll()
-                        .pathMatchers("/lang-logo.png").permitAll()
+                        //.pathMatchers("/lang-logo.png").permitAll()
                         .pathMatchers("/favicon.ico").permitAll()
                         .pathMatchers("/login").permitAll()
                         .pathMatchers("/img/**").permitAll()
