@@ -27,6 +27,7 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
             return chain.filter(exchange)
                     .subscriberContext(ReactiveSecurityContextHolder.withAuthentication(authentication));
         }
+        System.out.println("Hello");
         return chain.filter(exchange)
                 .onErrorResume(AuthenticationException.class,
                         e ->
