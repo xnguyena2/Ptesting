@@ -61,11 +61,11 @@ public class SecurityConfig {
                         .pathMatchers("/db").permitAll()
                         .pathMatchers("/image/**").permitAll()
 
-                        //.pathMatchers("/clientdevice/**").permitAll()
+                        .pathMatchers("/clientdevice/**").permitAll()
 
                         .anyExchange().authenticated()
                 )
-                .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider), SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
                 .build();
 
     }
