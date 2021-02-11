@@ -18,6 +18,7 @@ public class ClientDeviceController {
     @GetMapping("/bootstrap")
     @CrossOrigin(origins = "http://localhost:4200")
     public Mono<BootStrapData> bootStrapData(){
+        System.out.println("Get bootstrap!");
         return clientDeviceAPI.bootStrapData();
     }
 }
