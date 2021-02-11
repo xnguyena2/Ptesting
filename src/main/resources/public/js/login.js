@@ -7,7 +7,7 @@ $(document).ready(function () {
         let password = CryptoJS.MD5($('#txtPassword').val() + "").toString().toUpperCase();
         console.log(password)
         var settings = {
-            "url": "http://localhost:5000/auth/signin",
+            "url": "/auth/signin",
             "method": "POST",
             "timeout": 0,
             "headers": {
