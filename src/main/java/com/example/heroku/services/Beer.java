@@ -5,6 +5,7 @@ import com.example.heroku.model.repository.BeerRepository;
 import com.example.heroku.model.repository.BeerUnitRepository;
 import com.example.heroku.model.repository.SearchTokenRepository;
 import com.example.heroku.request.beer.BeerInfo;
+import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,21 +79,37 @@ public class Beer {
                     Mono.just(new ArrayList<BeerUnit>())
                             .flatMap(beerUnits ->
                                     beerUnitRepository.findByBeerID(id)
-                                            .map(beerUnit ->
-                                                    beerUnits.add(beerUnit)
+                                            .map(beerUnits::add
                                             )
                                             .then(
                                                     Mono.just(beerUnits)
                                             )
-                                            .map(bUnits->
-                                                    beerInfo.SetBeerUnit(bUnits)
+                                            .map(beerInfo::SetBeerUnit
                                             )
                             )
                 );
     }
 
-    public Flux<com.example.heroku.model.Beer> GetAllBeer(int page, int size){
-        return this.beerRepository.findAll(page, size);
+    public Flux<BeerSubmitData> GetAllBeer(int page, int size){
+        return this.beerRepository.findAll(page, size)
+                .flatMap(this::CoverToSubmitData);
+    }
+
+    public Mono<BeerSubmitData> CoverToSubmitData(com.example.heroku.model.Beer beer) {
+        return Mono.just(BeerSubmitData.builder().build().FromBeer(beer))
+                .flatMap(beerSubmitData ->
+                        Mono.just(new ArrayList<BeerUnit>())
+                                .flatMap(beerUnits ->
+                                        beerUnitRepository.findByBeerID(beerSubmitData.getBeerSecondID())
+                                                .map(beerUnits::add
+                                                )
+                                                .then(
+                                                        Mono.just(beerUnits)
+                                                )
+                                                .map(beerSubmitData::SetBeerUnit
+                                                )
+                                )
+                );
     }
 
     public Flux<com.example.heroku.model.Beer> SearchBeer(String txt) {

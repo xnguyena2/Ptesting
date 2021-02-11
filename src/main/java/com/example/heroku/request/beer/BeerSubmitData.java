@@ -1,6 +1,7 @@
 package com.example.heroku.request.beer;
 
 import com.example.heroku.model.Beer;
+import com.example.heroku.model.BeerUnit;
 import com.example.heroku.request.datetime.NgbDateStruct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,6 +56,31 @@ public class BeerSubmitData {
                 .SetBeerUnit(listMapedUnit);
     }
 
+    public BeerSubmitData FromBeer(Beer beer){
+        return BeerSubmitData.builder()
+                .beerSecondID(beer.getBeer_second_id())
+                .name(beer.getName())
+                .detail(beer.getDetail())
+                .category(beer.getCategory().getName())
+                .build();
+    }
+
+    public BeerSubmitData SetBeerUnit(List<com.example.heroku.model.BeerUnit> beerUnitList) {
+        listUnit = new BeerUnit[beerUnitList.size()];
+        for (int i = 0; i < listUnit.length; i++) {
+            BeerUnit newB = new BeerUnit();
+            newB.setBeer(beerUnitList.get(i).getBeer());
+            newB.setName(beerUnitList.get(i).getName());
+            newB.setPrice(beerUnitList.get(i).getPrice());
+            newB.setDiscount(beerUnitList.get(i).getDiscount());
+            newB.setDateExpir(NgbDateStruct.FromTimestamp(beerUnitList.get(i).getDate_expire()));
+            newB.setVolumetric(beerUnitList.get(i).getVolumetric());
+            newB.setWeight(beerUnitList.get(i).getWeight());
+            newB.setBeer_unit_second_id(beerUnitList.get(i).getBeer_unit_second_id());
+            listUnit[i] = newB;
+        }
+        return this;
+    }
 
     @Data
     @NoArgsConstructor

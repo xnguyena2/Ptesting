@@ -3,9 +3,15 @@ package com.example.heroku;
 import com.example.heroku.model.Beer;
 import com.example.heroku.model.BeerUnit;
 import com.example.heroku.request.beer.BeerInfo;
+import com.example.heroku.request.beer.BeerSubmitData;
 import lombok.Builder;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.sql.Timestamp;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -95,12 +101,20 @@ public class BeerTest {
                                         .builder()
                                         .beer_unit_second_id(beerUnit1ID.get())
                                         .beer("456")
+                                        .price(10)
+                                        .weight(0.3f)
+                                        .discount(10)
+                                        .date_expire(new Timestamp(new Date().getTime()))
                                         .name("thung")
                                         .build(),
                                 BeerUnit
                                         .builder()
                                         .beer_unit_second_id(beerUnit2ID.get())
                                         .beer("456")
+                                        .price(10)
+                                        .weight(0.3f)
+                                        .discount(10)
+                                        .date_expire(new Timestamp(new Date().getTime()))
                                         .name("lon")
                                         .build()
                         })
@@ -117,10 +131,10 @@ public class BeerTest {
                         )
                         .build()
         )
+                .sort(Comparator.comparing(BeerUnit::getName))
                 .as(StepVerifier::create)
                 .consumeNextWith(beerUnit -> {
                     assertThat(beerUnit.getBeer_unit_second_id()).isEqualTo(beerUnit2ID.get());
-
                 })
                 .consumeNextWith(beerUnit -> {
                     assertThat(beerUnit.getBeer_unit_second_id()).isEqualTo(beerUnit1ID.get());
@@ -133,8 +147,16 @@ public class BeerTest {
                     assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("123");
                     assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.ALCOHOL);
                     assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
-                    assertThat(beerInfo.getBeerUnit()[1].getName()).isEqualTo("lon");
-                    assertThat(beerInfo.getBeerUnit()[0].getName()).isEqualTo("thung");
+                    Flux.just(beerInfo.getBeerUnit())
+                            .sort(Comparator.comparing(BeerUnit::getName))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("lon");
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("thung");
+                            })
+                            .verifyComplete();
                 })
                 .verifyComplete();
 
@@ -167,22 +189,26 @@ public class BeerTest {
                 .verifyComplete();
 
         this.beerAPI.GetAllBeer(0, 100)
+                .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
+                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("123");
+                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                 })
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("123");
+                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                 })
                 .verifyComplete();
 
         this.beerAPI.GetAllBeerByCategory(Beer.Category.ALCOHOL, 0, 100)
+                .sort(Comparator.comparing(Beer::getBeer_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
+                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("123");
                 })
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("123");
+                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
                 })
                 .verifyComplete();
     }

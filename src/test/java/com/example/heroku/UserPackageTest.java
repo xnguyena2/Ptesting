@@ -6,6 +6,8 @@ import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.test.StepVerifier;
 
+import java.util.Comparator;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Builder
@@ -54,6 +56,7 @@ public class UserPackageTest {
                 .block();
 
         userPackageAPI.GetMyPackage("222222", 0, 1000)
+                .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
                             assertThat(userPackage.getDevice_id()).isEqualTo("222222");

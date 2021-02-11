@@ -1,7 +1,7 @@
 package com.example.heroku.response;
 
 import com.example.heroku.model.DeviceConfig;
-import com.example.heroku.request.beer.BeerInfo;
+import com.example.heroku.request.beer.BeerSubmitData;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,7 +14,7 @@ public class BootStrapData {
 
     private List<String> carousel;
 
-    private List<BeerInfo> products;
+    private List<BeerSubmitData> products;
 
     public BootStrapData setDeviceConfig(DeviceConfig deviceConfig) {
         this.deviceConfig = deviceConfig;

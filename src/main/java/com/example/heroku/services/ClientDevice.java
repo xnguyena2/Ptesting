@@ -13,26 +13,36 @@ public class ClientDevice {
     Image imageAPI;
 
     @Autowired
+    Beer beerAPI;
+
+    @Autowired
     DeviceConfig deviceConfigAPI;
 
-    public Mono<BootStrapData> bootStrapData(){
+    public Mono<BootStrapData> bootStrapData() {
 
         return Mono.just(
                 BootStrapData.builder()
                         .carousel(new ArrayList<>())
+                        .products(new ArrayList<>())
                         .build()
         )
                 .flatMap(bootStrapData ->
-                                imageAPI.GetAll("Carousel")
-                                        .map(image ->
-                                                bootStrapData.getCarousel().add(image.getImgid())
-                                        ).then(
-                                        Mono.just(bootStrapData)
-                                                .flatMap(data->
-                                                        this.deviceConfigAPI.GetConfig())
-                                                .map(deviceConfig -> bootStrapData.setDeviceConfig(deviceConfig))
-                                )
-                        //.map(save-> ok(Format.builder().response(Util.getInstance().GenerateID()).build()))
-                );
+                        imageAPI.GetAll("Carousel")
+                                .map(image ->
+                                        bootStrapData.getCarousel().add(image.getImgid())
+                                ).then(
+                                Mono.just(bootStrapData)
+                        )
+                )
+                .flatMap(bootStrapData ->
+                        beerAPI.GetAllBeer(0, 25)
+                                .map(beerSubmitData ->
+                                        bootStrapData.getProducts().add(beerSubmitData)
+                                ).then(
+                                Mono.just(bootStrapData)
+                                        .flatMap(data ->
+                                                this.deviceConfigAPI.GetConfig())
+                                        .map(bootStrapData::setDeviceConfig)
+                        ));
     }
 }

@@ -42,6 +42,9 @@ public class ApplicationTest extends TestConfig{
     @Autowired
     Voucher voucherAPI;
 
+    @Autowired
+    com.example.heroku.services.ClientDevice clientDeviceAPI;
+
     @Test
     public void BeerTest() {
         BeerTest.builder().beerAPI(beerAPI).build().saveBeerTest();
@@ -110,6 +113,17 @@ public class ApplicationTest extends TestConfig{
     @Test
     public void testUploadImageToGoogle() throws IOException, GeneralSecurityException {
         //PhotoLib.getInstance().RefreshToken();
+    }
+
+    @Test
+    public void testBootStrapData() {
+        ImageTest.builder().imageContent(this.imageContent).imageAPI(imageAPI).imageRepository(imageRepository).build().ImageTest();
+
+        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).build().DeviceConfigTest();
+
+        BeerTest.builder().beerAPI(beerAPI).build().saveBeerTest();
+
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).build().BootStrapData();
     }
 
 }

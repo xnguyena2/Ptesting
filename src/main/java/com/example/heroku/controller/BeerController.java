@@ -67,7 +67,7 @@ public class BeerController {
 
     @PostMapping("/getall")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Flux<Beer> getAll(@RequestBody @Valid Page page) {
+    public Flux<BeerSubmitData> getAll(@RequestBody @Valid Page page) {
         System.out.println("get all beer: "+page.getPage());
         return beerAPI.GetAllBeer(page.getPage(), page.getSize());
     }

@@ -5,6 +5,7 @@ import com.example.heroku.model.UserPackage;
 import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerPackage;
 import com.example.heroku.request.beer.BeerSubmitData;
+import com.example.heroku.request.datetime.NgbDateStruct;
 import com.example.heroku.services.ShippingProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,7 +60,7 @@ public class ObjectPraserTest {
         assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
         assertThat(beerInfo.getBeerUnit()[0].getName()).isEqualTo("Lon");
         assertThat(beerInfo.getBeerUnit()[0].getBeer()).isEqualTo("1");
-        assertThat(beerInfo.getBeerUnit()[0].getDate_expire()).isEqualTo(GetExpirDateTime(2021,1,31));
+        assertThat(NgbDateStruct.FromTimestamp(beerInfo.getBeerUnit()[0].getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(GetExpirDateTime(2021,1,31)));
         assertThat(beerInfo.getBeerUnit()[0].getDiscount()).isEqualTo(0);
         assertThat(beerInfo.getBeerUnit()[0].getPrice()).isEqualTo(12000);
         assertThat(beerInfo.getBeerUnit()[0].getVolumetric()).isEqualTo(0.4f);
@@ -67,7 +68,7 @@ public class ObjectPraserTest {
 
         assertThat(beerInfo.getBeerUnit()[1].getName()).isEqualTo("Thùng");
         assertThat(beerInfo.getBeerUnit()[1].getBeer()).isEqualTo("1");
-        assertThat(beerInfo.getBeerUnit()[1].getDate_expire()).isEqualTo(GetExpirDateTime(2020,12,24));
+        assertThat(NgbDateStruct.FromTimestamp(beerInfo.getBeerUnit()[1].getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(GetExpirDateTime(2020,12,24)));
         assertThat(beerInfo.getBeerUnit()[1].getDiscount()).isEqualTo(10);
         assertThat(beerInfo.getBeerUnit()[1].getPrice()).isEqualTo(200000);
         assertThat(beerInfo.getBeerUnit()[1].getVolumetric()).isEqualTo(6f);
