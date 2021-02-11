@@ -75,6 +75,7 @@ public class SecurityConfig {
                 .exceptionHandling()
                 .authenticationEntryPoint((ServerAuthenticationEntryPoint) (exchange, e) -> {
                     exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                    return Mono.empty();
                 })
                 .and()
 
