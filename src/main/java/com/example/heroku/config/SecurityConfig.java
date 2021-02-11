@@ -42,6 +42,7 @@ public class SecurityConfig {
 
 
                         .pathMatchers("/").permitAll()
+                        .pathMatchers("/lang-logo.png").permitAll()
                         .pathMatchers("/favicon.ico").permitAll()
                         .pathMatchers("/login").permitAll()
                         .pathMatchers("/img/**").permitAll()
@@ -60,9 +61,11 @@ public class SecurityConfig {
                         .pathMatchers("/db").permitAll()
                         .pathMatchers("/image/**").permitAll()
 
+                        .pathMatchers("/clientdevice/**").permitAll()
+
                         .anyExchange().authenticated()
                 )
-                .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
+                .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider), SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
 
     }
