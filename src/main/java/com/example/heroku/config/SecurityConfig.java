@@ -72,12 +72,15 @@ public class SecurityConfig {
                 )
                 .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
 
+                //may be remove later
                 .exceptionHandling()
                 .authenticationEntryPoint((ServerAuthenticationEntryPoint) (exchange, e) -> {
                     exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                     return Mono.empty();
                 })
                 .and()
+                ///////////////////////
+
 
                 .build();
     }
