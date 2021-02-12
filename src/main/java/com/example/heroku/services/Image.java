@@ -7,6 +7,7 @@ import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -25,7 +26,7 @@ public class Image {
     @Autowired
     ImageRepository imageRepository;
 
-    public Mono<Object> Upload(Flux<FilePart> file, String category) {
+    public Mono<ResponseEntity<Format>> Upload(Flux<FilePart> file, String category) {
         return file.flatMap(f -> f.content().map(it -> it.asInputStream()))
                 .reduce(SequenceInputStream::new)
                 .flatMap(initialStream -> {

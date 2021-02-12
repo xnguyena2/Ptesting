@@ -6,6 +6,7 @@ import com.example.heroku.model.Image;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.page.Page;
+import com.example.heroku.response.Format;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class BeerController {
     //---------- for manage image------------------
     @PostMapping(value = "/{id}/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
     @CrossOrigin(origins = "http://localhost:4200")
-    public Mono<Object> uploadIMG(@RequestPart("file") Flux<FilePart> file, @PathVariable("id") String beerID) {
+    public Mono<ResponseEntity<Format>> uploadIMG(@RequestPart("file") Flux<FilePart> file, @PathVariable("id") String beerID) {
         System.out.println("Uplaod image for beer!");
         return imageAPI.Upload(file, beerID);
     }
