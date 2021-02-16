@@ -1,8 +1,10 @@
 package com.example.heroku.services;
 
 import com.example.heroku.model.BeerUnit;
+import com.example.heroku.model.Image;
 import com.example.heroku.model.repository.BeerRepository;
 import com.example.heroku.model.repository.BeerUnitRepository;
+import com.example.heroku.model.repository.ImageRepository;
 import com.example.heroku.model.repository.SearchTokenRepository;
 import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
@@ -26,6 +28,9 @@ import static org.springframework.http.ResponseEntity.ok;
 public class Beer {
     @Autowired
     SearchTokenRepository searchBeer;
+
+    @Autowired
+    ImageRepository imageRepository;
 
     @Autowired
     BeerRepository beerRepository;
@@ -101,14 +106,17 @@ public class Beer {
                         Mono.just(new ArrayList<BeerUnit>())
                                 .flatMap(beerUnits ->
                                         beerUnitRepository.findByBeerID(beerSubmitData.getBeerSecondID())
-                                                .map(beerUnits::add
-                                                )
+                                                .map(beerUnits::add)
                                                 .then(
                                                         Mono.just(beerUnits)
                                                 )
-                                                .map(beerSubmitData::SetBeerUnit
-                                                )
+                                                .map(beerSubmitData::SetBeerUnit)
                                 )
+                )
+                .flatMap(beerSubmitData ->
+                        imageRepository.findByCategory(beerSubmitData.getBeerSecondID())
+                                .map(image -> beerSubmitData.AddImage(image.getImgid()))
+                                .then(Mono.just(beerSubmitData))
                 );
     }
 

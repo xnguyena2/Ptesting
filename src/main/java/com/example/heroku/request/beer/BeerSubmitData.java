@@ -23,6 +23,7 @@ public class BeerSubmitData {
     private String name;
     private String detail;
     private String category;
+    private List<String> imgaes;
     private BeerUnit[] listUnit;
 
     public BeerInfo GetBeerInfo() {
@@ -54,6 +55,14 @@ public class BeerSubmitData {
                 )
                 .build()
                 .SetBeerUnit(listMapedUnit);
+    }
+
+    public BeerSubmitData AddImage(String imgID){
+        if(this.imgaes == null){
+            this.imgaes = new ArrayList<>();
+        }
+        this.imgaes.add(imgID);
+        return this;
     }
 
     public BeerSubmitData FromBeer(Beer beer){

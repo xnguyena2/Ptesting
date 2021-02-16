@@ -100,20 +100,45 @@ public class ImageTest {
                 .then()
                 .block();
 
+        Flux.just(imgContent)
+                .flatMap(img ->
+                        imageAPI.Upload(Flux.just(img), "456")
+                                .map(formatResponseEntity -> {imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getResponse(),img); return formatResponseEntity;})
+                )
+                .then()
+                .block();
+
         imageAPI.GetAll("Carousel")
                 .map(image -> new imgMap(image.getImgid(), PhotoLib.getInstance().downloadFile(image.getImgid())))
                 .as(StepVerifier::create)
                 .consumeNextWith(image -> {
-                    assertThat(PhotoLib.getInstance().downloadFile(image.id)).isEqualTo(imgMap.get(image.id).getImageContent());
+                    assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent());
                 })
                 .consumeNextWith(image -> {
-                    assertThat(PhotoLib.getInstance().downloadFile(image.id)).isEqualTo(imgMap.get(image.id).getImageContent());
+                    assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent());
                 })
                 .consumeNextWith(image -> {
-                    assertThat(PhotoLib.getInstance().downloadFile(image.id)).isEqualTo(imgMap.get(image.id).getImageContent());
+                    assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent());
                 })
                 .consumeNextWith(image -> {
-                    assertThat(PhotoLib.getInstance().downloadFile(image.id)).isEqualTo(imgMap.get(image.id).getImageContent());
+                    assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent());
+                })
+                .verifyComplete();
+
+        imageAPI.GetAll("Carousel")
+                .map(image -> new imgMap(image.getImgid(), imageAPI.CreateThumbnailIMG(PhotoLib.getInstance().downloadFile(image.getImgid()), 500)))
+                .as(StepVerifier::create)
+                .consumeNextWith(image -> {
+                    assertThat(image.content).isEqualTo(imageAPI.CreateThumbnailIMG(imgMap.get(image.id).getImageContent(), 500));
+                })
+                .consumeNextWith(image -> {
+                    assertThat(image.content).isEqualTo(imageAPI.CreateThumbnailIMG(imgMap.get(image.id).getImageContent(), 500));
+                })
+                .consumeNextWith(image -> {
+                    assertThat(image.content).isEqualTo(imageAPI.CreateThumbnailIMG(imgMap.get(image.id).getImageContent(), 500));
+                })
+                .consumeNextWith(image -> {
+                    assertThat(image.content).isEqualTo(imageAPI.CreateThumbnailIMG(imgMap.get(image.id).getImageContent(), 500));
                 })
                 .verifyComplete();
     }
