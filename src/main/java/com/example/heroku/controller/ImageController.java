@@ -19,6 +19,9 @@ public class ImageController {
     @Autowired
     ImageRepository imageRepository;
 
+    @Autowired
+    com.example.heroku.services.Image imageAPI;
+
     @GetMapping(
             value = "/{id}",
             produces = MediaType.IMAGE_PNG_VALUE
@@ -27,5 +30,15 @@ public class ImageController {
     byte[] getImg(@PathVariable String id) {
         System.out.println("get img: " + id);
         return PhotoLib.getInstance().downloadFile(id);
+    }
+
+    @GetMapping(
+            value = "/thumbnail/{id}",
+            produces = MediaType.IMAGE_PNG_VALUE
+    )
+    public @ResponseBody
+    byte[] getThumbnailImg(@PathVariable("id") String id) {
+        System.out.println("get thumnail img: " + id);
+        return imageAPI.CreateThumbnailIMG(PhotoLib.getInstance().downloadFile(id), 300);
     }
 }
