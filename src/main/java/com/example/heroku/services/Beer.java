@@ -120,11 +120,13 @@ public class Beer {
                 );
     }
 
-    public Flux<com.example.heroku.model.Beer> SearchBeer(String txt) {
+    public Flux<BeerSubmitData> SearchBeer(String txt, int page, int size) {
         txt = Util.getInstance().RemoveAccent(txt);
         if (txt.contains("&"))
-            return this.beerRepository.searchBeer(txt);
-        return this.beerRepository.searchBeerLike("%" + txt + "%");
+            return this.beerRepository.searchBeer(txt, page, size)
+                    .flatMap(this::CoverToSubmitData);
+        return this.beerRepository.searchBeerLike("%" + txt + "%", page, size)
+                .flatMap(this::CoverToSubmitData);
     }
 
     public Flux<com.example.heroku.model.Beer> GetAllBeerByCategory(com.example.heroku.model.Beer.Category category, int page, int size){

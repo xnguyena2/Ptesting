@@ -159,31 +159,31 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.SearchBeer("hà")
+        this.beerAPI.SearchBeer("hà", 0, 100)
                 .as(StepVerifier::create)
-                .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
+                .consumeNextWith(beerSubmitData -> {
+                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
                 })
                 .verifyComplete();
 
-        this.beerAPI.SearchBeer("ha%oai")
+        this.beerAPI.SearchBeer("ha%oai", 0, 100)
                 .as(StepVerifier::create)
-                .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
+                .consumeNextWith(beerSubmitData -> {
+                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
                 })
                 .verifyComplete();
 
-        this.beerAPI.SearchBeer("bia&ha&lan")
+        this.beerAPI.SearchBeer("bia&ha&lan", 0, 100)
                 .as(StepVerifier::create)
-                .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
+                .consumeNextWith(beerSubmitData -> {
+                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
                 })
                 .verifyComplete();
 
-        this.beerAPI.SearchBeer("bi:*&ngo:*&nhap:*")
+        this.beerAPI.SearchBeer("bi:*&ngo:*&nhap:*", 0, 100)
                 .as(StepVerifier::create)
-                .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getBeer_second_id()).isEqualTo("456");
+                .consumeNextWith(beerSubmitData -> {
+                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
                 })
                 .verifyComplete();
 

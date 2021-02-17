@@ -28,7 +28,7 @@ public class ClientDeviceTest {
                     assertThat((long) bootStrapData.getCarousel().size()).isEqualTo(4);
                     assertThat((long) bootStrapData.getProducts().size()).isEqualTo(2);
                     Flux.just(bootStrapData.getProducts().toArray(new BeerSubmitData[0]))
-                            .sort(Comparator.comparing(BeerSubmitData::getName))
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
