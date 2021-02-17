@@ -35,7 +35,7 @@ public class ClientDeviceTest {
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerSubmitData.getImgaes().size()).isEqualTo(4);
+                                assertThat(beerSubmitData.getImages().size()).isEqualTo(4);
                             })
                             .verifyComplete();
                 })

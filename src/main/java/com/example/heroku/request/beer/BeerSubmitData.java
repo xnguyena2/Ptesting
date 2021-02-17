@@ -23,7 +23,7 @@ public class BeerSubmitData {
     private String name;
     private String detail;
     private String category;
-    private List<String> imgaes;
+    private List<String> images;
     private BeerUnit[] listUnit;
 
     public BeerInfo GetBeerInfo() {
@@ -58,10 +58,10 @@ public class BeerSubmitData {
     }
 
     public BeerSubmitData AddImage(String imgID){
-        if(this.imgaes == null){
-            this.imgaes = new ArrayList<>();
+        if(this.images == null){
+            this.images = new ArrayList<>();
         }
-        this.imgaes.add(imgID);
+        this.images.add(imgID);
         return this;
     }
 
