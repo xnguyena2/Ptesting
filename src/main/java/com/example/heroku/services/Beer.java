@@ -1,13 +1,11 @@
 package com.example.heroku.services;
 
 import com.example.heroku.model.BeerUnit;
-import com.example.heroku.model.Image;
-import com.example.heroku.model.repository.BeerRepository;
-import com.example.heroku.model.repository.BeerUnitRepository;
-import com.example.heroku.model.repository.ImageRepository;
-import com.example.heroku.model.repository.SearchTokenRepository;
+import com.example.heroku.model.repository.*;
 import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
+import com.example.heroku.model.count.ResultWithCount;
+import com.example.heroku.request.beer.SearchResult;
 import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +34,9 @@ public class Beer {
     BeerRepository beerRepository;
 
     @Autowired
+    ResultWithCountRepository resultWithCountRepository;
+
+    @Autowired
     BeerUnitRepository beerUnitRepository;
 
     public Mono<ResponseEntity> generateID() {
@@ -59,7 +60,7 @@ public class Beer {
                         .flatMap(beerInfo ->
                                 this.searchBeer.saveToken(beerInfo.getBeer().getBeer_second_id(),
                                         beerInfo.getBeer().getTokens()
-                                        )
+                                )
                         )
                 )
                 .then(Mono.just(info)
@@ -75,29 +76,44 @@ public class Beer {
                 );
     }
 
-    public Mono<BeerInfo> GetBeerByID(String id){
+    public Mono<BeerInfo> GetBeerByID(String id) {
         return beerRepository.findBySecondID(id)
                 .map(beer ->
                         BeerInfo.builder().beer(beer).build()
                 )
                 .flatMap(beerInfo ->
-                    Mono.just(new ArrayList<BeerUnit>())
-                            .flatMap(beerUnits ->
-                                    beerUnitRepository.findByBeerID(id)
-                                            .map(beerUnits::add
-                                            )
-                                            .then(
-                                                    Mono.just(beerUnits)
-                                            )
-                                            .map(beerInfo::SetBeerUnit
-                                            )
-                            )
+                        Mono.just(new ArrayList<BeerUnit>())
+                                .flatMap(beerUnits ->
+                                        beerUnitRepository.findByBeerID(id)
+                                                .map(beerUnits::add
+                                                )
+                                                .then(
+                                                        Mono.just(beerUnits)
+                                                )
+                                                .map(beerInfo::SetBeerUnit
+                                                )
+                                )
                 );
     }
 
-    public Flux<BeerSubmitData> GetAllBeer(int page, int size){
+    public Flux<BeerSubmitData> GetAllBeer(int page, int size) {
         return this.beerRepository.findAll(page, size)
                 .flatMap(this::CoverToSubmitData);
+    }
+
+    public Mono<SearchResult> CountGetAllBeer(int page, int size) {
+        return this.resultWithCountRepository.countAll()
+                .map(resultWithCount -> {
+                    SearchResult result = new SearchResult();
+                    result.setCount(resultWithCount.getCount());
+                    return result;
+                })
+                .flatMap(searchResult ->
+                        this.beerRepository.findAll(page, size)
+                                .flatMap(this::CoverToSubmitData)
+                                .map(searchResult::Add)
+                                .then(Mono.just(searchResult))
+                );
     }
 
     public Mono<BeerSubmitData> CoverToSubmitData(com.example.heroku.model.Beer beer) {
@@ -121,16 +137,71 @@ public class Beer {
     }
 
     public Flux<BeerSubmitData> SearchBeer(String txt, int page, int size) {
-        txt = Util.getInstance().RemoveAccent(txt);
-        if (txt.contains("&"))
-            return this.beerRepository.searchBeer(txt, page, size)
-                    .flatMap(this::CoverToSubmitData);
-        return this.beerRepository.searchBeerLike("%" + txt + "%", page, size)
+        return Flux.just(txt)
+                .map(Util.getInstance()::RemoveAccent)
+                .flatMap(searchTxt -> {
+                    if (searchTxt.contains("&"))
+                        return this.beerRepository.searchBeer(searchTxt, page, size);
+                    return this.beerRepository.searchBeerLike("%" + searchTxt + "%", page, size);
+                })
                 .flatMap(this::CoverToSubmitData);
     }
 
-    public Flux<com.example.heroku.model.Beer> GetAllBeerByCategory(com.example.heroku.model.Beer.Category category, int page, int size){
+    public Mono<SearchResult> CountSearchBeer(String txt, int page, int size) {
+        return Mono.just(txt)
+                .map(Util.getInstance()::RemoveAccent)
+                .flatMap(searchTxt -> {
+                    if (searchTxt.contains("&"))
+                        return this.resultWithCountRepository.countSearchBeer(searchTxt)
+                                .map(resultWithCount -> {
+                                    SearchResult result = SearchResult.builder()
+                                            .isNormalSearch(true)
+                                            .searchTxt(searchTxt)
+                                            .build();
+                                    result.setCount(resultWithCount.getCount());
+                                    return result;
+                                });
+                    return this.resultWithCountRepository.countSearchBeerLike("%" + searchTxt + "%")
+                            .map(resultWithCount -> {
+                                SearchResult result = SearchResult.builder()
+                                        .isNormalSearch(false)
+                                        .searchTxt(searchTxt)
+                                        .build();
+                                result.setCount(resultWithCount.getCount());
+                                return result;
+                            });
+                })
+                .flatMap(searchResult ->
+                        Flux.just(searchResult.getSearchTxt()).flatMap(
+                                searchTxt -> {
+                                    if (searchResult.isNormalSearch()) {
+                                        return this.beerRepository.searchBeer(searchResult.getSearchTxt(), page, size).flatMap(this::CoverToSubmitData);
+                                    }
+                                    return this.beerRepository.searchBeerLike("%" + searchResult.getSearchTxt() + "%", page, size).flatMap(this::CoverToSubmitData);
+                                })
+                                .map(searchResult::Add)
+                                .then(Mono.just(searchResult))
+                );
+    }
+
+    public Flux<com.example.heroku.model.Beer> GetAllBeerByCategory(com.example.heroku.model.Beer.Category category, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createat");
         return this.beerRepository.findByCategory(category, PageRequest.of(page, size, sort));
+    }
+
+    public Mono<SearchResult> CountGetAllBeerByCategory(com.example.heroku.model.Beer.Category category, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createat");
+        return this.resultWithCountRepository.countCategory(category)
+                .map(resultWithCount -> {
+                    SearchResult result = new SearchResult();
+                    result.setCount(resultWithCount.getCount());
+                    return result;
+                })
+                .flatMap(searchResult ->
+                        this.beerRepository.findByCategory(category, PageRequest.of(page, size, sort))
+                                .flatMap(this::CoverToSubmitData)
+                                .map(searchResult::Add)
+                                .then(Mono.just(searchResult))
+                );
     }
 }

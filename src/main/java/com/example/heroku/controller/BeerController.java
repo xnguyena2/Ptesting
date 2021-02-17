@@ -5,6 +5,7 @@ import com.example.heroku.model.BeerUnit;
 import com.example.heroku.model.Image;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.request.beer.SearchResult;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.page.Page;
 import com.example.heroku.response.Format;
@@ -76,9 +77,8 @@ public class BeerController {
 
     @PostMapping("/search")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Flux<BeerSubmitData> search(@RequestBody @Valid SearchQuery query){
+    public Mono<SearchResult> search(@RequestBody @Valid SearchQuery query){
         System.out.println("Search beer: "+query.getQuery());
-        return beerAPI.SearchBeer(query.getQuery(), query.getPage(), query.getSize());
+        return beerAPI.CountSearchBeer(query.getQuery(), query.getPage(), query.getSize());
     }
-
 }

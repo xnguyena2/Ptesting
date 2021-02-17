@@ -24,7 +24,6 @@ public interface BeerRepository extends ReactiveCrudRepository<Beer, String> {
     @Query(value = "SELECT * FROM beer INNER JOIN search_token ON search_token.beer_second_id = beer.beer_second_id WHERE search_token.tokens @@ to_tsquery(:search) LIMIT :size OFFSET (:page*:size)")
     Flux<Beer> searchBeer(@Param("search")String search, @Param("page")int page, @Param("size")int size);
 
-
     //select * from beer where meta_search ~ '(?=.*go)(?=.*ha)'
     @Query(value = "SELECT * FROM beer WHERE beer.meta_search LIKE :search LIMIT :size OFFSET (:page*:size)")
     Flux<Beer> searchBeerLike(@Param("search")String search, @Param("page")int page, @Param("size")int size);
