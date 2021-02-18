@@ -42,7 +42,7 @@ public class ImageController {
     )
     public @ResponseBody
     byte[] getPreviewImg(@PathVariable("id") String id) {
-        System.out.println("get thumnail img: " + id);
+        System.out.println("get preview img: " + id);
         return imageAPI.CreateThumbnailIMG(PhotoLib.getInstance().downloadFile(id), 300);
     }
 }
