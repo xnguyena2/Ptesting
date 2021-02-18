@@ -33,6 +33,16 @@ public class ImageController {
     public @ResponseBody
     byte[] getThumbnailImg(@PathVariable("id") String id) {
         System.out.println("get thumnail img: " + id);
+        return imageAPI.CreateThumbnailIMG(PhotoLib.getInstance().downloadFile(id), 50);
+    }
+
+    @GetMapping(
+            value = "/preview/{id}",
+            produces = MediaType.IMAGE_PNG_VALUE
+    )
+    public @ResponseBody
+    byte[] getPreviewImg(@PathVariable("id") String id) {
+        System.out.println("get thumnail img: " + id);
         return imageAPI.CreateThumbnailIMG(PhotoLib.getInstance().downloadFile(id), 300);
     }
 }
