@@ -41,4 +41,28 @@ public class ClientDeviceTest {
                 })
                 .verifyComplete();
     }
+
+    public void BootStrapDataWithoutImage(){
+        clientDeviceAPI.bootStrapData()
+                .as(StepVerifier::create)
+                .consumeNextWith(bootStrapData -> {
+                    try {
+                        System.out.println( new ObjectMapper().writeValueAsString(bootStrapData));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(2);
+                    Flux.just(bootStrapData.getProducts().toArray(new BeerSubmitData[0]))
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+    }
 }

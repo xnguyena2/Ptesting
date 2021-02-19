@@ -24,16 +24,7 @@ public class ClientDevice {
                 BootStrapData.builder()
                         .carousel(new ArrayList<>())
                         .products(new ArrayList<>())
-                        .build()
-        )
-                .flatMap(bootStrapData ->
-                        imageAPI.GetAll("Carousel")
-                                .map(image ->
-                                        bootStrapData.getCarousel().add(image.getImgid())
-                                ).then(
-                                Mono.just(bootStrapData)
-                        )
-                )
+                        .build())
                 .flatMap(bootStrapData ->
                         beerAPI.GetAllBeer(0, 25)
                                 .map(beerSubmitData ->
@@ -43,6 +34,15 @@ public class ClientDevice {
                                         .flatMap(data ->
                                                 this.deviceConfigAPI.GetConfig())
                                         .map(bootStrapData::setDeviceConfig)
-                        ));
+                        )
+                )
+                .flatMap(bootStrapData ->
+                        imageAPI.GetAll("Carousel")
+                                .map(image ->
+                                        bootStrapData.getCarousel().add(image.getImgid())
+                                ).then(
+                                Mono.just(bootStrapData)
+                        )
+                );
     }
 }

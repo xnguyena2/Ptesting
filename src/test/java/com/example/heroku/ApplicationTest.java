@@ -127,18 +127,23 @@ public class ApplicationTest extends TestConfig{
 
     @Test
     public void testBootStrapData() {
+
+        BeerTest.builder().beerAPI(beerAPI).build().saveBeerTest();
+
+        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).build().DeviceConfigTestWithoutImage();
+
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).build().BootStrapDataWithoutImage();
+
         ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).build().ImageTest(listImg);
 
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).build().DeviceConfigTest();
-
-        BeerTest.builder().beerAPI(beerAPI).build().saveBeerTest();
 
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).build().BootStrapData();
     }
 
     @Test
     public void testGenerateBeer() throws InterruptedException {
-        BeerTest.builder().beerAPI(beerAPI).build().createPeerTest();
+        //BeerTest.builder().beerAPI(beerAPI).build().createPeerTest();
     }
 
 }

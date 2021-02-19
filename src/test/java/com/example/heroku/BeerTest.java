@@ -363,13 +363,7 @@ public class BeerTest {
                         .beer(Beer
                                 .builder()
                                 .category(Beer.Category.ALCOHOL)
-                                .detail("Laporta đang chạy đua chức Chủ tịch Barca nhiệm kỳ mới. Ông từng làm Chủ tịch CLB từ 2003 đến 2010, giai đoạn Lionel Messi ra mắt đội một và chinh phục loạt danh hiệu cao quý cùng Barca. Quan hệ giữa đội chủ sân Camp Nou và Messi xấu đi từ hè 2020, dưới thời cựu Chủ tịch Josep Bartomeu. Hợp đồng của siêu sao 33 tuổi chỉ còn bốn tháng và chưa có dấu hiệu cho thấy anh muốn gia hạn.\n" +
-                                        "\n" +
-                                        "\"Cậu ấy cần chiến thắng, cần các danh hiệu\", Laporta nói về yếu tố có thể níu chân Messi lại Camp Nou. \"Leo cần những chiếc cúp cùng Barca. Tôi sẽ làm mọi cách để giữ cậu ấy lại. Các đối thủ đang đưa ra lời đề nghị cho cậu ấy. Chúng tôi sẽ chứng minh tiền bạc không đảm bảo các danh hiệu. Leo khao khát danh hiệu hơn tiền. Leo mang tiền về Barca nhiều hơn những gì cậu ấy được trả. Cậu ấy tốn của đội 8% lợi nhuận, nhưng tạo ra khoảng 30%. Leo giúp Barca kiếm nhiều tiền, nhưng điều quan trọng nhất là sự đền đáp cảm xúc của cậu ấy. Điều vô giá là khi bạn hỏi một cô cậu nhóc nào đó về cầu thủ yêu thích nhất, và chúng trả lời đó là Messi\".\n" +
-                                        "\n" +
-                                        "Gặp nhiều rắc rối trước mùa giải, Messi vẫn đang là chân sút số một của Barca với 20 bàn mùa này. Đây là năm thứ 13 liên tiếp anh ghi từ 20 bàn trở lên. Messi cũng ghi bàn cho Barca ở Champions League 17 năm liền. Tuy nhiên, thành tích của Barca ngày càng đi xuống. Năm ngoái, họ thảm bại 2-8 trước Bayern ở Champions League và thua Real trong cuộc đua La Liga. Mùa này, Barca còn rất ít cơ hội đi tiếp tại Champions League sau khi thua PSG 1-4 trên sân nhà ở lượt đi vòng 1/8, và đang kém đỉnh bảng La Liga của Atletico chín điểm.\n" +
-                                        "\n" +
-                                        "Messi được tự do đàm phán từ tháng 1/2021 với bất kỳ đội bóng nào. Nhiều nguồn tin cho rằng anh sẽ chọn PSG hoặc Man City, nếu rời Barca.")
+                                .detail("nhưng Milan khởi đầu ấn tượng. Với Mandzukic lần đầu đá chính, cùng sự hỗ trợ của bộ ba Castillejo, Krunic, Rebic, đội nhì bảng Serie A liên tục gây sóng gió về phía cầu môn Sao Đỏ. Chỉ trong 13 phút đầu, Milan")
                                 .name("beer tiger")
                                 .beer_second_id("456").build()
                                 .AutoFill()
