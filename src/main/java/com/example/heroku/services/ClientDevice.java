@@ -27,7 +27,7 @@ public class ClientDevice {
                         .products(new ArrayList<>())
                         .build())
                 .flatMap(bootStrapData ->
-                        beerAPI.GetAllBeer(0, 25)
+                        beerAPI.GetAllBeer(0, 24)
                                 .map(beerSubmitData ->
                                         bootStrapData.getProducts().add(beerSubmitData)
                                 ).then(

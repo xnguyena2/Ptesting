@@ -75,7 +75,7 @@ public class ClientDeviceTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(25);
+                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(24);
                 })
                 .verifyComplete();
     }

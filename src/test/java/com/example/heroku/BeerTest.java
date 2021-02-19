@@ -335,15 +335,14 @@ public class BeerTest {
                 .verifyComplete();
     }
 
-    public void createPeerTest() throws InterruptedException {
-
-        BeerInfo template =
+    private BeerInfo createTestBeer(String id){
+        return
                 BeerInfo
                         .builder()
                         .beerUnit(new BeerUnit[]{
                                 BeerUnit
                                         .builder()
-                                        .beer("456")
+                                        .beer(id)
                                         .price(10)
                                         .weight(0.3f)
                                         .discount(10)
@@ -352,7 +351,7 @@ public class BeerTest {
                                         .build(),
                                 BeerUnit
                                         .builder()
-                                        .beer("456")
+                                        .beer(id)
                                         .price(10)
                                         .weight(0.3f)
                                         .discount(10)
@@ -365,10 +364,12 @@ public class BeerTest {
                                 .category(Beer.Category.ALCOHOL)
                                 .detail("nhưng Milan khởi đầu ấn tượng. Với Mandzukic lần đầu đá chính, cùng sự hỗ trợ của bộ ba Castillejo, Krunic, Rebic, đội nhì bảng Serie A liên tục gây sóng gió về phía cầu môn Sao Đỏ. Chỉ trong 13 phút đầu, Milan")
                                 .name("beer tiger")
-                                .beer_second_id("456").build()
+                                .beer_second_id(id).build()
                                 .AutoFill()
                         )
                         .build();
+    }
+    public void createPeerTest() throws InterruptedException {
 
         Thread[] threads = new Thread[100];
 
@@ -377,12 +378,7 @@ public class BeerTest {
             threads[i] = new Thread(() -> {
                 System.out.println("Thread Running: " + (i1 + 1));
                 String id = i1+"";
-                template.getBeer().setId(null);
-                template.getBeer().setBeer_second_id(id);
-                template.getBeerUnit()[0].setBeer(id);
-                template.getBeerUnit()[0].setId(null);
-                template.getBeerUnit()[1].setBeer(id);
-                template.getBeerUnit()[1].setId(null);
+                BeerInfo template = createTestBeer(id);
                 beerAPI.CreateBeer(template).blockLast();
             });
             //Thread.sleep(5000);
