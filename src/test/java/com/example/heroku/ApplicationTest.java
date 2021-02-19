@@ -136,4 +136,9 @@ public class ApplicationTest extends TestConfig{
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).build().BootStrapData();
     }
 
+    @Test
+    public void testGenerateBeer() throws InterruptedException {
+        BeerTest.builder().beerAPI(beerAPI).build().createPeerTest();
+    }
+
 }
