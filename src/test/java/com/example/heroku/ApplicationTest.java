@@ -143,7 +143,7 @@ public class ApplicationTest extends TestConfig{
 
     @Test
     public void testGenerateBeer() throws InterruptedException {
-        //BeerTest.builder().beerAPI(beerAPI).build().createPeerTest();
+        BeerTest.builder().beerAPI(beerAPI).build().createPeerTest();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).build().BootStrapDataLarge();
     }
-
 }

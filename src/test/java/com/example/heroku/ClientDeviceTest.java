@@ -65,4 +65,18 @@ public class ClientDeviceTest {
                 })
                 .verifyComplete();
     }
+
+    public void BootStrapDataLarge(){
+        clientDeviceAPI.bootStrapData()
+                .as(StepVerifier::create)
+                .consumeNextWith(bootStrapData -> {
+                    try {
+                        System.out.println( new ObjectMapper().writeValueAsString(bootStrapData));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(25);
+                })
+                .verifyComplete();
+    }
 }
