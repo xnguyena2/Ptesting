@@ -6,17 +6,23 @@ import com.example.heroku.model.BeerUnitOrder;
 import com.example.heroku.model.PackageOrder;
 import com.example.heroku.model.repository.BeerUnitRepository;
 import com.example.heroku.request.beer.BeerInfo;
+import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.PackageOrderData;
+import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.voucher.VoucherData;
 import com.example.heroku.services.BeerOrder;
 import com.example.heroku.services.ShippingProvider;
 import com.example.heroku.services.UserDevice;
 import com.example.heroku.services.Voucher;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.sql.Timestamp;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -86,6 +92,50 @@ public class OrderPackageTest extends TestConfig {
                 .consumeNextWith(voucher -> {
                     System.out.println(voucher.getVoucher_second_id());
                     System.out.println(voucher.getReuse());
+                })
+                .verifyComplete();
+
+        beerAPI.CountSearchBeer("tiger", 0, 2, SearchQuery.Filter.SOLD_NUM)
+                .as(StepVerifier::create)
+                .consumeNextWith(resultWithCount -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(resultWithCount.getCount()).isEqualTo(5);
+                    Flux.just(resultWithCount.GetResultAsArray())
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("beer_order1");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("beer_order2");
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+
+        beerAPI.CountSearchBeer("beer&tiger", 0, 2, SearchQuery.Filter.SOLD_NUM)
+                .as(StepVerifier::create)
+                .consumeNextWith(resultWithCount -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(resultWithCount.getCount()).isEqualTo(5);
+                    Flux.just(resultWithCount.GetResultAsArray())
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("beer_order1");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("beer_order2");
+                            })
+                            .verifyComplete();
                 })
                 .verifyComplete();
         //orderTest();

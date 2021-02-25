@@ -79,6 +79,6 @@ public class BeerController {
     @CrossOrigin(origins = "http://localhost:4200")
     public Mono<SearchResult> search(@RequestBody @Valid SearchQuery query){
         System.out.println("Search beer: "+query.getQuery());
-        return beerAPI.CountSearchBeer(query.getQuery(), query.getPage(), query.getSize());
+        return beerAPI.CountSearchBeer(query.getQuery(), query.getPage(), query.getSize(), query.GetFilter());
     }
 }
