@@ -16,11 +16,36 @@ public interface BeerRepository extends ReactiveCrudRepository<Beer, String> {
     @Query(value = "DELETE FROM beer WHERE beer.beer_second_id = :id")
     Mono<Beer> deleteBySecondId(@Param("id")String id);
 
+
+    //search all
     //@Query(value = "SELECT * FROM beer ORDER BY createat DESC LIMIT :size OFFSET (:page*:size)")
     Flux<Beer> findByIdNotNull(Pageable pageable);
 
+    @Query(value = "SELECT beer.* FROM (SELECT beer.beer_second_id, MAX(beer_unit.price) AS price FROM beer LEFT JOIN beer_unit ON beer.beer_second_id = beer_unit.beer GROUP BY beer.beer_second_id ORDER BY price ASC LIMIT :size OFFSET (:page*:size)) beer_temp INNER JOIN beer ON beer.beer_second_id = beer_temp.beer_second_id")
+    Flux<Beer> getAllBeerSortByPriceASC(@Param("page")int page, @Param("size")int size);
+
+    @Query(value = "SELECT beer.* FROM (SELECT beer.beer_second_id, MAX(beer_unit.price) AS price FROM beer LEFT JOIN beer_unit ON beer.beer_second_id = beer_unit.beer GROUP BY beer.beer_second_id ORDER BY price DESC LIMIT :size OFFSET (:page*:size)) beer_temp INNER JOIN beer ON beer.beer_second_id = beer_temp.beer_second_id")
+    Flux<Beer> getAllBeerSortByPriceDESC(@Param("page")int page, @Param("size")int size);
+
+    @Query(value = "SELECT beer.* FROM (SELECT beer.beer_second_id, CASE WHEN SUM(beer_unit_order.number_unit) IS NULL THEN 0 ELSE SUM(beer_unit_order.number_unit) END AS sold FROM beer LEFT JOIN beer_unit_order ON beer.beer_second_id = beer_unit_order.beer_second_id GROUP BY beer.beer_second_id ORDER BY sold DESC LIMIT :size OFFSET (:page*:size)) beer_temp INNER JOIN beer ON beer.beer_second_id = beer_temp.beer_second_id")
+    Flux<Beer> getAllBeerSortBySoldDESC(@Param("page")int page, @Param("size")int size);
+
+
+    //search by category
     Flux<Beer> findByCategory(Beer.Category category, Pageable pageable);
 
+    @Query(value = "SELECT beer.* FROM (SELECT beer.beer_second_id, MAX(beer_unit.price) AS price FROM beer LEFT JOIN beer_unit ON beer.beer_second_id = beer_unit.beer WHERE beer.category = :category GROUP BY beer.beer_second_id ORDER BY price ASC LIMIT :size OFFSET (:page*:size)) beer_temp INNER JOIN beer ON beer.beer_second_id = beer_temp.beer_second_id")
+    Flux<Beer> findByCategoryBeerSortByPriceASC(@Param("category")Beer.Category category, @Param("page")int page, @Param("size")int size);
+
+    @Query(value = "SELECT beer.* FROM (SELECT beer.beer_second_id, MAX(beer_unit.price) AS price FROM beer LEFT JOIN beer_unit ON beer.beer_second_id = beer_unit.beer WHERE beer.category = :category GROUP BY beer.beer_second_id ORDER BY price DESC LIMIT :size OFFSET (:page*:size)) beer_temp INNER JOIN beer ON beer.beer_second_id = beer_temp.beer_second_id")
+    Flux<Beer> findByCategoryBeerSortByPriceDESC(@Param("category")Beer.Category category, @Param("page")int page, @Param("size")int size);
+
+    @Query(value = "SELECT beer.* FROM (SELECT beer.beer_second_id, CASE WHEN SUM(beer_unit_order.number_unit) IS NULL THEN 0 ELSE SUM(beer_unit_order.number_unit) END AS sold FROM beer LEFT JOIN beer_unit_order ON beer.beer_second_id = beer_unit_order.beer_second_id WHERE beer.category = :category GROUP BY beer.beer_second_id ORDER BY sold DESC LIMIT :size OFFSET (:page*:size)) beer_temp INNER JOIN beer ON beer.beer_second_id = beer_temp.beer_second_id")
+    Flux<Beer> findByCategoryBeerSortBySoldDESC(@Param("category")Beer.Category category, @Param("page")int page, @Param("size")int size);
+
+
+
+    //search by query
     @Query(value = "SELECT * FROM beer INNER JOIN search_token ON search_token.beer_second_id = beer.beer_second_id WHERE search_token.tokens @@ to_tsquery(:search) LIMIT :size OFFSET (:page*:size)")
     Flux<Beer> searchBeer(@Param("search")String search, @Param("page")int page, @Param("size")int size);
 

@@ -95,7 +95,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        beerAPI.CountSearchBeer("tiger", 0, 2, SearchQuery.Filter.SOLD_NUM)
+        beerAPI.CountSearchBeer(SearchQuery.builder().query("tiger").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -117,7 +117,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        beerAPI.CountSearchBeer("beer&tiger", 0, 2, SearchQuery.Filter.SOLD_NUM)
+        beerAPI.CountSearchBeer(SearchQuery.builder().query("beer&tiger").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {

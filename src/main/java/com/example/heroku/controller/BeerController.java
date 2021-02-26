@@ -31,7 +31,7 @@ public class BeerController {
 
     @GetMapping("/generateid")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Mono<ResponseEntity> generateID(){
+    public Mono<ResponseEntity> generateID() {
         return beerAPI.generateID();
     }
 
@@ -47,38 +47,43 @@ public class BeerController {
     @PostMapping("/{id}/img/delete")
     @CrossOrigin(origins = "http://localhost:4200")
     public Mono<Object> deleteIMG(@Valid @ModelAttribute IDContainer img) {
-        System.out.println("delete imgae: "+img.getId());
+        System.out.println("delete imgae: " + img.getId());
         return imageAPI.Delete(img);
     }
 
     @GetMapping("/{id}/img/all")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Flux<Image> getIMGbyID(@PathVariable("id") String beerID){
+    public Flux<Image> getIMGbyID(@PathVariable("id") String beerID) {
         return imageAPI.GetAll(beerID);
     }
     //--------------------end manage image-----------------
 
 
-
-
     @PostMapping("/create")
     @CrossOrigin(origins = "http://localhost:4200")
     public Flux<BeerUnit> addBeerInfo(@RequestBody @Valid BeerSubmitData beerInfo) {
-        System.out.println("add or update beer: "+beerInfo.GetBeerInfo().getBeer().getName());
+        System.out.println("add or update beer: " + beerInfo.GetBeerInfo().getBeer().getName());
         return beerAPI.CreateBeer(beerInfo.GetBeerInfo());
     }
 
     @PostMapping("/getall")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Flux<BeerSubmitData> getAll(@RequestBody @Valid Page page) {
-        System.out.println("get all beer: "+page.getPage());
-        return beerAPI.GetAllBeer(page.getPage(), page.getSize());
+    public Mono<SearchResult> getAll(@RequestBody @Valid SearchQuery query) {
+        System.out.println("get all beer: " + query.getPage());
+        return beerAPI.CountGetAllBeer(query);
     }
 
     @PostMapping("/search")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Mono<SearchResult> search(@RequestBody @Valid SearchQuery query){
-        System.out.println("Search beer: "+query.getQuery());
-        return beerAPI.CountSearchBeer(query.getQuery(), query.getPage(), query.getSize(), query.GetFilter());
+    public Mono<SearchResult> search(@RequestBody @Valid SearchQuery query) {
+        System.out.println("Search beer: " + query.getQuery());
+        return beerAPI.CountSearchBeer(query);
+    }
+
+    @PostMapping("/category")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Mono<SearchResult> category(@RequestBody @Valid SearchQuery query) {
+        System.out.println("category beer: " + query.getQuery());
+        return beerAPI.CountGetAllBeerByCategory(query);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.heroku.services;
 
+import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.response.BootStrapData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,7 @@ public class ClientDevice {
                         .products(new ArrayList<>())
                         .build())
                 .flatMap(bootStrapData ->
-                        beerAPI.GetAllBeer(0, 24)
+                        beerAPI.GetAllBeer(SearchQuery.builder().page(0).size(24).build())
                                 .map(beerSubmitData ->
                                         bootStrapData.getProducts().add(beerSubmitData)
                                 ).then(

@@ -85,23 +85,22 @@ public class Beer {
                         Mono.just(new ArrayList<BeerUnit>())
                                 .flatMap(beerUnits ->
                                         beerUnitRepository.findByBeerID(id)
-                                                .map(beerUnits::add
-                                                )
-                                                .then(
-                                                        Mono.just(beerUnits)
-                                                )
-                                                .map(beerInfo::SetBeerUnit
-                                                )
+                                                .map(beerUnits::add)
+                                                .then(Mono.just(beerUnits))
+                                                .map(beerInfo::SetBeerUnit)
                                 )
                 );
     }
 
-    public Flux<BeerSubmitData> GetAllBeer(int page, int size) {
-        return this.beerRepository.findByIdNotNull(PageRequest.of(page, size))
+    public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {
+        return this.beerRepository.findByIdNotNull(PageRequest.of(query.getPage(), query.getSize(), Sort.by(Sort.Direction.DESC, "createat")))
                 .flatMap(this::CoverToSubmitData);
     }
 
-    public Mono<SearchResult> CountGetAllBeer(int page, int size) {
+    public Mono<SearchResult> CountGetAllBeer(SearchQuery query) {
+        final SearchQuery.Filter filter = query.GetFilter();
+        final int page = query.getPage();
+        final int size = query.getSize();
         return this.resultWithCountRepository.countAll()
                 .map(resultWithCount -> {
                     SearchResult result = new SearchResult();
@@ -109,7 +108,26 @@ public class Beer {
                     return result;
                 })
                 .flatMap(searchResult ->
-                        this.beerRepository.findByIdNotNull(PageRequest.of(page, size))
+                        Flux.just(searchResult).flatMap(rs -> {
+                            switch (filter) {
+                                case CREATE_ASC:
+                                    return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createat")));
+                                case CREATE_DESC:
+                                    return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createat")));
+                                case NAME_ASC:
+                                    return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name")));
+                                case NAME_DESC:
+                                    return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "name")));
+                                case PRICE_ASC:
+                                    return this.beerRepository.getAllBeerSortByPriceASC(page, size);
+                                case PRICE_DESC:
+                                    return this.beerRepository.getAllBeerSortByPriceDESC(page, size);
+                                case SOLD_NUM:
+                                    return this.beerRepository.getAllBeerSortBySoldDESC(page, size);
+                                default:
+                                    return this.beerRepository.findByIdNotNull(PageRequest.of(page, size));
+                            }
+                        })
                                 .flatMap(this::CoverToSubmitData)
                                 .map(searchResult::Add)
                                 .then(Mono.just(searchResult))
@@ -136,18 +154,11 @@ public class Beer {
                 );
     }
 
-    public Flux<BeerSubmitData> SearchBeer(String txt, int page, int size) {
-        return Flux.just(txt)
-                .map(Util.getInstance()::RemoveAccent)
-                .flatMap(searchTxt -> {
-                    if (searchTxt.contains("&"))
-                        return this.beerRepository.searchBeer(searchTxt, page, size);
-                    return this.beerRepository.searchBeerLike("%" + searchTxt + "%", page, size);
-                })
-                .flatMap(this::CoverToSubmitData);
-    }
-
-    public Mono<SearchResult> CountSearchBeer(String txt, int page, int size, SearchQuery.Filter filter) {
+    public Mono<SearchResult> CountSearchBeer(SearchQuery query) {
+        final String txt = query.getQuery();
+        final int page = query.getPage();
+        final int size = query.getSize();
+        final SearchQuery.Filter filter = query.GetFilter();
         return Mono.just(txt)
                 .map(Util.getInstance()::RemoveAccent)
                 .flatMap(searchTxt -> {
@@ -219,13 +230,11 @@ public class Beer {
                 );
     }
 
-    public Flux<com.example.heroku.model.Beer> GetAllBeerByCategory(com.example.heroku.model.Beer.Category category, int page, int size) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "createat");
-        return this.beerRepository.findByCategory(category, PageRequest.of(page, size, sort));
-    }
-
-    public Mono<SearchResult> CountGetAllBeerByCategory(com.example.heroku.model.Beer.Category category, int page, int size) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "createat");
+    public Mono<SearchResult> CountGetAllBeerByCategory(SearchQuery query) {
+        final com.example.heroku.model.Beer.Category category = com.example.heroku.model.Beer.Category.get(query.getQuery());
+        final SearchQuery.Filter filter = query.GetFilter();
+        final int page = query.getPage();
+        final int size = query.getSize();
         return this.resultWithCountRepository.countCategory(category)
                 .map(resultWithCount -> {
                     SearchResult result = new SearchResult();
@@ -233,7 +242,26 @@ public class Beer {
                     return result;
                 })
                 .flatMap(searchResult ->
-                        this.beerRepository.findByCategory(category, PageRequest.of(page, size, sort))
+                        Flux.just(searchResult).flatMap(rs -> {
+                            switch (filter) {
+                                case CREATE_ASC:
+                                    return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createat")));
+                                case CREATE_DESC:
+                                    return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createat")));
+                                case NAME_ASC:
+                                    return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name")));
+                                case NAME_DESC:
+                                    return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "name")));
+                                case PRICE_ASC:
+                                    return this.beerRepository.findByCategoryBeerSortByPriceASC(category, page, size);
+                                case PRICE_DESC:
+                                    return this.beerRepository.findByCategoryBeerSortByPriceDESC(category, page, size);
+                                case SOLD_NUM:
+                                    return this.beerRepository.findByCategoryBeerSortBySoldDESC(category, page, size);
+                                default:
+                                    return this.beerRepository.findByCategory(category, PageRequest.of(page, size));
+                            }
+                        })
                                 .flatMap(this::CoverToSubmitData)
                                 .map(searchResult::Add)
                                 .then(Mono.just(searchResult))
