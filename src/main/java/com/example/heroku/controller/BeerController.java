@@ -1,13 +1,11 @@
 package com.example.heroku.controller;
 
-import com.example.heroku.model.Beer;
 import com.example.heroku.model.BeerUnit;
 import com.example.heroku.model.Image;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.beer.SearchResult;
 import com.example.heroku.request.carousel.IDContainer;
-import com.example.heroku.request.page.Page;
 import com.example.heroku.response.Format;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
