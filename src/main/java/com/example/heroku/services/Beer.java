@@ -95,7 +95,6 @@ public class Beer {
 
     public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {
         return this.beerRepository.findByIdNotNull(PageRequest.of(query.getPage(), query.getSize(), Sort.by(Sort.Direction.DESC, "createat")))
-                .sort(Comparator.comparing(com.example.heroku.model.Beer::getCreateat).reversed())
                 .flatMap(this::CoverToSubmitData);
     }
 
