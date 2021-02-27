@@ -887,7 +887,7 @@ public class BeerTest {
                 .verifyComplete();
     }
 
-    private BeerInfo createTestBeer(String id){
+    private BeerInfo createTestBeer(String id, int price) {
         return
                 BeerInfo
                         .builder()
@@ -895,7 +895,7 @@ public class BeerTest {
                                 BeerUnit
                                         .builder()
                                         .beer(id)
-                                        .price(10)
+                                        .price(price)
                                         .weight(0.3f)
                                         .discount(10)
                                         .date_expire(new Timestamp(new Date().getTime()))
@@ -904,7 +904,7 @@ public class BeerTest {
                                 BeerUnit
                                         .builder()
                                         .beer(id)
-                                        .price(10)
+                                        .price(10000)
                                         .weight(0.3f)
                                         .discount(10)
                                         .date_expire(new Timestamp(new Date().getTime()))
@@ -915,12 +915,13 @@ public class BeerTest {
                                 .builder()
                                 .category(Beer.Category.ALCOHOL)
                                 .detail("nhưng Milan khởi đầu ấn tượng. Với Mandzukic lần đầu đá chính, cùng sự hỗ trợ của bộ ba Castillejo, Krunic, Rebic, đội nhì bảng Serie A liên tục gây sóng gió về phía cầu môn Sao Đỏ. Chỉ trong 13 phút đầu, Milan")
-                                .name("beer tiger")
+                                .name(id + " beer tiger")
                                 .beer_second_id(id).build()
                                 .AutoFill()
                         )
                         .build();
     }
+
     public void createPeerTest() throws InterruptedException {
 
         Thread[] threads = new Thread[100];
@@ -929,8 +930,8 @@ public class BeerTest {
             final int i1 = i;
             threads[i] = new Thread(() -> {
                 System.out.println("Thread Running: " + (i1 + 1));
-                String id = i1+"";
-                BeerInfo template = createTestBeer(id);
+                String id = i1 + "";
+                BeerInfo template = createTestBeer(id, i1 * 1000 + 5000);
                 beerAPI.CreateBeer(template).blockLast();
             });
             //Thread.sleep(5000);

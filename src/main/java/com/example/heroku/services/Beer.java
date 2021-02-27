@@ -19,6 +19,7 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -94,6 +95,7 @@ public class Beer {
 
     public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {
         return this.beerRepository.findByIdNotNull(PageRequest.of(query.getPage(), query.getSize(), Sort.by(Sort.Direction.DESC, "createat")))
+                .sort(Comparator.comparing(com.example.heroku.model.Beer::getCreateat).reversed())
                 .flatMap(this::CoverToSubmitData);
     }
 
