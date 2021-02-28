@@ -145,6 +145,7 @@ public class BeerTest {
                 .verifyComplete();
 
         this.beerAPI.GetBeerByID("123")
+                .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("123");
@@ -887,7 +888,18 @@ public class BeerTest {
                 .verifyComplete();
     }
 
-    private BeerInfo createTestBeer(String id, int price) {
+    private BeerInfo createTestBeer(int idi, int price) {
+        String id = idi + "";
+        Beer.Category category = Beer.Category.ALCOHOL;
+        if (idi < 24) {
+            category = Beer.Category.BEVERAGE;
+        } else if (idi < 50) {
+            category = Beer.Category.FRESH_WATER;
+        } else if (idi < 60) {
+            category = Beer.Category.JUICE_FRUIT;
+        } else if (idi < 75) {
+            category = Beer.Category.INTERNATIONNAL_DRINKS;
+        }
         return
                 BeerInfo
                         .builder()
@@ -913,7 +925,7 @@ public class BeerTest {
                         })
                         .beer(Beer
                                 .builder()
-                                .category(Beer.Category.ALCOHOL)
+                                .category(category)
                                 .detail("nhưng Milan khởi đầu ấn tượng. Với Mandzukic lần đầu đá chính, cùng sự hỗ trợ của bộ ba Castillejo, Krunic, Rebic, đội nhì bảng Serie A liên tục gây sóng gió về phía cầu môn Sao Đỏ. Chỉ trong 13 phút đầu, Milan")
                                 .name(id + " beer tiger")
                                 .beer_second_id(id).build()
@@ -930,8 +942,7 @@ public class BeerTest {
             final int i1 = i;
             threads[i] = new Thread(() -> {
                 System.out.println("Thread Running: " + (i1 + 1));
-                String id = i1 + "";
-                BeerInfo template = createTestBeer(id, i1 * 1000 + 5000);
+                BeerInfo template = createTestBeer(i1, i1 * 1000 + 5000);
                 beerAPI.CreateBeer(template).blockLast();
             });
             //Thread.sleep(5000);

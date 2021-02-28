@@ -7,6 +7,7 @@ import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.beer.SearchResult;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.response.Format;
+import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class BeerController {
     com.example.heroku.services.Beer beerAPI;
 
     @GetMapping("/generateid")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity> generateID() {
         return beerAPI.generateID();
     }
@@ -36,21 +37,21 @@ public class BeerController {
 
     //---------- for manage image------------------
     @PostMapping(value = "/{id}/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> uploadIMG(@RequestPart("file") Flux<FilePart> file, @PathVariable("id") String beerID) {
         System.out.println("Uplaod image for beer!");
         return imageAPI.Upload(file, beerID);
     }
 
     @PostMapping("/{id}/img/delete")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Object> deleteIMG(@Valid @ModelAttribute IDContainer img) {
         System.out.println("delete imgae: " + img.getId());
         return imageAPI.Delete(img);
     }
 
     @GetMapping("/{id}/img/all")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Flux<Image> getIMGbyID(@PathVariable("id") String beerID) {
         return imageAPI.GetAll(beerID);
     }
@@ -58,30 +59,37 @@ public class BeerController {
 
 
     @PostMapping("/create")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BeerUnit> addBeerInfo(@RequestBody @Valid BeerSubmitData beerInfo) {
         System.out.println("add or update beer: " + beerInfo.GetBeerInfo().getBeer().getName());
         return beerAPI.CreateBeer(beerInfo.GetBeerInfo());
     }
 
     @PostMapping("/getall")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Mono<SearchResult> getAll(@RequestBody @Valid SearchQuery query) {
         System.out.println("get all beer: " + query.getPage());
         return beerAPI.CountGetAllBeer(query);
     }
 
     @PostMapping("/search")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Mono<SearchResult> search(@RequestBody @Valid SearchQuery query) {
         System.out.println("Search beer: " + query.getQuery());
         return beerAPI.CountSearchBeer(query);
     }
 
     @PostMapping("/category")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Mono<SearchResult> category(@RequestBody @Valid SearchQuery query) {
         System.out.println("category beer: " + query.getQuery());
         return beerAPI.CountGetAllBeerByCategory(query);
+    }
+
+    @GetMapping("/detail/{id}")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<BeerSubmitData> detail(@PathVariable("id") String beerID) {
+        System.out.println("Detail of beer: " + beerID);
+        return beerAPI.GetBeerByID(beerID);
     }
 }

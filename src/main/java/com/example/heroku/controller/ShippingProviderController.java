@@ -2,6 +2,7 @@ package com.example.heroku.controller;
 
 import com.example.heroku.request.ship.ShippingProviderData;
 import com.example.heroku.services.ShippingProvider;
+import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -15,14 +16,14 @@ public class ShippingProviderController {
     ShippingProvider shippingProviderAPI;
 
     @PostMapping("/update")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Mono<com.example.heroku.model.ShippingProvider> updateProvider(@RequestBody @Valid ShippingProviderData config) throws Exception {
         System.out.println("update shipping provider: "+config.getId());
         return shippingProviderAPI.CreateShipProvider(config.getId(), config.getJson());
     }
 
     @GetMapping("/get/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Mono<com.example.heroku.model.ShippingProvider> getProvider(@PathVariable("id") String id){
         return shippingProviderAPI.GetShipProvider(id);
     }

@@ -77,20 +77,9 @@ public class Beer {
                 );
     }
 
-    public Mono<BeerInfo> GetBeerByID(String id) {
+    public Mono<BeerSubmitData> GetBeerByID(String id) {
         return beerRepository.findBySecondID(id)
-                .map(beer ->
-                        BeerInfo.builder().beer(beer).build()
-                )
-                .flatMap(beerInfo ->
-                        Mono.just(new ArrayList<BeerUnit>())
-                                .flatMap(beerUnits ->
-                                        beerUnitRepository.findByBeerID(id)
-                                                .map(beerUnits::add)
-                                                .then(Mono.just(beerUnits))
-                                                .map(beerInfo::SetBeerUnit)
-                                )
-                );
+                .flatMap(this::CoverToSubmitData);
     }
 
     public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {

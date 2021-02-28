@@ -1,6 +1,7 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.response.BootStrapData;
+import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,7 @@ public class ClientDeviceController {
     com.example.heroku.services.ClientDevice clientDeviceAPI;
 
     @GetMapping("/bootstrap")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Mono<BootStrapData> bootStrapData(){
         System.out.println("Get bootstrap!");
         return clientDeviceAPI.bootStrapData();
