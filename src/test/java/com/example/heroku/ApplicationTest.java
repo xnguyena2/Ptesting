@@ -1,6 +1,7 @@
 package com.example.heroku;
 
 import com.example.heroku.model.repository.ImageRepository;
+import com.example.heroku.photo.FlickrLib;
 import com.example.heroku.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
@@ -140,7 +141,7 @@ public class ApplicationTest extends TestConfig{
 
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).build().BootStrapData();
     }
-/*
+
     @Test
     public void testGenerateBeer() throws InterruptedException {
         ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).build().ImageTest(listImg);
@@ -148,5 +149,10 @@ public class ApplicationTest extends TestConfig{
         BeerTest.builder().beerAPI(beerAPI).build().createPeerTest();
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).build().BootStrapDataLarge();
     }
-*/
+
+
+    @Test
+    public void testGenerateAuthenticationTokenFlickr(){
+        FlickrLib.getInstance().Auth();
+    }
 }

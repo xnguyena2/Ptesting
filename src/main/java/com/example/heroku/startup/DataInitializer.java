@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.r2dbc.core.DatabaseClient;
@@ -28,6 +29,10 @@ import static java.util.Arrays.asList;
 @RequiredArgsConstructor
 public class DataInitializer {
 
+    @Value("${app.setting.resetdb}")
+    private boolean resetDB;
+
+
     @Autowired
     DatabaseClient databaseClient;
 
@@ -42,30 +47,45 @@ public class DataInitializer {
         System.out.println("initializing vehicles data...");
         log.debug("initializing vehicles data...");
 
+        if (resetDB) {
+            log.warn("Reset all Database!");
+            asList(
+
+                    "DROP TABLE IF EXISTS ticks",
+                    "DROP TABLE IF EXISTS image",
+                    "DROP TABLE IF EXISTS users",
+                    "DROP TABLE IF EXISTS beer",
+                    "DROP TABLE IF EXISTS beer_unit",
+                    "DROP TABLE IF EXISTS search_token",
+                    "DROP TABLE IF EXISTS device_config",
+                    "DROP TABLE IF EXISTS package_order",
+                    "DROP TABLE IF EXISTS beer_order",
+                    "DROP TABLE IF EXISTS beer_unit_order",
+                    "DROP TABLE IF EXISTS user_device",
+                    "DROP TABLE IF EXISTS user_address",
+                    "DROP TABLE IF EXISTS user_package",
+                    "DROP TABLE IF EXISTS voucher",
+                    "DROP TABLE IF EXISTS voucher_relate_user_device",
+                    "DROP TABLE IF EXISTS voucher_relate_beer",
+                    "DROP TABLE IF EXISTS beer_view_count",
+                    "DROP TABLE IF EXISTS notification",
+                    "DROP TABLE IF EXISTS notification_relate_user_device",
+                    "DROP TABLE IF EXISTS shipping_provider"
+            )
+                    .forEach(s ->
+                            databaseClient.execute(s)
+                                    .fetch()
+                                    .rowsUpdated()
+                                    .block()
+                    );
+
+            PhotoLib.getInstance().deleteAll();
+
+        } else {
+            log.info("No Need reset Database@");
+        }
 
         asList(
-
-                "DROP TABLE IF EXISTS ticks",
-                "DROP TABLE IF EXISTS image",
-                "DROP TABLE IF EXISTS users",
-                "DROP TABLE IF EXISTS beer",
-                "DROP TABLE IF EXISTS beer_unit",
-                "DROP TABLE IF EXISTS search_token",
-                "DROP TABLE IF EXISTS device_config",
-                "DROP TABLE IF EXISTS package_order",
-                "DROP TABLE IF EXISTS beer_order",
-                "DROP TABLE IF EXISTS beer_unit_order",
-                "DROP TABLE IF EXISTS user_device",
-                "DROP TABLE IF EXISTS user_address",
-                "DROP TABLE IF EXISTS user_package",
-                "DROP TABLE IF EXISTS voucher",
-                "DROP TABLE IF EXISTS voucher_relate_user_device",
-                "DROP TABLE IF EXISTS voucher_relate_beer",
-                "DROP TABLE IF EXISTS beer_view_count",
-                "DROP TABLE IF EXISTS notification",
-                "DROP TABLE IF EXISTS notification_relate_user_device",
-                "DROP TABLE IF EXISTS shipping_provider",
-
                 "CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, beer_second_id VARCHAR, tokens TSVECTOR)",
                 "CREATE TABLE IF NOT EXISTS beer (id SERIAL PRIMARY KEY, beer_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, meta_search TEXT, status VARCHAR, createat TIMESTAMP)",
                 "CREATE TABLE IF NOT EXISTS beer_unit (id SERIAL PRIMARY KEY, beer_unit_second_id VARCHAR, beer VARCHAR, name VARCHAR, price float8, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, createat TIMESTAMP)",
@@ -95,34 +115,33 @@ public class DataInitializer {
                                 .block()
                 );
 
-        PhotoLib.getInstance().deleteAll();
 
-        String pass = this.passwordEncoder.encode(Util.getInstance().HashPassword("hoduongvuong123"));
-        //System.out.println(pass);
+        if (resetDB) {
+            String pass = this.passwordEncoder.encode(Util.getInstance().HashPassword("hoduongvuong123"));
+            //System.out.println(pass);
 
-        var initPosts = this.userRepository.deleteAll()
-                .thenMany(
-                        Mono.just("vuong")
-                                .flatMap(username -> {
-                                    Users users = Users.builder()
-                                            .username(username)
-                                            .password(pass)
-                                            .roles(Arrays.asList("ROLE_ADMIN", "ROLE_USER"))
-                                            .createat(new Timestamp(new Date().getTime()))
-                                            .active(true)
-                                            .build();
-                                    return this.userRepository.save(users);
-                                })
-                );
-
-
-        initPosts.doOnSubscribe(data -> log.info("data:" + data))
-                .subscribe(
-                        data -> log.info("data:" + data), err -> log.error("error:" + err),
-                        () -> log.info("done initialization...")
-                );
+            var initPosts = this.userRepository.deleteAll()
+                    .thenMany(
+                            Mono.just("vuong")
+                                    .flatMap(username -> {
+                                        Users users = Users.builder()
+                                                .username(username)
+                                                .password(pass)
+                                                .roles(Arrays.asList("ROLE_ADMIN", "ROLE_USER"))
+                                                .createat(new Timestamp(new Date().getTime()))
+                                                .active(true)
+                                                .build();
+                                        return this.userRepository.save(users);
+                                    })
+                    );
 
 
+            initPosts.doOnSubscribe(data -> log.info("data:" + data))
+                    .subscribe(
+                            data -> log.info("data:" + data), err -> log.error("error:" + err),
+                            () -> log.info("done initialization...")
+                    );
+        }
 
         System.out.println("Done initializing vehicles data...");
         log.debug("Done initializing vehicles data...");
