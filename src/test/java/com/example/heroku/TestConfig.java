@@ -27,7 +27,13 @@ import org.springframework.test.context.junit4.SpringRunner;
         "JWT_HTTPONLY_SECURE=false",
         "LOGIN=INFO",
         "THYMELEFT=HTML",
-        "RUN_MODE=production"
+        "RUN_MODE=production",
+        "FLICKR_AUTH_TOKEN=72157718531338752-478e88fe3e96fc70",
+        "FLICKR_TOKEN_SECRET=fdc5a5980651383c",
+        "FLICKR_USER_NAME=xnguyena2",
+        "FLICKR_NID=192362717@N03",
+        "FLICKR_KEY=8294cbd4c540c0d895ec99bb8b1fcac2",
+        "FLICKR_SECRET=f8fa9dcd4c4642b8"
 })
 public class TestConfig {
     @Test

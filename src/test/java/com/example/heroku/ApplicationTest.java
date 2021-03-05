@@ -4,6 +4,7 @@ import com.example.heroku.model.repository.ImageRepository;
 import com.example.heroku.photo.FlickrLib;
 import com.example.heroku.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.flickr4java.flickr.FlickrException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -153,7 +154,7 @@ public class ApplicationTest extends TestConfig{
 
 */
     @Test
-    public void testGenerateAuthenticationTokenFlickr(){
-        FlickrLib.getInstance().Auth();
+    public void testGenerateAuthenticationTokenFlickr() throws FlickrException {
+        FlickrLib.getInstance();
     }
 }

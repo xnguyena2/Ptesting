@@ -1,10 +1,11 @@
 package com.example.heroku.photo;
 
 import com.flickr4java.flickr.Flickr;
+import com.flickr4java.flickr.FlickrException;
 import com.flickr4java.flickr.REST;
+import com.flickr4java.flickr.RequestContext;
+import com.flickr4java.flickr.auth.Auth;
 import com.flickr4java.flickr.auth.AuthInterface;
-import com.flickr4java.flickr.auth.Permission;
-import com.github.scribejava.core.model.OAuth1RequestToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,37 +14,38 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class FlickrLib {
     @Value("${photo.flickr.key}")
-    private String flickKey;
+    private String flickKey = "8294cbd4c540c0d895ec99bb8b1fcac2";
 
     @Value("${photo.flickr.secret}")
-    private String flicSecret;
+    private String flicSecret = "f8fa9dcd4c4642b8";
+
+    @Value("${photo.flickr.authentoken}")
+    private String authenToken = "72157718531338752-478e88fe3e96fc70";
+
+    @Value("${photo.flickr.tokenscret}")
+    private String secretToken = "fdc5a5980651383c";
 
     private static FlickrLib instance;
 
-    private FlickrLib() {}
+    private FlickrLib() throws FlickrException {
+        this.auth();
+    }
 
-    synchronized public static FlickrLib getInstance() {
+    synchronized public static FlickrLib getInstance() throws FlickrException {
         if (instance == null) {
             instance = new FlickrLib();
         }
         return instance;
     }
 
-    public void Auth() {
-        System.out.println(flickKey);
+
+    public void auth() throws FlickrException {
         Flickr flickr = new Flickr(flickKey, flicSecret, new REST());
         Flickr.debugStream = false;
+
         AuthInterface authInterface = flickr.getAuthInterface();
 
-
-        OAuth1RequestToken requestToken = authInterface.getRequestToken();
-        System.out.println("token: " + requestToken);
-
-        String url = authInterface.getAuthorizationUrl(requestToken, Permission.WRITE);
-        System.out.println("Follow this URL to authorise yourself on Flickr");
-        System.out.println(url);
-        System.out.println("Paste in the token it gives you:");
-        System.out.print(">>");
-
+        Auth auth = authInterface.checkToken(authenToken, secretToken);
+        RequestContext.getRequestContext().setAuth(auth);
     }
 }
