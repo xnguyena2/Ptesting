@@ -9,7 +9,6 @@ import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
@@ -22,9 +21,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/beer")
 public class BeerController {
-
-    @Value("${photo.flickr.key}")
-    private String flickKey;
 
     @Autowired
     com.example.heroku.services.Image imageAPI;
@@ -95,11 +91,5 @@ public class BeerController {
     public Mono<BeerSubmitData> detail(@PathVariable("id") String beerID) {
         System.out.println("Detail of beer: " + beerID);
         return beerAPI.GetBeerByID(beerID);
-    }
-
-    @GetMapping("/flickey/")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<String> test() {
-        return Mono.just(flickKey);
     }
 }
