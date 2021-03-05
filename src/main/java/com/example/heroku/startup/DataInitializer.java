@@ -49,6 +49,7 @@ public class DataInitializer {
 
         if (resetDB) {
             log.warn("Reset all Database!");
+            System.out.println("Reset all Database!");
             asList(
 
                     "DROP TABLE IF EXISTS ticks",
@@ -83,6 +84,7 @@ public class DataInitializer {
 
         } else {
             log.info("No Need reset Database@");
+            System.out.println("No Need reset Database@");
         }
 
         asList(

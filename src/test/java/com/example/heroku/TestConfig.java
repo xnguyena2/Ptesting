@@ -25,7 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "JWT_ACCESSTOKEN=accessToken",
         "JWT_USING_COOKIE=true",
         "JWT_HTTPONLY_SECURE=false",
-        "LOGIN=DEBUG",
+        "LOGIN=INFO",
         "THYMELEFT=HTML",
         "RUN_MODE=production"
 })
