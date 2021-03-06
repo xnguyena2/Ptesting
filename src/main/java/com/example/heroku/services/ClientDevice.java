@@ -41,7 +41,7 @@ public class ClientDevice {
                                                 {
                                                     if(image.getImgid() == null)
                                                         return false;
-                                                    return bootStrapData.getCarousel().add(image.getImgid());
+                                                    return bootStrapData.getCarousel().add(image.getLarge());
                                                 }
                                         ).then(Mono.just(bootStrapData))
                 )

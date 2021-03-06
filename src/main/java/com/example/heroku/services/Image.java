@@ -41,7 +41,6 @@ public class Image {
                         e.printStackTrace();
                         return Mono.just(com.example.heroku.model.Image.builder().build());
                     }
-                    //PhotoLib.getInstance().uploadFile(initialStream, "/" + id);
                     return this.imageRepository.save(com.example.heroku.model.Image.builder()
                             .imgid(info[0])
                             .thumbnail(info[1])
