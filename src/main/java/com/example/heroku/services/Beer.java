@@ -139,7 +139,7 @@ public class Beer {
                 )
                 .flatMap(beerSubmitData ->
                         imageRepository.findByCategory(beerSubmitData.getBeerSecondID())
-                                .map(image -> beerSubmitData.AddImage(image.getImgid()))
+                                .map(beerSubmitData::AddImage)
                                 .then(Mono.just(beerSubmitData))
                 );
     }

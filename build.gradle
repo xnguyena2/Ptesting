@@ -48,8 +48,6 @@ dependencies {
 	compile group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 	compile 'javax.persistence:javax.persistence-api'
 	compile 'javax.validation:validation-api'
-	implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
-	implementation 'com.dropbox.core:dropbox-core-sdk:3.1.5'
 	compile 'com.flickr4java:flickr4java:3.0.4'
 	//compile 'javax.xml.bind:jaxb-api'
 

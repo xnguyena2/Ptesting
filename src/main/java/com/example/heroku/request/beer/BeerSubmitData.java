@@ -2,6 +2,7 @@ package com.example.heroku.request.beer;
 
 import com.example.heroku.model.Beer;
 import com.example.heroku.model.BeerUnit;
+import com.example.heroku.model.Image;
 import com.example.heroku.request.datetime.NgbDateStruct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class BeerSubmitData {
     private String name;
     private String detail;
     private String category;
-    private List<String> images;
+    private List<Image> images;
     private BeerUnit[] listUnit;
 
     public BeerInfo GetBeerInfo() {
@@ -57,11 +58,11 @@ public class BeerSubmitData {
                 .SetBeerUnit(listMapedUnit);
     }
 
-    public BeerSubmitData AddImage(String imgID){
+    public BeerSubmitData AddImage(Image image){
         if(this.images == null){
             this.images = new ArrayList<>();
         }
-        this.images.add(imgID);
+        this.images.add(image);
         return this;
     }
 

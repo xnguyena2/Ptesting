@@ -22,6 +22,12 @@ public class Image {
 
     private String imgid;
 
+    private String thumbnail;
+
+    private String medium;
+
+    private String large;
+
     private String category;
 
     private Timestamp createat;

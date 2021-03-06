@@ -2,8 +2,7 @@ package com.example.heroku.startup;
 
 import com.example.heroku.model.Users;
 import com.example.heroku.model.repository.UserRepository;
-import com.example.heroku.photo.PhotoLib;
-import com.example.heroku.services.ShippingProvider;
+import com.example.heroku.photo.FlickrLib;
 import com.example.heroku.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +79,12 @@ public class DataInitializer {
                                     .block()
                     );
 
-            PhotoLib.getInstance().deleteAll();
+            //PhotoLib.getInstance().deleteAll();
+            try {
+                FlickrLib.getInstance().DeleteAll();
+            }catch (Exception exception){
+                exception.printStackTrace();
+            }
 
         } else {
             log.info("No Need reset Database@");
@@ -91,7 +95,7 @@ public class DataInitializer {
                 "CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, beer_second_id VARCHAR, tokens TSVECTOR)",
                 "CREATE TABLE IF NOT EXISTS beer (id SERIAL PRIMARY KEY, beer_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, meta_search TEXT, status VARCHAR, createat TIMESTAMP)",
                 "CREATE TABLE IF NOT EXISTS beer_unit (id SERIAL PRIMARY KEY, beer_unit_second_id VARCHAR, beer VARCHAR, name VARCHAR, price float8, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, createat TIMESTAMP)",
-                "CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, imgid VARCHAR, category VARCHAR, createat TIMESTAMP)",
+                "CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, imgid VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP)",
                 "CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, username VARCHAR, password VARCHAR, active BOOL, roles VARCHAR, createat TIMESTAMP)",
                 "CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, color VARCHAR)",
 

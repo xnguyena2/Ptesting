@@ -151,10 +151,11 @@ public class ApplicationTest extends TestConfig{
         BeerTest.builder().beerAPI(beerAPI).build().createPeerTest();
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).build().BootStrapDataLarge();
     }
+    @Test
+    public void testGenerateAuthenticationTokenFlickr() {
+        //FlickrLib.getInstance();
+        ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).build().ImageTest(listImg);
+    }
 
 */
-    @Test
-    public void testGenerateAuthenticationTokenFlickr() throws FlickrException {
-        FlickrLib.getInstance();
-    }
 }

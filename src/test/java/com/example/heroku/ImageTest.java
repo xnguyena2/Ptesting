@@ -1,7 +1,6 @@
 package com.example.heroku;
 
 import com.example.heroku.model.repository.ImageRepository;
-import com.example.heroku.photo.PhotoLib;
 import lombok.Builder;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -13,7 +12,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -24,6 +26,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Builder
 public class ImageTest {
+
+    private static byte[] getImageBytes(String imageUrl)
+    {
+        try {
+            URL url = new URL(imageUrl);
+
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+            try (InputStream stream = url.openStream())
+            {
+                byte[] buffer = new byte[4096];
+
+                while (true)
+                {
+                    int bytesRead = stream.read(buffer);
+                    if (bytesRead < 0) { break; }
+                    output.write(buffer, 0, bytesRead);
+                }
+            }
+
+            return output.toByteArray();
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return null;
+        }
+    }
 
     class imgMap{
         public String id;
@@ -109,7 +137,7 @@ public class ImageTest {
                 .block();
 
         imageAPI.GetAll("Carousel")
-                .map(image -> new imgMap(image.getImgid(), PhotoLib.getInstance().downloadFile(image.getImgid())))
+                .map(image -> new imgMap(image.getImgid(), getImageBytes(image.getLarge())))
                 .as(StepVerifier::create)
                 .consumeNextWith(image -> {
                     assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent());
@@ -125,21 +153,5 @@ public class ImageTest {
                 })
                 .verifyComplete();
 
-        imageAPI.GetAll("Carousel")
-                .map(image -> new imgMap(image.getImgid(), imageAPI.CreateThumbnailIMG(PhotoLib.getInstance().downloadFile(image.getImgid()), 500)))
-                .as(StepVerifier::create)
-                .consumeNextWith(image -> {
-                    assertThat(image.content).isEqualTo(imageAPI.CreateThumbnailIMG(imgMap.get(image.id).getImageContent(), 500));
-                })
-                .consumeNextWith(image -> {
-                    assertThat(image.content).isEqualTo(imageAPI.CreateThumbnailIMG(imgMap.get(image.id).getImageContent(), 500));
-                })
-                .consumeNextWith(image -> {
-                    assertThat(image.content).isEqualTo(imageAPI.CreateThumbnailIMG(imgMap.get(image.id).getImageContent(), 500));
-                })
-                .consumeNextWith(image -> {
-                    assertThat(image.content).isEqualTo(imageAPI.CreateThumbnailIMG(imgMap.get(image.id).getImageContent(), 500));
-                })
-                .verifyComplete();
     }
 }
