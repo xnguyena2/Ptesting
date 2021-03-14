@@ -57,6 +57,11 @@ public class HerokuApplication {
     return "angular/index";
   }
 
+  @RequestMapping("/angular/search/all")
+  String angular() {
+    return "angular/search/all";
+  }
+
   /*
   @RequestMapping("/db")
   String db(Map<String, Object> model) {
