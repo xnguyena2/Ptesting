@@ -25,7 +25,7 @@ public class UserPackage {
 
     private String beer_id;
 
-    private int beer_unit;
+    private String beer_unit;
 
     private int number_unit;
 

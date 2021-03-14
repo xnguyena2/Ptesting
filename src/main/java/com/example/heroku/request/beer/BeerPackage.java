@@ -52,7 +52,7 @@ public class BeerPackage {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class BeerUnit{
-        private int beerUnitID;
+        private String beerUnitID;
         private int numberUnit;
     }
 }

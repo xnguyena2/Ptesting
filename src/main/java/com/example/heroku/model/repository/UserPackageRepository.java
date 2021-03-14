@@ -10,4 +10,11 @@ public interface UserPackageRepository extends ReactiveCrudRepository<UserPackag
 
     @Query(value = "SELECT user_package.device_id, user_package.beer_id, user_package.beer_unit, SUM(user_package.number_unit) as number_unit, MAX(user_package.createat) as createat FROM user_package WHERE user_package.device_id = :id GROUP BY user_package.device_id, user_package.beer_id, user_package.beer_unit ORDER BY createat DESC LIMIT :size OFFSET (:page*:size)")
     Flux<UserPackage> GetDevicePackage(@Param("id")String id, @Param("page")int page, @Param("size")int size);
+
+
+    @Query(value = "DELETE FROM user_package WHERE beer_unit = :id")
+    Flux<UserPackage> DeleteProductByBeerUnit(@Param("id")String id);
+
+    @Query(value = "DELETE FROM user_package WHERE device_id = :id")
+    Flux<UserPackage> DeleteProductByUserID(@Param("id")String id);
 }

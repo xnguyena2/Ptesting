@@ -1,6 +1,8 @@
 package com.example.heroku;
 
 import com.example.heroku.request.beer.BeerPackage;
+import com.example.heroku.request.beer.BeerUnitDelete;
+import com.example.heroku.request.client.UserID;
 import com.example.heroku.services.UserPackage;
 import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +28,11 @@ public class UserPackageTest {
                 .deviceID("222222")
                 .beerUnits(new BeerPackage.BeerUnit[]{
                         BeerPackage.BeerUnit.builder()
-                                .beerUnitID(1)
+                                .beerUnitID("1")
                                 .numberUnit(100)
                                 .build(),
                         BeerPackage.BeerUnit.builder()
-                                .beerUnitID(2)
+                                .beerUnitID("2")
                                 .numberUnit(9)
                                 .build()
                 })
@@ -43,11 +45,11 @@ public class UserPackageTest {
                 .deviceID("222222")
                 .beerUnits(new BeerPackage.BeerUnit[]{
                         BeerPackage.BeerUnit.builder()
-                                .beerUnitID(3)
+                                .beerUnitID("3")
                                 .numberUnit(100)
                                 .build(),
                         BeerPackage.BeerUnit.builder()
-                                .beerUnitID(3)
+                                .beerUnitID("3")
                                 .numberUnit(9)
                                 .build()
                 })
@@ -55,30 +57,58 @@ public class UserPackageTest {
         userPackageAPI.AddBeerToPackage(beerPackage)
                 .block();
 
-        userPackageAPI.GetMyPackage("222222", 0, 1000)
+        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).build())
                 .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
                             assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                             assertThat(userPackage.getBeer_id()).isEqualTo("456");
-                            assertThat(userPackage.getBeer_unit()).isEqualTo(3);
+                            assertThat(userPackage.getBeer_unit()).isEqualTo("3");
                             assertThat(userPackage.getNumber_unit()).isEqualTo(109);
                         }
                 )
                 .consumeNextWith(userPackage -> {
                             assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                             assertThat(userPackage.getBeer_id()).isEqualTo("123");
-                            assertThat(userPackage.getBeer_unit()).isEqualTo(1);
+                            assertThat(userPackage.getBeer_unit()).isEqualTo("1");
                             assertThat(userPackage.getNumber_unit()).isEqualTo(100);
                         }
                 )
                 .consumeNextWith(userPackage -> {
                             assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                             assertThat(userPackage.getBeer_id()).isEqualTo("123");
-                            assertThat(userPackage.getBeer_unit()).isEqualTo(2);
+                            assertThat(userPackage.getBeer_unit()).isEqualTo("2");
                             assertThat(userPackage.getNumber_unit()).isEqualTo(9);
                         }
                 )
+                .verifyComplete();
+
+        userPackageAPI.DeleteByBeerUnit(BeerUnitDelete.builder().id("1").build()).blockLast();
+
+        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).build())
+                .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+                            assertThat(userPackage.getDevice_id()).isEqualTo("222222");
+                            assertThat(userPackage.getBeer_id()).isEqualTo("456");
+                            assertThat(userPackage.getBeer_unit()).isEqualTo("3");
+                            assertThat(userPackage.getNumber_unit()).isEqualTo(109);
+                        }
+                )
+                .consumeNextWith(userPackage -> {
+                            assertThat(userPackage.getDevice_id()).isEqualTo("222222");
+                            assertThat(userPackage.getBeer_id()).isEqualTo("123");
+                            assertThat(userPackage.getBeer_unit()).isEqualTo("2");
+                            assertThat(userPackage.getNumber_unit()).isEqualTo(9);
+                        }
+                )
+                .verifyComplete();
+
+        userPackageAPI.DeleteByUserID(UserID.builder().id("222222").page( 0).size( 1000).build()).blockLast();
+
+        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).build())
+                .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
+                .as(StepVerifier::create)
                 .verifyComplete();
     }
 }

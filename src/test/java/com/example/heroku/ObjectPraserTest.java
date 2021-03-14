@@ -82,11 +82,11 @@ public class ObjectPraserTest {
                 "    \"beerID\":\"7788900\",\n" +
                 "    \"beerUnits\":[\n" +
                 "        {\n" +
-                "            \"beerUnitID\":333,\n" +
+                "            \"beerUnitID\":\"333\",\n" +
                 "            \"numberUnit\":10\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"beerUnitID\":444,\n" +
+                "            \"beerUnitID\":\"444\",\n" +
                 "            \"numberUnit\":5\n" +
                 "        }\n" +
                 "    ]\n" +
@@ -97,12 +97,12 @@ public class ObjectPraserTest {
 
         assertThat(userPackages[0].getBeer_id()).isEqualTo("7788900");
         assertThat(userPackages[0].getDevice_id()).isEqualTo("vuong");
-        assertThat(userPackages[0].getBeer_unit()).isEqualTo(333);
+        assertThat(userPackages[0].getBeer_unit()).isEqualTo("333");
         assertThat(userPackages[0].getNumber_unit()).isEqualTo(10);
 
         assertThat(userPackages[1].getBeer_id()).isEqualTo("7788900");
         assertThat(userPackages[1].getDevice_id()).isEqualTo("vuong");
-        assertThat(userPackages[1].getBeer_unit()).isEqualTo(444);
+        assertThat(userPackages[1].getBeer_unit()).isEqualTo("444");
         assertThat(userPackages[1].getNumber_unit()).isEqualTo(5);
     }
 

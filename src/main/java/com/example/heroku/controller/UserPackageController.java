@@ -1,6 +1,8 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.request.beer.BeerPackage;
+import com.example.heroku.request.beer.BeerUnitDelete;
+import com.example.heroku.request.client.UserID;
 import com.example.heroku.services.UserPackage;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +26,25 @@ public class UserPackageController {
         return userPackageAPI.AddBeerToPackage(beerPackage);
     }
 
-    @GetMapping("/getall/{id}")
+
+    @PostMapping("/remove")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<com.example.heroku.model.UserPackage> getIMGbyID(@PathVariable("id") String deviceID){
-        return userPackageAPI.GetMyPackage(deviceID, 0, 1000);
+    public Flux<com.example.heroku.model.UserPackage> removeFromPckage(@RequestBody @Valid BeerUnitDelete beerUnitDelete){
+        return userPackageAPI.DeleteByBeerUnit(beerUnitDelete);
+    }
+
+
+    @PostMapping("/getall")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<com.example.heroku.model.UserPackage> getAll(@RequestBody @Valid UserID userID){
+        System.out.println("Get all my package: "+userID.getId());
+        return userPackageAPI.GetMyPackage(userID);
+    }
+
+    @PostMapping("/clean")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<com.example.heroku.model.UserPackage> clean(@RequestBody @Valid UserID userID){
+        System.out.println("clean all my package: "+userID.getId());
+        return userPackageAPI.DeleteByUserID(userID);
     }
 }
