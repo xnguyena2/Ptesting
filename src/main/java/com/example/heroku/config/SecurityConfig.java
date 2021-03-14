@@ -59,6 +59,7 @@ public class SecurityConfig {
                         .pathMatchers("/deviceconfig/**").permitAll()
                         .pathMatchers("/shippingprovider/**").permitAll()
                         .pathMatchers("/voucher/**").permitAll()
+                        .pathMatchers("/package/**").permitAll()
 
                         .pathMatchers("/angular/**").permitAll()
                         .pathMatchers("/carousel/**").permitAll()
