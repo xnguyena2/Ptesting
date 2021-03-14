@@ -58,7 +58,7 @@ public class HerokuApplication {
   }
 
   @RequestMapping("/angular/search/all")
-  String angular() {
+  String angularSearchAll() {
     return "angular/search/all";
   }
 
