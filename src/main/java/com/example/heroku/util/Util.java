@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Util {
 
-    public static final String HOST_URL = "http://192.168.1.6:4200";
+    public static final String HOST_URL = "*";
 
     private static final char[] SOURCE_CHARACTERS = {'À', 'Á', 'Â', 'Ã', 'È', 'É',
             'Ê', 'Ì', 'Í', 'Ò', 'Ó', 'Ô', 'Õ', 'Ù', 'Ú', 'Ý', 'à', 'á', 'â',
