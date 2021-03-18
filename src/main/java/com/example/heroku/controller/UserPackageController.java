@@ -3,6 +3,7 @@ package com.example.heroku.controller;
 import com.example.heroku.request.beer.BeerPackage;
 import com.example.heroku.request.beer.BeerUnitDelete;
 import com.example.heroku.request.client.UserID;
+import com.example.heroku.response.PackgeResponse;
 import com.example.heroku.services.UserPackage;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class UserPackageController {
 
     @PostMapping("/getall")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<com.example.heroku.model.UserPackage> getAll(@RequestBody @Valid UserID userID){
+    public Flux<PackgeResponse> getAll(@RequestBody @Valid UserID userID){
         System.out.println("Get all my package: "+userID.getId());
         return userPackageAPI.GetMyPackage(userID);
     }

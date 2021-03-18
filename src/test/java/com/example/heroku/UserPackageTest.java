@@ -4,11 +4,14 @@ import com.example.heroku.request.beer.BeerPackage;
 import com.example.heroku.request.beer.BeerUnitDelete;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.services.UserPackage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.test.StepVerifier;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,26 +64,41 @@ public class UserPackageTest {
                 .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
-                            assertThat(userPackage.getDevice_id()).isEqualTo("222222");
-                            assertThat(userPackage.getBeer_id()).isEqualTo("456");
-                            assertThat(userPackage.getBeer_unit()).isEqualTo("3");
-                            assertThat(userPackage.getNumber_unit()).isEqualTo(109);
-                        }
-                )
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(userPackage.getDevice_id()).isEqualTo("222222");
+                    assertThat(userPackage.getBeer_id()).isEqualTo("456");
+                    assertThat(userPackage.getBeer_unit()).isEqualTo("3");
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(109);
+                    assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("456");
+                })
                 .consumeNextWith(userPackage -> {
-                            assertThat(userPackage.getDevice_id()).isEqualTo("222222");
-                            assertThat(userPackage.getBeer_id()).isEqualTo("123");
-                            assertThat(userPackage.getBeer_unit()).isEqualTo("1");
-                            assertThat(userPackage.getNumber_unit()).isEqualTo(100);
-                        }
-                )
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(userPackage.getDevice_id()).isEqualTo("222222");
+                    assertThat(userPackage.getBeer_id()).isEqualTo("123");
+                    assertThat(userPackage.getBeer_unit()).isEqualTo("1");
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(100);
+                    assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                })
                 .consumeNextWith(userPackage -> {
-                            assertThat(userPackage.getDevice_id()).isEqualTo("222222");
-                            assertThat(userPackage.getBeer_id()).isEqualTo("123");
-                            assertThat(userPackage.getBeer_unit()).isEqualTo("2");
-                            assertThat(userPackage.getNumber_unit()).isEqualTo(9);
-                        }
-                )
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(userPackage.getDevice_id()).isEqualTo("222222");
+                    assertThat(userPackage.getBeer_id()).isEqualTo("123");
+                    assertThat(userPackage.getBeer_unit()).isEqualTo("2");
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(9);
+                    assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                })
                 .verifyComplete();
 
         userPackageAPI.DeleteByBeerUnit(BeerUnitDelete.builder().id("1").build()).blockLast();
@@ -89,19 +107,17 @@ public class UserPackageTest {
                 .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
-                            assertThat(userPackage.getDevice_id()).isEqualTo("222222");
-                            assertThat(userPackage.getBeer_id()).isEqualTo("456");
-                            assertThat(userPackage.getBeer_unit()).isEqualTo("3");
-                            assertThat(userPackage.getNumber_unit()).isEqualTo(109);
-                        }
-                )
+                    assertThat(userPackage.getDevice_id()).isEqualTo("222222");
+                    assertThat(userPackage.getBeer_id()).isEqualTo("456");
+                    assertThat(userPackage.getBeer_unit()).isEqualTo("3");
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(109);
+                })
                 .consumeNextWith(userPackage -> {
-                            assertThat(userPackage.getDevice_id()).isEqualTo("222222");
-                            assertThat(userPackage.getBeer_id()).isEqualTo("123");
-                            assertThat(userPackage.getBeer_unit()).isEqualTo("2");
-                            assertThat(userPackage.getNumber_unit()).isEqualTo(9);
-                        }
-                )
+                    assertThat(userPackage.getDevice_id()).isEqualTo("222222");
+                    assertThat(userPackage.getBeer_id()).isEqualTo("123");
+                    assertThat(userPackage.getBeer_unit()).isEqualTo("2");
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(9);
+                })
                 .verifyComplete();
 
         userPackageAPI.DeleteByUserID(UserID.builder().id("222222").page( 0).size( 1000).build()).blockLast();

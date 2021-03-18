@@ -5,6 +5,7 @@ import com.example.heroku.request.beer.BeerPackage;
 import com.example.heroku.request.beer.BeerUnitDelete;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.Format;
+import com.example.heroku.response.PackgeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -14,6 +15,11 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @Component
 public class UserPackage {
+
+    @Autowired
+    com.example.heroku.services.Beer beerAPI;
+
+
     @Autowired
     UserPackageRepository userPackageRepository;
 
@@ -29,8 +35,12 @@ public class UserPackage {
 
     }
 
-    public Flux<com.example.heroku.model.UserPackage> GetMyPackage(UserID userID){
-        return userPackageRepository.GetDevicePackage(userID.getId(), userID.getPage(), userID.getSize());
+    public Flux<PackgeResponse> GetMyPackage(UserID userID) {
+        return userPackageRepository.GetDevicePackage(userID.getId(), userID.getPage(), userID.getSize())
+                .flatMap(userPackage ->
+                        beerAPI.GetBeerByID(userPackage.getBeer_id())
+                                .map(beerSubmitData -> new PackgeResponse(userPackage).SetBeerData(beerSubmitData))
+                );
     }
 
     public Flux<com.example.heroku.model.UserPackage> DeleteByBeerUnit(BeerUnitDelete beerUnitDelete) {

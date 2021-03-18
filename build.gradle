@@ -51,7 +51,7 @@ dependencies {
 	compile 'com.flickr4java:flickr4java:3.0.4'
 
 	//can remove this package
-	compile 'javax.xml.bind:jaxb-api'
+	//compile 'javax.xml.bind:jaxb-api'
 
 
 	compileOnly 'org.projectlombok:lombok:1.18.16'

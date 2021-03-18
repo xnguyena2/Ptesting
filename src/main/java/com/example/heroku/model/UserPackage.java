@@ -33,6 +33,16 @@ public class UserPackage {
 
     private Timestamp createat;
 
+    public UserPackage(UserPackage s){
+        this.id = s.id;
+        this.device_id = s.device_id;
+        this.beer_id = s.beer_id;
+        this.beer_unit = s.beer_unit;
+        this.number_unit = s.number_unit;
+        this.status = s.status;
+        this.createat = s.createat;
+    }
+
     public enum Status{
 
     }
