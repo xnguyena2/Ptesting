@@ -74,6 +74,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getBeer_unit()).isEqualTo("3");
                     assertThat(userPackage.getNumber_unit()).isEqualTo(109);
                     assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("456");
+                    assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .consumeNextWith(userPackage -> {
                     try {
@@ -86,6 +87,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getBeer_unit()).isEqualTo("1");
                     assertThat(userPackage.getNumber_unit()).isEqualTo(100);
                     assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .consumeNextWith(userPackage -> {
                     try {
@@ -98,6 +100,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getBeer_unit()).isEqualTo("2");
                     assertThat(userPackage.getNumber_unit()).isEqualTo(9);
                     assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .verifyComplete();
 
@@ -111,12 +114,16 @@ public class UserPackageTest {
                     assertThat(userPackage.getBeer_id()).isEqualTo("456");
                     assertThat(userPackage.getBeer_unit()).isEqualTo("3");
                     assertThat(userPackage.getNumber_unit()).isEqualTo(109);
+                    assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("456");
+                    assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .consumeNextWith(userPackage -> {
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     assertThat(userPackage.getBeer_id()).isEqualTo("123");
                     assertThat(userPackage.getBeer_unit()).isEqualTo("2");
                     assertThat(userPackage.getNumber_unit()).isEqualTo(9);
+                    assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .verifyComplete();
 
