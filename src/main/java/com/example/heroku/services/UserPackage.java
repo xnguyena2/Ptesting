@@ -6,8 +6,6 @@ import com.example.heroku.request.beer.BeerUnitDelete;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.Format;
 import com.example.heroku.response.PackgeResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -39,15 +37,9 @@ public class UserPackage {
 
     public Flux<PackgeResponse> GetMyPackage(UserID userID) {
         return userPackageRepository.GetDevicePackage(userID.getId(), userID.getPage(), userID.getSize())
-                .flatMap(userPackage ->{
-                            try {
-                                System.out.println(new ObjectMapper().writeValueAsString(userPackage));
-                            } catch (JsonProcessingException e) {
-                                e.printStackTrace();
-                            }
-                            return beerAPI.GetBeerByID(userPackage.getBeer_id())
-                                    .map(beerSubmitData -> new PackgeResponse(userPackage).SetBeerData(beerSubmitData));
-                        }
+                .flatMap(userPackage ->
+                        beerAPI.GetBeerByID(userPackage.getBeer_id())
+                                .map(beerSubmitData -> new PackgeResponse(userPackage).SetBeerData(beerSubmitData))
                 );
     }
 
