@@ -157,7 +157,10 @@ public class BeerOrder {
                                                                                 .subscribe();
                                                                         return voucher;
                                                                     })
-                                                                    .then(Mono.just(packageOrderData.getPackageOrder()));
+                                                                    .then(
+                                                                            Mono.just(packageOrderData.getPackageOrder())
+                                                                                    .flatMap(packageOrder -> packageOrderRepository.save(packageOrder))
+                                                                    );
                                                         })
                                         )
                                 )
