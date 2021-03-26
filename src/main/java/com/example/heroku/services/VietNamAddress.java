@@ -1,12 +1,10 @@
 package com.example.heroku.services;
 
-import com.example.heroku.util.Util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -110,8 +108,7 @@ public class VietNamAddress {
             this.SaveAllToDatabase(false);
         }
         return Flux.just(allAddress.regions)
-                .flatMap(region ->
-                        Mono.just(region));
+                .flatMap(Mono::just);
     }
 
     public Flux<VietNamAddress.AddressFromat.Region.DistrictContent.District> GetAllDistrict(int ofRegion) throws IOException {
@@ -122,7 +119,7 @@ public class VietNamAddress {
                 .filter(region -> region.id == ofRegion)
                 .flatMap(region ->
                         Flux.just(region.districts.data)
-                        .flatMap(district -> Mono.just(district))
+                        .flatMap(Mono::just)
                 );
     }
 
@@ -136,7 +133,7 @@ public class VietNamAddress {
                         Flux.just(region.districts.data)
                                 .filter(district -> district.id == andDistrict)
                                 .flatMap(district -> Flux.just(district.wards.data))
-                                .flatMap(ward -> Mono.just(ward))
+                                .flatMap(Mono::just)
                 );
     }
 
