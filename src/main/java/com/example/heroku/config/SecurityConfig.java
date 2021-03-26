@@ -66,9 +66,9 @@ public class SecurityConfig {
                         .pathMatchers("/beer/**").permitAll()
                         .pathMatchers("/db").permitAll()
                         .pathMatchers("/image/**").permitAll()
+                        .pathMatchers("/address/**").permitAll()
 
                         .pathMatchers("/clientdevice/**").permitAll()
-                        .pathMatchers("/address/**").permitAll()
 
                         .anyExchange().authenticated()
                 )
