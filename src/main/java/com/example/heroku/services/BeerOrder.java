@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class BeerOrder {
@@ -52,29 +52,54 @@ public class BeerOrder {
                                                                 Flux.just(beerOrder.getBeerUnitOrders())
                                                                         .flatMap(beerUnitOrder ->
                                                                                 beerUnitRepository.findByBeerUnitID(beerUnitOrder.getBeer_unit_second_id())
-                                                                                        .flatMap(beerUnit -> {
-                                                                                            float price = beerUnitOrder.getNumber_unit() * beerUnit.getPrice();
-                                                                                            if (beerUnit.getDiscount() > 0) {
-                                                                                                if (Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), currentTime) >= 0) {
-                                                                                                    price -= price * beerUnit.getDiscount() / 100;
-                                                                                                    System.out.println("--------> beer unit: " + beerUnit.getBeer_unit_second_id() + ", discount: " + beerUnit.getDiscount() + "%");
-                                                                                                }
-                                                                                            }
-                                                                                            System.out.println("calculate beer unit: " + beerUnit.getBeer_unit_second_id() + ", price: " + price);
-                                                                                            beerUnitOrder.setPrice(price);
-                                                                                            WeightAndVolumetricContainer result = WeightAndVolumetricContainer
-                                                                                                    .builder()
-                                                                                                    .price(price)
-                                                                                                    .weight(beerUnitOrder.getNumber_unit() * beerUnit.getWeight())
-                                                                                                    .volumetric(beerUnitOrder.getNumber_unit() * beerUnit.getVolumetric())
-                                                                                                    .build();
-                                                                                            //save beer order unit;
-                                                                                            if (!packageOrderData.isPreOrder()) {
-                                                                                                return beerUnitOrderRepository.save(beerUnitOrder.AutoFill(packageOrderData.getPackageOrder().getPackage_order_second_id()))
-                                                                                                        .then(Mono.just(result));
-                                                                                            }
-                                                                                            return Mono.just(result);
-                                                                                        })
+                                                                                        .flatMap(beerUnit ->
+                                                                                                vouchers.filter(voucher -> !voucher.isFor_all_beer() && voucher.getVoucher_second_id().equals(beerOrder.getBeerOrder().getVoucher_second_id()))
+                                                                                                        .switchIfEmpty(Mono.just(com.example.heroku.model.Voucher.builder().reuse(0).build()))
+                                                                                                        .flatMap(voucher -> {
+                                                                                                            float price = beerUnitOrder.getNumber_unit() * beerUnit.getPrice();
+                                                                                                            AtomicReference<Float> discount = new AtomicReference<>((float) 0);
+                                                                                                            if (beerUnit.getDiscount() > 0) {
+                                                                                                                if (Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), currentTime) >= 0) {
+                                                                                                                    discount.updateAndGet(v -> (v + beerUnit.getDiscount()));
+                                                                                                                    System.out.println("--------> beer unit: " + beerUnit.getBeer_unit_second_id() + ", discount: " + beerUnit.getDiscount() + "%");
+                                                                                                                }
+                                                                                                            }
+                                                                                                            if (voucher.getId() != null && Util.getInstance().DiffirentDays(voucher.getDate_expire(), currentTime) >= 0) {
+                                                                                                                voucher.comsumeVoucherSync(packageOrderData.getPackageOrder().getUser_device_id(), (shareReuse) -> {
+                                                                                                                    if (voucher.getDiscount() > 0) {
+                                                                                                                        discount.updateAndGet(v -> (v + voucher.getDiscount()));
+                                                                                                                        System.out.println("--------> BeerOrder: " + beerOrder.getBeerOrder().getBeer_second_id() + ", voucher: " + voucher.getVoucher_second_id() + ", discount: " + voucher.getDiscount() + "%");
+                                                                                                                    }
+                                                                                                                });
+                                                                                                            }
+                                                                                                            price -= price * discount.get() / 100;
+                                                                                                            if(price < 0) {
+                                                                                                                price = 0;
+                                                                                                            }
+                                                                                                            System.out.println("calculate beer unit: " + beerUnit.getBeer_unit_second_id() + ", price: " + price);
+                                                                                                            beerUnitOrder.setPrice(price);
+                                                                                                            WeightAndVolumetricContainer result = WeightAndVolumetricContainer
+                                                                                                                    .builder()
+                                                                                                                    .price(price)
+                                                                                                                    .weight(beerUnitOrder.getNumber_unit() * beerUnit.getWeight())
+                                                                                                                    .volumetric(beerUnitOrder.getNumber_unit() * beerUnit.getVolumetric())
+                                                                                                                    .build();
+                                                                                                            //save beer order unit;
+                                                                                                            if (!packageOrderData.isPreOrder()) {
+                                                                                                                return beerUnitOrderRepository.save(beerUnitOrder.AutoFill(packageOrderData.getPackageOrder().getPackage_order_second_id()))
+                                                                                                                        .then(Mono.just(result));
+                                                                                                            }
+                                                                                                            return Mono.just(result);
+                                                                                                        })
+                                                                                                        .reduce(WeightAndVolumetricContainer.builder().volumetric(0.0f).weight(0.0f).price(0.0f).build(),
+                                                                                                                (x1, x2) ->
+                                                                                                                        WeightAndVolumetricContainer
+                                                                                                                                .builder()
+                                                                                                                                .volumetric(x1.getVolumetric() + x2.getVolumetric())
+                                                                                                                                .weight(x1.getWeight() + x2.getWeight())
+                                                                                                                                .price(x1.getPrice() + x2.getPrice())
+                                                                                                                                .build()
+                                                                                                        ))
                                                                         )
                                                                         .reduce(WeightAndVolumetricContainer.builder().volumetric(0.0f).weight(0.0f).price(0.0f).build(),
                                                                                 (x1, x2) ->
@@ -96,7 +121,7 @@ public class BeerOrder {
                                                                                                     if (voucher.getAmount() > 0) {
                                                                                                         voucherMerge.setAmount(voucher.getAmount());
                                                                                                         System.out.println("--------> BeerOrder: " + beerOrder.getBeerOrder().getBeer_second_id() + ", voucher: " + voucher.getVoucher_second_id() + ", amount: " + voucher.getAmount());
-                                                                                                    } else if (voucher.getDiscount() > 0) {
+                                                                                                    } else if (voucher.getDiscount() > 0 && voucher.isFor_all_beer()) {
                                                                                                         voucherMerge.setDiscount(voucher.getDiscount());
                                                                                                         System.out.println("--------> BeerOrder: " + beerOrder.getBeerOrder().getBeer_second_id() + ", voucher: " + voucher.getVoucher_second_id() + ", discount: " + voucher.getDiscount() + "%");
                                                                                                     }
@@ -118,6 +143,9 @@ public class BeerOrder {
                                                                                             }
                                                                                             if (voucherMerge.amount > 0) {
                                                                                                 price -= voucherMerge.amount;
+                                                                                            }
+                                                                                            if (price < 0) {
+                                                                                                price = 0;
                                                                                             }
                                                                                             System.out.println("BeerOrder: " + beerOrder.getBeerOrder().getBeer_second_id() + ", Total price: " + price);
                                                                                             beerOrder.getBeerOrder().setTotal_price(price);
