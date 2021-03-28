@@ -73,4 +73,10 @@ public class Voucher {
     public interface SyncRunner {
         void doSync(int reuse);
     }
+
+    public boolean IsOnlyApplyForProduct(String productVOucher){
+        if(voucher_second_id == null)
+            return false;
+        return !isFor_all_beer() && voucher_second_id.equals(productVOucher);
+    }
 }

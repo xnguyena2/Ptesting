@@ -81,6 +81,10 @@ public class Voucher {
         return voucherRepository.findAll(page, size);
     }
 
+    public Mono<com.example.heroku.model.Voucher> getDeviceVoucher(String voucherID, String device, String productID) {
+        return voucherRepository.getVoucherOfUser(voucherID, productID, device);
+    }
+
     public Mono<com.example.heroku.model.Voucher> getVoucher(String bySecondID) {
         return voucherRepository.getVoucherBySecondID(bySecondID);
     }
