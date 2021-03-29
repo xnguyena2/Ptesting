@@ -89,6 +89,9 @@ public class ShippingProvider {
 
 
         public float CalculateShipPrice(float packageWeight, float packageVolumetric, int region, int district) {
+            //get product in store
+            if(region == 0)
+                return 0;
             float shipPrice = 0;
             float weightExchange = this.getWeightExchange(packageVolumetric);
             float weight = Math.max(packageWeight, weightExchange);
