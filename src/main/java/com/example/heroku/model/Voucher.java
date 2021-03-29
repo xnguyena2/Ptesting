@@ -53,10 +53,11 @@ public class Voucher {
         synchronized (Util.getInstance().GetMap(key)) {
             System.out.println("Begin consume!");
             int shareResue = Util.getInstance().getVoucher(key);
+            System.out.println("ID: " + key + ", get resue from sync: " + shareResue);
             if (shareResue == -1) {
                 shareResue = this.reuse;
             }
-            System.out.println("ID: " + key + ", resue: " + shareResue);
+            System.out.println("ID: " + key + ", sync resue: " + shareResue + ", db reuse: " + this.reuse);
             if (shareResue > 0) {
                 runner.doSync(shareResue);
                 shareResue--;
