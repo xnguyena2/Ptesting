@@ -1,5 +1,6 @@
 package com.example.heroku.controller;
 
+import com.example.heroku.model.Beer;
 import com.example.heroku.model.BeerUnit;
 import com.example.heroku.model.Image;
 import com.example.heroku.request.beer.BeerSubmitData;
@@ -91,5 +92,12 @@ public class BeerController {
     public Mono<BeerSubmitData> detail(@PathVariable("id") String beerID) {
         System.out.println("Detail of beer: " + beerID);
         return beerAPI.GetBeerByID(beerID);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<Beer> delete(@PathVariable("id") String beerID) {
+        System.out.println("delete beer: " + beerID);
+        return beerAPI.DeleteBeerByID(beerID);
     }
 }

@@ -6,6 +6,7 @@ import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.beer.SearchResult;
+import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @Component
 public class Beer {
+    @Autowired
+    com.example.heroku.services.Image imageAPI;
+
     @Autowired
     SearchTokenRepository searchBeer;
 
@@ -72,6 +76,25 @@ public class Beer {
                 .thenMany(Flux.just(info.getBeerUnit())
                         .flatMap(beerUnit ->
                                 this.beerUnitRepository.save(beerUnit.AutoFill())
+                        )
+                );
+    }
+
+    public Mono<com.example.heroku.model.Beer> DeleteBeerByID(String id) {
+        return imageRepository.findByCategory(id)
+                .flatMap(image -> imageAPI.Delete(IDContainer.builder().id(image.getImgid()).build()))
+                .then(
+                        Mono.just(id)
+                        .flatMap(
+                                beerInfo ->
+                                        this.beerUnitRepository.deleteByBeerId(id)
+                        )
+                )
+                .then(
+                        Mono.just(id)
+                        .flatMap(
+                                beerInfo ->
+                                        beerRepository.deleteBySecondId(id)
                         )
                 );
     }
