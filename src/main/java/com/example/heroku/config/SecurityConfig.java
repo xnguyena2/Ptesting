@@ -67,6 +67,7 @@ public class SecurityConfig {
                         .pathMatchers("/db").permitAll()
                         .pathMatchers("/image/**").permitAll()
                         .pathMatchers("/address/**").permitAll()
+                        .pathMatchers("/order/**").permitAll()
 
                         .pathMatchers("/clientdevice/**").permitAll()
 
