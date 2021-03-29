@@ -39,7 +39,7 @@ public class BeerController {
     //---------- for manage image------------------
     @PostMapping(value = "/{id}/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<Format>> uploadIMG(@RequestPart("file") Flux<FilePart> file, @PathVariable("id") String beerID) {
+    public Mono<ResponseEntity<com.example.heroku.model.Image>> uploadIMG(@RequestPart("file") Flux<FilePart> file, @PathVariable("id") String beerID) {
         System.out.println("Uplaod image for beer!");
         return imageAPI.Upload(file, beerID);
     }

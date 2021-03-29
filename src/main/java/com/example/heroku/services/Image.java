@@ -26,7 +26,7 @@ public class Image {
     @Autowired
     ImageRepository imageRepository;
 
-    public Mono<ResponseEntity<Format>> Upload(Flux<FilePart> file, String category) {
+    public Mono<ResponseEntity<com.example.heroku.model.Image>> Upload(Flux<FilePart> file, String category) {
         AtomicReference<String> fileName = new AtomicReference<>();
         return file.flatMap(f -> {
             fileName.set(f.filename());
@@ -50,7 +50,7 @@ public class Image {
                             .createat(new Timestamp(new Date().getTime()))
                             .build());
                 })
-                .map(save -> ok(Format.builder().response(save.getImgid()).build()));
+                .map(ResponseEntity::ok);
     }
 
     public Mono<Object> Delete(IDContainer img) {

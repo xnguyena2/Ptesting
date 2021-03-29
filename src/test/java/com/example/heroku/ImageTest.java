@@ -122,7 +122,7 @@ public class ImageTest {
                 .thenMany(Flux.just(imgContent)
                         .flatMap(img ->
                                 imageAPI.Upload(Flux.just(img), "Carousel")
-                                .map(formatResponseEntity -> {imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getResponse(),img); return formatResponseEntity;})
+                                .map(formatResponseEntity -> {imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getImgid(),img); return formatResponseEntity;})
                         )
                 )
                 .then()
@@ -131,7 +131,7 @@ public class ImageTest {
         Flux.just(imgContent)
                 .flatMap(img ->
                         imageAPI.Upload(Flux.just(img), "456")
-                                .map(formatResponseEntity -> {imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getResponse(),img); return formatResponseEntity;})
+                                .map(formatResponseEntity -> {imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getImgid(),img); return formatResponseEntity;})
                 )
                 .then()
                 .block();

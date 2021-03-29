@@ -23,7 +23,7 @@ public class CarouselController {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<Format>> uploadFile(@RequestPart("file") Flux<FilePart> file) {
+    public Mono<ResponseEntity<com.example.heroku.model.Image>> uploadFile(@RequestPart("file") Flux<FilePart> file) {
         System.out.println("Upload carousel image");
         return imageAPI.Upload(file,"Carousel");
     }
