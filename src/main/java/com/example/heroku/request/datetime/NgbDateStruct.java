@@ -25,7 +25,7 @@ public class NgbDateStruct {
     }
     public static NgbDateStruct FromTimestamp(Timestamp time) {
         if (time == null)
-            return NgbDateStruct.builder().build();
+            return null;
         long timestamp = time.getTime();
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp);

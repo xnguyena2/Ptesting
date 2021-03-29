@@ -58,15 +58,15 @@ public class BeerSubmitData {
                 .SetBeerUnit(listMapedUnit);
     }
 
-    public BeerSubmitData AddImage(Image image){
-        if(this.images == null){
+    public BeerSubmitData AddImage(Image image) {
+        if (this.images == null) {
             this.images = new ArrayList<>();
         }
         this.images.add(image);
         return this;
     }
 
-    public BeerSubmitData FromBeer(Beer beer){
+    public BeerSubmitData FromBeer(Beer beer) {
         return BeerSubmitData.builder()
                 .beerSecondID(beer.getBeer_second_id())
                 .name(beer.getName())
@@ -107,6 +107,8 @@ public class BeerSubmitData {
 
         public Timestamp GetExpirDateTime() {
             if (dateExpir == null)
+                return null;
+            if (dateExpir.getDay() == 0 && dateExpir.getMonth() == 0 && dateExpir.getYear() == 0)
                 return null;
             return dateExpir.ToDateTime();
         }
