@@ -216,7 +216,13 @@ public class BeerOrder {
                                                                     })
                                                                     .then(
                                                                             Mono.just(packageOrderData.getPackageOrder())
-                                                                                    .flatMap(packageOrder -> packageOrderRepository.save(packageOrder))
+                                                                                    .flatMap(packageOrder -> {
+                                                                                        if (!packageOrderData.isPreOrder()) {
+                                                                                            return packageOrderRepository.save(packageOrder);
+                                                                                        } else {
+                                                                                            return Mono.just(packageOrder);
+                                                                                        }
+                                                                                    })
                                                                     );
                                                         })
                                         )
