@@ -2,8 +2,8 @@ package com.example.heroku;
 
 
 import com.example.heroku.jwt.JwtTokenProvider;
-import com.example.heroku.model.repository.UserRepository;
 import com.example.heroku.request.data.AuthenticationRequest;
+import com.example.heroku.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +42,7 @@ public class AuthenticationController {
     JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signin")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity> signin(@Valid @RequestBody Mono<AuthenticationRequest> authRequest) {
 
         try {
