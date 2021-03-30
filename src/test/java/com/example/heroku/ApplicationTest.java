@@ -1,10 +1,8 @@
 package com.example.heroku;
 
 import com.example.heroku.model.repository.ImageRepository;
-import com.example.heroku.photo.FlickrLib;
 import com.example.heroku.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.flickr4java.flickr.FlickrException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -64,7 +62,7 @@ public class ApplicationTest extends TestConfig{
 
     @Test
     public void ImageTest() {
-        ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).build().ImageTest(listImg);
+        ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).build().Run(listImg);
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).build().DeviceConfigTest();
     }
 
@@ -136,7 +134,7 @@ public class ApplicationTest extends TestConfig{
 
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).build().BootStrapDataWithoutImage();
 
-        ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).build().ImageTest(listImg);
+        ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).build().Run(listImg);
 
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).build().DeviceConfigTest();
 

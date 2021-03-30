@@ -2,6 +2,7 @@ package com.example.heroku;
 
 import com.example.heroku.model.repository.ImageRepository;
 import lombok.Builder;
+import lombok.NonNull;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -53,7 +54,7 @@ public class ImageTest {
         }
     }
 
-    class imgMap{
+    static class imgMap{
         public String id;
         public byte[] content;
 
@@ -67,7 +68,7 @@ public class ImageTest {
 
     com.example.heroku.services.Image imageAPI;
 
-    class FilePartIPL implements FilePart {
+    static class FilePartIPL implements FilePart {
         String filePath;
         byte[] imageContent = null;
 
@@ -80,26 +81,31 @@ public class ImageTest {
             }
         }
 
+        @NonNull
         @Override
         public String filename() {
             return "test.png";
         }
 
+        @NonNull
         @Override
-        public Mono<Void> transferTo(Path dest) {
+        public Mono<Void> transferTo(@NonNull Path dest) {
             return Mono.empty();
         }
 
+        @NonNull
         @Override
         public String name() {
             return "test.png";
         }
 
+        @NonNull
         @Override
         public HttpHeaders headers() {
             return HttpHeaders.EMPTY;
         }
 
+        @NonNull
         @Override
         public Flux<DataBuffer> content() {
             return DataBufferUtils.read(
@@ -111,8 +117,8 @@ public class ImageTest {
         }
     }
 
-    public void ImageTest(String[] listImg) {
-        Map<String, FilePartIPL> imgMap = new HashMap();
+    public void Run(String[] listImg) {
+        Map<String, FilePartIPL> imgMap = new HashMap<>();
         FilePartIPL[] imgContent = new FilePartIPL[listImg.length];
         for (int i = 0; i < imgContent.length; i++) {
             imgContent[i] = new FilePartIPL(listImg[i]);
@@ -139,18 +145,10 @@ public class ImageTest {
         imageAPI.GetAll("Carousel")
                 .map(image -> new imgMap(image.getImgid(), getImageBytes(image.getLarge())))
                 .as(StepVerifier::create)
-                .consumeNextWith(image -> {
-                    assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent());
-                })
-                .consumeNextWith(image -> {
-                    assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent());
-                })
-                .consumeNextWith(image -> {
-                    assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent());
-                })
-                .consumeNextWith(image -> {
-                    assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent());
-                })
+                .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))
+                .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))
+                .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))
+                .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))
                 .verifyComplete();
 
     }

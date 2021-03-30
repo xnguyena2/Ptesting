@@ -16,18 +16,19 @@ public class PackageOrder {
     @Autowired
     PackageOrderRepository packageOrderRepository;
 
-    public Mono<OrderSearchResult> CountGetAllBeer(SearchQuery query) {
+    public Mono<OrderSearchResult> CountGetAllOrder(SearchQuery query) {
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();
-        return this.resultWithCountRepository.countAll()
+        final com.example.heroku.model.PackageOrder.Status status = com.example.heroku.model.PackageOrder.Status.get(query.getQuery());
+        return this.resultWithCountRepository.countPackageOrder(status)
                 .map(resultWithCount -> {
                     OrderSearchResult result = new OrderSearchResult();
                     result.setCount(resultWithCount.getCount());
                     return result;
                 })
                 .flatMap(orderSearchResult ->
-                        packageOrderRepository.getAll(page, size, com.example.heroku.model.PackageOrder.Status.get(query.getQuery()))
+                        packageOrderRepository.getAll(page, size, status)
                                 .map(orderSearchResult::Add)
                                 .then(Mono.just(orderSearchResult))
                 );

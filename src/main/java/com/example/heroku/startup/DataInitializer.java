@@ -31,6 +31,8 @@ public class DataInitializer {
     @Value("${app.setting.resetdb}")
     private boolean resetDB;
 
+    @Autowired
+    com.example.heroku.services.Image imageAPI;
 
     @Autowired
     DatabaseClient databaseClient;
@@ -49,6 +51,9 @@ public class DataInitializer {
         if (resetDB) {
             log.warn("Reset all Database!");
             System.out.println("Reset all Database!");
+
+            imageAPI.DeleteAll().block();
+
             asList(
 
                     "DROP TABLE IF EXISTS ticks",
@@ -78,7 +83,6 @@ public class DataInitializer {
                                     .rowsUpdated()
                                     .block()
                     );
-
             //PhotoLib.getInstance().deleteAll();
             try {
                 FlickrLib.getInstance().DeleteAll();

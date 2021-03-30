@@ -69,11 +69,20 @@ public class Image {
         );
     }
 
-    public Flux<com.example.heroku.model.Image> GetAll(String category){
+    public Flux<com.example.heroku.model.Image> GetAll(String category) {
         return this.imageRepository.findByCategory(category);
     }
 
-    public Mono<Void> DeleteAll(){
-        return this.imageRepository.deleteAll();
+    public Mono<Void> DeleteAll() {
+        return this.imageRepository.findAll()
+                .map(image -> {
+                    try {
+                        FlickrLib.getInstance().DeleteImage(image.getImgid());
+                    } catch (FlickrException e) {
+                        e.printStackTrace();
+                    }
+                    return image;
+                })
+                .then(this.imageRepository.deleteAll());
     }
 }

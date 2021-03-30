@@ -23,5 +23,5 @@ public interface ResultWithCountRepository extends ReactiveCrudRepository<Result
     Mono<ResultWithCount> countSearchBeerLike(@Param("search")String search);
 
     @Query(value = "SELECT COUNT(*) as count FROM package_order WHERE package_order.status = :status")
-    Mono<ResultWithCount> getAll(@Param("status") PackageOrder.Status status);
+    Mono<ResultWithCount> countPackageOrder(@Param("status") PackageOrder.Status status);
 }

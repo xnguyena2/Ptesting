@@ -48,6 +48,9 @@ public class OrderPackageTest extends TestConfig {
     @Autowired
     Voucher voucherAPI;
 
+    @Autowired
+    com.example.heroku.services.PackageOrder packageOrder;
+
     @Test
     public void OrderTest() throws Exception {
         createDevice();
@@ -138,7 +141,13 @@ public class OrderPackageTest extends TestConfig {
                             .verifyComplete();
                 })
                 .verifyComplete();
-        //orderTest();
+        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(200).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(orderSearchResult -> {
+                    assertThat(orderSearchResult.getCount()).isEqualTo(180);
+                    assertThat(orderSearchResult.getResult().size()).isEqualTo(180);
+                })
+                .verifyComplete();
     }
 
     void orderTest() {

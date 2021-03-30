@@ -911,6 +911,62 @@ public class BeerTest {
                             .verifyComplete();
                 })
                 .verifyComplete();
+
+
+
+        beerAPI.CreateBeer(
+                BeerInfo
+                        .builder()
+                        .beerUnit(new BeerUnit[]{
+                                BeerUnit
+                                        .builder()
+                                        .beer_unit_second_id(beerUnit1ID.get())
+                                        .beer("444")
+                                        .price(10)
+                                        .weight(0.3f)
+                                        .discount(10)
+                                        .date_expire(new Timestamp(new Date().getTime()))
+                                        .name("thung")
+                                        .build(),
+                                BeerUnit
+                                        .builder()
+                                        .beer_unit_second_id(beerUnit2ID.get())
+                                        .beer("444")
+                                        .price(10)
+                                        .weight(0.3f)
+                                        .discount(10)
+                                        .date_expire(new Timestamp(new Date().getTime()))
+                                        .name("lon")
+                                        .build()
+                        })
+                        .beer(Beer
+                                .builder()
+                                .category(Beer.Category.ALCOHOL)
+                                .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
+                                        "- bia thơm ngon\n" +
+                                        "- bia nhập ngoại\n" +
+                                        "- bia sản xuất từ hà lan")
+                                .name("beer tiger")
+                                .beer_second_id("444").build()
+                                .AutoFill()
+                        )
+                        .build()
+        ).blockLast();
+
+        this.beerAPI.GetBeerByID("444")
+                .map(BeerSubmitData::GetBeerInfo)
+                .as(StepVerifier::create)
+                .consumeNextWith(beerInfo -> {
+                    assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("444");
+                })
+                .verifyComplete();
+
+        this.beerAPI.DeleteBeerByID("444").block();
+
+        this.beerAPI.GetBeerByID("444")
+                .map(BeerSubmitData::GetBeerInfo)
+                .as(StepVerifier::create)
+                .verifyComplete();
     }
 
     private BeerInfo createTestBeer(int idi, int price) {
