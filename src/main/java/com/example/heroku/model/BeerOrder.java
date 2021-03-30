@@ -21,6 +21,8 @@ public class BeerOrder {
     @Id
     String id;
 
+    private String name;
+
     private String package_order_second_id;
 
     private String beer_second_id;

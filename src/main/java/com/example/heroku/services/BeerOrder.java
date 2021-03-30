@@ -23,6 +23,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BeerOrder {
 
     @Autowired
+    BeerRepository beerRepository;
+
+    @Autowired
     PackageOrderRepository packageOrderRepository;
 
     @Autowired
@@ -140,10 +143,15 @@ public class BeerOrder {
                                 .then(shippingProviderAPI.GetGHNShippingProvider()
                                         .flatMap(ghn ->
                                                 Flux.just(packageOrderData.getBeerOrders())
+                                                        .flatMap(beerOrderData ->
+                                                                beerRepository.findBySecondID(beerOrderData.getBeerOrder().getBeer_second_id())
+                                                                .map(beerOrderData::UpdateName)
+                                                        )
                                                         .flatMap(beerOrder ->
                                                                 Flux.just(beerOrder.getBeerUnitOrders())
                                                                         .flatMap(beerUnitOrder ->
                                                                                 beerUnitRepository.findByBeerUnitID(beerUnitOrder.getBeer_unit_second_id())
+                                                                                        .map(beerUnitOrder::UpdateName)
                                                                                         .map(BeerUnit::UpdateToRealPrice)
                                                                                         .flatMap(beerUnit ->
                                                                                                 caculatorVoucherOfProduct(currentTime, vouchers, packageOrderData.getPackageOrder().getUser_device_id(), beerOrder.getBeerOrder())

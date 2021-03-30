@@ -1,5 +1,7 @@
 package com.example.heroku.services;
 
+import com.example.heroku.model.repository.BeerOrderRepository;
+import com.example.heroku.model.repository.BeerUnitOrderRepository;
 import com.example.heroku.model.repository.PackageOrderRepository;
 import com.example.heroku.model.repository.ResultWithCountRepository;
 import com.example.heroku.request.Order.OrderSearchResult;
@@ -16,6 +18,12 @@ public class PackageOrder {
     @Autowired
     PackageOrderRepository packageOrderRepository;
 
+    @Autowired
+    BeerOrderRepository beerOrderRepository;
+
+    @Autowired
+    BeerUnitOrderRepository beerUnitOrderRepository;
+
     public Mono<OrderSearchResult> CountGetAllOrder(SearchQuery query) {
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
@@ -29,8 +37,24 @@ public class PackageOrder {
                 })
                 .flatMap(orderSearchResult ->
                         packageOrderRepository.getAll(page, size, status)
+                                .flatMap(this::coverToData)
                                 .map(orderSearchResult::Add)
                                 .then(Mono.just(orderSearchResult))
+                );
+    }
+
+    Mono<OrderSearchResult.PackageOrderData> coverToData(com.example.heroku.model.PackageOrder packageOrder) {
+        return Mono.just(packageOrder)
+                .map(OrderSearchResult.PackageOrderData::new)
+                .flatMap(packageOrderData ->
+                        beerOrderRepository.findBySecondID(packageOrderData.getPackage_order_second_id())
+                                .map(OrderSearchResult.PackageOrderData.BeerOrderData::new)
+                                .map(packageOrderData::Add)
+                                .flatMap(beerOrderData ->
+                                        beerUnitOrderRepository.findByBeerAndOrder(packageOrderData.getPackage_order_second_id(), beerOrderData.getBeer_second_id())
+                                                .map(beerOrderData::Add)
+                                )
+                                .then(Mono.just(packageOrderData))
                 );
     }
 

@@ -104,8 +104,8 @@ public class DataInitializer {
                 "CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, color VARCHAR)",
 
                 "CREATE TABLE IF NOT EXISTS package_order (id SERIAL PRIMARY KEY, package_order_second_id VARCHAR, user_device_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, total_price float8, ship_price float8, status VARCHAR, createat TIMESTAMP)",
-                "CREATE TABLE IF NOT EXISTS beer_order (id SERIAL PRIMARY KEY, package_order_second_id VARCHAR, beer_second_id VARCHAR, voucher_second_id VARCHAR, total_price float8, ship_price float8, createat TIMESTAMP)",
-                "CREATE TABLE IF NOT EXISTS beer_unit_order (id SERIAL PRIMARY KEY, package_order_second_id VARCHAR, beer_second_id VARCHAR, beer_unit_second_id VARCHAR, price float8, total_discount float8, number_unit INTEGER, createat TIMESTAMP)",
+                "CREATE TABLE IF NOT EXISTS beer_order (id SERIAL PRIMARY KEY, name VARCHAR, package_order_second_id VARCHAR, beer_second_id VARCHAR, voucher_second_id VARCHAR, total_price float8, ship_price float8, createat TIMESTAMP)",
+                "CREATE TABLE IF NOT EXISTS beer_unit_order (id SERIAL PRIMARY KEY, name VARCHAR, package_order_second_id VARCHAR, beer_second_id VARCHAR, beer_unit_second_id VARCHAR, price float8, total_discount float8, number_unit INTEGER, createat TIMESTAMP)",
 
                 "CREATE TABLE IF NOT EXISTS user_device (id SERIAL PRIMARY KEY, device_id VARCHAR, user_first_name VARCHAR, user_last_name VARCHAR, status VARCHAR, createat TIMESTAMP)",
                 "CREATE TABLE IF NOT EXISTS user_address (id SERIAL PRIMARY KEY, device_id VARCHAR, reciver_fullname VARCHAR, phone_number VARCHAR, house_number VARCHAR, region INTEGER, district INTEGER, ward INTEGER, status VARCHAR, createat TIMESTAMP)",

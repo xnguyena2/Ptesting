@@ -1,11 +1,12 @@
 package com.example.heroku.request.Order;
 
+import com.example.heroku.model.BeerOrder;
+import com.example.heroku.model.BeerUnitOrder;
 import com.example.heroku.model.PackageOrder;
 import com.example.heroku.model.count.ResultWithCount;
 import com.example.heroku.services.VietNamAddress;
 import lombok.*;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,11 +18,11 @@ import java.util.List;
 public class OrderSearchResult  extends ResultWithCount {
     private List<PackageOrderData> result;
 
-    public OrderSearchResult Add(PackageOrder newItem) {
+    public OrderSearchResult Add(PackageOrderData newItem) {
         if (result == null) {
             result = new ArrayList<>();
         }
-        result.add(new PackageOrderData(newItem));
+        result.add(newItem);
         return this;
     }
 
@@ -38,6 +39,9 @@ public class OrderSearchResult  extends ResultWithCount {
         private String region;
         private String district;
         private String ward;
+
+        private List<BeerOrderData> beerOrderList;
+
 
         public PackageOrderData(PackageOrder source) {
 
@@ -57,6 +61,44 @@ public class OrderSearchResult  extends ResultWithCount {
             setShip_price(source.getShip_price());
             setStatus(source.getStatus());
             setCreateat(source.getCreateat());
+        }
+
+        public BeerOrderData Add(BeerOrder newItem) {
+            if (beerOrderList == null) {
+                beerOrderList = new ArrayList<>();
+            }
+            BeerOrderData newI = new BeerOrderData(newItem);
+            beerOrderList.add(new BeerOrderData(newItem));
+            return newI;
+        }
+
+        public BeerOrderData[] GetResultAsArray() {
+            return beerOrderList.toArray(new BeerOrderData[0]);
+        }
+
+        @EqualsAndHashCode(callSuper = true)
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class BeerOrderData extends BeerOrder {
+            private List<BeerUnitOrder> beerUnitOrderList;
+
+            public BeerOrderData(BeerOrder source) {
+
+                setBeer_second_id(source.getBeer_second_id());
+                setVoucher_second_id(source.getVoucher_second_id());
+                setTotal_price(source.getTotal_price());
+                setShip_price(source.getShip_price());
+
+            }
+
+            public BeerOrderData Add(BeerUnitOrder newItem) {
+                if (beerUnitOrderList == null) {
+                    beerUnitOrderList = new ArrayList<>();
+                }
+                beerUnitOrderList.add(newItem);
+                return this;
+            }
         }
     }
 }

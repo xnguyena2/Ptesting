@@ -1,5 +1,6 @@
 package com.example.heroku.request.beer;
 
+import com.example.heroku.model.Beer;
 import com.example.heroku.model.BeerUnitOrder;
 import com.example.heroku.model.PackageOrder;
 import lombok.AllArgsConstructor;
@@ -23,9 +24,16 @@ public class PackageOrderData {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class BeerOrderData{
+    public static class BeerOrderData {
         private com.example.heroku.model.BeerOrder beerOrder;
 
         private BeerUnitOrder[] beerUnitOrders;
+
+        public BeerOrderData UpdateName(Beer beer) {
+            if (beerOrder != null) {
+                beerOrder.setName(beer.getName());
+            }
+            return this;
+        }
     }
 }

@@ -21,6 +21,8 @@ public class BeerUnitOrder {
     @Id
     String id;
 
+    private String name;
+
     private String package_order_second_id;
 
     private String beer_second_id;
@@ -39,6 +41,11 @@ public class BeerUnitOrder {
         this.package_order_second_id = packageOrderSecondID;
         this.createat = new Timestamp(new Date().getTime());
         return this;
+    }
+
+    public BeerUnit UpdateName(BeerUnit beerUnit){
+        this.name = beerUnit.getName();
+        return beerUnit;
     }
 
 }
