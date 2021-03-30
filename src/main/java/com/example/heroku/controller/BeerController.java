@@ -3,11 +3,11 @@ package com.example.heroku.controller;
 import com.example.heroku.model.Beer;
 import com.example.heroku.model.BeerUnit;
 import com.example.heroku.model.Image;
+import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.beer.SearchResult;
 import com.example.heroku.request.carousel.IDContainer;
-import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -62,8 +62,9 @@ public class BeerController {
     @PostMapping("/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BeerUnit> addBeerInfo(@RequestBody @Valid BeerSubmitData beerInfo) {
-        System.out.println("add or update beer: " + beerInfo.GetBeerInfo().getBeer().getName());
-        return beerAPI.CreateBeer(beerInfo.GetBeerInfo());
+        BeerInfo beerInf = beerInfo.GetBeerInfo();
+        System.out.println("add or update beer: " + beerInf.getBeer().getName());
+        return beerAPI.CreateBeer(beerInf);
     }
 
     @PostMapping("/getall")

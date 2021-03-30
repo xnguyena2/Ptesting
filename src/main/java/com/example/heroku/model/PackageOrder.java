@@ -73,17 +73,17 @@ public class PackageOrder {
             return name;
         }
 
-        private static final Map<String, Beer.Status> lookup = new HashMap<>();
+        private static final Map<String, Status> lookup = new HashMap<>();
 
         static
         {
-            for(Beer.Status sts : Beer.Status.values())
+            for(Status sts : Status.values())
             {
                 lookup.put(sts.getName(), sts);
             }
         }
 
-        public static Beer.Status get(String text)
+        public static Status get(String text)
         {
             return lookup.get(text);
         }

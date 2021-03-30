@@ -1,6 +1,7 @@
 package com.example.heroku.model.repository;
 
 import com.example.heroku.model.Beer;
+import com.example.heroku.model.PackageOrder;
 import com.example.heroku.model.count.ResultWithCount;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +21,7 @@ public interface ResultWithCountRepository extends ReactiveCrudRepository<Result
 
     @Query(value = "SELECT COUNT(*) as count FROM beer WHERE beer.meta_search LIKE :search")
     Mono<ResultWithCount> countSearchBeerLike(@Param("search")String search);
+
+    @Query(value = "SELECT COUNT(*) as count FROM package_order WHERE package_order.status = :status")
+    Mono<ResultWithCount> getAll(@Param("status") PackageOrder.Status status);
 }

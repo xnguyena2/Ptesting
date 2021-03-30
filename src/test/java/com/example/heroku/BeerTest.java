@@ -5,6 +5,7 @@ import com.example.heroku.model.BeerUnit;
 import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.request.datetime.NgbDateStruct;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
@@ -156,9 +157,33 @@ public class BeerTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("lon");
+                                assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
+                                assertThat(beerUnit.getDate_expire()).isEqualTo(null);
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+
+        this.beerAPI.GetBeerByID("456")
+                .map(BeerSubmitData::GetBeerInfo)
+                .as(StepVerifier::create)
+                .consumeNextWith(beerInfo -> {
+                    assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("456");
+                    assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.ALCOHOL);
+                    assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
+                    Flux.just(beerInfo.getBeerUnit())
+                            .sort(Comparator.comparing(BeerUnit::getName))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("lon");
+                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(new Timestamp(new Date().getTime())));
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("thung");
+                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(new Timestamp(new Date().getTime())));
                             })
                             .verifyComplete();
                 })

@@ -31,7 +31,7 @@ public class NgbDateStruct {
         cal.setTimeInMillis(timestamp);
         return NgbDateStruct.builder()
                 .year(cal.get(Calendar.YEAR))
-                .month(cal.get(Calendar.MONTH) + 1)
+                .month(cal.get(Calendar.MONTH))
                 .day(cal.get(Calendar.DAY_OF_MONTH))
                 .build();
     }
