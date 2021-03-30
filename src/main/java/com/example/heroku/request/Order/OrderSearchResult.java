@@ -68,7 +68,7 @@ public class OrderSearchResult  extends ResultWithCount {
                 beerOrderList = new ArrayList<>();
             }
             BeerOrderData newI = new BeerOrderData(newItem);
-            beerOrderList.add(new BeerOrderData(newItem));
+            beerOrderList.add(newI);
             return newI;
         }
 
@@ -85,6 +85,7 @@ public class OrderSearchResult  extends ResultWithCount {
 
             public BeerOrderData(BeerOrder source) {
 
+                setPackage_order_second_id(source.getPackage_order_second_id());
                 setBeer_second_id(source.getBeer_second_id());
                 setVoucher_second_id(source.getVoucher_second_id());
                 setTotal_price(source.getTotal_price());

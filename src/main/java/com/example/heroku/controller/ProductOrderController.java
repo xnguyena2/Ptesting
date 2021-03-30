@@ -39,6 +39,14 @@ public class ProductOrderController {
     }
 
 
+    @GetMapping("/admin/detail/{id}")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<OrderSearchResult.PackageOrderData> detail(@PathVariable("id") String id) {
+        System.out.println("Detail of order: " + id);
+        return packageOrder.getOrderDetail(id);
+    }
+
+
     @PostMapping("/admin/done")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<PackageOrder> closeOrder(@Valid @ModelAttribute IDContainer order) {

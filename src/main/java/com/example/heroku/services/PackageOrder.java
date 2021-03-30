@@ -58,6 +58,11 @@ public class PackageOrder {
                 );
     }
 
+    public Mono<OrderSearchResult.PackageOrderData> getOrderDetail(String id){
+        return packageOrderRepository.getByID(id)
+                .flatMap(this::coverToData);
+    }
+
     public Mono<com.example.heroku.model.PackageOrder> UpdateStatus(String id, com.example.heroku.model.PackageOrder.Status status) {
         return packageOrderRepository.changeStatus(id, status);
     }

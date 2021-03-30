@@ -141,11 +141,30 @@ public class OrderPackageTest extends TestConfig {
                             .verifyComplete();
                 })
                 .verifyComplete();
+        AtomicReference<String> orderID = new AtomicReference<>();
         packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(200).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
+                    orderID.set(orderSearchResult.getResult().get(0).getPackage_order_second_id());
                     assertThat(orderSearchResult.getCount()).isEqualTo(180);
                     assertThat(orderSearchResult.getResult().size()).isEqualTo(180);
+                })
+                .verifyComplete();
+
+        packageOrder.UpdateStatus(orderID.get(), PackageOrder.Status.DONE).block();
+
+        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(200).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(orderSearchResult -> {
+                    assertThat(orderSearchResult.getCount()).isEqualTo(179);
+                    assertThat(orderSearchResult.getResult().size()).isEqualTo(179);
+                })
+                .verifyComplete();
+
+        packageOrder.getOrderDetail(orderID.get())
+                .as(StepVerifier::create)
+                .consumeNextWith(packageOrderData -> {
+                    assertThat(packageOrderData.getStatus()).isEqualTo(PackageOrder.Status.DONE);
                 })
                 .verifyComplete();
     }
