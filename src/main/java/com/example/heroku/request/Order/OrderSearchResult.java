@@ -90,6 +90,7 @@ public class OrderSearchResult  extends ResultWithCount {
                 setVoucher_second_id(source.getVoucher_second_id());
                 setTotal_price(source.getTotal_price());
                 setShip_price(source.getShip_price());
+                setName(source.getName());
 
             }
 
