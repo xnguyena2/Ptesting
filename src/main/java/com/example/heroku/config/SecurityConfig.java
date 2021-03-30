@@ -43,35 +43,26 @@ public class SecurityConfig {
                         //.pathMatchers(HttpMethod.DELETE, PATH_POSTS).hasRole("ADMIN")
                         //.pathMatchers(PATH_POSTS).authenticated()
                         //.pathMatchers("/me").authenticated()
-                        .pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
+                        //.pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
 
 
                         .pathMatchers("/").permitAll()
-                        //.pathMatchers("/lang-logo.png").permitAll()
-                        .pathMatchers("/favicon.ico").permitAll()
-                        .pathMatchers("/login").permitAll()
-                        .pathMatchers("/img/**").permitAll()
-                        .pathMatchers("/styles/**").permitAll()
-                        .pathMatchers("/webjars/**").permitAll()
-                        .pathMatchers("/stylesheets/**").permitAll()
-                        .pathMatchers("/auth/signin").permitAll()
-                        .pathMatchers("/js/**").permitAll()
+
                         .pathMatchers("/deviceconfig/**").permitAll()
                         .pathMatchers("/shippingprovider/**").permitAll()
                         .pathMatchers("/voucher/**").permitAll()
                         .pathMatchers("/package/**").permitAll()
-
-                        .pathMatchers("/angular/**").permitAll()
                         .pathMatchers("/carousel/**").permitAll()
                         .pathMatchers("/beer/**").permitAll()
-                        .pathMatchers("/db").permitAll()
                         .pathMatchers("/image/**").permitAll()
                         .pathMatchers("/address/**").permitAll()
                         .pathMatchers("/order/**").permitAll()
+                        .pathMatchers("/clientdevice/**").permitAll()
 
+                        .pathMatchers("/angular/**").permitAll()
                         .pathMatchers("/adminag/**").permitAll()
 
-                        .pathMatchers("/clientdevice/**").permitAll()
+                        .pathMatchers("/auth/signin").permitAll()
 
                         .anyExchange().authenticated()
                 )

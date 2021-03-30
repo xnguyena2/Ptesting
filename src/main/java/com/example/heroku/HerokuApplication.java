@@ -44,12 +44,7 @@ public class HerokuApplication {
 
   @RequestMapping("/")
   String index() {
-    return "index";
-  }
-
-  @RequestMapping("/login")
-  String login() {
-    return "login/index";
+    return "angular/index";
   }
 
   @RequestMapping("/angular")
@@ -58,7 +53,7 @@ public class HerokuApplication {
   }
 
   @RequestMapping("/adminag")
-  String angularSearchAll() {
+  String angularAdmin() {
     return "adminag/index";
   }
 
