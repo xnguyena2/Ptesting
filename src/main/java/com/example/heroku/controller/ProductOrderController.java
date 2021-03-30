@@ -4,6 +4,7 @@ import com.example.heroku.model.PackageOrder;
 import com.example.heroku.request.Order.OrderSearchResult;
 import com.example.heroku.request.beer.PackageOrderData;
 import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.services.BeerOrder;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,12 @@ public class ProductOrderController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<OrderSearchResult> getIMGbyID(@RequestBody @Valid SearchQuery query) {
         return packageOrder.CountGetAllOrder(query);
+    }
+
+
+    @PostMapping("/admin/done")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<PackageOrder> closeOrder(@Valid @ModelAttribute IDContainer order) {
+        return packageOrder.UpdateStatus(order.getId(), PackageOrder.Status.DONE);
     }
 }

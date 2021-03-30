@@ -33,4 +33,8 @@ public class PackageOrder {
                                 .then(Mono.just(orderSearchResult))
                 );
     }
+
+    public Mono<com.example.heroku.model.PackageOrder> UpdateStatus(String id, com.example.heroku.model.PackageOrder.Status status) {
+        return packageOrderRepository.changeStatus(id, status);
+    }
 }

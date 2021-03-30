@@ -103,6 +103,28 @@ public class VietNamAddress {
         return null;
     }
 
+    public String GetWardName(int regionID, int districtID, int wardID) throws IOException {
+        if (allAddress == null) {
+            this.SaveAllToDatabase(false);
+        }
+        for (VietNamAddress.AddressFromat.Region region:
+                allAddress.getRegions()) {
+            if(region.id == regionID) {
+                for (AddressFromat.Region.DistrictContent.District district :
+                        region.districts.data) {
+                    if (district.id == districtID) {
+                        for (AddressFromat.Region.DistrictContent.District.WardContent.Ward ward :
+                                district.wards.data) {
+                            if (ward.id == wardID)
+                                return ward.name;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public Flux<VietNamAddress.AddressFromat.Region> GetAllRegion() throws IOException {
         if (allAddress == null) {
             this.SaveAllToDatabase(false);
