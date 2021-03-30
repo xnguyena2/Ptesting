@@ -18,20 +18,20 @@ public class VoucherController {
     @Autowired
     com.example.heroku.services.Voucher voucherAPI;
 
-    @GetMapping("/generateid")
+    @GetMapping("/admin/generateid")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity> generateID(){
         return voucherAPI.generateID();
     }
 
-    @PostMapping("/getall")
+    @PostMapping("/admin/getall")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<Voucher> getAllVoucher(@RequestBody @Valid Page page) {
         System.out.println("Get all voucher: page " + page.getPage() + ", size " + page.getSize());
         return voucherAPI.getAllVoucher(page.getPage(), page.getSize());
     }
 
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Voucher> deleteIMG(@RequestBody @Valid VoucherData voucherData) {
         System.out.println("create new voucher: "+voucherData.getVoucher().getVoucher_second_id());

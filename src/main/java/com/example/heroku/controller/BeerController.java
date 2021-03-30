@@ -29,7 +29,7 @@ public class BeerController {
     @Autowired
     com.example.heroku.services.Beer beerAPI;
 
-    @GetMapping("/generateid")
+    @GetMapping("/admin/generateid")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity> generateID() {
         return beerAPI.generateID();
@@ -37,35 +37,40 @@ public class BeerController {
 
 
     //---------- for manage image------------------
-    @PostMapping(value = "/{id}/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+    @PostMapping(value = "/admin/{id}/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<com.example.heroku.model.Image>> uploadIMG(@RequestPart("file") Flux<FilePart> file, @PathVariable("id") String beerID) {
         System.out.println("Uplaod image for beer!");
         return imageAPI.Upload(file, beerID);
     }
 
-    @PostMapping("/{id}/img/delete")
+    @PostMapping("/admin/{id}/img/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Object> deleteIMG(@Valid @ModelAttribute IDContainer img) {
         System.out.println("delete imgae: " + img.getId());
         return imageAPI.Delete(img);
     }
 
-    @GetMapping("/{id}/img/all")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<Image> getIMGbyID(@PathVariable("id") String beerID) {
-        return imageAPI.GetAll(beerID);
-    }
     //--------------------end manage image-----------------
 
 
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BeerUnit> addBeerInfo(@RequestBody @Valid BeerSubmitData beerInfo) {
         BeerInfo beerInf = beerInfo.GetBeerInfo();
         System.out.println("add or update beer: " + beerInf.getBeer().getName());
         return beerAPI.CreateBeer(beerInf);
     }
+
+    @DeleteMapping("/admin/delete/{id}")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<Beer> delete(@PathVariable("id") String beerID) {
+        System.out.println("delete beer: " + beerID);
+        return beerAPI.DeleteBeerByID(beerID);
+    }
+
+
+
 
     @PostMapping("/getall")
     @CrossOrigin(origins = Util.HOST_URL)
@@ -93,12 +98,5 @@ public class BeerController {
     public Mono<BeerSubmitData> detail(@PathVariable("id") String beerID) {
         System.out.println("Detail of beer: " + beerID);
         return beerAPI.GetBeerByID(beerID);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<Beer> delete(@PathVariable("id") String beerID) {
-        System.out.println("delete beer: " + beerID);
-        return beerAPI.DeleteBeerByID(beerID);
     }
 }

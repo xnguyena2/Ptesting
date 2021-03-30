@@ -39,30 +39,26 @@ public class SecurityConfig {
                 .authenticationManager(reactiveAuthenticationManager)
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .authorizeExchange(it -> it
-                        //.pathMatchers(HttpMethod.GET, PATH_POSTS).permitAll()
                         //.pathMatchers(HttpMethod.DELETE, PATH_POSTS).hasRole("ADMIN")
-                        //.pathMatchers(PATH_POSTS).authenticated()
                         //.pathMatchers("/me").authenticated()
                         //.pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
 
 
                         .pathMatchers("/").permitAll()
-
-                        .pathMatchers("/deviceconfig/**").permitAll()
-                        .pathMatchers("/shippingprovider/**").permitAll()
-                        .pathMatchers("/voucher/**").permitAll()
-                        .pathMatchers("/package/**").permitAll()
-                        .pathMatchers("/carousel/**").permitAll()
-                        .pathMatchers("/beer/**").permitAll()
-                        .pathMatchers("/image/**").permitAll()
                         .pathMatchers("/address/**").permitAll()
-                        .pathMatchers("/order/**").permitAll()
+                        .pathMatchers("/beer/**").permitAll()
                         .pathMatchers("/clientdevice/**").permitAll()
+                        .pathMatchers("/deviceconfig/**").permitAll()
+                        .pathMatchers("/order/**").permitAll()
+                        .pathMatchers("/package/**").permitAll()
 
                         .pathMatchers("/angular/**").permitAll()
                         .pathMatchers("/adminag/**").permitAll()
 
                         .pathMatchers("/auth/signin").permitAll()
+
+                        //for admin
+                        .pathMatchers("/**/admin/**").hasRole("ADMIN")
 
                         .anyExchange().authenticated()
                 )

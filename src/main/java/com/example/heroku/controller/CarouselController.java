@@ -21,21 +21,21 @@ public class CarouselController {
     @Autowired
     com.example.heroku.services.Image imageAPI;
 
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+    @PostMapping(value = "/admin/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<com.example.heroku.model.Image>> uploadFile(@RequestPart("file") Flux<FilePart> file) {
         System.out.println("Upload carousel image");
         return imageAPI.Upload(file,"Carousel");
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/admin/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Object> uploadFile(@Valid @ModelAttribute IDContainer img) {
         System.out.println("Delete img: " + img.getId());
         return imageAPI.Delete(img);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/admin/all")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<Image> getAll(){
         return imageAPI.GetAll("Carousel");

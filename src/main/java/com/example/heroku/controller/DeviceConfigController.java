@@ -15,7 +15,7 @@ public class DeviceConfigController {
     @Autowired
     DeviceConfig deviceConfigAPI;
 
-    @PostMapping("/changecolor")
+    @PostMapping("/admin/changecolor")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Object> updateDeviceColor(@RequestBody @Valid com.example.heroku.model.DeviceConfig config) {
         System.out.println("update color: "+config.getColor());
