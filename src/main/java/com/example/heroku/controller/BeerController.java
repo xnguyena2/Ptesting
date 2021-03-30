@@ -51,6 +51,12 @@ public class BeerController {
         return imageAPI.Delete(img);
     }
 
+    @GetMapping("/admin/{id}/img/all")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<Image> getIMGbyID(@PathVariable("id") String beerID) {
+        return imageAPI.GetAll(beerID);
+    }
+
     //--------------------end manage image-----------------
 
 
