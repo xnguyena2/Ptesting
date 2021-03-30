@@ -69,6 +69,8 @@ public class SecurityConfig {
                         .pathMatchers("/address/**").permitAll()
                         .pathMatchers("/order/**").permitAll()
 
+                        .pathMatchers("/adminag/**").permitAll()
+
                         .pathMatchers("/clientdevice/**").permitAll()
 
                         .anyExchange().authenticated()
