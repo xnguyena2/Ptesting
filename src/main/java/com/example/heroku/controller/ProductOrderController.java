@@ -49,7 +49,8 @@ public class ProductOrderController {
 
     @PostMapping("/admin/done")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<PackageOrder> closeOrder(@Valid @ModelAttribute IDContainer order) {
+    public Mono<PackageOrder> closeOrder(@RequestBody @Valid IDContainer order) {
+        System.out.println("close order: " + order.getId());
         return packageOrder.UpdateStatus(order.getId(), PackageOrder.Status.DONE);
     }
 }
