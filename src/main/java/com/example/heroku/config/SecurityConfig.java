@@ -57,6 +57,7 @@ public class SecurityConfig {
 
                         .pathMatchers("/auth/signin").permitAll()
 
+                        
                         //for admin
                         .pathMatchers("/**/admin/**").hasRole("ADMIN")
 
