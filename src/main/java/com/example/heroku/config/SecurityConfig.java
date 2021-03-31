@@ -58,7 +58,7 @@ public class SecurityConfig {
                         .pathMatchers("/auth/signin").permitAll()
 
                         //for admin
-                        .pathMatchers("/**/admin/**").permitAll()//.hasRole("ADMIN")
+                        .pathMatchers("/**/admin/**").hasRole("ADMIN")
 
                         .anyExchange().authenticated()
                 )
