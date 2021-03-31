@@ -121,7 +121,7 @@ public class Util {
     }
 
     public String convert(String str) {
-        
+
         str = str.replaceAll("à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ", "a");
         str = str.replaceAll("è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ", "e");
         str = str.replaceAll("ì|í|ị|ỉ|ĩ", "i");
@@ -147,14 +147,14 @@ public class Util {
     }
 
     public String RemoveAccent(String str) {
-        return convert(str);
-        /*
+
         StringBuilder sb = new StringBuilder(str);
         for (int i = 0; i < sb.length(); i++) {
             sb.setCharAt(i, RemoveAccent(sb.charAt(i)));
         }
-        return sb.toString().toLowerCase();
-        */
+        String result = sb.toString().toLowerCase();
+        return convert(result);
+
     }
 
     public int DiffirentDays(Timestamp t1, Timestamp current) {
