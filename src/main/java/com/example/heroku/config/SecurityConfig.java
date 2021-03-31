@@ -43,6 +43,10 @@ public class SecurityConfig {
                         //.pathMatchers("/me").authenticated()
                         //.pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
 
+                        //for admin
+                        .pathMatchers("/**/admin/**").hasRole("ADMIN")
+                        .pathMatchers("/**/admin/**/**").hasRole("ADMIN")
+                        .pathMatchers("/**/admin/**/**/**").hasRole("ADMIN")
 
                         .pathMatchers("/").permitAll()
                         .pathMatchers("/address/**").permitAll()
@@ -53,13 +57,10 @@ public class SecurityConfig {
                         .pathMatchers("/package/**").permitAll()
 
                         .pathMatchers("/angular/**").permitAll()
+                        .pathMatchers("/angular/asset/img/**").permitAll()
                         .pathMatchers("/adminag/**").permitAll()
 
                         .pathMatchers("/auth/signin").permitAll()
-
-                        
-                        //for admin
-                        .pathMatchers("/**/admin/**").hasRole("ADMIN")
 
                         .anyExchange().authenticated()
                 )
