@@ -147,6 +147,38 @@ public class Util {
         str = str.replace("\u0306", ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
         str = str.replace("\u031B", ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
         str = str.replace("  ", " ");
+        str = str.replace("!", "");
+        str = str.replace("@", "");
+        str = str.replace("%", "");
+        str = str.replace("^", "");
+        str = str.replace("*", "");
+        str = str.replace("(", "");
+        str = str.replace(")", "");
+        str = str.replace("+", "");
+        str = str.replace("=", "");
+        str = str.replace("<", "");
+        str = str.replace(">", "");
+        str = str.replace("?", "");
+        str = str.replace("/", "");
+        str = str.replace(",", "");
+        str = str.replace(".", "");
+        str = str.replace(":", "");
+        str = str.replace(";", "");
+        str = str.replace("'", "");
+        str = str.replace("\"", "");
+        str = str.replace("&", "");
+        str = str.replace("#", "");
+        str = str.replace("[", "");
+        str = str.replace("]", "");
+        str = str.replace("~", "");
+        str = str.replace("$", "");
+        str = str.replace("_", "");
+        str = str.replace("`", "");
+        str = str.replace("-", "");
+        str = str.replace("{", "");
+        str = str.replace("}", "");
+        str = str.replace("|", "");
+        str = str.replace("\\", "");
         str = str.trim();
 
         return str;
