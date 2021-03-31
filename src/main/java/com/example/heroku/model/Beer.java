@@ -59,6 +59,13 @@ public class Beer {
         return this;
     }
 
+    public Category GetCategoryNuable() {
+        if (category == null) {
+            return Category.ALCOHOL;
+        }
+        return category;
+    }
+
     public enum Status{
         AVARIABLE("avariable"),
         NOT_FOR_SELL("not_for_sell"),

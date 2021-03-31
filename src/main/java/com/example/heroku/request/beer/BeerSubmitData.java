@@ -71,7 +71,7 @@ public class BeerSubmitData {
                 .beerSecondID(beer.getBeer_second_id())
                 .name(beer.getName())
                 .detail(beer.getDetail())
-                .category(beer.getCategory().getName())
+                .category(beer.GetCategoryNuable().getName())
                 .build();
     }
 
