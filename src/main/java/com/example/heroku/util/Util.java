@@ -138,8 +138,14 @@ public class Util {
         str = str.replaceAll("Ỳ|Ý|Ỵ|Ỷ|Ỹ", "Y");
         str = str.replaceAll("Đ", "D");
 
-        str = str.replace("\u0300|\u0301|\u0303|\u0309|\u0323", ""); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
-        str = str.replace("\u02C6|\u0306|\u031B", ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
+        str = str.replace("\u0300", ""); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+        str = str.replace("\u0301", ""); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+        str = str.replace("\u0303", ""); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+        str = str.replace("\u0309", ""); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+        str = str.replace("\u0323", ""); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+        str = str.replace("\u02C6", ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
+        str = str.replace("\u0306", ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
+        str = str.replace("\u031B", ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
         str = str.replace("  ", " ");
         str = str.trim();
 
