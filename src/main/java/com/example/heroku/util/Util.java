@@ -120,7 +120,7 @@ public class Util {
         return ch;
     }
 
-    public String convert(String str) {
+    String convert(String str) {
 
         str = str.replaceAll("à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ", "a");
         str = str.replaceAll("è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ", "e");
@@ -147,6 +147,7 @@ public class Util {
         str = str.replace("\u0306", ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
         str = str.replace("\u031B", ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
         str = str.replace("  ", " ");
+        /*
         str = str.replace("!", "");
         str = str.replace("@", "");
         str = str.replace("%", "");
@@ -179,6 +180,7 @@ public class Util {
         str = str.replace("}", "");
         str = str.replace("|", "");
         str = str.replace("\\", "");
+         */
         str = str.trim();
 
         return str;
