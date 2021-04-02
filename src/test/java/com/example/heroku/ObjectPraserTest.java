@@ -60,7 +60,7 @@ public class ObjectPraserTest {
         assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
         assertThat(beerInfo.getBeerUnit()[0].getName()).isEqualTo("Lon");
         assertThat(beerInfo.getBeerUnit()[0].getBeer()).isEqualTo("1");
-        assertThat(NgbDateStruct.FromTimestamp(beerInfo.getBeerUnit()[0].getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(GetExpirDateTime(2021,1,31)));
+        assertThat(NgbDateStruct.FromTimestamp(beerInfo.getBeerUnit()[0].getDate_expire())).isEqualTo(NgbDateStruct.builder().day(31).month(1).year(2021).build());
         assertThat(beerInfo.getBeerUnit()[0].getDiscount()).isEqualTo(0);
         assertThat(beerInfo.getBeerUnit()[0].getPrice()).isEqualTo(12000);
         assertThat(beerInfo.getBeerUnit()[0].getVolumetric()).isEqualTo(0.4f);
@@ -68,7 +68,7 @@ public class ObjectPraserTest {
 
         assertThat(beerInfo.getBeerUnit()[1].getName()).isEqualTo("Thùng");
         assertThat(beerInfo.getBeerUnit()[1].getBeer()).isEqualTo("1");
-        assertThat(NgbDateStruct.FromTimestamp(beerInfo.getBeerUnit()[1].getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(GetExpirDateTime(2020,12,24)));
+        assertThat(NgbDateStruct.FromTimestamp(beerInfo.getBeerUnit()[1].getDate_expire())).isEqualTo(NgbDateStruct.builder().day(24).month(12).year(2020).build());
         assertThat(beerInfo.getBeerUnit()[1].getDiscount()).isEqualTo(10);
         assertThat(beerInfo.getBeerUnit()[1].getPrice()).isEqualTo(200000);
         assertThat(beerInfo.getBeerUnit()[1].getVolumetric()).isEqualTo(6f);
@@ -104,12 +104,6 @@ public class ObjectPraserTest {
         assertThat(userPackages[1].getDevice_id()).isEqualTo("vuong");
         assertThat(userPackages[1].getBeer_unit()).isEqualTo("444");
         assertThat(userPackages[1].getNumber_unit()).isEqualTo(5);
-    }
-
-    public Timestamp GetExpirDateTime(int year, int month, int date) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, month, date);
-        return new Timestamp(cal.getTime().getTime());
     }
 
     public void TestParsingGHN() throws JsonProcessingException {

@@ -20,7 +20,7 @@ public class NgbDateStruct {
 
     public Timestamp ToDateTime() {
         Calendar cal = Calendar.getInstance();
-        cal.set(year, month, day);
+        cal.set(year, month-1, day);
         return new Timestamp(cal.getTime().getTime());
     }
     public static NgbDateStruct FromTimestamp(Timestamp time) {
@@ -31,7 +31,7 @@ public class NgbDateStruct {
         cal.setTimeInMillis(timestamp);
         return NgbDateStruct.builder()
                 .year(cal.get(Calendar.YEAR))
-                .month(cal.get(Calendar.MONTH))
+                .month(cal.get(Calendar.MONTH)+1)
                 .day(cal.get(Calendar.DAY_OF_MONTH))
                 .build();
     }

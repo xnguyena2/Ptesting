@@ -1,7 +1,6 @@
 package com.example.heroku.request.beer;
 
 import com.example.heroku.model.Beer;
-import com.example.heroku.model.BeerUnit;
 import com.example.heroku.model.Image;
 import com.example.heroku.request.datetime.NgbDateStruct;
 import lombok.AllArgsConstructor;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 @Data
