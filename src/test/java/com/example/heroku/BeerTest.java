@@ -6,6 +6,7 @@ import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.datetime.NgbDateStruct;
+import com.example.heroku.util.Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
@@ -108,7 +109,7 @@ public class BeerTest {
                                         .price(10)
                                         .weight(0.3f)
                                         .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
+                                        .date_expire(Timestamp.valueOf("2021-03-31 20:45:00"))
                                         .name("thung")
                                         .build(),
                                 BeerUnit
@@ -183,7 +184,8 @@ public class BeerTest {
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
-                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(new Timestamp(new Date().getTime())));
+                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(Timestamp.valueOf("2021-03-31 20:45:00")));
+                                assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), new Timestamp(new Date().getTime())) >= 0).isEqualTo(false);
                             })
                             .verifyComplete();
                 })

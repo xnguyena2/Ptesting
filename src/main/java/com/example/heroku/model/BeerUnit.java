@@ -42,16 +42,23 @@ public class BeerUnit {
     private Timestamp createat;
 
 
-    public BeerUnit AutoFill(){
-        if(this.beer_unit_second_id==null || this.beer_unit_second_id.equals(""))
+    public BeerUnit AutoFill() {
+        if (this.beer_unit_second_id == null || this.beer_unit_second_id.equals(""))
             this.beer_unit_second_id = Util.getInstance().GenerateID();
         this.createat = new Timestamp(new Date().getTime());
         return this;
     }
 
-    public BeerUnit UpdateToRealPrice(){
+    public BeerUnit UpdateToRealPrice() {
         System.out.println("Update price");
-        price *= (100 - discount)/100;
+        price *= (100 - discount) / 100;
+        return this;
+    }
+
+    public BeerUnit CheckDiscount() {
+        if (Util.getInstance().DiffirentDays(date_expire, new Timestamp(new Date().getTime())) < 0) {
+            this.discount = 0;
+        }
         return this;
     }
 }

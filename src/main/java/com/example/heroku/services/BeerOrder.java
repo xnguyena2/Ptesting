@@ -151,6 +151,7 @@ public class BeerOrder {
                                                                 Flux.just(beerOrder.getBeerUnitOrders())
                                                                         .flatMap(beerUnitOrder ->
                                                                                 beerUnitRepository.findByBeerUnitID(beerUnitOrder.getBeer_unit_second_id())
+                                                                                        .map(BeerUnit::CheckDiscount)
                                                                                         .map(beerUnitOrder::UpdateName)
                                                                                         .map(BeerUnit::UpdateToRealPrice)
                                                                                         .flatMap(beerUnit ->
