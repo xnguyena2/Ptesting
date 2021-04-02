@@ -44,9 +44,9 @@ public class SecurityConfig {
                         //.pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
 
                         //for admin
-                        .pathMatchers("/**/admin/**").hasRole("ADMIN")
-                        .pathMatchers("/**/admin/**/**").hasRole("ADMIN")
-                        .pathMatchers("/**/admin/**/**/**").hasRole("ADMIN")
+                        .pathMatchers("/*/admin/**").hasRole("ADMIN")
+                        .pathMatchers("/*/admin/*/**").hasRole("ADMIN")
+                        .pathMatchers("/*/admin/*/*/**").hasRole("ADMIN")
 
                         .pathMatchers("/").permitAll()
                         .pathMatchers("/address/**").permitAll()
