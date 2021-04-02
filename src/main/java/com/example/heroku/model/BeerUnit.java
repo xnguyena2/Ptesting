@@ -56,6 +56,8 @@ public class BeerUnit {
     }
 
     public BeerUnit CheckDiscount() {
+        if (date_expire == null)
+            return this;
         Timestamp currentTime = new Timestamp(new Date().getTime());
         int diff = Util.getInstance().DiffirentDays(date_expire, currentTime);
         System.out.println("Check Discount date expire: " + date_expire.toString() + ", current time: " + currentTime + ", diff: " + diff);
