@@ -56,6 +56,7 @@ public class BeerUnit {
     }
 
     public BeerUnit CheckDiscount() {
+        System.out.println("Check Discount");
         if (Util.getInstance().DiffirentDays(date_expire, new Timestamp(new Date().getTime())) < 0) {
             this.discount = 0;
         }
