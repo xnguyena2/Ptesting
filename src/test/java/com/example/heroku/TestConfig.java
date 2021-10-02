@@ -9,31 +9,28 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource(properties = {
-        "JDBC_DATABASE_URL=r2dbc:postgresql://ec2-52-203-165-126.compute-1.amazonaws.com:5432/dab63e0a6snl77",
+        "JDBC_DATABASE_URL=r2dbc:postgres://ec2-44-198-204-136.compute-1.amazonaws.com:5432/dc28kdgvnngfba",
         "POSTGRESQL_PORT=5432",
-        "POSTGRESQL_DB=dab63e0a6snl77",
-        "POSTGRESQL_HOST=ec2-52-203-165-126.compute-1.amazonaws.com",
-        "USER_NAME=pnkrlyomnugskb",
-        "PASSWORD=4b16a191f30c89f36908193809d12d3a8d4c3ffb73277357e1b0e0515169cea2",
+        "POSTGRESQL_DB=dc28kdgvnngfba",
+        "POSTGRESQL_HOST=ec2-44-198-204-136.compute-1.amazonaws.com",
+        "USER_NAME=wuflqcbonuqvkt",
+        "PASSWORD=20f73a1cfe6d0092debe649a42df6bb0c6107d7cb0c93e8437faa728725fe081",
         "POSTGRESQL_POOLSIZE=5",
         "POSTGRESQL_TIMEIDLE=10000",
-        "HTTPONLY_SECURE=false",
         "RESET_DB=true",
-        "FLICKR_KEY=8294cbd4c540c0d895ec99bb8b1fcac2",
-        "FLICKR_SECRET=f8fa9dcd4c4642b8",
         "PORT=5000",
         "JWT_ACCESSTOKEN=accessToken",
         "JWT_USING_COOKIE=true",
         "JWT_HTTPONLY_SECURE=false",
         "LOGIN=INFO",
         "THYMELEFT=HTML",
-        "RUN_MODE=production",
-        "FLICKR_AUTH_TOKEN=72157718531338752-478e88fe3e96fc70",
-        "FLICKR_TOKEN_SECRET=fdc5a5980651383c",
-        "FLICKR_USER_NAME=xnguyena2",
-        "FLICKR_NID=192362717@N03",
-        "FLICKR_KEY=8294cbd4c540c0d895ec99bb8b1fcac2",
-        "FLICKR_SECRET=f8fa9dcd4c4642b8"
+        "RUN_MODE=dev",
+        "FLICKR_KEY=d82298e7cabb6de301b1de5bc018b881",
+        "FLICKR_SECRET=5b4fe60ee0a85084",
+        "FLICKR_AUTH_TOKEN=72157720816792310-6ae700ae55e0f3f6",
+        "FLICKR_TOKEN_SECRET=9a4dee6dbdb7f7be",
+        "FLICKR_USER_NAME=xnguyena28",
+        "FLICKR_NID=194077547@N04"
 })
 public class TestConfig {
     @Test

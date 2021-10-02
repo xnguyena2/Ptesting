@@ -43,6 +43,9 @@ public class DataInitializer {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private FlickrLib flickrLib;
+
     @EventListener(value = ApplicationReadyEvent.class)
     public void init() throws NoSuchAlgorithmException {
         System.out.println("initializing vehicles data...");
@@ -84,11 +87,7 @@ public class DataInitializer {
                                     .block()
                     );
             //PhotoLib.getInstance().deleteAll();
-            try {
-                FlickrLib.getInstance().DeleteAll();
-            }catch (Exception exception){
-                exception.printStackTrace();
-            }
+            flickrLib.DeleteAll();
 
         } else {
             log.info("No Need reset Database@");

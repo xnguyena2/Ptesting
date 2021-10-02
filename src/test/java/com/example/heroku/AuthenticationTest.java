@@ -18,19 +18,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import java.io.File;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = {
-        "JDBC_DATABASE_URL=r2dbc:postgresql://ec2-52-203-165-126.compute-1.amazonaws.com:5432/dab63e0a6snl77",
-        "POSTGRESQL_PORT=5432",
-        "POSTGRESQL_DB=dab63e0a6snl77",
-        "POSTGRESQL_HOST=ec2-52-203-165-126.compute-1.amazonaws.com",
-        "USER_NAME=pnkrlyomnugskb",
-        "PASSWORD=4b16a191f30c89f36908193809d12d3a8d4c3ffb73277357e1b0e0515169cea2",
-        "POSTGRESQL_POOLSIZE=1",
-        "POSTGRESQL_TIMEIDLE=10000",
-        "HTTPONLY_SECURE=false"})
-public class AuthenticationTest {
+public class AuthenticationTest extends TestConfig{
     @LocalServerPort
     private int port;
 
@@ -84,4 +72,5 @@ public class AuthenticationTest {
     }
 }
 */
+
 public class AuthenticationTest {}

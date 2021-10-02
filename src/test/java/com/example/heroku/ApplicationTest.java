@@ -1,6 +1,7 @@
 package com.example.heroku;
 
 import com.example.heroku.model.repository.ImageRepository;
+import com.example.heroku.photo.FlickrLib;
 import com.example.heroku.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
@@ -64,6 +65,14 @@ public class ApplicationTest extends TestConfig{
     public void ImageTest() {
         ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).build().Run(listImg);
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).build().DeviceConfigTest();
+    }
+
+
+    @Autowired
+    FlickrLib flickrLib;
+    @Test
+    public void FlickrToken(){
+
     }
 
     @Test

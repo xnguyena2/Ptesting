@@ -48,7 +48,6 @@ public class SecurityConfig {
                         .pathMatchers("/*/admin/*/**").hasRole("ADMIN")
                         .pathMatchers("/*/admin/*/*/**").hasRole("ADMIN")
 
-                        .pathMatchers("/").permitAll()
                         .pathMatchers("/address/**").permitAll()
                         .pathMatchers("/beer/**").permitAll()
                         .pathMatchers("/clientdevice/**").permitAll()
@@ -56,11 +55,9 @@ public class SecurityConfig {
                         .pathMatchers("/order/**").permitAll()
                         .pathMatchers("/package/**").permitAll()
 
-                        .pathMatchers("/angular/**").permitAll()
-                        .pathMatchers("/angular/asset/img/**").permitAll()
-                        .pathMatchers("/adminag/**").permitAll()
-
                         .pathMatchers("/auth/signin").permitAll()
+
+                        .pathMatchers("/**").permitAll()
 
                         .anyExchange().authenticated()
                 )

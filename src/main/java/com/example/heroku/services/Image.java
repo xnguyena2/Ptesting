@@ -26,6 +26,10 @@ public class Image {
     @Autowired
     ImageRepository imageRepository;
 
+    @Autowired
+    private FlickrLib flickrLib;
+
+
     public Mono<ResponseEntity<com.example.heroku.model.Image>> Upload(Flux<FilePart> file, String category) {
         AtomicReference<String> fileName = new AtomicReference<>();
         return file.flatMap(f -> {
@@ -35,12 +39,7 @@ public class Image {
                 .reduce(SequenceInputStream::new)
                 .flatMap(initialStream -> {
                     String[] info = null;//Util.getInstance().GenerateID();
-                    try {
-                        info = FlickrLib.getInstance().uploadfile(initialStream, fileName.get());
-                    } catch (FlickrException e) {
-                        e.printStackTrace();
-                        return Mono.just(com.example.heroku.model.Image.builder().build());
-                    }
+                    info = flickrLib.uploadfile(initialStream, fileName.get());
                     return this.imageRepository.save(com.example.heroku.model.Image.builder()
                             .imgid(info[0])
                             .thumbnail(info[1])
@@ -56,11 +55,7 @@ public class Image {
     public Mono<Object> Delete(IDContainer img) {
         return Mono.just(img).flatMap(info ->
                 {
-                    try {
-                        FlickrLib.getInstance().DeleteImage(info.getId());
-                    } catch (FlickrException e) {
-                        e.printStackTrace();
-                    }
+                    flickrLib.DeleteImage(info.getId());
                     return this.imageRepository.deleteImage(info.getId())
                             .map(deleted ->
                                     ok(Format.builder().response(deleted.getId()).build())
@@ -76,11 +71,7 @@ public class Image {
     public Mono<Void> DeleteAll() {
         return this.imageRepository.findAll()
                 .map(image -> {
-                    try {
-                        FlickrLib.getInstance().DeleteImage(image.getImgid());
-                    } catch (FlickrException e) {
-                        e.printStackTrace();
-                    }
+                    flickrLib.DeleteImage(image.getImgid());
                     return image;
                 })
                 .then(this.imageRepository.deleteAll());

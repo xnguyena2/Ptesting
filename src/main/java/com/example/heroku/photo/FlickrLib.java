@@ -6,34 +6,45 @@ import com.flickr4java.flickr.REST;
 import com.flickr4java.flickr.RequestContext;
 import com.flickr4java.flickr.auth.Auth;
 import com.flickr4java.flickr.auth.AuthInterface;
+import com.flickr4java.flickr.auth.Permission;
 import com.flickr4java.flickr.photos.Photo;
 import com.flickr4java.flickr.photos.PhotoList;
 import com.flickr4java.flickr.photos.PhotosInterface;
 import com.flickr4java.flickr.photos.SearchParameters;
 import com.flickr4java.flickr.uploader.UploadMetaData;
 import com.flickr4java.flickr.uploader.Uploader;
+import com.github.scribejava.core.model.OAuth1RequestToken;
+import com.github.scribejava.core.model.OAuth1Token;
+import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class FlickrLib {
+
     @Value("${photo.flickr.key}")
-    private String flickKey = "8294cbd4c540c0d895ec99bb8b1fcac2";
+    private String flickKey;
 
     @Value("${photo.flickr.secret}")
-    private String flicSecret = "f8fa9dcd4c4642b8";
+    private String flicSecret;
 
     @Value("${photo.flickr.authentoken}")
-    private String authenToken = "72157718531338752-478e88fe3e96fc70";
+    private String authenToken;
 
     @Value("${photo.flickr.tokenscret}")
-    private String secretToken = "fdc5a5980651383c";
+    private String secretToken;
 
     private boolean setOrigFilenameTag = true;
     private boolean replaceSpaces = true;
@@ -41,21 +52,43 @@ public class FlickrLib {
     Flickr flickr;
     Auth auth;
 
-    private static FlickrLib instance;
-
-    private FlickrLib() throws FlickrException {
+    @PostConstruct
+    public void init() throws FlickrException {
         this.auth();
     }
 
-    synchronized public static FlickrLib getInstance() throws FlickrException {
-        if (instance == null) {
-            instance = new FlickrLib();
-        }
-        return instance;
+    private void authToken() throws FlickrException {
+        flickr = new Flickr(flickKey, flicSecret, new REST());
+        Flickr.debugStream = false;
+
+        AuthInterface authInterface = flickr.getAuthInterface();
+
+        OAuth1RequestToken requestToken = authInterface.getRequestToken();
+        System.out.println(" AuthToken: " + requestToken.getToken() + " tokenSecret: " + requestToken.getTokenSecret());
+
+
+        String url = authInterface.getAuthorizationUrl(requestToken, Permission.DELETE);
+        System.out.println("Follow this URL to authorise yourself on Flickr");
+        System.out.println(url);
+        System.out.println("Paste in the token it gives you:");
+        System.out.print(">>");
+
+        OAuth1Token accessToken = authInterface.getAccessToken(requestToken, "986-875-882");
+        System.out.println("Authentication success");
+
+        Auth auth = authInterface.checkToken(accessToken);
+
+        // This token can be used until the user revokes it.
+        System.out.println("Token: " + accessToken.getToken());
+        System.out.println("Secret: " + accessToken.getTokenSecret());
+        System.out.println("nsid: " + auth.getUser().getId());
+        System.out.println("Realname: " + auth.getUser().getRealName());
+        System.out.println("Username: " + auth.getUser().getUsername());
+        System.out.println("Permission: " + auth.getPermission().getType());
+
     }
 
-
-    public void auth() throws FlickrException {
+    private void auth() throws FlickrException {
         flickr = new Flickr(flickKey, flicSecret, new REST());
         Flickr.debugStream = false;
 
