@@ -239,7 +239,6 @@ public class BeerOrder {
                 );
     }
 
-    //for trum bien
     public Mono<PackageOrder> createOrderTrumBien(PackageOrderData packageOrderData) {
         System.out.println("New request from: " + packageOrderData.getPackageOrder().getUser_device_id());
         packageOrderData.getPackageOrder().AutoFill(packageOrderData.isPreOrder());
