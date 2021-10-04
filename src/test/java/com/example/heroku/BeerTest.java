@@ -11,7 +11,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.sql.Timestamp;
@@ -37,7 +36,7 @@ public class BeerTest {
                         })
                         .beer(Beer
                                 .builder()
-                                .category(Beer.Category.ALCOHOL)
+                                .category(Beer.Category.CRAB)
                                 .name("beer tiger")
                                 .beer_second_id("123")
                                 .build()
@@ -66,7 +65,7 @@ public class BeerTest {
                         })
                         .beer(Beer
                                 .builder()
-                                .category(Beer.Category.ALCOHOL)
+                                .category(Beer.Category.CRAB)
                                 .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
                                         "- bia thơm ngon\n" +
                                         "- bia nhập ngoại\n" +
@@ -125,7 +124,7 @@ public class BeerTest {
                         })
                         .beer(Beer
                                 .builder()
-                                .category(Beer.Category.ALCOHOL)
+                                .category(Beer.Category.CRAB)
                                 .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
                                         "- bia thơm ngon\n" +
                                         "- bia nhập ngoại\n" +
@@ -151,7 +150,7 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("123");
-                    assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.ALCOHOL);
+                    assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.CRAB);
                     assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getBeerUnit())
                             .sort(Comparator.comparing(BeerUnit::getName))
@@ -173,7 +172,7 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("456");
-                    assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.ALCOHOL);
+                    assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.CRAB);
                     assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getBeerUnit())
                             .sort(Comparator.comparing(BeerUnit::getName))
@@ -722,7 +721,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_ASC.getName()).query(Beer.Category.ALCOHOL.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_ASC.getName()).query(Beer.Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -746,7 +745,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_DESC.getName()).query(Beer.Category.ALCOHOL.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_DESC.getName()).query(Beer.Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -770,7 +769,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_ASC.getName()).query(Beer.Category.ALCOHOL.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_ASC.getName()).query(Beer.Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -794,7 +793,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_DESC.getName()).query(Beer.Category.ALCOHOL.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_DESC.getName()).query(Beer.Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -818,7 +817,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.CREATE_DESC.getName()).query(Beer.Category.ALCOHOL.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.CREATE_DESC.getName()).query(Beer.Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -842,7 +841,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).query(Beer.Category.ALCOHOL.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).query(Beer.Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -866,7 +865,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).query(Beer.Category.ALCOHOL.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).query(Beer.Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -890,7 +889,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.DEFAULT.getName()).query(Beer.Category.ALCOHOL.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.DEFAULT.getName()).query(Beer.Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -943,7 +942,7 @@ public class BeerTest {
                         })
                         .beer(Beer
                                 .builder()
-                                .category(Beer.Category.ALCOHOL)
+                                .category(Beer.Category.CRAB)
                                 .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
                                         "- bia thơm ngon\n" +
                                         "- bia nhập ngoại\n" +
@@ -973,15 +972,15 @@ public class BeerTest {
 
     private BeerInfo createTestBeer(int idi, int price) {
         String id = idi + "";
-        Beer.Category category = Beer.Category.ALCOHOL;
+        Beer.Category category = Beer.Category.CRAB;
         if (idi < 24) {
-            category = Beer.Category.BEVERAGE;
+            category = Beer.Category.SHRIMP;
         } else if (idi < 50) {
-            category = Beer.Category.FRESH_WATER;
+            category = Beer.Category.SQUID;
         } else if (idi < 60) {
-            category = Beer.Category.JUICE_FRUIT;
+            category = Beer.Category.OYSTER;
         } else if (idi < 75) {
-            category = Beer.Category.INTERNATIONNAL_DRINKS;
+            category = Beer.Category.HOLOTHURIAN;
         }
         return
                 BeerInfo

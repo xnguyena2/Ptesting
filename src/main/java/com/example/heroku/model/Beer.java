@@ -61,7 +61,7 @@ public class Beer {
 
     public Category GetCategoryNuable() {
         if (category == null) {
-            return Category.ALCOHOL;
+            return Category.CRAB;
         }
         return category;
     }
@@ -105,11 +105,13 @@ public class Beer {
     }
 
     public enum Category {
-        ALCOHOL("alcohol_drinks"),
-        BEVERAGE("beverage"),
-        FRESH_WATER("fresh_water"),
-        INTERNATIONNAL_DRINKS("internationnal_drinks"),
-        JUICE_FRUIT("juice_fruit");
+        CRAB("crab"),
+        SHRIMP("shrimp"),
+        SQUID("squid"),
+        HOLOTHURIAN("holothurian"),
+        HALIOTIS("haliotis"),
+        OYSTER("oyster"),
+        FISH("fish");
 
         private String name;
 

@@ -685,7 +685,7 @@ public class OrderPackageTest extends TestConfig {
                         })
                         .beer(Beer
                                 .builder()
-                                .category(Beer.Category.ALCOHOL)
+                                .category(Beer.Category.CRAB)
                                 .name("beer tiger")
                                 .beer_second_id("beer_order1")
                                 .detail("bia for order 1")
@@ -719,7 +719,7 @@ public class OrderPackageTest extends TestConfig {
                         })
                         .beer(Beer
                                 .builder()
-                                .category(Beer.Category.ALCOHOL)
+                                .category(Beer.Category.CRAB)
                                 .name("beer tiger")
                                 .beer_second_id("beer_order2")
                                 .detail("bia for order 2")
@@ -751,7 +751,7 @@ public class OrderPackageTest extends TestConfig {
                         })
                         .beer(Beer
                                 .builder()
-                                .category(Beer.Category.ALCOHOL)
+                                .category(Beer.Category.CRAB)
                                 .name("beer tiger")
                                 .beer_second_id("beer_order3")
                                 .detail("bia for order 3")
