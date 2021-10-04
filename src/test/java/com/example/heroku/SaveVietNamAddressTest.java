@@ -31,7 +31,59 @@ public class SaveVietNamAddressTest {
                 )
                 .verifyComplete();
 
+        VietNamAddress.getInstance().GetAllRegionFormat()
+                .as(StepVerifier::create)
+                .consumeNextWith(region -> {
+                            assertThat(region.getName()).isEqualTo("Hồ Chí Minh");
+                        }
+                )
+                .consumeNextWith(region -> {
+                            assertThat(region.getName()).isEqualTo("Hà Nội");
+                        }
+                )
+                .consumeNextWith(region -> {
+                            assertThat(region.getName()).isEqualTo("Đà Nẵng");
+                        }
+                )
+                .verifyComplete();
+
         VietNamAddress.getInstance().GetAllDistrict(294)
+                .as(StepVerifier::create)
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Quận 1");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Quận 2");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Quận Bình Thạnh");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Quận Gò Vấp");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Huyện Cần Giờ");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Huyện Củ Chi");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Huyện Hóc Môn");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Huyện Nhà Bè");
+                        }
+                )
+                .verifyComplete();
+
+        VietNamAddress.getInstance().GetAllDistrictFormat(294)
                 .as(StepVerifier::create)
                 .consumeNextWith(district -> {
                             assertThat(district.getName()).isEqualTo("Quận 1");

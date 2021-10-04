@@ -133,6 +133,15 @@ public class VietNamAddress {
                 .flatMap(Mono::just);
     }
 
+    public Flux<VietNamAddress.AddressFromat.Region> GetAllRegionFormat() throws IOException {
+        if (allAddress == null) {
+            this.SaveAllToDatabase(false);
+        }
+        return Flux.just(allAddress.regions)
+                .map(AddressFromat.Region::MainFormat)
+                .flatMap(Mono::just);
+    }
+
     public Flux<VietNamAddress.AddressFromat.Region.DistrictContent.District> GetAllDistrict(int ofRegion) throws IOException {
         if (allAddress == null) {
             this.SaveAllToDatabase(false);
@@ -142,6 +151,19 @@ public class VietNamAddress {
                 .flatMap(region ->
                         Flux.just(region.districts.data)
                         .flatMap(Mono::just)
+                );
+    }
+
+    public Flux<VietNamAddress.AddressFromat.Region.DistrictContent.District> GetAllDistrictFormat(int ofRegion) throws IOException {
+        if (allAddress == null) {
+            this.SaveAllToDatabase(false);
+        }
+        return Flux.just(allAddress.regions)
+                .filter(region -> region.id == ofRegion)
+                .flatMap(region ->
+                        Flux.just(region.districts.data)
+                                .map(VietNamAddress.AddressFromat.Region.DistrictContent.District::MainFormat)
+                                .flatMap(Mono::just)
                 );
     }
 
@@ -179,6 +201,13 @@ public class VietNamAddress {
 
             private DistrictContent districts;
 
+            public Region MainFormat(){
+                return Region.builder()
+                        .name(this.getName())
+                        .id(this.id)
+                        .build();
+            }
+
             @Builder
             @Data
             @NoArgsConstructor
@@ -196,6 +225,13 @@ public class VietNamAddress {
                     private String name;
                     private int id;
                     private WardContent wards;
+
+                    public District MainFormat(){
+                        return District.builder()
+                                .name(this.getName())
+                                .id(this.id)
+                                .build();
+                    }
 
 
                     @Builder
