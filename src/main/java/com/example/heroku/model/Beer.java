@@ -111,7 +111,8 @@ public class Beer {
         HOLOTHURIAN("holothurian"),
         HALIOTIS("haliotis"),
         OYSTER("oyster"),
-        FISH("fish");
+        FISH("fish"),
+        SNAIL("snail");
 
         private String name;
 
