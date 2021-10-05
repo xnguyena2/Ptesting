@@ -50,16 +50,6 @@ public class HerokuApplication {
     return "index";
   }
 
-  @RequestMapping("/angular")
-  String angular() {
-    return "angular/index";
-  }
-
-  @RequestMapping("/adminag")
-  String angularAdmin() {
-    return "adminag/index";
-  }
-
   @Bean
   public FlickrLib singletonFlickrLib() throws FlickrException {
     return new FlickrLib();

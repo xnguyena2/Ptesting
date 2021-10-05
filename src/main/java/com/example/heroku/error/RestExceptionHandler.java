@@ -36,6 +36,7 @@ public class RestExceptionHandler implements WebExceptionHandler {
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
+        System.out.println("eeeeeeeeeeeeeeeeee");
         if (ex instanceof WebExchangeBindException) {
             var webExchangeBindException = (WebExchangeBindException) ex;
 
