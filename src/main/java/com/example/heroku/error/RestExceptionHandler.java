@@ -12,6 +12,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebExchangeBindException;
@@ -20,6 +21,7 @@ import org.springframework.web.server.WebExceptionHandler;
 import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +38,6 @@ public class RestExceptionHandler implements WebExceptionHandler {
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-        System.out.println("eeeeeeeeeeeeeeeeee");
         if (ex instanceof WebExchangeBindException) {
             var webExchangeBindException = (WebExchangeBindException) ex;
 
@@ -71,10 +72,15 @@ public class RestExceptionHandler implements WebExceptionHandler {
 
             // marks the response as complete and forbids writing to it
             return exchange.getResponse().setComplete();
-        }else if (ex instanceof  EmptyException){
+        }else if (ex instanceof EmptyException){
             exchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
 
             // marks the response as complete and forbids writing to it
+            return exchange.getResponse().setComplete();
+        }else if( ex instanceof org.springframework.web.server.ResponseStatusException){
+            ServerHttpResponse response = exchange.getResponse();
+            response.getHeaders().setLocation(URI.create("/"));
+            response.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
             return exchange.getResponse().setComplete();
         }
         return Mono.error(ex);
