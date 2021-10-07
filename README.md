@@ -33,6 +33,18 @@ $ heroku open
 
 ## Documentation
 
-For more information about using Java on Heroku, see these Dev Center articles:
+Show log of server:
+```shell
+heroku logs --tail --remote dev
+```
 
-- [Java on Heroku](https://devcenter.heroku.com/categories/java)
+full test:
+```shell
+gradle clean test
+```
+
+Ttest Authentication:
+```shell
+gradle clean test --tests com.example.heroku.AuthenticationTest
+```
+
