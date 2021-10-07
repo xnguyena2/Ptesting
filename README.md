@@ -12,7 +12,7 @@ Make sure you have Java installed.  Also, install the [Heroku Toolbelt](https://
 $ git clone https://github.com/heroku/gradle-getting-started.git
 $ cd gradle-getting-started
 $ ./gradlew stage
-$ heroku local web
+$ gradle build -x test;heroku local;heroku local web
 ```
 
 Your app should now be running on [localhost:5000](http://localhost:5000/).
