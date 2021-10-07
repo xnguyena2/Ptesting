@@ -47,4 +47,3 @@ Ttest Authentication:
 ```shell
 gradle clean test --tests com.example.heroku.AuthenticationTest
 ```
-
