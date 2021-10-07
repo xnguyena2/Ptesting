@@ -41,7 +41,7 @@ public class SecurityConfig {
         }
         return it
                 //.pathMatchers(HttpMethod.DELETE, PATH_POSTS).hasRole("ADMIN")
-                //.pathMatchers("/me").authenticated()
+                .pathMatchers("/auth/me").authenticated()
                 //.pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
 
                 //for admin
@@ -57,6 +57,7 @@ public class SecurityConfig {
                 .pathMatchers("/package/**").permitAll()
 
                 .pathMatchers("/auth/signin").permitAll()
+                .pathMatchers("/auth/refresh").authenticated()
 
                 .pathMatchers("/**").permitAll()
 

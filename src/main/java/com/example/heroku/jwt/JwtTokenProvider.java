@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -42,31 +43,36 @@ public class JwtTokenProvider {
     @Value("${authentication.auth.accessTokenCookieName}")
     private String accessTokenCookieName;
 
+    @Value("${authentication.auth.secret}")
+    private String secretKeyTxt;
+
+    @Value("${authentication.auth.timeexpire}")
+    private long validityInMs; // 1h
+
     public static final String HEADER_PREFIX = "Bearer ";
 
     private static final String AUTHORITIES_KEY = "roles";
 
-    private final JwtProperties jwtProperties;
-
     private SecretKey secretKey;
 
     @PostConstruct
-    public void init() {
-        var secret = Base64.getEncoder().encodeToString(this.jwtProperties.getSecretKey().getBytes());
+    public void init() throws Exception {
+        if(secretKeyTxt == null)
+            throw new Exception("Jwt Secret was null!!");
+        if(validityInMs <= 0)
+            throw new Exception("Jwt validityInMs was 0!!");
+        var secret = Base64.getEncoder().encodeToString(secretKeyTxt.getBytes());
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String createToken(Authentication authentication) {
-
-        String username = authentication.getName();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Claims claims = Jwts.claims().setSubject(username);
+    private String createToken(String userName, Collection<? extends GrantedAuthority> authorities){
+        Claims claims = Jwts.claims().setSubject(userName);
         if (!authorities.isEmpty()) {
             claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority).collect(joining(",")));
         }
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + this.jwtProperties.getValidityInMs());
+        Date validity = new Date(now.getTime() + validityInMs);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -74,7 +80,19 @@ public class JwtTokenProvider {
                 .setExpiration(validity)
                 .signWith(this.secretKey, SignatureAlgorithm.HS256)
                 .compact();
+    }
 
+    public String createToken(UserDetails user){
+        String username = user.getUsername();
+        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+        return createToken(username, authorities);
+    }
+
+    public String createToken(Authentication authentication) {
+
+        String username = authentication.getName();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        return createToken(username, authorities);
     }
 
     public Authentication getAuthentication(String token) {

@@ -31,6 +31,12 @@ public class DataInitializer {
     @Value("${app.setting.resetdb}")
     private boolean resetDB;
 
+    @Value("${account.admin.username}")
+    private String adminName;
+
+    @Value("${account.admin.password}")
+    private String adminPass;
+
     @Autowired
     com.example.heroku.services.Image imageAPI;
 
@@ -126,12 +132,12 @@ public class DataInitializer {
 
 
         if (resetDB) {
-            String pass = this.passwordEncoder.encode(Util.getInstance().HashPassword("hoduongvuong123"));
+            String pass = this.passwordEncoder.encode(Util.getInstance().HashPassword(adminPass));
             //System.out.println(pass);
 
             var initPosts = this.userRepository.deleteAll()
                     .thenMany(
-                            Mono.just("vuong")
+                            Mono.just(adminName)
                                     .flatMap(username -> {
                                         Users users = Users.builder()
                                                 .username(username)

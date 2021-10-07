@@ -36,10 +36,28 @@ public class AuthenticationController {
     @Value("${authentication.auth.httponlysecure}")
     private boolean httponlysecure;
 
+    @Value("${authentication.auth.timeexpire}")
+    private long validityInMs; // 1h
+
     private final ReactiveAuthenticationManager authenticationManager;
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
+
+    private ResponseEntity createAuthBearToken(String jwt){
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
+        Map<Object, Object> model = new HashMap<>();
+        model.put("token", jwt);
+        ResponseCookie cookie = ResponseCookie.from(accessTokenCookieName, jwt)
+                .path("/")
+                .httpOnly(httponlysecure)
+                .secure(httponlysecure)///// must true
+                .maxAge(validityInMs)
+                .build();
+        httpHeaders.add(HttpHeaders.SET_COOKIE, cookie.toString());
+        return new ResponseEntity<>(model, httpHeaders, HttpStatus.OK);
+    }
 
     @PostMapping("/signin")
     @CrossOrigin(origins = Util.HOST_URL)
@@ -51,22 +69,21 @@ public class AuthenticationController {
                             .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()))
                             .map(this.jwtTokenProvider::createToken)
                     )
-                    .map(jwt -> {
-                        HttpHeaders httpHeaders = new HttpHeaders();
-                        httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
-                        Map<Object, Object> model = new HashMap<>();
-                        model.put("token", jwt);
-                        ResponseCookie cookie = ResponseCookie.from(accessTokenCookieName, jwt)
-                                .path("/")
-                                .httpOnly(true)
-                                .secure(httponlysecure)///// must true
-                                .maxAge(3600)
-                                .build();
-                        httpHeaders.add(HttpHeaders.SET_COOKIE, cookie.toString());
-                        return new ResponseEntity<>(model, httpHeaders, HttpStatus.OK);
-                    });
+                    .map(this::createAuthBearToken);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
+        }
+    }
+
+    @PostMapping("/refresh")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity> refreshToken(@AuthenticationPrincipal Mono<UserDetails> principal) {
+        try {
+            return principal
+                    .map(this.jwtTokenProvider::createToken)
+                    .map(this::createAuthBearToken);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Can not refresh Token");
         }
     }
 
