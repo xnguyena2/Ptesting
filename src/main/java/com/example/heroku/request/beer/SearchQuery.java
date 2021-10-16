@@ -36,17 +36,23 @@ public class SearchQuery {
 
         private static final Map<String, Filter> lookup = new HashMap<>();
 
-        static
-        {
-            for(Filter ctg : Filter.values())
-            {
+        static {
+            for (Filter ctg : Filter.values()) {
                 lookup.put(ctg.getName(), ctg);
             }
         }
 
-        public static Filter get(String text)
-        {
-            return lookup.get(text);
+        public static Filter get(String text) {
+            try {
+                Filter val = lookup.get(text);
+                if(val == null){
+                    return DEFAULT;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return DEFAULT;
+            }
         }
 
         @Override
@@ -60,7 +66,7 @@ public class SearchQuery {
     private int size;
     private String filter;
 
-    public Filter GetFilter(){
+    public Filter GetFilter() {
         return Filter.get(filter);
     }
 }

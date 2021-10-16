@@ -101,7 +101,7 @@ public class ApplicationTest extends TestConfig{
 
     @Test
     public void testUserAddBeerToPackage() {
-        UserPackageTest.builder().userPackageAPI(userPackageAPI).build().TestUserPackage();
+        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).build().TestUserPackage();
     }
 
     @Test
@@ -124,10 +124,10 @@ public class ApplicationTest extends TestConfig{
         UserAddressTest.builder().userAddressAPI(userAddressAPI).build().UserAddressTest();
     }
 
-    @Test
-    public void testVoucher(){
-        VoucherTest.builder().voucherAPI(voucherAPI).build().VoucherTest();
-    }
+//    @Test
+//    public void testVoucher(){
+//        VoucherTest.builder().voucherAPI(voucherAPI).build().VoucherTest();
+//    }
 
     @Test
     public void testUploadImageToGoogle() throws IOException, GeneralSecurityException {

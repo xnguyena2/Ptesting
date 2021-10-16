@@ -79,7 +79,7 @@ public class BeerController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<SearchResult> adminGetAll(@RequestBody @Valid SearchQuery query) {
         System.out.println("admin get all beer: " + query.getPage());
-        return beerAPI.CountGetAllBeer(query);
+        return beerAPI.AdminCountGetAllBeer(query);
     }
 
 

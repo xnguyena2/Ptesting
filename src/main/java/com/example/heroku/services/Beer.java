@@ -105,8 +105,45 @@ public class Beer {
     }
 
     public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {
-        return this.beerRepository.findByIdNotNull(PageRequest.of(query.getPage(), query.getSize(), Sort.by(Sort.Direction.DESC, "createat")))
+        return this.beerRepository.findByIdNotNull(query.getPage(), query.getSize())
                 .flatMap(this::CoverToSubmitData);
+    }
+
+    public Mono<SearchResult> AdminCountGetAllBeer(SearchQuery query) {
+        final SearchQuery.Filter filter = query.GetFilter();
+        final int page = query.getPage();
+        final int size = query.getSize();
+        return this.resultWithCountRepository.adminCountAll()
+                .map(resultWithCount -> {
+                    SearchResult result = new SearchResult();
+                    result.setCount(resultWithCount.getCount());
+                    return result;
+                })
+                .flatMap(searchResult ->
+                        Flux.just(searchResult).flatMap(rs -> {
+                                    switch (filter) {
+                                        case CREATE_ASC:
+                                            return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createat")));
+                                        case CREATE_DESC:
+                                            return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createat")));
+                                        case NAME_ASC:
+                                            return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name")));
+                                        case NAME_DESC:
+                                            return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "name")));
+                                        case PRICE_ASC:
+                                            return this.beerRepository.adminGetAllBeerSortByPriceASC(page, size);
+                                        case PRICE_DESC:
+                                            return this.beerRepository.adminGetAllBeerSortByPriceDESC(page, size);
+                                        case SOLD_NUM:
+                                            return this.beerRepository.adminGetAllBeerSortBySoldDESC(page, size);
+                                        default:
+                                            return this.beerRepository.findByIdNotNull(PageRequest.of(page, size));
+                                    }
+                                })
+                                .flatMap(this::CoverToSubmitData)
+                                .map(searchResult::Add)
+                                .then(Mono.just(searchResult))
+                );
     }
 
     public Mono<SearchResult> CountGetAllBeer(SearchQuery query) {
@@ -123,13 +160,13 @@ public class Beer {
                         Flux.just(searchResult).flatMap(rs -> {
                             switch (filter) {
                                 case CREATE_ASC:
-                                    return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createat")));
+                                    return this.beerRepository.findByIdNotNullASC(page, size, "createat");
                                 case CREATE_DESC:
-                                    return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createat")));
+                                    return this.beerRepository.findByIdNotNullDESC(page, size,  "createat");
                                 case NAME_ASC:
-                                    return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name")));
+                                    return this.beerRepository.findByIdNotNullASC(page, size, "name");
                                 case NAME_DESC:
-                                    return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "name")));
+                                    return this.beerRepository.findByIdNotNullDESC(page, size,  "name");
                                 case PRICE_ASC:
                                     return this.beerRepository.getAllBeerSortByPriceASC(page, size);
                                 case PRICE_DESC:
@@ -137,7 +174,7 @@ public class Beer {
                                 case SOLD_NUM:
                                     return this.beerRepository.getAllBeerSortBySoldDESC(page, size);
                                 default:
-                                    return this.beerRepository.findByIdNotNull(PageRequest.of(page, size));
+                                    return this.beerRepository.findByIdNotNull(page, size);
                             }
                         })
                                 .flatMap(this::CoverToSubmitData)
@@ -164,6 +201,83 @@ public class Beer {
                         imageRepository.findByCategory(beerSubmitData.getBeerSecondID())
                                 .map(beerSubmitData::AddImage)
                                 .then(Mono.just(beerSubmitData))
+                );
+    }
+
+    public Mono<SearchResult> AdminCountSearchBeer(SearchQuery query) {
+        final String txt = query.getQuery();
+        final int page = query.getPage();
+        final int size = query.getSize();
+        final SearchQuery.Filter filter = query.GetFilter();
+        return Mono.just(txt)
+                .map(Util.getInstance()::RemoveAccent)
+                .flatMap(searchTxt -> {
+                    if (searchTxt.contains("&"))
+                        return this.resultWithCountRepository.adminCountSearchBeer(searchTxt)
+                                .map(resultWithCount -> {
+                                    SearchResult result = SearchResult.builder()
+                                            .isNormalSearch(true)
+                                            .searchTxt(searchTxt)
+                                            .build();
+                                    result.setCount(resultWithCount.getCount());
+                                    return result;
+                                });
+                    String finalSearchTxt = "%" + searchTxt + "%";
+                    return this.resultWithCountRepository.adminCountSearchBeerLike(finalSearchTxt)
+                            .map(resultWithCount -> {
+                                SearchResult result = SearchResult.builder()
+                                        .isNormalSearch(false)
+                                        .searchTxt(finalSearchTxt)
+                                        .build();
+                                result.setCount(resultWithCount.getCount());
+                                return result;
+                            });
+                })
+                .flatMap(searchResult ->
+                        Flux.just(searchResult.getSearchTxt()).flatMap(
+                                        searchTxt -> {
+                                            if (searchResult.isNormalSearch()) {
+                                                switch (filter){
+                                                    case CREATE_ASC:
+                                                        return this.beerRepository.adminSearchBeerSortByCreateASC(searchResult.getSearchTxt(), page, size);
+                                                    case CREATE_DESC:
+                                                        return this.beerRepository.adminSearchBeerSortByCreateDESC(searchResult.getSearchTxt(), page, size);
+                                                    case NAME_ASC:
+                                                        return this.beerRepository.adminSearchBeerSortByNameASC(searchResult.getSearchTxt(), page, size);
+                                                    case NAME_DESC:
+                                                        return this.beerRepository.adminSearchBeerSortByNameDESC(searchResult.getSearchTxt(), page, size);
+                                                    case PRICE_ASC:
+                                                        return this.beerRepository.adminSearchBeerSortByPriceASC(searchResult.getSearchTxt(), page, size);
+                                                    case PRICE_DESC:
+                                                        return this.beerRepository.adminSearchBeerSortByPriceDESC(searchResult.getSearchTxt(), page, size);
+                                                    case SOLD_NUM:
+                                                        return this.beerRepository.adminSearchBeerSortBySoldDESC(searchResult.getSearchTxt(), page, size);
+                                                    default:
+                                                        return this.beerRepository.adminSearchBeer(searchResult.getSearchTxt(), page, size);
+                                                }
+                                            }
+                                            switch (filter){
+                                                case CREATE_ASC:
+                                                    return this.beerRepository.adminSearchBeerLikeSortCreateASC(searchResult.getSearchTxt(), page, size);
+                                                case CREATE_DESC:
+                                                    return this.beerRepository.adminSearchBeerLikeSortCreateDESC(searchResult.getSearchTxt(), page, size);
+                                                case NAME_ASC:
+                                                    return this.beerRepository.adminSearchBeerLikeSortByNameASC(searchResult.getSearchTxt(), page, size);
+                                                case NAME_DESC:
+                                                    return this.beerRepository.adminSearchBeerLikeSortByNameDESC(searchResult.getSearchTxt(), page, size);
+                                                case PRICE_ASC:
+                                                    return this.beerRepository.adminSearchBeerLikeSortByPriceASC(searchResult.getSearchTxt(), page, size);
+                                                case PRICE_DESC:
+                                                    return this.beerRepository.adminSearchBeerLikeSortByPriceDESC(searchResult.getSearchTxt(), page, size);
+                                                case SOLD_NUM:
+                                                    return this.beerRepository.adminSearchBeerLikeSortBySoldDESC(searchResult.getSearchTxt(), page, size);
+                                                default:
+                                                    return this.beerRepository.adminSearchBeerLike(searchResult.getSearchTxt(), page, size);
+                                            }
+                                        })
+                                .flatMap(this::CoverToSubmitData)
+                                .map(searchResult::Add)
+                                .then(Mono.just(searchResult))
                 );
     }
 
@@ -244,6 +358,44 @@ public class Beer {
                 );
     }
 
+    public Mono<SearchResult> AdminCountGetAllBeerByCategory(SearchQuery query) {
+        final com.example.heroku.model.Beer.Category category = com.example.heroku.model.Beer.Category.get(query.getQuery());
+        final SearchQuery.Filter filter = query.GetFilter();
+        final int page = query.getPage();
+        final int size = query.getSize();
+        return this.resultWithCountRepository.AdminCountCategory(category)
+                .map(resultWithCount -> {
+                    SearchResult result = new SearchResult();
+                    result.setCount(resultWithCount.getCount());
+                    return result;
+                })
+                .flatMap(searchResult ->
+                        Flux.just(searchResult).flatMap(rs -> {
+                                    switch (filter) {
+                                        case CREATE_ASC:
+                                            return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createat")));
+                                        case CREATE_DESC:
+                                            return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createat")));
+                                        case NAME_ASC:
+                                            return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name")));
+                                        case NAME_DESC:
+                                            return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "name")));
+                                        case PRICE_ASC:
+                                            return this.beerRepository.AdminFindByCategoryBeerSortByPriceASC(category, page, size);
+                                        case PRICE_DESC:
+                                            return this.beerRepository.AdminFindByCategoryBeerSortByPriceDESC(category, page, size);
+                                        case SOLD_NUM:
+                                            return this.beerRepository.AdminFindByCategoryBeerSortBySoldDESC(category, page, size);
+                                        default:
+                                            return this.beerRepository.findByCategory(category, PageRequest.of(page, size));
+                                    }
+                                })
+                                .flatMap(this::CoverToSubmitData)
+                                .map(searchResult::Add)
+                                .then(Mono.just(searchResult))
+                );
+    }
+
     public Mono<SearchResult> CountGetAllBeerByCategory(SearchQuery query) {
         final com.example.heroku.model.Beer.Category category = com.example.heroku.model.Beer.Category.get(query.getQuery());
         final SearchQuery.Filter filter = query.GetFilter();
@@ -259,13 +411,13 @@ public class Beer {
                         Flux.just(searchResult).flatMap(rs -> {
                             switch (filter) {
                                 case CREATE_ASC:
-                                    return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createat")));
+                                    return this.beerRepository.findByCategoryASC(category, page, size, "createat");
                                 case CREATE_DESC:
-                                    return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createat")));
+                                    return this.beerRepository.findByCategoryDESC(category, page, size, "createat");
                                 case NAME_ASC:
-                                    return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name")));
+                                    return this.beerRepository.findByCategoryASC(category, page, size, "name");
                                 case NAME_DESC:
-                                    return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "name")));
+                                    return this.beerRepository.findByCategoryDESC(category, page, size, "name");
                                 case PRICE_ASC:
                                     return this.beerRepository.findByCategoryBeerSortByPriceASC(category, page, size);
                                 case PRICE_DESC:
@@ -273,7 +425,7 @@ public class Beer {
                                 case SOLD_NUM:
                                     return this.beerRepository.findByCategoryBeerSortBySoldDESC(category, page, size);
                                 default:
-                                    return this.beerRepository.findByCategory(category, PageRequest.of(page, size));
+                                    return this.beerRepository.findByCategoryDESC(category, page, size, "createat");
                             }
                         })
                                 .flatMap(this::CoverToSubmitData)

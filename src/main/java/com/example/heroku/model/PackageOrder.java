@@ -85,7 +85,16 @@ public class PackageOrder {
 
         public static Status get(String text)
         {
-            return lookup.get(text);
+            try {
+                Status val = lookup.get(text);
+                if(val == null){
+                    return PRE_ORDER;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return PRE_ORDER;
+            }
         }
 
         @Override

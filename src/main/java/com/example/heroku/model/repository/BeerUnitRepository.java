@@ -17,4 +17,7 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<BeerUnit, Str
 
     @Query(value = "SELECT * FROM beer_unit WHERE beer_unit.beer_unit_second_id = :id")
     Mono<BeerUnit> findByBeerUnitID(@Param("id")String id);
+
+    @Query(value = "SELECT * FROM beer_unit WHERE beer_unit.beer_unit_second_id = :id AND (beer_unit.status IS NULL OR (beer_unit.status != 'SOLD_OUT' AND beer_unit.status != 'HIDE'))")
+    Mono<BeerUnit> findByBeerUnitIDCanOrder(@Param("id")String id);
 }

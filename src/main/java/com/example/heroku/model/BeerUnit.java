@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name="beer_unit")
@@ -40,6 +42,55 @@ public class BeerUnit {
     private float weight;
 
     private Timestamp createat;
+
+    private Status status;
+
+    public enum Status{
+        AVARIABLE("avariable"),
+        NOT_FOR_SELL("not_for_sell"),
+        SOLD_OUT("sold_out");
+
+
+
+        private String name;
+
+        Status(String name){
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        private static final Map<String, Status> lookup = new HashMap<>();
+
+        static
+        {
+            for(Status sts : Status.values())
+            {
+                lookup.put(sts.getName(), sts);
+            }
+        }
+
+        public static Status get(String text)
+        {
+            try {
+                Status val = lookup.get(text);
+                if(val == null){
+                    return AVARIABLE;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return AVARIABLE;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
+    }
 
 
     public BeerUnit AutoFill() {

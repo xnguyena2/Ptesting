@@ -241,8 +241,10 @@ public class FlickrLib {
             results.forEach(p ->
             {
                 try {
-                    System.out.println("Delete: "+p.getId());
-                    photos.delete(p.getId());
+                    if(p.getOwner().getId().equals(this.auth.getUser().getId())){
+                        System.out.println("Delete: "+p.getId());
+                        photos.delete(p.getId());
+                    }
                 } catch (FlickrException e) {
                     e.printStackTrace();
                 }

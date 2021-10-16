@@ -26,7 +26,7 @@ public class ClientDeviceTest {
                         e.printStackTrace();
                     }
                     assertThat((long) bootStrapData.getCarousel().size()).isEqualTo(4);
-                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(2);
+                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(3);
                     Flux.just(bootStrapData.getProducts().toArray(new BeerSubmitData[0]))
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
@@ -36,6 +36,9 @@ public class ClientDeviceTest {
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
                                 assertThat(beerSubmitData.getImages().size()).isEqualTo(4);
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
                             })
                             .verifyComplete();
                 })
@@ -51,7 +54,7 @@ public class ClientDeviceTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(2);
+                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(3);
                     Flux.just(bootStrapData.getProducts().toArray(new BeerSubmitData[0]))
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
@@ -60,6 +63,9 @@ public class ClientDeviceTest {
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
                             })
                             .verifyComplete();
                 })

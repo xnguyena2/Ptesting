@@ -1,5 +1,6 @@
 package com.example.heroku.model;
 
+import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.util.Util;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -66,10 +67,11 @@ public class Beer {
         return category;
     }
 
-    public enum Status{
+    public enum Status {
         AVARIABLE("avariable"),
         NOT_FOR_SELL("not_for_sell"),
-        SOLD_OUT("sold_out");
+        SOLD_OUT("sold_out"),
+        HIDE("hide");
 
 
 
@@ -95,7 +97,16 @@ public class Beer {
 
         public static Status get(String text)
         {
-            return lookup.get(text);
+            try {
+                Status val = lookup.get(text);
+                if(val == null){
+                    return AVARIABLE;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return AVARIABLE;
+            }
         }
 
         @Override
@@ -136,7 +147,16 @@ public class Beer {
 
         public static Category get(String text)
         {
-            return lookup.get(text);
+            try {
+                Category val = lookup.get(text);
+                if(val == null){
+                    return CRAB;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return CRAB;
+            }
         }
 
         @Override

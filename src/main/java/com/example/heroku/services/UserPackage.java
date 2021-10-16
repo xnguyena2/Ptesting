@@ -25,11 +25,11 @@ public class UserPackage {
 
     public Mono<Object> AddBeerToPackage(BeerPackage beerPackage) {
         com.example.heroku.model.UserPackage[] userPackages = beerPackage.getUserPackage();
-        if(userPackages == null)
+        if (userPackages == null)
             return Mono.just(org.springframework.http.ResponseEntity.badRequest());
         return Flux.just(userPackages)
                 .flatMap(userPackage ->
-                        userPackageRepository.save(userPackage)
+                        userPackageRepository.AddPackage(userPackage.getDevice_id(),userPackage.getBeer_id(), userPackage.getBeer_unit(), userPackage.getNumber_unit(), userPackage.getStatus())
                 )
                 .then(Mono.just(ok(Format.builder().response("done").build())));
 
@@ -47,7 +47,7 @@ public class UserPackage {
         return userPackageRepository.DeleteProductByBeerUnit(beerUnitDelete.getId());
     }
 
-        public Flux<com.example.heroku.model.UserPackage> DeleteByUserID(UserID userID){
-            return userPackageRepository.DeleteProductByUserID(userID.getId());
+    public Flux<com.example.heroku.model.UserPackage> DeleteByUserID(UserID userID) {
+        return userPackageRepository.DeleteProductByUserID(userID.getId());
     }
 }
