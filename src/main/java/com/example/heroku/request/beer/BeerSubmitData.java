@@ -22,6 +22,7 @@ public class BeerSubmitData {
     private String name;
     private String detail;
     private String category;
+    private String status;
     private List<Image> images;
     private BeerUnit[] listUnit;
 
@@ -50,6 +51,7 @@ public class BeerSubmitData {
                                 .name(this.name)
                                 .detail(this.detail)
                                 .category(Beer.Category.get(this.category))
+                                .status(Beer.Status.get(this.status))
                                 .build()
                 )
                 .build()
@@ -70,6 +72,7 @@ public class BeerSubmitData {
                 .name(beer.getName())
                 .detail(beer.getDetail())
                 .category(beer.GetCategoryNuable().getName())
+                .status(beer.GetStatusNuable().getName())
                 .build();
     }
 
