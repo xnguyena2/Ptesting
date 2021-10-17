@@ -106,8 +106,12 @@ public class AuthenticationController {
     }
 
     @GetMapping("/me")
-    public Mono<UserDetails> current(@AuthenticationPrincipal Mono<UserDetails> principal) {
-        return principal;
+    public Mono<Map<String, Object>> current(@AuthenticationPrincipal Mono<UserDetails> principal) {
+        return principal.map(user -> new HashMap<String, Object>() {{
+                    put("name", user.getUsername());
+                    put("roles", AuthorityUtils.authorityListToSet(user.getAuthorities()));
+                }}
+        );
     }
 
     @PostMapping("/account/update")
