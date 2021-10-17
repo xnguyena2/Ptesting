@@ -26,7 +26,9 @@ CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, provider_id
 CREATE INDEX search_token_index ON search_token(tokens);
 CREATE INDEX beer_index ON beer(beer_second_id);
 CREATE INDEX beer_detail_index ON beer(detail);
+CREATE INDEX users_name_index ON users(username);
 
+ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
 ALTER TABLE beer ADD CONSTRAINT UQ_beer_second_id UNIQUE(beer_second_id);
 ALTER TABLE beer_unit ADD CONSTRAINT UQ_beer_unit_second_id UNIQUE(beer_unit_second_id);
 ALTER TABLE search_token ADD CONSTRAINT UQ_search_token_beer_second_id UNIQUE(beer_second_id);

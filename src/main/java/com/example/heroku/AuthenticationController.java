@@ -2,8 +2,14 @@ package com.example.heroku;
 
 
 import com.example.heroku.jwt.JwtTokenProvider;
+import com.example.heroku.model.Users;
+import com.example.heroku.model.repository.UserRepository;
 import com.example.heroku.request.data.AuthenticationRequest;
+import com.example.heroku.request.data.UpdatePassword;
+import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +24,18 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/auth")
@@ -42,9 +54,15 @@ public class AuthenticationController {
     private final ReactiveAuthenticationManager authenticationManager;
 
     @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
     JwtTokenProvider jwtTokenProvider;
 
-    private ResponseEntity createAuthBearToken(String jwt){
+    @Autowired
+    private UserRepository userRepository;
+
+    private ResponseEntity createAuthBearToken(String jwt) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
         Map<Object, Object> model = new HashMap<>();
@@ -94,5 +112,70 @@ public class AuthenticationController {
                     put("roles", AuthorityUtils.authorityListToSet(user.getAuthorities()));
                 }}
         );
+    }
+
+    @PostMapping("/account/update")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity> update(@AuthenticationPrincipal Mono<UserDetails> principal, @Valid @RequestBody UpdatePassword update) {
+
+        try {
+            return principal
+                    .flatMap(login -> this.authenticationManager
+                            .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), update.getOldpassword()))
+                            .flatMap(authentication ->
+                                    userRepository.updatePassword(
+                                                    login.getUsername(),
+                                                    this.passwordEncoder.encode(update.getNewpassword())
+                                            )
+                            )
+                    )
+                    .map(this.jwtTokenProvider::createToken)
+                    .map(this::createAuthBearToken);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid username/password supplied");
+        }
+    }
+
+    @PostMapping("/admin/account/delete")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity> delete(@AuthenticationPrincipal Mono<UserDetails> principal, @Valid @RequestBody UpdatePassword update) {
+
+        try {
+            return principal
+                    .flatMap(login -> this.authenticationManager
+                            .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), update.getOldpassword()))
+                            .flatMap(authentication ->
+                                    userRepository.deleteByUserNameAndPassword(
+                                            login.getUsername()
+                                    )
+                            )
+                    )
+                    .then(Mono.just(""))
+                    .map(this::createAuthBearToken);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid username/password supplied");
+        }
+    }
+
+    @PostMapping("/admin/account/create")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<Users> create(@AuthenticationPrincipal UserDetails principal, @Valid @RequestBody UpdatePassword newAccount) {
+
+        System.out.println("create by: "+principal.getUsername());
+
+        return
+                Mono.just(newAccount)
+                        .map(UpdatePassword::getRoles)
+                        .map(acc -> Users.builder()
+                                .username(newAccount.getUsername())
+                                .password(this.passwordEncoder.encode(newAccount.getNewpassword()))
+                                .roles(newAccount.getRoles())
+                                .createat(new Timestamp(new Date().getTime()))
+                                .active(true)
+                                .build()
+                        )
+                        .flatMap(users ->
+                                this.userRepository.save(users)
+                        );
     }
 }

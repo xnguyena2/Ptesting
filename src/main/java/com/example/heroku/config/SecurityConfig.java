@@ -37,7 +37,13 @@ public class SecurityConfig {
         System.out.println("**************************************RUN IN MODE: "+this.runningMode + "**************************************");
         if (runningMode != null && runningMode.equals("dev")) {
             return
-                    it.anyExchange().permitAll();
+                    it
+                            .pathMatchers("/*/admin/**").hasRole("ADMIN")
+                            .pathMatchers("/*/admin/*/**").hasRole("ADMIN")
+                            .pathMatchers("/*/admin/*/*/**").hasRole("ADMIN")
+                            .pathMatchers("/auth/account/update").authenticated()
+
+                            .anyExchange().permitAll();
         }
         return it
                 //.pathMatchers(HttpMethod.DELETE, PATH_POSTS).hasRole("ADMIN")
@@ -57,7 +63,7 @@ public class SecurityConfig {
                 .pathMatchers("/package/**").permitAll()
 
                 .pathMatchers("/auth/signin").permitAll()
-                .pathMatchers("/auth/refresh").authenticated()
+                .pathMatchers("/auth/account/update").authenticated()
 
                 .pathMatchers("/**").permitAll()
 
