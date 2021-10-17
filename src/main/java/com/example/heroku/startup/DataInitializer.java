@@ -57,8 +57,8 @@ public class DataInitializer {
 
     @EventListener(value = ApplicationReadyEvent.class)
     public void init() throws NoSuchAlgorithmException {
-        System.out.println("initializing vehicles data...");
-        log.debug("initializing vehicles data...");
+        System.out.println("initializing database...");
+        log.debug("initializing database...");
 
         if (resetDB) {
             log.warn("Reset all Database!");
@@ -66,8 +66,17 @@ public class DataInitializer {
 
             imageAPI.DeleteAll().block();
 
+            //PhotoLib.getInstance().deleteAll();
+            flickrLib.DeleteAll();
+
             try {
                 String dropSQL = new String(Files.readAllBytes(Paths.get("Asset/drop.sql")));
+                databaseClient.execute(dropSQL)
+                        .fetch()
+                        .rowsUpdated()
+                        .block();
+
+                dropSQL = new String(Files.readAllBytes(Paths.get("Asset/database.sql")));
                 databaseClient.execute(dropSQL)
                         .fetch()
                         .rowsUpdated()
@@ -76,26 +85,6 @@ public class DataInitializer {
                 e.printStackTrace();
             }
 
-            //PhotoLib.getInstance().deleteAll();
-            flickrLib.DeleteAll();
-
-        } else {
-            log.info("No Need reset Database@");
-            System.out.println("No Need reset Database@");
-        }
-
-        try {
-            String dropSQL = new String(Files.readAllBytes(Paths.get("Asset/database.sql")));
-            databaseClient.execute(dropSQL)
-                    .fetch()
-                    .rowsUpdated()
-                    .block();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        if (resetDB) {
             String pass = this.passwordEncoder.encode(Util.getInstance().HashPassword(adminPass));
             //System.out.println(pass);
 
@@ -120,9 +109,13 @@ public class DataInitializer {
                             data -> log.info("data:" + data), err -> log.error("error:" + err),
                             () -> log.info("done initialization...")
                     );
+
+        } else {
+            log.info("No Need reset Database@");
+            System.out.println("No Need reset Database@");
         }
 
-        System.out.println("Done initializing vehicles data...");
-        log.debug("Done initializing vehicles data...");
+        System.out.println("Done initializing database...");
+        log.debug("Done initializing database...");
     }
 }
