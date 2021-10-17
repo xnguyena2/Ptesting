@@ -92,6 +92,13 @@ public class BeerUnit {
         }
     }
 
+    public Status GetStatusNuable() {
+        if (status == null) {
+            return Status.AVARIABLE;
+        }
+        return status;
+    }
+
 
     public BeerUnit AutoFill() {
         if (this.beer_unit_second_id == null || this.beer_unit_second_id.equals(""))
