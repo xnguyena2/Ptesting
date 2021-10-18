@@ -34,6 +34,8 @@ public class Users implements UserDetails {
 
     private String password;
 
+    private String createby;
+
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
@@ -54,22 +56,22 @@ public class Users implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return active;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return active;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return active;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return active;
     }
 
     @Builder.Default()

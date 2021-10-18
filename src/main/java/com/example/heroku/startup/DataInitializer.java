@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import static java.util.Arrays.asList;
@@ -95,7 +96,7 @@ public class DataInitializer {
                                         Users users = Users.builder()
                                                 .username(username)
                                                 .password(pass)
-                                                .roles(Arrays.asList("ROLE_ADMIN", "ROLE_USER"))
+                                                .roles(Collections.singletonList(Util.ROLE_ADMIN))
                                                 .createat(new Timestamp(new Date().getTime()))
                                                 .active(true)
                                                 .build();

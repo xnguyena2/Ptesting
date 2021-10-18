@@ -17,15 +17,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -34,6 +38,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -136,7 +142,7 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/admin/account/delete")
+    @PostMapping({"/admin/account/delete", "/account/delete"})
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity> delete(@AuthenticationPrincipal Mono<UserDetails> principal, @Valid @RequestBody UpdatePassword update) {
 
@@ -144,9 +150,16 @@ public class AuthenticationController {
             return principal
                     .flatMap(login -> this.authenticationManager
                             .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), update.getOldpassword()))
+                            .filter(authentication ->
+                                    authentication.getName().equals(update.getUsername()) ||
+                                            authentication.getAuthorities().contains((GrantedAuthority) () -> Util.ROLE_ADMIN)
+                            )
+                            .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned")))
+                            .filter(authentication -> Boolean.TRUE.equals(userRepository.isStaff(login.getUsername(), update.getUsername()).block()))
+                            .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned")))
                             .flatMap(authentication ->
                                     userRepository.deleteByUserNameAndPassword(
-                                            login.getUsername()
+                                            update.getUsername()
                                     )
                             )
                     )
@@ -172,6 +185,7 @@ public class AuthenticationController {
                                 .roles(newAccount.getRoles())
                                 .createat(new Timestamp(new Date().getTime()))
                                 .active(true)
+                                .createby(principal.getUsername())
                                 .build()
                         )
                         .flatMap(users ->

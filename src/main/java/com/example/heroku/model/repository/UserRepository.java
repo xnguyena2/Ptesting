@@ -17,4 +17,7 @@ public interface UserRepository extends ReactiveCrudRepository<Users, String> {
     @Query(value = "DELETE FROM users WHERE users.username = :username")
     Mono<Users> deleteByUserNameAndPassword(@Param("username") String username);
 
+    @Query(value = "SELECT CASE WHEN EXISTS (SELECT * FROM users WHERE :useradmin=:userstaff OR username=:userstaff AND ROLES LIKE '%ROLE_USER%' ) THEN TRUE ELSE FALSE END")
+    Mono<Boolean> isStaff(@Param("useradmin") String useradmin, @Param("userstaff") String userstaff);
+
 }

@@ -15,15 +15,16 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.test.web.reactive.server.StatusAssertions;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
 import java.io.File;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
-
+/*
 @AutoConfigureWebTestClient(timeout = "36000")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AuthenticationTest extends TestConfig{
@@ -43,14 +44,14 @@ public class AuthenticationTest extends TestConfig{
     @Autowired
     private WebTestClient client;
 
-    String getToken(String username, String password){
+    String getToken(String username, String password) throws NoSuchAlgorithmException {
 
         byte[] token = client.post().uri("/auth/signin")
                 .body(BodyInserters.fromValue(
                         AuthenticationRequest
                                 .builder()
                                 .username(username)
-                                .password(password)
+                                .password(Util.getInstance().HashPassword(password))
                                 .build())
                 )
                 .exchange()
@@ -72,23 +73,77 @@ public class AuthenticationTest extends TestConfig{
         return authToken;
     }
 
-    @Test
-    public void AuthenticationTest() throws NoSuchAlgorithmException {
+    StatusAssertions deleteAcc(String username, String password, String token, boolean isAdmin) throws NoSuchAlgorithmException {
 
-        String pass = Util.getInstance().HashPassword(adminPass);
+        String path = "/auth/admin/account/delete";
+        if(!isAdmin){
+            path = "/auth/account/delete";
+        }
 
-        String finalAuthToken = getToken(adminName, pass);
-
-        client.post().uri("/auth/signin")
+        return client.post().uri(path).cookies(cookies -> cookies.add(accessTokenCookieName, token))
                 .body(BodyInserters.fromValue(
-                        AuthenticationRequest
+                        UpdatePassword
                                 .builder()
-                                .username(adminName)
-                                .password(adminName)
+                                .username(username)
+                                .oldpassword(Util.getInstance().HashPassword(password))
                                 .build())
                 )
                 .exchange()
-                .expectStatus()
+                .expectStatus();
+    }
+
+    StatusAssertions createAcc(String username, String password, String token, List<String> roles) throws NoSuchAlgorithmException {
+
+        return client.post().uri("/auth/admin/account/create").cookies(cookies -> cookies.add(accessTokenCookieName, token))
+                .body(BodyInserters.fromValue(
+                        UpdatePassword
+                                .builder()
+                                .username(username)
+                                .newpassword(Util.getInstance().HashPassword(password))
+                                .Roles(roles)
+                                .build())
+                )
+                .exchange()
+                .expectStatus();
+    }
+
+    StatusAssertions signinAcc(String username, String password) throws NoSuchAlgorithmException {
+
+        return client.post().uri("/auth/signin")
+                .body(BodyInserters.fromValue(
+                        AuthenticationRequest
+                                .builder()
+                                .username(username)
+                                .password(Util.getInstance().HashPassword(password))
+                                .build())
+                )
+                .exchange()
+                .expectStatus();
+    }
+
+    StatusAssertions updateAcc(String username, String oldPass, String newPass, String token) throws NoSuchAlgorithmException {
+
+        return
+                client.post().uri("/auth/account/update").cookies(cookies -> cookies.add(accessTokenCookieName, token))
+                        .body(BodyInserters.fromValue(
+                                UpdatePassword
+                                        .builder()
+                                        .username(username)
+                                        .oldpassword(Util.getInstance().HashPassword(oldPass))
+                                        .newpassword(Util.getInstance().HashPassword(newPass))
+                                        .Roles(Collections.singletonList(Util.ROLE_ADMIN))
+                                        .build())
+                        )
+                        .exchange()
+                        .expectStatus();
+    }
+
+    @Test
+    public void AuthenticationTest() throws NoSuchAlgorithmException {
+
+        String finalAuthToken = getToken(adminName, adminPass);
+
+        signinAcc(adminName, adminName)
                 .isUnauthorized();
 
         client.get().uri("/auth/me").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken))
@@ -115,197 +170,96 @@ public class AuthenticationTest extends TestConfig{
                 .expectBody()
                 .jsonPath("token").exists();
 
-        client.post().uri("/auth/admin/account/create").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken))
-                .body(BodyInserters.fromValue(
-                        UpdatePassword
-                                .builder()
-                                .username("quin")
-                                .newpassword(Util.getInstance().HashPassword("quin123"))
-                                .Roles(Arrays.asList("ROLE_ADMIN", "ROLE_USER"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+        createAcc("quin", "quin123", finalAuthToken, Collections.singletonList(Util.ROLE_ADMIN))
                 .isOk();
 
-        client.post().uri("/auth/admin/account/create").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken))
-                .body(BodyInserters.fromValue(
-                        UpdatePassword
-                                .builder()
-                                .username("nhanvien")
-                                .newpassword(Util.getInstance().HashPassword("nhanvien123"))
-                                .Roles(Collections.singletonList("ROLE_USER"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+
+        createAcc("nhanvien", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE_USER))
                 .isOk();
 
-        client.post().uri("/auth/admin/account/create").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken))
-                .body(BodyInserters.fromValue(
-                        UpdatePassword
-                                .builder()
-                                .username("binh")
-                                .newpassword(Util.getInstance().HashPassword("quin123"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+
+        createAcc("binh", "quin123", finalAuthToken, null)
                 .is5xxServerError();
 
-        client.post().uri("/auth/admin/account/create").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken))
-                .body(BodyInserters.fromValue(
-                        UpdatePassword
-                                .builder()
-                                .username("binh")
-                                .newpassword(Util.getInstance().HashPassword("binh123"))
-                                .Roles(Arrays.asList("ROLE_ADMIN"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+
+        createAcc("binh", "binh123", finalAuthToken, Collections.singletonList(Util.ROLE_ADMIN))
                 .isOk();
 
-        client.post().uri("/auth/admin/account/delete").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken))
-                .body(BodyInserters.fromValue(
-                        UpdatePassword
-                                .builder()
-                                .username("binh")
-                                .oldpassword(Util.getInstance().HashPassword("binh123"))
-                                .Roles(Arrays.asList("ROLE_ADMIN"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+
+        deleteAcc("binh", "binh123", finalAuthToken, true)
                 .isUnauthorized();
 
-        String finalAuthToken1 = getToken("binh", Util.getInstance().HashPassword("binh123"));
+        String finalAuthToken1 = getToken("binh", "binh123");
 
-        client.post().uri("/auth/admin/account/delete").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken1))
-                .body(BodyInserters.fromValue(
-                        UpdatePassword
-                                .builder()
-                                .username("binh")
-                                .oldpassword(Util.getInstance().HashPassword("binh123"))
-                                .Roles(Arrays.asList("ROLE_ADMIN"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+        deleteAcc("binh", "binh123", finalAuthToken1, true)
                 .isOk();
 
-        client.post().uri("/auth/signin")
-                .body(BodyInserters.fromValue(
-                        AuthenticationRequest
-                                .builder()
-                                .username("binh")
-                                .password(Util.getInstance().HashPassword("binh123"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+
+        signinAcc("binh", "binh123")
                 .isUnauthorized();
 
-        String finalAuthToken2 = getToken("quin", Util.getInstance().HashPassword("quin123"));
+        String finalAuthToken2 = getToken("quin", "quin123");
 
-        client.post().uri("/auth/account/update").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken2))
-                .body(BodyInserters.fromValue(
-                        UpdatePassword
-                                .builder()
-                                .username("quin")
-                                .oldpassword(Util.getInstance().HashPassword("quin123"))
-                                .newpassword(Util.getInstance().HashPassword("qqqqq123"))
-                                .Roles(Arrays.asList("ROLE_ADMIN"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+
+        updateAcc("quin", "quin123", "qqqqq123", finalAuthToken2)
                 .isOk();
 
-        client.post().uri("/auth/signin")
-                .body(BodyInserters.fromValue(
-                        AuthenticationRequest
-                                .builder()
-                                .username("quin")
-                                .password(Util.getInstance().HashPassword("quin123"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+        signinAcc("quin", "quin123")
                 .isUnauthorized();
 
-        client.post().uri("/auth/signin")
-                .body(BodyInserters.fromValue(
-                        AuthenticationRequest
-                                .builder()
-                                .username("quin")
-                                .password(Util.getInstance().HashPassword("qqqqq123"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+        signinAcc("quin", "qqqqq123")
                 .isOk();
 
-        String finalAuthToken3 = getToken("nhanvien", Util.getInstance().HashPassword("nhanvien123"));
+        String finalAuthToken3 = getToken("nhanvien", "nhanvien123");
 
-        client.post().uri("/auth/account/update").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken3))
-                .body(BodyInserters.fromValue(
-                        UpdatePassword
-                                .builder()
-                                .username("nhanvien")
-                                .oldpassword(Util.getInstance().HashPassword("nhanvien123"))
-                                .newpassword(Util.getInstance().HashPassword("nhanvien"))
-                                .Roles(Arrays.asList("ROLE_ADMIN"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+
+        updateAcc("nhanvien", "nhanvien123", "nhanvien", finalAuthToken3)
                 .isOk();
 
-        client.post().uri("/auth/signin")
-                .body(BodyInserters.fromValue(
-                        AuthenticationRequest
-                                .builder()
-                                .username("nhanvien")
-                                .password(Util.getInstance().HashPassword("nhanvien123"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+
+        updateAcc("nhanvien", "nhanvien123", "nhanvien", finalAuthToken3)
                 .isUnauthorized();
 
-        client.post().uri("/auth/signin")
-                .body(BodyInserters.fromValue(
-                        AuthenticationRequest
-                                .builder()
-                                .username("nhanvien")
-                                .password(Util.getInstance().HashPassword("nhanvien"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+        signinAcc("nhanvien", "nhanvien123")
+                .isUnauthorized();
+
+
+        signinAcc("nhanvien", "nhanvien")
                 .isOk();
 
-        client.post().uri("/auth/admin/account/create").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken3))
-                .body(BodyInserters.fromValue(
-                        UpdatePassword
-                                .builder()
-                                .username("nhanvien1")
-                                .newpassword(Util.getInstance().HashPassword("nhanvien111"))
-                                .Roles(Arrays.asList("ROLE_ADMIN"))
-                                .build())
-                )
-                .exchange()
-                .expectStatus()
+
+        createAcc("nhanvien1", "nhanvien111", finalAuthToken3, Collections.singletonList(Util.ROLE_ADMIN))
                 .isForbidden();
+
+
+
+        createAcc("nhanvien2", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE_USER))
+                .isOk();
+
+
+        createAcc("nhanvien3", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE_USER))
+                .isOk();
+
+        String finalAuthToken4 = getToken("nhanvien2", "nhanvien123");
+
+        deleteAcc("nhanvien3", "nhanvien123", finalAuthToken4, false)
+                .isForbidden();
+
+        deleteAcc("quin", "nhanvien123", finalAuthToken4, false)
+                .isForbidden();
+
+        deleteAcc("quin", "qqqqq123", finalAuthToken4, false)
+                .isUnauthorized();
+
+        deleteAcc("nhanvien2", "nhanvien123", finalAuthToken4, false)
+                .isOk();
     }
 
     @Test
     public void uploadImage() throws NoSuchAlgorithmException {
 
-        String pass = Util.getInstance().HashPassword(adminPass);
 
-        String finalAuthToken = getToken(adminName, pass);
+        String finalAuthToken = getToken(adminName, adminPass);
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("file", new FileSystemResource(new File("C:\\Users\\phong\\Downloads\\top_icon.png")));
@@ -321,5 +275,5 @@ public class AuthenticationTest extends TestConfig{
                 .isOk();
     }
 }
-
-//public class AuthenticationTest{}
+*/
+public class AuthenticationTest{}
