@@ -34,9 +34,47 @@ public class Util {
             'o', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u',
             'U', 'u', 'U', 'u',};
 
-    public static final String ROLE_ROOT = "ROLE_ROOT";
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
-    public static final String ROLE_USER = "ROLE_USER";
+    public enum ROLE{
+        ROLE_ROOT("ROLE_ROOT", 0),
+        ROLE_ADMIN("ROLE_ADMIN", 1),
+        ROLE_USER("ROLE_USER", 2);
+
+
+        private int index;
+        private String name;
+
+        ROLE(String name, int index){
+            this.index = index;
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        private static final Map<String, ROLE> lookup = new HashMap<>();
+
+        static
+        {
+            for(ROLE sts : ROLE.values())
+            {
+                lookup.put(sts.getName(), sts);
+            }
+        }
+
+        public static ROLE get(String text) {
+            return lookup.get(text);
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
+
+        public int GetIndex(){
+            return index;
+        }
+    }
 
     private static Util instance;
 

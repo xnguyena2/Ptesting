@@ -33,3 +33,60 @@ ALTER TABLE beer ADD CONSTRAINT UQ_beer_second_id UNIQUE(beer_second_id);
 ALTER TABLE beer_unit ADD CONSTRAINT UQ_beer_unit_second_id UNIQUE(beer_unit_second_id);
 ALTER TABLE search_token ADD CONSTRAINT UQ_search_token_beer_second_id UNIQUE(beer_second_id);
 ALTER TABLE voucher_relate_user_device ADD CONSTRAINT UQ_voucher_relate_user_device UNIQUE (voucher_second_id, device_id);
+
+create or replace function getRoleIndex(roles VARCHAR)
+returns int
+language plpgsql
+as
+$$
+declare
+   roleIndex int;
+begin
+
+	if roles = 'ROLE_ROOT' then
+		roleIndex := 0;
+	elsif roles = 'ROLE_ADMIN' then
+		roleIndex := 1;
+	elsif roles = 'ROLE_USER' then
+		roleIndex := 2;
+	else
+		roleIndex := -1;
+	end if;
+
+   return roleIndex;
+end;
+$$;
+
+create or replace function checkRole(creator VARCHAR, newacc VARCHAR)
+returns boolean
+language plpgsql
+as
+$$
+declare
+   creatorRole VARCHAR;
+   newaccRole VARCHAR;
+
+   creatorRoleIndex int;
+   newaccRoleIndex int;
+begin
+   select translate(roles,'{}','')
+   into creatorRole
+   from users
+   where username=creator;
+
+   select translate(roles,'{}','')
+   into newaccRole
+   from users
+   where username=newacc;
+
+   select getRoleIndex(creatorRole) into creatorRoleIndex;
+   select getRoleIndex(newaccRole) into newaccRoleIndex;
+
+
+	if creatorRoleIndex = -1 OR newaccRoleIndex = -1 then
+		return false;
+	end if;
+
+   return creatorRoleIndex < newaccRoleIndex;
+end;
+$$;

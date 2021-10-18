@@ -131,7 +131,7 @@ public class AuthenticationTest extends TestConfig{
                                         .username(username)
                                         .oldpassword(Util.getInstance().HashPassword(oldPass))
                                         .newpassword(Util.getInstance().HashPassword(newPass))
-                                        .Roles(Collections.singletonList(Util.ROLE_ADMIN))
+                                        .Roles(Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
                                         .build())
                         )
                         .exchange()
@@ -170,11 +170,11 @@ public class AuthenticationTest extends TestConfig{
                 .expectBody()
                 .jsonPath("token").exists();
 
-        createAcc("quin", "quin123", finalAuthToken, Collections.singletonList(Util.ROLE_ADMIN))
+        createAcc("quin", "quin123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
                 .isOk();
 
 
-        createAcc("nhanvien", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE_USER))
+        createAcc("nhanvien", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()))
                 .isOk();
 
 
@@ -182,16 +182,19 @@ public class AuthenticationTest extends TestConfig{
                 .is5xxServerError();
 
 
-        createAcc("binh", "binh123", finalAuthToken, Collections.singletonList(Util.ROLE_ADMIN))
+        createAcc("binh", "binh123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
                 .isOk();
 
 
         deleteAcc("binh", "binh123", finalAuthToken, true)
-                .isUnauthorized();
+                .isOk();
+
+        createAcc("binh", "binh123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
+                .isOk();
 
         String finalAuthToken1 = getToken("binh", "binh123");
 
-        deleteAcc("binh", "binh123", finalAuthToken1, true)
+        deleteAcc("binh", "binh123", finalAuthToken1, false)
                 .isOk();
 
 
@@ -228,19 +231,19 @@ public class AuthenticationTest extends TestConfig{
                 .isOk();
 
 
-        createAcc("nhanvien1", "nhanvien111", finalAuthToken3, Collections.singletonList(Util.ROLE_ADMIN))
+        createAcc("nhanvien1", "nhanvien111", finalAuthToken3, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
                 .isForbidden();
 
 
 
-        createAcc("nhanvien1", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE_USER))
+        createAcc("nhanvien1", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()))
                 .isOk();
 
-        createAcc("nhanvien2", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE_USER))
+        createAcc("nhanvien2", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()))
                 .isOk();
 
 
-        createAcc("nhanvien3", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE_USER))
+        createAcc("nhanvien3", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()))
                 .isOk();
 
         String finalAuthToken4 = getToken("nhanvien2", "nhanvien123");
@@ -257,19 +260,19 @@ public class AuthenticationTest extends TestConfig{
         deleteAcc("nhanvien2", "nhanvien123", finalAuthToken4, false)
                 .isOk();
 
-        deleteAcc("nhanvien1", "qqqqq123", finalAuthToken2, false)
+        deleteAcc("nhanvien1", "qqqqq123", finalAuthToken2, true)
                 .isOk();
 
-        deleteAcc("quin", adminPass, finalAuthToken, false)
+        deleteAcc("quin", adminPass, finalAuthToken, true)
                 .isOk();
 
-        deleteAcc("nhanvien3", adminPass, finalAuthToken, false)
+        deleteAcc("nhanvien3", adminPass, finalAuthToken, true)
                 .isOk();
 
         deleteAcc("nhanvien", "qqqqq123", finalAuthToken2, false)
                 .isUnauthorized();
 
-        deleteAcc("nhanvien", adminPass, finalAuthToken, false)
+        deleteAcc("nhanvien", adminPass, finalAuthToken, true)
                 .isOk();
     }
 

@@ -35,10 +35,7 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -143,25 +140,18 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping({"/admin/account/delete", "/account/delete"})
+    @PostMapping("/account/delete")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity> delete(@AuthenticationPrincipal Mono<UserDetails> principal, @Valid @RequestBody UpdatePassword update) {
+    public Mono<ResponseEntity> selfDelete(@AuthenticationPrincipal Mono<UserDetails> principal, @Valid @RequestBody UpdatePassword update) {
 
         try {
             return principal
                     .flatMap(login -> this.authenticationManager
                             .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), update.getOldpassword()))
                             .filter(authentication ->
-                                    authentication.getName().equals(update.getUsername()) ||
-                                            authentication.getAuthorities().contains(new SimpleGrantedAuthority(Util.ROLE_ROOT)) ||
-                                            authentication.getAuthorities().contains(new SimpleGrantedAuthority(Util.ROLE_ADMIN))
+                                    authentication.getName().equals(update.getUsername())
                             )
                             .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned1")))
-                            .filter(authentication ->
-                                    authentication.getAuthorities().contains(new SimpleGrantedAuthority(Util.ROLE_ROOT)) ||
-                                            Boolean.TRUE.equals(userRepository.isStaff(login.getUsername(), update.getUsername()).block())
-                            )
-                            .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned2")))
                             .flatMap(authentication ->
                                     userRepository.deleteByUserNameAndPassword(
                                             update.getUsername()
@@ -175,13 +165,54 @@ public class AuthenticationController {
         }
     }
 
+    private Util.ROLE getRole(UserDetails principal) {
+        if (principal.getAuthorities().size() > 1)
+            return null;
+        if (principal.getAuthorities().contains(new SimpleGrantedAuthority(Util.ROLE.ROLE_ROOT.getName())))
+            return Util.ROLE.ROLE_ROOT;
+        if (principal.getAuthorities().contains(new SimpleGrantedAuthority(Util.ROLE.ROLE_ADMIN.getName())))
+            return Util.ROLE.ROLE_ADMIN;
+        if (principal.getAuthorities().contains(new SimpleGrantedAuthority(Util.ROLE.ROLE_USER.getName())))
+            return Util.ROLE.ROLE_USER;
+        return null;
+    }
+
+    @PostMapping("/admin/account/delete")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity> delete(@AuthenticationPrincipal Mono<UserDetails> principal, @Valid @RequestBody UpdatePassword update) {
+
+            return principal
+                    .filter(authentication ->
+                            Boolean.TRUE.equals(userRepository.isPermissionAllow(authentication.getUsername(), update.getUsername()).block())
+                    )
+                    .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned2")))
+                    .flatMap(authentication ->
+                            userRepository.deleteByUserNameAndPassword(
+                                    update.getUsername()
+                            )
+                    )
+                    .then(Mono.just(""))
+                    .map(this::createAuthBearToken);
+    }
+
     @PostMapping("/admin/account/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Users> create(@AuthenticationPrincipal UserDetails principal, @Valid @RequestBody UpdatePassword newAccount) {
 
         System.out.println("create by: " + principal.getUsername());
 
-        if (newAccount.getRoles().contains(Util.ROLE_ROOT)) {
+        Util.ROLE role = Util.ROLE.get(newAccount.getRoles().get(0));
+        Util.ROLE creatorRole = getRole(principal);
+
+        if(role == null || creatorRole == null){
+            throw new AccessDeniedException("403 returned");
+        }
+
+        if (role == Util.ROLE.ROLE_ROOT) {
+            throw new AccessDeniedException("403 returned");
+        }
+
+        if (creatorRole.GetIndex() > role.GetIndex()) {
             throw new AccessDeniedException("403 returned");
         }
 
@@ -191,7 +222,7 @@ public class AuthenticationController {
                         .map(roles -> Users.builder()
                                 .username(newAccount.getUsername())
                                 .password(this.passwordEncoder.encode(newAccount.getNewpassword()))
-                                .roles(newAccount.getRoles())
+                                .roles(Collections.singletonList(role.getName()))
                                 .createat(new Timestamp(new Date().getTime()))
                                 .active(true)
                                 .createby(principal.getUsername())
