@@ -34,6 +34,7 @@ public class Util {
             'o', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u',
             'U', 'u', 'U', 'u',};
 
+    public static final String ROLE_ROOT = "ROLE_ROOT";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
     public static final String ROLE_USER = "ROLE_USER";
 

@@ -38,9 +38,9 @@ public class SecurityConfig {
         if (runningMode != null && runningMode.equals("dev")) {
             return
                     it
-                            .pathMatchers("/*/admin/**").hasRole("ADMIN")
-                            .pathMatchers("/*/admin/*/**").hasRole("ADMIN")
-                            .pathMatchers("/*/admin/*/*/**").hasRole("ADMIN")
+                            .pathMatchers("/*/admin/**").hasAnyRole("ROOT", "ADMIN")
+                            .pathMatchers("/*/admin/*/**").hasAnyRole("ROOT", "ADMIN")
+                            .pathMatchers("/*/admin/*/*/**").hasAnyRole("ROOT", "ADMIN")
                             .pathMatchers("/auth/account/update").authenticated()
 
                             .anyExchange().permitAll();
@@ -51,9 +51,9 @@ public class SecurityConfig {
                 //.pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
 
                 //for admin
-                .pathMatchers("/*/admin/**").hasRole("ADMIN")
-                .pathMatchers("/*/admin/*/**").hasRole("ADMIN")
-                .pathMatchers("/*/admin/*/*/**").hasRole("ADMIN")
+                .pathMatchers("/*/admin/**").hasAnyRole("ROOT", "ADMIN")
+                .pathMatchers("/*/admin/*/**").hasAnyRole("ROOT", "ADMIN")
+                .pathMatchers("/*/admin/*/*/**").hasAnyRole("ROOT", "ADMIN")
 
                 .pathMatchers("/address/**").permitAll()
                 .pathMatchers("/beer/**").permitAll()

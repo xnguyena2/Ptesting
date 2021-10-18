@@ -26,6 +26,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -152,11 +153,15 @@ public class AuthenticationController {
                             .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), update.getOldpassword()))
                             .filter(authentication ->
                                     authentication.getName().equals(update.getUsername()) ||
-                                            authentication.getAuthorities().contains((GrantedAuthority) () -> Util.ROLE_ADMIN)
+                                            authentication.getAuthorities().contains(new SimpleGrantedAuthority(Util.ROLE_ROOT)) ||
+                                            authentication.getAuthorities().contains(new SimpleGrantedAuthority(Util.ROLE_ADMIN))
                             )
-                            .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned")))
-                            .filter(authentication -> Boolean.TRUE.equals(userRepository.isStaff(login.getUsername(), update.getUsername()).block()))
-                            .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned")))
+                            .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned1")))
+                            .filter(authentication ->
+                                    authentication.getAuthorities().contains(new SimpleGrantedAuthority(Util.ROLE_ROOT)) ||
+                                            Boolean.TRUE.equals(userRepository.isStaff(login.getUsername(), update.getUsername()).block())
+                            )
+                            .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned2")))
                             .flatMap(authentication ->
                                     userRepository.deleteByUserNameAndPassword(
                                             update.getUsername()
@@ -174,12 +179,16 @@ public class AuthenticationController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Users> create(@AuthenticationPrincipal UserDetails principal, @Valid @RequestBody UpdatePassword newAccount) {
 
-        System.out.println("create by: "+principal.getUsername());
+        System.out.println("create by: " + principal.getUsername());
+
+        if (newAccount.getRoles().contains(Util.ROLE_ROOT)) {
+            throw new AccessDeniedException("403 returned");
+        }
 
         return
                 Mono.just(newAccount)
                         .map(UpdatePassword::getRoles)
-                        .map(acc -> Users.builder()
+                        .map(roles -> Users.builder()
                                 .username(newAccount.getUsername())
                                 .password(this.passwordEncoder.encode(newAccount.getNewpassword()))
                                 .roles(newAccount.getRoles())

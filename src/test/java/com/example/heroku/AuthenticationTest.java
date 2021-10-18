@@ -233,6 +233,9 @@ public class AuthenticationTest extends TestConfig{
 
 
 
+        createAcc("nhanvien1", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE_USER))
+                .isOk();
+
         createAcc("nhanvien2", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE_USER))
                 .isOk();
 
@@ -252,6 +255,21 @@ public class AuthenticationTest extends TestConfig{
                 .isUnauthorized();
 
         deleteAcc("nhanvien2", "nhanvien123", finalAuthToken4, false)
+                .isOk();
+
+        deleteAcc("nhanvien1", "qqqqq123", finalAuthToken2, false)
+                .isOk();
+
+        deleteAcc("quin", adminPass, finalAuthToken, false)
+                .isOk();
+
+        deleteAcc("nhanvien3", adminPass, finalAuthToken, false)
+                .isOk();
+
+        deleteAcc("nhanvien", "qqqqq123", finalAuthToken2, false)
+                .isUnauthorized();
+
+        deleteAcc("nhanvien", adminPass, finalAuthToken, false)
                 .isOk();
     }
 

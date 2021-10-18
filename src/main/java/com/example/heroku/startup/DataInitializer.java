@@ -96,7 +96,7 @@ public class DataInitializer {
                                         Users users = Users.builder()
                                                 .username(username)
                                                 .password(pass)
-                                                .roles(Collections.singletonList(Util.ROLE_ADMIN))
+                                                .roles(Collections.singletonList(Util.ROLE_ROOT))
                                                 .createat(new Timestamp(new Date().getTime()))
                                                 .active(true)
                                                 .build();
