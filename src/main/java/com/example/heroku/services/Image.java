@@ -52,7 +52,7 @@ public class Image {
                 .map(ResponseEntity::ok);
     }
 
-    public Mono<Object> Delete(IDContainer img) {
+    public Mono<ResponseEntity<Format>> Delete(IDContainer img) {
         return Mono.just(img).flatMap(info ->
                 {
                     flickrLib.DeleteImage(info.getId());

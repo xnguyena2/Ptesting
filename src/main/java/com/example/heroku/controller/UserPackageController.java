@@ -3,10 +3,12 @@ package com.example.heroku.controller;
 import com.example.heroku.request.beer.BeerPackage;
 import com.example.heroku.request.beer.BeerUnitDelete;
 import com.example.heroku.request.client.UserID;
+import com.example.heroku.response.Format;
 import com.example.heroku.response.PackgeResponse;
 import com.example.heroku.services.UserPackage;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,7 +24,7 @@ public class UserPackageController {
 
     @PostMapping("/add")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<Object> addBeerToPackage(@RequestBody @Valid BeerPackage beerPackage) {
+    public Mono<ResponseEntity<Format>> addBeerToPackage(@RequestBody @Valid BeerPackage beerPackage) {
         System.out.println("add beer to package: "+beerPackage.getBeerID());
         return userPackageAPI.AddBeerToPackage(beerPackage);
     }

@@ -29,7 +29,7 @@ public class ReactiveStreamController {
 
     @GetMapping("/test")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity> generateID() {
+    public Mono<ResponseEntity<Format>> generateID() {
         severEventAdapter.SendEvent("hel0000000");
         return Mono.just(ok(Format.builder().response(Util.getInstance().GenerateID()).build()));
     }

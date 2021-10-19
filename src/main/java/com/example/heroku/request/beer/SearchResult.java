@@ -11,20 +11,16 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchResult extends ResultWithCount {
+public class SearchResult<T> extends ResultWithCount {
     private boolean isNormalSearch;
     private String searchTxt;
-    private List<BeerSubmitData> result;
+    private List<T> result;
 
-    public SearchResult Add(BeerSubmitData newItem) {
+    public SearchResult<T> Add(T newItem) {
         if (result == null) {
             result = new ArrayList<>();
         }
         result.add(newItem);
         return this;
-    }
-
-    public BeerSubmitData[] GetResultAsArray() {
-        return result.toArray(new BeerSubmitData[0]);
     }
 }

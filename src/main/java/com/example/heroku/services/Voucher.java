@@ -28,7 +28,7 @@ public class Voucher {
     @Autowired
     VoucherRelateUserDeviceRepository voucherRelateUserDeviceRepository;
 
-    public Mono<ResponseEntity> generateID() {
+    public Mono<ResponseEntity<Format>> generateID() {
         return Mono.just(ok(Format.builder().response(Util.getInstance().GenerateID()).build()));
     }
 

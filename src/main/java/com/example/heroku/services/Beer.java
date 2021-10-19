@@ -43,7 +43,7 @@ public class Beer {
     @Autowired
     BeerUnitRepository beerUnitRepository;
 
-    public Mono<ResponseEntity> generateID() {
+    public Mono<ResponseEntity<Format>> generateID() {
         return Mono.just(ok(Format.builder().response(Util.getInstance().GenerateID()).build()));
     }
 
@@ -109,13 +109,13 @@ public class Beer {
                 .flatMap(this::CoverToSubmitData);
     }
 
-    public Mono<SearchResult> AdminCountGetAllBeer(SearchQuery query) {
+    public Mono<SearchResult<BeerSubmitData>> AdminCountGetAllBeer(SearchQuery query) {
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();
         return this.resultWithCountRepository.adminCountAll()
                 .map(resultWithCount -> {
-                    SearchResult result = new SearchResult();
+                    SearchResult<BeerSubmitData> result = new SearchResult<>();
                     result.setCount(resultWithCount.getCount());
                     return result;
                 })
@@ -146,13 +146,13 @@ public class Beer {
                 );
     }
 
-    public Mono<SearchResult> CountGetAllBeer(SearchQuery query) {
+    public Mono<SearchResult<BeerSubmitData>> CountGetAllBeer(SearchQuery query) {
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();
         return this.resultWithCountRepository.countAll()
                 .map(resultWithCount -> {
-                    SearchResult result = new SearchResult();
+                    SearchResult<BeerSubmitData> result = new SearchResult<>();
                     result.setCount(resultWithCount.getCount());
                     return result;
                 })
@@ -204,7 +204,7 @@ public class Beer {
                 );
     }
 
-    public Mono<SearchResult> AdminCountSearchBeer(SearchQuery query) {
+    public Mono<SearchResult<BeerSubmitData>> AdminCountSearchBeer(SearchQuery query) {
         final String txt = query.getQuery();
         final int page = query.getPage();
         final int size = query.getSize();
@@ -215,7 +215,7 @@ public class Beer {
                     if (searchTxt.contains("&"))
                         return this.resultWithCountRepository.adminCountSearchBeer(searchTxt)
                                 .map(resultWithCount -> {
-                                    SearchResult result = SearchResult.builder()
+                                    SearchResult<BeerSubmitData> result = SearchResult.<BeerSubmitData>builder()
                                             .isNormalSearch(true)
                                             .searchTxt(searchTxt)
                                             .build();
@@ -225,7 +225,7 @@ public class Beer {
                     String finalSearchTxt = "%" + searchTxt + "%";
                     return this.resultWithCountRepository.adminCountSearchBeerLike(finalSearchTxt)
                             .map(resultWithCount -> {
-                                SearchResult result = SearchResult.builder()
+                                SearchResult<BeerSubmitData> result = SearchResult.<BeerSubmitData>builder()
                                         .isNormalSearch(false)
                                         .searchTxt(finalSearchTxt)
                                         .build();
@@ -281,7 +281,7 @@ public class Beer {
                 );
     }
 
-    public Mono<SearchResult> CountSearchBeer(SearchQuery query) {
+    public Mono<SearchResult<BeerSubmitData>> CountSearchBeer(SearchQuery query) {
         final String txt = query.getQuery();
         final int page = query.getPage();
         final int size = query.getSize();
@@ -292,7 +292,7 @@ public class Beer {
                     if (searchTxt.contains("&"))
                         return this.resultWithCountRepository.countSearchBeer(searchTxt)
                                 .map(resultWithCount -> {
-                                    SearchResult result = SearchResult.builder()
+                                    SearchResult<BeerSubmitData> result = SearchResult.<BeerSubmitData>builder()
                                             .isNormalSearch(true)
                                             .searchTxt(searchTxt)
                                             .build();
@@ -302,7 +302,7 @@ public class Beer {
                     String finalSearchTxt = "%" + searchTxt + "%";
                     return this.resultWithCountRepository.countSearchBeerLike(finalSearchTxt)
                             .map(resultWithCount -> {
-                                SearchResult result = SearchResult.builder()
+                                SearchResult<BeerSubmitData> result = SearchResult.<BeerSubmitData>builder()
                                         .isNormalSearch(false)
                                         .searchTxt(finalSearchTxt)
                                         .build();
@@ -358,14 +358,14 @@ public class Beer {
                 );
     }
 
-    public Mono<SearchResult> AdminCountGetAllBeerByCategory(SearchQuery query) {
+    public Mono<SearchResult<BeerSubmitData>> AdminCountGetAllBeerByCategory(SearchQuery query) {
         final com.example.heroku.model.Beer.Category category = com.example.heroku.model.Beer.Category.get(query.getQuery());
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();
         return this.resultWithCountRepository.AdminCountCategory(category)
                 .map(resultWithCount -> {
-                    SearchResult result = new SearchResult();
+                    SearchResult<BeerSubmitData> result = new SearchResult<>();
                     result.setCount(resultWithCount.getCount());
                     return result;
                 })
@@ -396,14 +396,14 @@ public class Beer {
                 );
     }
 
-    public Mono<SearchResult> CountGetAllBeerByCategory(SearchQuery query) {
+    public Mono<SearchResult<BeerSubmitData>> CountGetAllBeerByCategory(SearchQuery query) {
         final com.example.heroku.model.Beer.Category category = com.example.heroku.model.Beer.Category.get(query.getQuery());
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();
         return this.resultWithCountRepository.countCategory(category)
                 .map(resultWithCount -> {
-                    SearchResult result = new SearchResult();
+                    SearchResult<BeerSubmitData> result = new SearchResult<>();
                     result.setCount(resultWithCount.getCount());
                     return result;
                 })

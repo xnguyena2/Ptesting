@@ -133,8 +133,7 @@ public class AuthenticationController {
                                             )
                             )
                     )
-                    .map(this.jwtTokenProvider::createToken)
-                    .map(this::createAuthBearToken);
+                    .map(ResponseEntity::ok);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
         }

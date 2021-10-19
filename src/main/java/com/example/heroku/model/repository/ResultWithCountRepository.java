@@ -37,4 +37,8 @@ public interface ResultWithCountRepository extends ReactiveCrudRepository<Result
 
     @Query(value = "SELECT COUNT(*) as count FROM package_order WHERE package_order.status = :status")
     Mono<ResultWithCount> countPackageOrder(@Param("status") PackageOrder.Status status);
+
+
+    @Query(value = "SELECT COUNT(*) as count FROM users")
+    Mono<ResultWithCount> userCountAll();
 }

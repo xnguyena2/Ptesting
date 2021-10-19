@@ -3,6 +3,7 @@ package com.example.heroku.services;
 import com.example.heroku.model.repository.DeviceConfigRepository;
 import com.example.heroku.response.Format;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import reactor.core.publisher.Mono;
@@ -16,7 +17,7 @@ public class DeviceConfig {
     @Autowired
     DeviceConfigRepository deviceConfigRepository;
 
-    public Mono<Object> UpdateConfig(@Valid @ModelAttribute com.example.heroku.model.DeviceConfig config) {
+    public Mono<ResponseEntity<Format>> UpdateConfig(@Valid @ModelAttribute com.example.heroku.model.DeviceConfig config) {
         return
                 this.deviceConfigRepository.deleteAll()
                 .then(Mono.just(config)

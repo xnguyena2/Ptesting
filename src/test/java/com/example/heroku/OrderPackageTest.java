@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.sql.Timestamp;
@@ -114,7 +115,8 @@ public class OrderPackageTest extends TestConfig {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(3);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -136,7 +138,8 @@ public class OrderPackageTest extends TestConfig {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(3);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {

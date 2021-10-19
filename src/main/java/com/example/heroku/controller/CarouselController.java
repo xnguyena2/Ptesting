@@ -30,7 +30,7 @@ public class CarouselController {
 
     @PostMapping("/admin/delete")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<Object> uploadFile(@Valid @ModelAttribute IDContainer img) {
+    public Mono<ResponseEntity<Format>> uploadFile(@Valid @ModelAttribute IDContainer img) {
         System.out.println("Delete img: " + img.getId());
         return imageAPI.Delete(img);
     }

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.sql.Timestamp;
@@ -265,7 +266,8 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
@@ -283,7 +285,8 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
@@ -301,7 +304,8 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(3);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -326,7 +330,8 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(3);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -351,7 +356,8 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(3);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -376,7 +382,8 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(3);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -401,7 +408,8 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(3);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -426,7 +434,8 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
@@ -444,7 +453,8 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
@@ -462,7 +472,9 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
@@ -480,7 +492,9 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
@@ -498,7 +512,9 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
@@ -516,7 +532,9 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
@@ -534,7 +552,9 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
@@ -552,7 +572,9 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
@@ -570,7 +592,9 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
@@ -588,7 +612,9 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
@@ -606,7 +632,9 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -628,7 +656,9 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
-                    Flux.just(resultWithCount.GetResultAsArray())
+                    
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -667,7 +697,9 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -695,7 +727,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -723,7 +758,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -751,7 +789,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -779,7 +820,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -807,7 +851,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -835,7 +882,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -863,7 +913,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -891,7 +944,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(4);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -923,7 +979,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(4);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -955,7 +1014,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -983,7 +1045,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -1011,7 +1076,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -1039,7 +1107,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -1067,7 +1138,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -1095,7 +1169,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -1123,7 +1200,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -1151,7 +1231,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(3);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -1179,7 +1262,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(4);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
@@ -1211,7 +1297,10 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(searchResult.getCount()).isEqualTo(4);
-                    Flux.just(searchResult.GetResultAsArray())
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {

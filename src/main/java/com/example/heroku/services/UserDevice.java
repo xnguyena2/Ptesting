@@ -3,6 +3,7 @@ package com.example.heroku.services;
 import com.example.heroku.model.repository.UserDeviceRepository;
 import com.example.heroku.response.Format;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import reactor.core.publisher.Mono;
@@ -16,7 +17,7 @@ public class UserDevice {
     @Autowired
     private UserDeviceRepository userDeviceRepository;
 
-    public Mono<Object> CreateUserDevice(@Valid @ModelAttribute com.example.heroku.model.UserDevice info) {
+    public Mono<ResponseEntity<Format>> CreateUserDevice(@Valid @ModelAttribute com.example.heroku.model.UserDevice info) {
         return Mono.just(info)
                 .filter(userDevice ->
                         userDevice.getDevice_id() != null && !userDevice.getDevice_id().equals(""))

@@ -56,6 +56,14 @@ public class ApplicationTest extends TestConfig{
     @Autowired
     com.example.heroku.services.ClientDevice clientDeviceAPI;
 
+    @Autowired
+    com.example.heroku.services.UserAccount userAccount;
+
+    @Test
+    public void userTest() {
+        UserAccountTest.builder().userAccount(userAccount).build().test();
+    }
+
     @Test
     public void BeerTest() {
         BeerTest.builder().beerAPI(beerAPI).build().saveBeerTest();

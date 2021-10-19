@@ -8,6 +8,7 @@ import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.beer.SearchResult;
 import com.example.heroku.request.carousel.IDContainer;
+import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -31,7 +32,7 @@ public class BeerController {
 
     @GetMapping("/admin/generateid")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity> generateID() {
+    public Mono<ResponseEntity<Format>> generateID() {
         return beerAPI.generateID();
     }
 
@@ -46,7 +47,7 @@ public class BeerController {
 
     @PostMapping("/admin/{id}/img/delete")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<Object> deleteIMG(@Valid @ModelAttribute IDContainer img) {
+    public Mono<ResponseEntity<Format>> deleteIMG(@Valid @ModelAttribute IDContainer img) {
         System.out.println("delete imgae: " + img.getId());
         return imageAPI.Delete(img);
     }
@@ -77,7 +78,7 @@ public class BeerController {
 
     @PostMapping("/admin/getall")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<SearchResult> adminGetAll(@RequestBody @Valid SearchQuery query) {
+    public Mono<SearchResult<BeerSubmitData>> adminGetAll(@RequestBody @Valid SearchQuery query) {
         System.out.println("admin get all beer: " + query.getPage());
         return beerAPI.AdminCountGetAllBeer(query);
     }
@@ -87,21 +88,21 @@ public class BeerController {
 
     @PostMapping("/getall")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<SearchResult> getAll(@RequestBody @Valid SearchQuery query) {
+    public Mono<SearchResult<BeerSubmitData>> getAll(@RequestBody @Valid SearchQuery query) {
         System.out.println("get all beer: " + query.getPage());
         return beerAPI.CountGetAllBeer(query);
     }
 
     @PostMapping("/search")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<SearchResult> search(@RequestBody @Valid SearchQuery query) {
+    public Mono<SearchResult<BeerSubmitData>> search(@RequestBody @Valid SearchQuery query) {
         System.out.println("Search beer: " + query.getQuery());
         return beerAPI.CountSearchBeer(query);
     }
 
     @PostMapping("/category")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<SearchResult> category(@RequestBody @Valid SearchQuery query) {
+    public Mono<SearchResult<BeerSubmitData>> category(@RequestBody @Valid SearchQuery query) {
         System.out.println("category beer: " + query.getQuery());
         return beerAPI.CountGetAllBeerByCategory(query);
     }

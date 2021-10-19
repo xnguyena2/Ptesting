@@ -3,6 +3,7 @@ package com.example.heroku.controller;
 import com.example.heroku.model.Voucher;
 import com.example.heroku.request.page.Page;
 import com.example.heroku.request.voucher.VoucherData;
+import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class VoucherController {
 
     @GetMapping("/admin/generateid")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity> generateID(){
+    public Mono<ResponseEntity<Format>> generateID(){
         return voucherAPI.generateID();
     }
 

@@ -2,9 +2,11 @@ package com.example.heroku.controller;
 
 import com.example.heroku.request.client.Register;
 import com.example.heroku.response.BootStrapData;
+import com.example.heroku.response.Format;
 import com.example.heroku.services.UserDevice;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -29,7 +31,7 @@ public class ClientDeviceController {
 
     @PostMapping("/admin/register")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<Object> register(@RequestBody @Valid Register userInfo) {
+    public Mono<ResponseEntity<Format>> register(@RequestBody @Valid Register userInfo) {
         System.out.println("register new user: " + userInfo.getId());
         return userDeviceAPI.CreateUserDevice(
                 com.example.heroku.model.UserDevice.builder()
