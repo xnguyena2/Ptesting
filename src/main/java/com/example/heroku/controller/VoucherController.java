@@ -2,7 +2,6 @@ package com.example.heroku.controller;
 
 import com.example.heroku.model.Voucher;
 import com.example.heroku.request.beer.SearchQuery;
-import com.example.heroku.request.page.Page;
 import com.example.heroku.request.voucher.VoucherData;
 import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
