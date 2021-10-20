@@ -128,12 +128,13 @@ public class AuthenticationController {
                             .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), update.getOldpassword()))
                             .flatMap(authentication ->
                                     userRepository.updatePassword(
-                                                    login.getUsername(),
-                                                    this.passwordEncoder.encode(update.getNewpassword())
-                                            )
+                                            login.getUsername(),
+                                            this.passwordEncoder.encode(update.getNewpassword())
+                                    )
                             )
                     )
-                    .map(ResponseEntity::ok);
+                    .then(Mono.just(""))
+                    .map(this::createAuthBearToken);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
         }
@@ -148,7 +149,8 @@ public class AuthenticationController {
                     .flatMap(login -> this.authenticationManager
                             .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), update.getOldpassword()))
                             .filter(authentication ->
-                                    authentication.getName().equals(update.getUsername())
+                                    authentication.getName().equals(update.getUsername()) &&
+                                            getRole(login) != Util.ROLE.ROLE_ROOT
                             )
                             .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned1")))
                             .flatMap(authentication ->
@@ -180,18 +182,19 @@ public class AuthenticationController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity> delete(@AuthenticationPrincipal Mono<UserDetails> principal, @Valid @RequestBody UpdatePassword update) {
 
-            return principal
-                    .filter(authentication ->
-                            Boolean.TRUE.equals(userRepository.isPermissionAllow(authentication.getUsername(), update.getUsername()).block())
-                    )
-                    .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned2")))
-                    .flatMap(authentication ->
-                            userRepository.deleteByUserNameAndPassword(
-                                    update.getUsername()
-                            )
-                    )
-                    .then(Mono.just(""))
-                    .map(this::createAuthBearToken);
+        return principal
+                .flatMap(authentication ->
+                        userRepository.isPermissionAllow(authentication.getUsername(), update.getUsername())
+                                .filter(x -> x)
+                                .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned2")))
+                )
+                .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned2")))
+                .flatMap(authentication ->
+                        userRepository.deleteByUserNameAndPassword(
+                                update.getUsername()
+                        )
+                )
+                .map(ResponseEntity::ok);
     }
 
     @PostMapping("/admin/account/create")
@@ -203,7 +206,7 @@ public class AuthenticationController {
         Util.ROLE role = Util.ROLE.get(newAccount.getRoles().get(0));
         Util.ROLE creatorRole = getRole(principal);
 
-        if(role == null || creatorRole == null){
+        if (role == null || creatorRole == null) {
             throw new AccessDeniedException("403 returned");
         }
 
@@ -230,5 +233,12 @@ public class AuthenticationController {
                         .flatMap(users ->
                                 this.userRepository.save(users)
                         );
+    }
+
+    @PostMapping("/account/logout")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity> logout() {
+        return Mono.just("")
+                .map(this::createAuthBearToken);
     }
 }
