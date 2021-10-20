@@ -1,6 +1,7 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.Voucher;
+import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.page.Page;
 import com.example.heroku.request.voucher.VoucherData;
 import com.example.heroku.response.Format;
@@ -27,9 +28,9 @@ public class VoucherController {
 
     @PostMapping("/admin/getall")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<Voucher> getAllVoucher(@RequestBody @Valid Page page) {
-        System.out.println("Get all voucher: page " + page.getPage() + ", size " + page.getSize());
-        return voucherAPI.getAllVoucher(page.getPage(), page.getSize());
+    public Flux<Voucher> getAllVoucher(@RequestBody @Valid SearchQuery query) {
+        System.out.println("Get all voucher: page " + query.getPage() + ", size " + query.getSize());
+        return voucherAPI.getAllVoucher(query.getPage(), query.getSize());
     }
 
     @PostMapping("/admin/create")
