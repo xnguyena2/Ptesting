@@ -41,6 +41,8 @@ public class PackageOrder {
 
     private String phone_number;
 
+    private String phone_number_clean;
+
     private float total_price;
 
     private float ship_price;
@@ -54,6 +56,7 @@ public class PackageOrder {
             this.package_order_second_id = Util.getInstance().GenerateID();
         this.createat = new Timestamp(new Date().getTime());
         this.status = isPreOrder ? Status.PRE_ORDER : Status.ORDER;
+        this.phone_number_clean = this.phone_number.replaceAll("[^0-9+]", "").replace("+84", "0");
         return this;
     }
 

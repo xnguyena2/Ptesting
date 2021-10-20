@@ -28,7 +28,7 @@ public class ProductOrderController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<PackageOrder> addBeerInfo(@RequestBody @Valid PackageOrderData packageOrderData) {
         System.out.println("create new order: " + packageOrderData.getPackageOrder().getUser_device_id());
-        return beerOrder.createOrder((packageOrderData));
+        return beerOrder.createOrder(packageOrderData);
     }
 
 
