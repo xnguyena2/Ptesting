@@ -58,6 +58,7 @@ public class OrderSearchResult  extends ResultWithCount {
             setReciver_fullname(source.getReciver_fullname());
             setPhone_number(source.getPhone_number());
             setTotal_price(source.getTotal_price());
+            setReal_price(source.getReal_price());
             setShip_price(source.getShip_price());
             setStatus(source.getStatus());
             setCreateat(source.getCreateat());

@@ -31,6 +31,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderPackageTest extends TestConfig {
 
+    private static final int testcase = 30;
+
     @Autowired
     BeerUnitRepository beerUnitRepository;
 
@@ -66,7 +68,7 @@ public class OrderPackageTest extends TestConfig {
         createBeer();
         createVoucher();
 
-        Thread[] threads = new Thread[30];
+        Thread[] threads = new Thread[testcase];
 
         for (int i = 0; i < threads.length; i++) {
             final int i1 = i;
@@ -156,8 +158,8 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
                     orderID.set(orderSearchResult.getResult().get(0).getPackage_order_second_id());
-                    assertThat(orderSearchResult.getCount()).isEqualTo(240);
-                    assertThat(orderSearchResult.getResult().size()).isEqualTo(200);
+                    assertThat(orderSearchResult.getCount()).isEqualTo(testcase * 8);
+                    assertThat(orderSearchResult.getResult().size()).isEqualTo(Math.min(200, testcase * 8));
                 })
                 .verifyComplete();
 
@@ -166,8 +168,8 @@ public class OrderPackageTest extends TestConfig {
         packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(300).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
-                    assertThat(orderSearchResult.getCount()).isEqualTo(239);
-                    assertThat(orderSearchResult.getResult().size()).isEqualTo(239);
+                    assertThat(orderSearchResult.getCount()).isEqualTo(testcase * 8 - 1);
+                    assertThat(orderSearchResult.getResult().size()).isEqualTo(testcase * 8 - 1);
                 })
                 .verifyComplete();
 
@@ -304,7 +306,7 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
-                    assertThat(packageOrder.getTotal_price()).isEqualTo(106);// 10*10*0.9 + 20*1*0.8
+                    assertThat(packageOrder.getReal_price()).isEqualTo(106);// 10*10*0.9 + 20*1*0.8
                     assertThat(packageOrder.getShip_price()).isEqualTo(32000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
@@ -412,7 +414,7 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
-                    assertThat(packageOrder.getTotal_price()).isEqualTo(122);// 10*10*0.9 + 20*1*0.8
+                    assertThat(packageOrder.getReal_price()).isEqualTo(122);// 10*10*0.9 + 20*1*0.8
                     assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
@@ -820,8 +822,8 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
-                    System.out.println(packageOrder.getTotal_price());
-                    assertThat(packageOrder.getTotal_price()).isEqualTo(470.4f);// 10*110*0.7 + (20*10*0.8 + 2*10*0.9)*0.7
+                    System.out.println(packageOrder.getReal_price());
+                    assertThat(packageOrder.getReal_price()).isEqualTo(470.4f);// 10*110*0.7 + (20*10*0.8 + 2*10*0.9)*0.7
                     //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
@@ -876,62 +878,48 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
-                    System.out.println(packageOrder.getTotal_price());
-                    assertThat(packageOrder.getTotal_price()).isEqualTo(0f);// 10*110*0.7 + (20*10*0.8 + 2*10*0.9)*0.7
+                    System.out.println(packageOrder.getReal_price());
+                    assertThat(packageOrder.getReal_price()).isEqualTo(0f);// 10*110*0.7 + (20*10*0.8 + 2*10*0.9)*0.7
                     //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
 
     }
 
-    void createVoucher(){
+    void createVoucher() {
 
         voucherAPI.createVoucher(
-                VoucherData.builder()
-                        .voucher(
-                                com.example.heroku.model.Voucher
-                                        .builder()
-                                        .for_all_beer(true)
-                                        .for_all_user(true)
-                                        .voucher_second_id("ORDER_GIAM_5K")
-                                        .detail("Giảm 5k trên toàn bộ sản phẩm")
-                                        .amount(5)
-                                        .reuse(25)
-                                        .build()
-                        )
-                        .build())
+                        VoucherData.builder()
+                                .for_all_beer(true)
+                                .for_all_user(true)
+                                .voucher_second_id("ORDER_GIAM_5K")
+                                .detail("Giảm 5k trên toàn bộ sản phẩm")
+                                .amount(5)
+                                .reuse(25)
+                                .build()
+                )
                 .block();
 
         voucherAPI.createVoucher(
-                VoucherData.builder()
-                        .voucher(
-                                com.example.heroku.model.Voucher
-                                        .builder()
-                                        .for_all_beer(true)
-                                        .voucher_second_id("ORDER_GIAM_30%")
-                                        .discount(30)
-                                        .reuse(200)
-                                        .detail("Giảm 30% trên toàn bộ sản phẩm, chỉ áp dụng cho ai nhận được.")
-                                        .build()
-                        )
-                        .listUser(new String[]{"iphone"})
-                        .build())
+                        VoucherData.builder()
+                                .for_all_beer(true)
+                                .voucher_second_id("ORDER_GIAM_30%")
+                                .discount(30)
+                                .reuse(200)
+                                .detail("Giảm 30% trên toàn bộ sản phẩm, chỉ áp dụng cho ai nhận được.")
+                                .listUser(new String[]{"iphone"})
+                                .build())
                 .block();
 
         voucherAPI.createVoucher(
-                VoucherData.builder()
-                        .voucher(
-                                com.example.heroku.model.Voucher
-                                        .builder()
-                                        .voucher_second_id("ORDER_GIAM_50k")
-                                        .detail("Giảm 50k trên 1 loại sản phẩm. Chỉ áp dụng cho ai nhận được.")
-                                        .amount(50)
-                                        .reuse(2)
-                                        .build()
-                        )
-                        .listBeer(new String[]{"beer_order1", "beer_order2"})
-                        .listUser(new String[]{"android", "iphone"})
-                        .build())
+                        VoucherData.builder()
+                                .voucher_second_id("ORDER_GIAM_50k")
+                                .detail("Giảm 50k trên 1 loại sản phẩm. Chỉ áp dụng cho ai nhận được.")
+                                .amount(50)
+                                .reuse(2)
+                                .listBeer(new String[]{"beer_order1", "beer_order2"})
+                                .listUser(new String[]{"android", "iphone"})
+                                .build())
                 .block();
     }
 

@@ -27,21 +27,23 @@ public class ReactiveStreamController {
     @Autowired
     SeverEventAdapterImpl severEventAdapter;
 
-    @GetMapping("/test")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<Format>> generateID() {
-        severEventAdapter.SendEvent("hel0000000");
-        return Mono.just(ok(Format.builder().response(Util.getInstance().GenerateID()).build()));
-    }
+//    @GetMapping("/test")
+//    @CrossOrigin(origins = Util.HOST_URL)
+//    public Mono<ResponseEntity<Format>> generateID() {
+//        severEventAdapter.SendEvent("hel0000000");
+//        return Mono.just(ok(Format.builder().response("test").build()));
+//    }
 
-    @GetMapping(path = "/stream-flux")
-    public Flux<ServerSentEvent<String>> streamFlux() {
+    @GetMapping(path = "admin/order")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<ServerSentEvent> streamFlux() {
 
         return severEventAdapter.FolkEvent()
-                .map(sequence -> ServerSentEvent.<String> builder()
-                        .id(String.valueOf(sequence))
-                        .event("periodic-event")
-                        .data("SSE - " + LocalTime.now().toString())
-                        .build());
+                .map(sequence -> ServerSentEvent.builder()
+                        .id(Util.getInstance().GenerateID())
+                        .event("message")
+                        .data(sequence)
+                        .build()
+                );
     }
 }

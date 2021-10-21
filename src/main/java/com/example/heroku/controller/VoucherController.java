@@ -27,15 +27,29 @@ public class VoucherController {
 
     @PostMapping("/admin/getall")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<Voucher> getAllVoucher(@RequestBody @Valid SearchQuery query) {
+    public Flux<VoucherData> getAllVoucher(@RequestBody @Valid SearchQuery query) {
         System.out.println("Get all voucher: page " + query.getPage() + ", size " + query.getSize());
         return voucherAPI.getAllVoucher(query.getPage(), query.getSize());
     }
 
+    @GetMapping("/admin/detail/{id}")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<VoucherData> getDetail(@PathVariable("id") String id) {
+        System.out.println("Get voucher: " + id);
+        return voucherAPI.getVoucherByID(id);
+    }
+
     @PostMapping("/admin/create")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<Voucher> deleteIMG(@RequestBody @Valid VoucherData voucherData) {
-        System.out.println("create new voucher: "+voucherData.getVoucher().getVoucher_second_id());
+    public Mono<Voucher> create(@RequestBody @Valid VoucherData voucherData) {
+        System.out.println("create new voucher: "+voucherData.getVoucher_second_id());
         return voucherAPI.createVoucher(voucherData);
+    }
+
+    @PostMapping("/admin/delete")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<Voucher> delete(@RequestBody @Valid VoucherData voucherData) {
+        System.out.println("delete Voucher: " + voucherData.getVoucher_second_id());
+        return voucherAPI.deleteByID(voucherData.getVoucher_second_id());
     }
 }

@@ -45,6 +45,8 @@ public class PackageOrder {
 
     private float total_price;
 
+    private float real_price;
+
     private float ship_price;
 
     private Status status;
@@ -57,6 +59,7 @@ public class PackageOrder {
         this.createat = new Timestamp(new Date().getTime());
         this.status = isPreOrder ? Status.PRE_ORDER : Status.ORDER;
         this.phone_number_clean = this.phone_number.replaceAll("[^0-9+]", "").replace("+84", "0");
+        System.out.println("Phone clean: " + this.phone_number_clean);
         return this;
     }
 

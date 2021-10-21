@@ -12,45 +12,49 @@ public class SeverEventAdapterImpl implements SeverEventAdapterServices {
 
     interface MyEventListener<T> {
         void onDataChunk(List<T> chunk);
+
         void onDataChunk(T data);
+
         void processComplete();
     }
 
-    MyEventListener<String> myEventListener;
+    MyEventListener myEventListener;
 
 
-    ConnectableFlux<String> publish = Flux.<String>create(sink ->
-        this.register(
-                new MyEventListener<String>() {
+    ConnectableFlux<Object> publish = Flux.create(sink ->
+            this.register(
+                    new MyEventListener<Object>() {
 
-                    public void onDataChunk(List<String> chunk) {
-                        for(String s : chunk) {
-                            sink.next(s);
+                        public void onDataChunk(List<Object> chunk) {
+                            for (Object s : chunk) {
+                                sink.next(s);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onDataChunk(String data) {
-                        sink.next(data);
-                    }
+                        @Override
+                        public void onDataChunk(Object data) {
+                            sink.next(data);
+                        }
 
-                    public void processComplete() {
-                        sink.complete();
-                    }
-                })
+                        public void processComplete() {
+                            sink.complete();
+                        }
+                    })
     ).publish();
 
     @Override
-    public Flux<String> FolkEvent() {
+    public Flux<Object> FolkEvent() {
         return publish.autoConnect();
     }
 
     @Override
-    public void SendEvent(String data) {
+    public void SendEvent(Object data) {
+        if (this.myEventListener == null)
+            return;
         this.myEventListener.onDataChunk(data);
     }
 
-    private void register(MyEventListener<String> eventListener){
+    private void register(MyEventListener<Object> eventListener) {
         this.myEventListener = eventListener;
     }
 }
