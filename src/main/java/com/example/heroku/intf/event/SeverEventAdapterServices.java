@@ -3,6 +3,11 @@ package com.example.heroku.intf.event;
 import reactor.core.publisher.Flux;
 
 public interface SeverEventAdapterServices {
-    Flux<Object> FolkEvent();
+
+    interface CloseStream {
+        void Close();
+    }
+
+    Flux<Object> FolkEvent(CloseStream closeStream);
     void SendEvent(Object data);
 }

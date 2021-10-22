@@ -43,8 +43,12 @@ public class SeverEventAdapterImpl implements SeverEventAdapterServices {
     ).publish();
 
     @Override
-    public Flux<Object> FolkEvent() {
-        return publish.autoConnect();
+    public Flux<Object> FolkEvent(CloseStream closeStream) {
+        return publish.autoConnect()
+                .doOnCancel(() -> {
+                    closeStream.Close();
+                    System.out.println("cancel event stream!");
+                });
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -38,13 +39,28 @@ public class ReactiveStreamController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<ServerSentEvent> streamFlux() {
 
-        return severEventAdapter.FolkEvent()
-                .map(sequence -> ServerSentEvent.builder()
-                        .id(Util.getInstance().GenerateID())
-                        .event("message")
-                        .comment("keep alive")
-                        .data(sequence)
-                        .build()
+        Disposable heartBeat = Flux.interval(Duration.ofSeconds(30)).map(timg -> {
+            severEventAdapter.SendEvent("heart beat");
+            System.out.println("Server keep alive heart beat!");
+            return timg;
+        }).subscribe();
+
+        return severEventAdapter.FolkEvent(() -> {
+                    heartBeat.dispose();
+                })
+                .map(sequence -> {
+                            if (sequence.equals("heart beat")) {
+                                return ServerSentEvent.builder()
+                                        .id(Util.getInstance().GenerateID())
+                                        .comment("keep alive")
+                                        .build();
+                            }
+                            return ServerSentEvent.builder()
+                                    .id(Util.getInstance().GenerateID())
+                                    .event("message")
+                                    .data(sequence)
+                                    .build();
+                        }
                 );
     }
 }
