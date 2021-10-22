@@ -42,6 +42,7 @@ public class ReactiveStreamController {
                 .map(sequence -> ServerSentEvent.builder()
                         .id(Util.getInstance().GenerateID())
                         .event("message")
+                        .comment("keep alive")
                         .data(sequence)
                         .build()
                 );
