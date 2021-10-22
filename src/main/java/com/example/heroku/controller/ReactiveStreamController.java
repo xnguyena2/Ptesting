@@ -39,7 +39,7 @@ public class ReactiveStreamController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<ServerSentEvent> streamFlux() {
 
-        Disposable heartBeat = Flux.interval(Duration.ofSeconds(30)).map(timg -> {
+        Disposable heartBeat = Flux.interval(Duration.ofSeconds(10)).map(timg -> {
             severEventAdapter.SendEvent("heart beat");
             System.out.println("Server keep alive heart beat!");
             return timg;
