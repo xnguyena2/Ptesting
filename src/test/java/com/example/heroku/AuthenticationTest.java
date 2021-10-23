@@ -283,7 +283,7 @@ public class AuthenticationTest extends TestConfig{
         String finalAuthToken = getToken(adminName, adminPass);
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
-        builder.part("file", new FileSystemResource(new File("C:\\Users\\phong\\Downloads\\top_icon.png")));
+        builder.part("file", new FileSystemResource(new File("C:\\Users\\phong\\Downloads\\test.png")));
 
 
         client.post().uri("/carousel/admin/upload").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken))

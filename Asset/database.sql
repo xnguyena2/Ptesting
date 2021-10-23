@@ -23,16 +23,20 @@ CREATE TABLE IF NOT EXISTS notification (id SERIAL PRIMARY KEY, notification_sec
 CREATE TABLE IF NOT EXISTS notification_relate_user_device (id SERIAL PRIMARY KEY, notification_second_id VARCHAR, user_device_id VARCHAR, createat TIMESTAMP, status VARCHAR);
 CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, provider_id VARCHAR, name VARCHAR, config TEXT, createat TIMESTAMP);
 
+CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, product_import_second_id VARCHAR, product_id VARCHAR, product_name VARCHAR, price float8, amount float8, detail TEXT, createat TIMESTAMP);
+
 CREATE INDEX search_token_index ON search_token(tokens);
 CREATE INDEX beer_index ON beer(beer_second_id);
 CREATE INDEX beer_detail_index ON beer(detail);
 CREATE INDEX users_name_index ON users(username);
+CREATE INDEX product_import_index ON product_import(product_import_second_id);
 
 ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
 ALTER TABLE beer ADD CONSTRAINT UQ_beer_second_id UNIQUE(beer_second_id);
 ALTER TABLE beer_unit ADD CONSTRAINT UQ_beer_unit_second_id UNIQUE(beer_unit_second_id);
 ALTER TABLE search_token ADD CONSTRAINT UQ_search_token_beer_second_id UNIQUE(beer_second_id);
 ALTER TABLE voucher_relate_user_device ADD CONSTRAINT UQ_voucher_relate_user_device UNIQUE (voucher_second_id, device_id);
+ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(product_import_second_id);
 
 create or replace function getRoleIndex(roles VARCHAR)
 returns int

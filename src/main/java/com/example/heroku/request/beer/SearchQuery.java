@@ -45,7 +45,7 @@ public class SearchQuery {
         public static Filter get(String text) {
             try {
                 Filter val = lookup.get(text);
-                if(val == null){
+                if (val == null) {
                     return DEFAULT;
                 }
                 return val;
@@ -65,6 +65,10 @@ public class SearchQuery {
     private int page;
     private int size;
     private String filter;
+
+    public String GetFilterTxt() {
+        return filter;
+    }
 
     public Filter GetFilter() {
         return Filter.get(filter);

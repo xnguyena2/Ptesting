@@ -7,7 +7,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface PackageOrderRepository  extends ReactiveCrudRepository<PackageOrder, String> {
+public interface PackageOrderRepository extends ReactiveCrudRepository<PackageOrder, String> {
 
     @Query(value = "SELECT * FROM package_order WHERE package_order.status = :status LIMIT :size OFFSET (:page*:size)")
     Flux<PackageOrder> getAll(@Param("page")int page, @Param("size")int size, @Param("status") PackageOrder.Status status);

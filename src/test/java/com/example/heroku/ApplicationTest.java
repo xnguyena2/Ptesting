@@ -59,6 +59,9 @@ public class ApplicationTest extends TestConfig{
     @Autowired
     com.example.heroku.services.UserAccount userAccount;
 
+    @Autowired
+    ProductImport productImport;
+
     @Test
     public void userTest() {
         UserAccountTest.builder().userAccount(userAccount).build().test();
@@ -73,6 +76,11 @@ public class ApplicationTest extends TestConfig{
     public void ImageTest() {
         ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).build().Run(listImg);
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).build().DeviceConfigTest();
+    }
+
+    @Test
+    public void ProductImport(){
+        ProductImportTest.builder().productImport(productImport).build().Test();
     }
 
 

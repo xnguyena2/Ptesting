@@ -33,9 +33,9 @@ public class Image {
     public Mono<ResponseEntity<com.example.heroku.model.Image>> Upload(Flux<FilePart> file, String category) {
         AtomicReference<String> fileName = new AtomicReference<>();
         return file.flatMap(f -> {
-            fileName.set(f.filename());
-            return f.content().map(DataBuffer::asInputStream);
-        })
+                    fileName.set(f.filename());
+                    return f.content().map(DataBuffer::asInputStream);
+                })
                 .reduce(SequenceInputStream::new)
                 .flatMap(initialStream -> {
                     String[] info = null;//Util.getInstance().GenerateID();
@@ -74,6 +74,10 @@ public class Image {
                     flickrLib.DeleteImage(image.getImgid());
                     return image;
                 })
-                .then(this.imageRepository.deleteAll());
+                .then(this.imageRepository.deleteAll()
+//                        .onErrorContinue((throwable, o) -> {
+//                            System.out.println("Error while processing {" + o + "}. Cause: {" + throwable.getMessage() + "}");
+//                        })
+                );
     }
 }

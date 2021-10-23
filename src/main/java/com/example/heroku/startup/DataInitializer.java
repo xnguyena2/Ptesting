@@ -65,7 +65,7 @@ public class DataInitializer {
             log.warn("Reset all Database!");
             System.out.println("Reset all Database!");
 
-            imageAPI.DeleteAll().block();
+            imageAPI.DeleteAll().subscribe();
 
             //PhotoLib.getInstance().deleteAll();
             flickrLib.DeleteAll();
@@ -75,13 +75,13 @@ public class DataInitializer {
                 databaseClient.execute(dropSQL)
                         .fetch()
                         .rowsUpdated()
-                        .block();
+                        .subscribe();
 
                 dropSQL = new String(Files.readAllBytes(Paths.get("Asset/database.sql")));
                 databaseClient.execute(dropSQL)
                         .fetch()
                         .rowsUpdated()
-                        .block();
+                        .subscribe();
             } catch (IOException e) {
                 e.printStackTrace();
             }

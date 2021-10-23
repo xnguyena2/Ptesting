@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderPackageTest extends TestConfig {
 
-    private static final int testcase = 30;
+    private static final int testcase = 10;
 
     @Autowired
     BeerUnitRepository beerUnitRepository;
@@ -53,6 +53,9 @@ public class OrderPackageTest extends TestConfig {
 
     @Autowired
     com.example.heroku.services.PackageOrder packageOrder;
+
+    @Autowired
+    com.example.heroku.services.Buyer buyer;
 
 
     @Test
@@ -179,6 +182,16 @@ public class OrderPackageTest extends TestConfig {
                     assertThat(packageOrderData.getStatus()).isEqualTo(PackageOrder.Status.DONE);
                 })
                 .verifyComplete();
+
+        buyer.GetAllBeer(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(300).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(buyerData -> {
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
+                    assertThat(buyerData.getTotal_price()).isEqualTo(27050f);
+                })
+                .verifyComplete();
+
+
     }
 
     void orderTest() {
