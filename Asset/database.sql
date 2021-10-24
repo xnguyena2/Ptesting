@@ -35,7 +35,7 @@ ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
 ALTER TABLE beer ADD CONSTRAINT UQ_beer_second_id UNIQUE(beer_second_id);
 ALTER TABLE beer_unit ADD CONSTRAINT UQ_beer_unit_second_id UNIQUE(beer_unit_second_id);
 ALTER TABLE search_token ADD CONSTRAINT UQ_search_token_beer_second_id UNIQUE(beer_second_id);
-ALTER TABLE voucher_relate_user_device ADD CONSTRAINT UQ_voucher_relate_user_device UNIQUE (voucher_second_id, device_id);
+ALTER TABLE voucher_relate_user_device ADD CONSTRAINT UQ_voucher_relate_user_device UNIQUE(voucher_second_id, device_id);
 ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(product_import_second_id);
 
 create or replace function getRoleIndex(roles VARCHAR)

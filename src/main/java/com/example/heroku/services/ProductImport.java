@@ -2,24 +2,15 @@ package com.example.heroku.services;
 
 import com.example.heroku.model.repository.ProductImportRepository;
 import com.example.heroku.request.beer.SearchQuery;
-import com.example.heroku.response.Format;
-import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import static org.springframework.http.ResponseEntity.ok;
 
 @Component
 public class ProductImport {
     @Autowired
     ProductImportRepository productImportRepository;
-
-    public Mono<ResponseEntity<Format>> generateID() {
-        return Mono.just(ok(Format.builder().response(Util.getInstance().GenerateID()).build()));
-    }
 
     public Flux<com.example.heroku.model.ProductImport> getALL(SearchQuery query) {
         String dateTxt = query.GetFilterTxt();

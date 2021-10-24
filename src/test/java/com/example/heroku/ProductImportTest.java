@@ -1,13 +1,8 @@
 package com.example.heroku;
 
-import com.example.heroku.model.BeerUnit;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.services.ProductImport;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.Comparator;
@@ -21,6 +16,8 @@ public class ProductImportTest {
     public void Test(){
         productImport.addNewRecord(
                 com.example.heroku.model.ProductImport.builder()
+                        .product_import_second_id("1")
+                        .price(1000)
                         .amount(10)
                         .product_id("123")
                         .build()
@@ -28,6 +25,8 @@ public class ProductImportTest {
                 .block();
         productImport.addNewRecord(
                         com.example.heroku.model.ProductImport.builder()
+                                .product_import_second_id("2")
+                                .price(1000)
                                 .amount(5)
                                 .product_id("123")
                                 .build()

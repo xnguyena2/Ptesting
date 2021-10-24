@@ -7,12 +7,10 @@ import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.beer.SearchResult;
 import com.example.heroku.request.carousel.IDContainer;
-import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import reactor.core.publisher.Flux;
@@ -20,8 +18,6 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-
-import static org.springframework.http.ResponseEntity.ok;
 
 @Component
 public class Beer {
@@ -42,10 +38,6 @@ public class Beer {
 
     @Autowired
     BeerUnitRepository beerUnitRepository;
-
-    public Mono<ResponseEntity<Format>> generateID() {
-        return Mono.just(ok(Format.builder().response(Util.getInstance().GenerateID()).build()));
-    }
 
     public Flux<BeerUnit> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
         return Mono.just(info)

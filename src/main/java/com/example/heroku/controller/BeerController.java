@@ -30,12 +30,6 @@ public class BeerController {
     @Autowired
     com.example.heroku.services.Beer beerAPI;
 
-    @GetMapping("/admin/generateid")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<Format>> generateID() {
-        return beerAPI.generateID();
-    }
-
 
     //---------- for manage image------------------
     @PostMapping(value = "/admin/{id}/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)

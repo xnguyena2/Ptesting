@@ -38,10 +38,10 @@ public class SecurityConfig {
         if (runningMode != null && runningMode.equals("dev")) {
             return
                     it
-                            .pathMatchers("/*/admin/**").hasAnyRole("ROOT", "ADMIN")
-                            .pathMatchers("/*/admin/*/**").hasAnyRole("ROOT", "ADMIN")
-                            .pathMatchers("/*/admin/*/*/**").hasAnyRole("ROOT", "ADMIN")
-                            .pathMatchers("/auth/account/update").authenticated()
+//                            .pathMatchers("/*/admin/**").hasAnyRole("ROOT", "ADMIN")
+//                            .pathMatchers("/*/admin/*/**").hasAnyRole("ROOT", "ADMIN")
+//                            .pathMatchers("/*/admin/*/*/**").hasAnyRole("ROOT", "ADMIN")
+//                            .pathMatchers("/auth/account/update").authenticated()
 
                             .anyExchange().permitAll();
         }

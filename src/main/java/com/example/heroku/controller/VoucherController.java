@@ -3,10 +3,8 @@ package com.example.heroku.controller;
 import com.example.heroku.model.Voucher;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.voucher.VoucherData;
-import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,11 +17,6 @@ public class VoucherController {
     @Autowired
     com.example.heroku.services.Voucher voucherAPI;
 
-    @GetMapping("/admin/generateid")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<Format>> generateID(){
-        return voucherAPI.generateID();
-    }
 
     @PostMapping("/admin/getall")
     @CrossOrigin(origins = Util.HOST_URL)

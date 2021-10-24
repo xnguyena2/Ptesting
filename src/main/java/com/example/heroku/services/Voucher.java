@@ -30,10 +30,6 @@ public class Voucher {
     @Autowired
     VoucherRelateUserDeviceRepository voucherRelateUserDeviceRepository;
 
-    public Mono<ResponseEntity<Format>> generateID() {
-        return Mono.just(ok(Format.builder().response(Util.getInstance().GenerateID()).build()));
-    }
-
     public Mono<com.example.heroku.model.Voucher> deleteByID(String id) {
         return voucherRelateUserDeviceRepository.deleteByVoucherSecondId(id)
                 .then(voucherRelateBeerRepository.deleteByVoucherSecondId(id))
