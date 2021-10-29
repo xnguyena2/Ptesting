@@ -1,10 +1,10 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.PackageOrder;
+import com.example.heroku.request.Order.CloseOrderRequest;
 import com.example.heroku.request.Order.OrderSearchResult;
 import com.example.heroku.request.beer.PackageOrderData;
 import com.example.heroku.request.beer.SearchQuery;
-import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.services.BeerOrder;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +47,11 @@ public class ProductOrderController {
     }
 
 
-    @PostMapping("/admin/done")
+    @PostMapping("/admin/close")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<PackageOrder> closeOrder(@RequestBody @Valid IDContainer order) {
+    public Mono<PackageOrder> closeOrder(@RequestBody @Valid CloseOrderRequest order) {
         System.out.println("close order: " + order.getId());
-        return packageOrder.UpdateStatus(order.getId(), PackageOrder.Status.DONE);
+        PackageOrder.Status status = PackageOrder.Status.get(order.getStatus());
+        return packageOrder.UpdateStatus(order.getId(), status);
     }
 }

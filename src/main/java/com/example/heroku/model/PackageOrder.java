@@ -67,6 +67,7 @@ public class PackageOrder {
         PRE_ORDER("PRE_ORDER"),
         ORDER("ORDER"),
         SENDING("SENDING"),
+        CANCEL("CANCEL"),
         DONE("DONE");
 
         private String name;
