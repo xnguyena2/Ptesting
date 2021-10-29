@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderPackageTest extends TestConfig {
 
-    private static final int testcase = 10;
+    private static final int testcase = 30;
 
     @Autowired
     BeerUnitRepository beerUnitRepository;
@@ -183,11 +183,11 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        buyer.GetAllBeer(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(300).build())
+        buyer.GetAll(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(300).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getTotal_price()).isEqualTo(27050f);
+                    assertThat(buyerData.getTotal_price()).isEqualTo(59935f);
                 })
                 .verifyComplete();
 
@@ -373,6 +373,7 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
+                    System.out.println("Using order ORDER_GIAM_5K: "+ packageOrder.getReal_price());
                     //assertThat(packageOrder.getTotal_price()).isEqualTo(117);// 10*10*0.9 + 20*1*0.8
                     //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })

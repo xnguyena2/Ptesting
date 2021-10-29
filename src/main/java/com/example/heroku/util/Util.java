@@ -119,8 +119,6 @@ public class Util {
             if (currentSession != null && currentSession > 1) {
                 exist = false;
                 counterSession.put(id, currentSession - 1);
-            } else {
-                exist = true;
             }
         } else {
             counterSession.remove(id);

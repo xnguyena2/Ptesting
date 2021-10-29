@@ -52,7 +52,7 @@ public class BeerOrder {
     private Flux<com.example.heroku.model.Voucher> getUserVoucherAndEmpty(PackageOrderData packageOrderData) {
         return Flux.just(packageOrderData.getBeerOrders())
                 .flatMap(packaBeerOrderData ->
-                            voucherServices.getDeviceVoucher(packaBeerOrderData.getBeerOrder().getVoucher_second_id(), packageOrderData.getPackageOrder().getPhone_number_clean(), packaBeerOrderData.getBeerOrder().getBeer_second_id())
+                            voucherServices.getDeviceVoucher(packaBeerOrderData.getBeerOrder().getVoucher_second_id(), packageOrderData.getPackageOrder().getUser_device_id(), packageOrderData.getPackageOrder().getPhone_number_clean(), packaBeerOrderData.getBeerOrder().getBeer_second_id())
                 )
                 .distinct(
                         com.example.heroku.model.Voucher::getVoucher_second_id

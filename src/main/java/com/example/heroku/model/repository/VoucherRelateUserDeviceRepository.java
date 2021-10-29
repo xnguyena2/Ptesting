@@ -20,6 +20,6 @@ public interface VoucherRelateUserDeviceRepository extends ReactiveCrudRepositor
     @Query(value = "SELECT * FROM voucher_relate_user_device WHERE voucher_relate_user_device.voucher_second_id = :id AND voucher_relate_user_device.device_id = :device_id")
     Mono<VoucherRelateUserDevice> getByVoucherSecondIdAndUserDeviceID(@Param("id") String voucherSecondID, @Param("device_id") String userDeviceID);
 
-    @Query(value = "INSERT INTO voucher_relate_user_device(voucher_second_id, reuse, device_id, createat) VALUES(:id, :reuse, :device_id, NOW()) ON CONFLICT(voucher_second_id, device_id) DO UPDATE SET reuse=:reuse, createat=NOW()")
+    @Query(value = "INSERT INTO voucher_relate_user_device(voucher_second_id, REUSE, device_id, createat) VALUES(:id, :reuse, :device_id, NOW()) ON CONFLICT(voucher_second_id, device_id) DO UPDATE SET REUSE=:reuse, createat=NOW() WHERE voucher_relate_user_device.REUSE>:reuse AND voucher_relate_user_device.voucher_second_id = :id AND voucher_relate_user_device.device_id = :device_id")
     Mono<VoucherRelateUserDevice> updateOrInsert(@Param("id") String voucherSecondID, @Param("device_id") String userDeviceID, @Param("reuse") int reuse);
 }

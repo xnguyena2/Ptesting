@@ -19,7 +19,7 @@ public class BuyerControler {
     @PostMapping("/admin/getall")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BuyerData> getAll(@RequestBody @Valid SearchQuery query) {
-        return buyer.GetAllBeer(query);
+        return buyer.GetAll(query);
     }
 
 }

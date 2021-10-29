@@ -13,7 +13,7 @@ public class Buyer {
     BuyerRepository buyerRepository;
 
 
-    public Flux<BuyerData> GetAllBeer(SearchQuery query) {
+    public Flux<BuyerData> GetAll(SearchQuery query) {
         return this.buyerRepository.getAll(query.getPage(), query.getSize())
                 .map(BuyerData::new);
     }
