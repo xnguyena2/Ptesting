@@ -10,10 +10,7 @@ import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.PackageOrderData;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.voucher.VoucherData;
-import com.example.heroku.services.BeerOrder;
-import com.example.heroku.services.ShippingProvider;
-import com.example.heroku.services.UserDevice;
-import com.example.heroku.services.Voucher;
+import com.example.heroku.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -57,6 +54,9 @@ public class OrderPackageTest extends TestConfig {
     @Autowired
     com.example.heroku.services.Buyer buyer;
 
+
+    @Autowired
+    StatisticServices statisticServices;
 
     @Test
     public void testVoucher(){
@@ -156,41 +156,77 @@ public class OrderPackageTest extends TestConfig {
                             .verifyComplete();
                 })
                 .verifyComplete();
-        AtomicReference<String> orderID = new AtomicReference<>();
+        AtomicReference<String> orderDoneID = new AtomicReference<>();
+        AtomicReference<String> orderCancelID = new AtomicReference<>();
         packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(200).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
-                    orderID.set(orderSearchResult.getResult().get(0).getPackage_order_second_id());
+                    orderDoneID.set(orderSearchResult.getResult().get(0).getPackage_order_second_id());
+                    orderCancelID.set(orderSearchResult.getResult().get(1).getPackage_order_second_id());
+                    System.out.println("Done order value: " + orderSearchResult.getResult().get(0).getReal_price());
+                    System.out.println("Cancel order value: " + orderSearchResult.getResult().get(1).getReal_price());
                     assertThat(orderSearchResult.getCount()).isEqualTo(testcase * 8);
                     assertThat(orderSearchResult.getResult().size()).isEqualTo(Math.min(200, testcase * 8));
                 })
                 .verifyComplete();
 
-        packageOrder.UpdateStatus(orderID.get(), PackageOrder.Status.DONE).block();
+        packageOrder.UpdateStatus(orderDoneID.get(), PackageOrder.Status.DONE).block();
+
+        packageOrder.UpdateStatus(orderCancelID.get(), PackageOrder.Status.CANCEL).block();
 
         packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(300).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
-                    assertThat(orderSearchResult.getCount()).isEqualTo(testcase * 8 - 1);
-                    assertThat(orderSearchResult.getResult().size()).isEqualTo(testcase * 8 - 1);
+                    assertThat(orderSearchResult.getCount()).isEqualTo(testcase * 8 - 2);
+                    assertThat(orderSearchResult.getResult().size()).isEqualTo(testcase * 8 - 2);
                 })
                 .verifyComplete();
 
-        packageOrder.getOrderDetail(orderID.get())
+        packageOrder.getOrderDetail(orderDoneID.get())
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrderData -> {
                     assertThat(packageOrderData.getStatus()).isEqualTo(PackageOrder.Status.DONE);
                 })
                 .verifyComplete();
 
-        buyer.GetAll(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(300).build())
+        packageOrder.getOrderDetail(orderCancelID.get())
                 .as(StepVerifier::create)
-                .consumeNextWith(buyerData -> {
-                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getTotal_price()).isEqualTo(59935f);
+                .consumeNextWith(packageOrderData -> {
+                    assertThat(packageOrderData.getStatus()).isEqualTo(PackageOrder.Status.CANCEL);
                 })
                 .verifyComplete();
 
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.ORDER.getName()).page(0).size(300).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(buyerData -> {
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
+                    assertThat(buyerData.getTotal_price()).isEqualTo(59935f - 106f * 2);
+                })
+                .verifyComplete();
+
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.DONE.getName()).page(0).size(300).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(buyerData -> {
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
+                    assertThat(buyerData.getTotal_price()).isEqualTo(106f);
+                })
+                .verifyComplete();
+
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.CANCEL.getName()).page(0).size(300).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(buyerData -> {
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
+                    assertThat(buyerData.getTotal_price()).isEqualTo(106f);
+                })
+                .verifyComplete();
+
+        statisticServices.getTotal(SearchQuery.builder().filter("30").query(PackageOrder.Status.DONE.getName()).page(0).size(300).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(totalOrder -> {
+                    assertThat(totalOrder.getReal_price()).isEqualTo(106f);
+                    assertThat(totalOrder.getTotal_price()).isEqualTo(106f);
+                })
+                .verifyComplete();
 
     }
 
