@@ -18,7 +18,7 @@ public class SeverEventAdapterImpl implements SeverEventAdapterServices {
         void processComplete();
     }
 
-    MyEventListener myEventListener;
+    MyEventListener<Object> myEventListener;
 
 
     ConnectableFlux<Object> publish = Flux.create(sink ->

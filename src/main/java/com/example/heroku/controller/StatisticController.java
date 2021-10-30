@@ -3,6 +3,7 @@ package com.example.heroku.controller;
 import com.example.heroku.model.BeerOrder;
 import com.example.heroku.model.statistics.StatisticsTotalOrder;
 import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.response.BeerOrderStatus;
 import com.example.heroku.services.StatisticServices;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +22,14 @@ public class StatisticController {
 
     @PostMapping("/admin/getbyproductid")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<BeerOrder> getbyproductid(@RequestBody @Valid SearchQuery query) {
+    public Flux<BeerOrderStatus> getbyproductid(@RequestBody @Valid SearchQuery query) {
         System.out.println("getbyproductid: " + query.GetFilterTxt());
         return statisticServices.getByProductID(query);
     }
 
     @PostMapping("/admin/getall")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<BeerOrder> getAll(@RequestBody @Valid SearchQuery query) {
+    public Flux<BeerOrderStatus> getAll(@RequestBody @Valid SearchQuery query) {
         System.out.println("getall: " + query.GetFilterTxt());
         return statisticServices.getAll(query);
     }
