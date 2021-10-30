@@ -228,6 +228,26 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
+        statisticServices.getByProductID(SearchQuery.builder().filter("30").query("beer_order1").page(0).size(3000).build())
+                .reduce(0f, (total, product) -> {
+                    return total + product.getTotal_price();
+                })
+                .as(StepVerifier::create)
+                .consumeNextWith(totalOrder -> {
+                    assertThat(totalOrder).isEqualTo(28800f);
+                })
+                .verifyComplete();
+
+        statisticServices.getAll(SearchQuery.builder().filter("30").page(0).size(3000).build())
+                .reduce(0f, (total, product) -> {
+                    return total + product.getTotal_price();
+                })
+                .as(StepVerifier::create)
+                .consumeNextWith(totalOrder -> {
+                    assertThat(totalOrder).isEqualTo(81300f);
+                })
+                .verifyComplete();
+
     }
 
     void orderTest() {

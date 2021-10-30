@@ -230,11 +230,13 @@ public class BeerOrder {
                                                             packageOrderData.getPackageOrder().setShip_price(ship_price);
 
                                                             return vouchers.filter(voucher -> Util.getInstance().CleanMap(packageOrderData.getPackageOrder().getUser_device_id() + voucher.getVoucher_second_id()) && !packageOrderData.isPreOrder())
-                                                                    .flatMap(voucher ->
-                                                                            voucherServices
-                                                                                    .ForceSaveVoucher(voucher.getVoucher_second_id(), packageOrderData.getPackageOrder().getUser_device_id(),
-                                                                                            Util.getInstance().CleanReuse(packageOrderData.getPackageOrder().getUser_device_id() + voucher.getVoucher_second_id()))
-                                                                    )
+                                                                    .map(voucher -> {
+                                                                        voucherServices
+                                                                                .ForceSaveVoucher(voucher.getVoucher_second_id(), packageOrderData.getPackageOrder().getUser_device_id(),
+                                                                                        Util.getInstance().CleanReuse(packageOrderData.getPackageOrder().getUser_device_id() + voucher.getVoucher_second_id()))
+                                                                                .subscribe();
+                                                                        return voucher;
+                                                                    })
                                                                     .then(
                                                                             Mono.just(packageOrderData.getPackageOrder())
                                                                                     .flatMap(packageOrder -> {
