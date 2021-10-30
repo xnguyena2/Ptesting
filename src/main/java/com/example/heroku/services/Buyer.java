@@ -1,5 +1,6 @@
 package com.example.heroku.services;
 
+import com.example.heroku.model.PackageOrder;
 import com.example.heroku.model.repository.BuyerRepository;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.response.BuyerData;
@@ -14,7 +15,8 @@ public class Buyer {
 
 
     public Flux<BuyerData> GetAll(SearchQuery query) {
-        return this.buyerRepository.getAll(query.getPage(), query.getSize())
+        PackageOrder.Status status = PackageOrder.Status.get(query.GetFilterTxt());
+        return this.buyerRepository.getAll(status, query.getPage(), query.getSize())
                 .map(BuyerData::new);
     }
 }
