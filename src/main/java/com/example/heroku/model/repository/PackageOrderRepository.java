@@ -9,8 +9,8 @@ import reactor.core.publisher.Mono;
 
 public interface PackageOrderRepository extends ReactiveCrudRepository<PackageOrder, String> {
 
-    @Query(value = "SELECT * FROM package_order WHERE package_order.status = :status LIMIT :size OFFSET (:page*:size)")
-    Flux<PackageOrder> getAll(@Param("page")int page, @Param("size")int size, @Param("status") PackageOrder.Status status);
+    @Query(value = "SELECT * FROM package_order WHERE package_order.status = :status AND DATE_PART('day', createat - NOW()) <= :date LIMIT :size OFFSET (:page*:size)")
+    Flux<PackageOrder> getAll(@Param("page")int page, @Param("size")int size, @Param("status") PackageOrder.Status status, @Param("date") int date);
 
     @Query(value = "SELECT * FROM package_order WHERE package_order.package_order_second_id = :id")
     Mono<PackageOrder> getByID(@Param("id")String id);

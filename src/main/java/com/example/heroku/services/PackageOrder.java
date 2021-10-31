@@ -26,18 +26,19 @@ public class PackageOrder {
     BeerUnitOrderRepository beerUnitOrderRepository;
 
     public Mono<OrderSearchResult> CountGetAllOrder(SearchQuery query) {
-        final SearchQuery.Filter filter = query.GetFilter();
+        final String dateTxt = query.GetFilterTxt();
         final int page = query.getPage();
         final int size = query.getSize();
         final com.example.heroku.model.PackageOrder.Status status = com.example.heroku.model.PackageOrder.Status.get(query.getQuery());
-        return this.resultWithCountRepository.countPackageOrder(status)
+        final int date = Integer.parseInt(dateTxt);
+        return this.resultWithCountRepository.countPackageOrder(status, date)
                 .map(resultWithCount -> {
                     OrderSearchResult result = new OrderSearchResult();
                     result.setCount(resultWithCount.getCount());
                     return result;
                 })
                 .flatMap(orderSearchResult ->
-                        packageOrderRepository.getAll(page, size, status)
+                        packageOrderRepository.getAll(page, size, status, date)
                                 .flatMap(this::coverToData)
                                 .map(orderSearchResult::Add)
                                 .then(Mono.just(orderSearchResult))

@@ -158,7 +158,7 @@ public class OrderPackageTest extends TestConfig {
                 .verifyComplete();
         AtomicReference<String> orderDoneID = new AtomicReference<>();
         AtomicReference<String> orderCancelID = new AtomicReference<>();
-        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(200).build())
+        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(200).filter("30").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
                     orderDoneID.set(orderSearchResult.getResult().get(0).getPackage_order_second_id());
@@ -174,7 +174,7 @@ public class OrderPackageTest extends TestConfig {
 
         packageOrder.UpdateStatus(orderCancelID.get(), PackageOrder.Status.CANCEL).block();
 
-        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(300).build())
+        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(300).filter("30").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
                     assertThat(orderSearchResult.getCount()).isEqualTo(testcase * 8 - 2);
