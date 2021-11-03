@@ -9,6 +9,6 @@ import reactor.core.publisher.Mono;
 
 public interface StatisticsRepository extends ReactiveCrudRepository<StatisticsTotalOrder, String> {
 
-    @Query(value = "SELECT SUM(real_price) as real_price, SUM(total_price) as total_price FROM package_order WHERE DATE_PART('day', createat - NOW()) <= :date AND status = :status")
+    @Query(value = "SELECT SUM(real_price) as real_price, SUM(total_price) as total_price FROM package_order WHERE DATE_PART('day', NOW() - createat) <= :date AND status = :status")
     Mono<StatisticsTotalOrder> getTotal(@Param("date")int date, @Param("status") PackageOrder.Status status);
 }

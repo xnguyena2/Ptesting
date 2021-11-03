@@ -35,7 +35,7 @@ public interface ResultWithCountRepository extends ReactiveCrudRepository<Result
     @Query(value = "SELECT COUNT(*) as count FROM beer WHERE beer.meta_search LIKE :search AND (beer.status IS NULL OR beer.status != 'HIDE')")
     Mono<ResultWithCount> countSearchBeerLike(@Param("search")String search);
 
-    @Query(value = "SELECT COUNT(*) as count FROM package_order WHERE package_order.status = :status AND DATE_PART('day', createat - NOW()) <= :date")
+    @Query(value = "SELECT COUNT(*) as count FROM package_order WHERE package_order.status = :status AND DATE_PART('day', NOW() - createat) <= :date")
     Mono<ResultWithCount> countPackageOrder(@Param("status") PackageOrder.Status status, @Param("date")int date);
 
 
