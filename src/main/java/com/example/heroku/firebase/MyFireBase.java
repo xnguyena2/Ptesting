@@ -76,8 +76,8 @@ public class MyFireBase {
 //                                    .setBody(msg)
 //                                    .build()
 //                    )
-                    .putData("t1", "0")
-                    .putData("t2", "1")
+                    .putData("title", title)
+                    .putData("body", msg)
                     .setTopic(registrationTopic)
                     .build();
 
