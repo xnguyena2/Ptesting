@@ -70,12 +70,12 @@ public class MyFireBase {
             String registrationTopic = "trumbien";
 
             Message message = Message.builder()
-                    .setNotification(
-                            Notification.builder()
-                                    .setTitle(title)
-                                    .setBody(msg)
-                                    .build()
-                    )
+//                    .setNotification(
+//                            Notification.builder()
+//                                    .setTitle(title)
+//                                    .setBody(msg)
+//                                    .build()
+//                    )
                     .putData("t1", "0")
                     .putData("t2", "1")
                     .setTopic(registrationTopic)

@@ -1,5 +1,6 @@
 package com.example.heroku.services;
 
+import com.example.heroku.firebase.MyFireBase;
 import com.example.heroku.model.BeerUnit;
 import com.example.heroku.model.BeerUnitOrder;
 import com.example.heroku.model.PackageOrder;
@@ -48,6 +49,10 @@ public class BeerOrder {
 
     @Autowired
     Voucher voucherServices;
+
+
+    @Autowired
+    MyFireBase myFireBase;
 
     private Flux<com.example.heroku.model.Voucher> getUserVoucherAndEmpty(PackageOrderData packageOrderData) {
         return Flux.just(packageOrderData.getBeerOrders())
@@ -242,6 +247,7 @@ public class BeerOrder {
                                                                                     .flatMap(packageOrder -> {
                                                                                         if (!packageOrderData.isPreOrder()) {
                                                                                             //send to admin
+                                                                                            myFireBase.SendNotification(packageOrder.getReciver_fullname(), "Mua: " + packageOrderData.getPackageOrder().getReal_price());
                                                                                             severEventAdapter.SendEvent(new OrderSearchResult.PackageOrderData(packageOrder));
                                                                                             return packageOrderRepository.save(packageOrder);
                                                                                         } else {
