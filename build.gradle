@@ -47,6 +47,7 @@ dependencies {
 	//can remove this package
 	//compile "javax.xml.bind:jaxb-api"
 
+	implementation 'com.google.firebase:firebase-admin:8.1.0'
 
 	compileOnly "org.projectlombok:lombok"
 	annotationProcessor "org.projectlombok:lombok"

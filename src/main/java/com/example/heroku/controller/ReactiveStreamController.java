@@ -1,5 +1,6 @@
 package com.example.heroku.controller;
 
+import com.example.heroku.firebase.MyFireBase;
 import com.example.heroku.response.Format;
 import com.example.heroku.services.SeverEventAdapterImpl;
 import com.example.heroku.util.Util;
@@ -28,12 +29,15 @@ public class ReactiveStreamController {
     @Autowired
     SeverEventAdapterImpl severEventAdapter;
 
-//    @GetMapping("/test")
-//    @CrossOrigin(origins = Util.HOST_URL)
-//    public Mono<ResponseEntity<Format>> generateID() {
-//        severEventAdapter.SendEvent("hel0000000");
-//        return Mono.just(ok(Format.builder().response("test").build()));
-//    }
+    @Autowired
+    MyFireBase myFireBase;
+
+    @GetMapping("/test")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<Format>> generateID() {
+        myFireBase.SendNotification("hello", "ddddddddddddddddddd");
+        return Mono.just(ok(Format.builder().response("test").build()));
+    }
 
     @GetMapping(path = "admin/order")
     @CrossOrigin(origins = Util.HOST_URL)
