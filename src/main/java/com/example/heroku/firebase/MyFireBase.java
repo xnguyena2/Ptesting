@@ -67,7 +67,7 @@ public class MyFireBase {
         }
 
         try {
-            String registrationToken = "YOUR_REGISTRATION_TOKEN";
+            String registrationTopic = "trumbien";
 
             Message message = Message.builder()
                     .setNotification(
@@ -78,7 +78,7 @@ public class MyFireBase {
                     )
                     .putData("t1", "0")
                     .putData("t2", "1")
-                    //.setToken(registrationToken)
+                    .setTopic(registrationTopic)
                     .build();
 
             String response = FirebaseMessaging.getInstance().send(message);
