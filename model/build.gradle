@@ -1,0 +1,29 @@
+
+plugins {
+    id "java-library"
+}
+
+group = 'com.example'
+version = '1.0'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    compileOnly "org.projectlombok:lombok:$gradle.ext.lombokV"
+    annotationProcessor "org.projectlombok:lombok:$gradle.ext.lombokV"
+
+    testCompileOnly "org.projectlombok:lombok:$gradle.ext.lombokV"
+    testAnnotationProcessor "org.projectlombok:lombok:$gradle.ext.lombokV"
+
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}

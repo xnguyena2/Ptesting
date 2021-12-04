@@ -23,6 +23,11 @@ repositories {
 }
 
 dependencies {
+
+	compile project(':model')
+
+
+
 	implementation "org.springframework.boot:spring-boot-starter-webflux"
 	implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
 	implementation "org.springframework.boot:spring-boot-starter-security"
@@ -49,11 +54,11 @@ dependencies {
 
 	implementation 'com.google.firebase:firebase-admin:8.1.0'
 
-	compileOnly "org.projectlombok:lombok"
-	annotationProcessor "org.projectlombok:lombok"
+	compileOnly "org.projectlombok:lombok:$gradle.ext.lombokV"
+	annotationProcessor "org.projectlombok:lombok:$gradle.ext.lombokV"
 
-	testCompileOnly "org.projectlombok:lombok"
-	testAnnotationProcessor "org.projectlombok:lombok"
+	testCompileOnly "org.projectlombok:lombok:$gradle.ext.lombokV"
+	testAnnotationProcessor "org.projectlombok:lombok:$gradle.ext.lombokV"
 
 	testImplementation "io.projectreactor:reactor-test"
 	testImplementation "org.springframework.security:spring-security-test"

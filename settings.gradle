@@ -1,1 +1,5 @@
 rootProject.name = 'gradle-getting-started'
+include 'model'
+
+gradle.ext.lombokV = '1.18.22'
+

@@ -1,22 +1,12 @@
 package com.example.heroku.request.Order;
 
-import com.example.heroku.model.BeerOrder;
 import com.example.heroku.model.BeerUnitOrder;
 import com.example.heroku.model.PackageOrder;
-import com.example.heroku.model.count.ResultWithCount;
 import com.example.heroku.services.VietNamAddress;
-import lombok.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class OrderSearchResult  extends ResultWithCount {
-    private List<PackageOrderData> result;
+public class OrderSearchResult  extends order.OrderSearchResult {
 
     public OrderSearchResult Add(PackageOrderData newItem) {
         if (result == null) {
@@ -30,18 +20,7 @@ public class OrderSearchResult  extends ResultWithCount {
         return result.toArray(new PackageOrderData[0]);
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PackageOrderData extends PackageOrder {
-
-        private String region;
-        private String district;
-        private String ward;
-
-        private List<BeerOrderData> beerOrderList;
-
+    public static class PackageOrderData extends order.OrderSearchResult.PackageOrderData {
 
         public PackageOrderData(PackageOrder source) {
 
@@ -64,7 +43,7 @@ public class OrderSearchResult  extends ResultWithCount {
             setCreateat(source.getCreateat());
         }
 
-        public BeerOrderData Add(BeerOrder newItem) {
+        public BeerOrderData Add(entity.BeerOrder newItem) {
             if (beerOrderList == null) {
                 beerOrderList = new ArrayList<>();
             }
@@ -77,14 +56,9 @@ public class OrderSearchResult  extends ResultWithCount {
             return beerOrderList.toArray(new BeerOrderData[0]);
         }
 
-        @EqualsAndHashCode(callSuper = true)
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
-        public static class BeerOrderData extends BeerOrder {
-            private List<BeerUnitOrder> beerUnitOrderList;
+        public static class BeerOrderData extends order.OrderSearchResult.PackageOrderData.BeerOrderData {
 
-            public BeerOrderData(BeerOrder source) {
+            public BeerOrderData(entity.BeerOrder source) {
 
                 setPackage_order_second_id(source.getPackage_order_second_id());
                 setBeer_second_id(source.getBeer_second_id());
