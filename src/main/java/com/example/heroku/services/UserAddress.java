@@ -38,12 +38,12 @@ public class UserAddress {
         return userAddressRepository.findallByDeviceID(deviceID);
     }
 
-    public Mono<com.example.heroku.model.UserAddress> DeleteAddress(int id) {
+    public Mono<com.example.heroku.model.UserAddress> DeleteAddress(String id) {
         return userAddressRepository.deleteAddress(id);
     }
 
     public Mono<com.example.heroku.model.UserAddress> UpdateAddress(com.example.heroku.model.UserAddress address) {
-        return userAddressRepository.deleteAddress(Integer.parseInt(address.getId()))
+        return userAddressRepository.deleteAddress(address.getAddress_id())
                 .then(Mono.just(address))
                 .flatMap(address1 -> {
                     address.setId(null);

@@ -22,6 +22,8 @@ public class UserAddress {
     @Id
     String id;
 
+    private String address_id;
+
     private String device_id;
 
     private String reciver_fullname;

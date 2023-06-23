@@ -15,6 +15,6 @@ public interface UserAddressRepository extends ReactiveCrudRepository<UserAddres
     @Query(value = "SELECT * FROM user_address WHERE user_address.device_id = :deviceid")
     Flux<UserAddress> findallByDeviceID(@Param("deviceid")String deviceID);
 
-    @Query(value = "DELETE FROM user_address WHERE user_address.id = :id")
-    Mono<UserAddress> deleteAddress(@Param("id")int id);
+    @Query(value = "DELETE FROM user_address WHERE user_address.address_id = :id")
+    Mono<UserAddress> deleteAddress(@Param("id")String id);
 }

@@ -4,6 +4,8 @@ import com.example.heroku.services.UserAddress;
 import lombok.Builder;
 import reactor.test.StepVerifier;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Builder
@@ -12,8 +14,11 @@ public class UserAddressTest {
     UserAddress userAddressAPI;
 
     public void UserAddressTest() {
+        AtomicReference<String> addressID1 = new AtomicReference<String>();
+        AtomicReference<String> addressID2 = new AtomicReference<String>();
         userAddressAPI.CreateAddress(
                 com.example.heroku.model.UserAddress.builder()
+                        .address_id("121212")
                         .device_id("222222")
                         .phone_number("1234555555")
                         .reciver_fullname("Nguyen Phong")
@@ -53,6 +58,7 @@ public class UserAddressTest {
 
         userAddressAPI.CreateAddress(
                 com.example.heroku.model.UserAddress.builder()
+                        .address_id("232323")
                         .device_id("222222")
                         .phone_number("1234555555")
                         .reciver_fullname("Nguyen Phong")
@@ -67,18 +73,20 @@ public class UserAddressTest {
         userAddressAPI.GetUserAddress("222222")
                 .as(StepVerifier::create)
                 .consumeNextWith(userAddress -> {
-                    assertThat(userAddress.getHouse_number()).isEqualTo("123 Nguyễn Huệ");
-                    assertThat(userAddress.getRegion()).isEqualTo(294);
-                    assertThat(userAddress.getDistrict()).isEqualTo(484);
-                    assertThat(userAddress.getPhone_number()).isEqualTo("1234555555");
-                }
+                            assertThat(userAddress.getHouse_number()).isEqualTo("123 Nguyễn Huệ");
+                            assertThat(userAddress.getRegion()).isEqualTo(294);
+                            assertThat(userAddress.getDistrict()).isEqualTo(484);
+                            assertThat(userAddress.getPhone_number()).isEqualTo("1234555555");
+                            addressID1.set(userAddress.getAddress_id());
+                        }
                 )
                 .consumeNextWith(userAddress -> {
-                    assertThat(userAddress.getHouse_number()).isEqualTo("123 Hai Bà Trưng");
-                    assertThat(userAddress.getRegion()).isEqualTo(294);
-                    assertThat(userAddress.getDistrict()).isEqualTo(484);
-                    assertThat(userAddress.getPhone_number()).isEqualTo("1234555555");
-                }
+                            assertThat(userAddress.getHouse_number()).isEqualTo("123 Hai Bà Trưng");
+                            assertThat(userAddress.getRegion()).isEqualTo(294);
+                            assertThat(userAddress.getDistrict()).isEqualTo(484);
+                            assertThat(userAddress.getPhone_number()).isEqualTo("1234555555");
+                    addressID2.set(userAddress.getAddress_id());
+                        }
                 )
                 .verifyComplete();
 
@@ -86,13 +94,13 @@ public class UserAddressTest {
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        userAddressAPI.DeleteAddress(1)
+        userAddressAPI.DeleteAddress(addressID1.get())
                 .block();
 
 
         userAddressAPI.UpdateAddress(
                 com.example.heroku.model.UserAddress.builder()
-                        .id("2")
+                        .address_id(addressID2.get())
                         .device_id("222222")
                         .phone_number("33333333333")
                         .reciver_fullname("Nguyen Phong")
