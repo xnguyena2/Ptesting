@@ -5,6 +5,7 @@ import com.example.heroku.model.BeerUnit;
 import com.example.heroku.request.beer.BeerPackage;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.BeerUnitDelete;
+import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.services.UserPackage;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -288,7 +289,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        userPackageAPI.DeleteByBeerUnit(BeerUnitDelete.builder().id(beerUnit1ID.get()).build()).blockLast();
+        userPackageAPI.DeleteByBeerUnit(PackageItemRemove.builder().device_id("222222").unit_id(beerUnit1ID.get()).build()).blockLast();
 
         userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).build())
                 .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())

@@ -14,8 +14,8 @@ public interface UserPackageRepository extends ReactiveCrudRepository<UserPackag
     Flux<UserPackage> GetDevicePackage(@Param("id") String id, @Param("page") int page, @Param("size") int size);
 
 
-    @Query(value = "DELETE FROM user_package WHERE beer_unit = :id")
-    Flux<UserPackage> DeleteProductByBeerUnit(@Param("id") String id);
+    @Query(value = "DELETE FROM user_package WHERE device_id = :device_id AND beer_unit = :beer_unit")
+    Flux<UserPackage> DeleteProductByBeerUnit(@Param("device_id") String device_id, @Param("beer_unit") String beer_unit);
 
     @Query(value = "DELETE FROM user_package WHERE device_id = :id")
     Flux<UserPackage> DeleteProductByUserID(@Param("id") String id);

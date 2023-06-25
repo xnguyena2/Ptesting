@@ -3,6 +3,7 @@ package com.example.heroku.services;
 import com.example.heroku.model.repository.UserPackageRepository;
 import com.example.heroku.request.beer.BeerPackage;
 import com.example.heroku.request.beer.BeerUnitDelete;
+import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.Format;
 import com.example.heroku.response.PackgeResponse;
@@ -46,8 +47,8 @@ public class UserPackage {
                 );
     }
 
-    public Flux<com.example.heroku.model.UserPackage> DeleteByBeerUnit(BeerUnitDelete beerUnitDelete) {
-        return userPackageRepository.DeleteProductByBeerUnit(beerUnitDelete.getId());
+    public Flux<com.example.heroku.model.UserPackage> DeleteByBeerUnit(PackageItemRemove beerUnitDelete) {
+        return userPackageRepository.DeleteProductByBeerUnit(beerUnitDelete.getDevice_id(), beerUnitDelete.getUnit_id());
     }
 
     public Flux<com.example.heroku.model.UserPackage> DeleteByUserID(UserID userID) {

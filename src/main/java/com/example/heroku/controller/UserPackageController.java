@@ -2,6 +2,7 @@ package com.example.heroku.controller;
 
 import com.example.heroku.request.beer.BeerPackage;
 import com.example.heroku.request.beer.BeerUnitDelete;
+import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.Format;
 import com.example.heroku.response.PackgeResponse;
@@ -32,7 +33,7 @@ public class UserPackageController {
 
     @PostMapping("/remove")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<com.example.heroku.model.UserPackage> removeFromPckage(@RequestBody @Valid BeerUnitDelete beerUnitDelete){
+    public Flux<com.example.heroku.model.UserPackage> removeFromPckage(@RequestBody @Valid PackageItemRemove beerUnitDelete){
         return userPackageAPI.DeleteByBeerUnit(beerUnitDelete);
     }
 
