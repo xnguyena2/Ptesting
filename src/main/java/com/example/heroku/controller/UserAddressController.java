@@ -23,7 +23,7 @@ public class UserAddressController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> createAddress(@RequestBody @Valid AddressData addressInfo) {
         System.out.println("Create new address");
-        return userAddress.CreateAddress(addressInfo.CovertModel());
+        return userAddress.CreateAddress(addressInfo.CovertModel(false));
     }
 
     @GetMapping("/all/{deviceid}")
@@ -43,6 +43,6 @@ public class UserAddressController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<UserAddress> updateAddress(@RequestBody @Valid AddressData addressInfo) {
         System.out.println("update address");
-        return userAddress.UpdateAddress(addressInfo.CovertModel());
+        return userAddress.UpdateAddress(addressInfo.CovertModel(true));
     }
 }

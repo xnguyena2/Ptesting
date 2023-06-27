@@ -35,9 +35,9 @@ public class AddressData {
 
     private String region_text_format;
 
-    public UserAddress CovertModel() {
+    public UserAddress CovertModel(boolean isResetID) {
         return UserAddress.builder()
-                .address_id(Util.getInstance().GenerateID())
+                .address_id(isResetID?Util.getInstance().GenerateID():address_id)
                 .device_id(device_id)
                 .reciver_fullname(reciver_fullname)
                 .phone_number(phone_number)
