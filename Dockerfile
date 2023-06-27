@@ -10,6 +10,7 @@ FROM openjdk:8-jdk-slim
 
 EXPOSE 8080
 
+COPY . .
 COPY --from=build /build/libs/gradle-getting-started-1.0.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
