@@ -27,11 +27,11 @@ public class AddressData {
 
     private String house_number;
 
-    private int region;
+    private VietNamAddress.AddressItemData region;
 
-    private int district;
+    private VietNamAddress.AddressItemData district;
 
-    private int ward;
+    private VietNamAddress.AddressItemData ward;
 
     private String region_text_format;
 
@@ -42,30 +42,55 @@ public class AddressData {
                 .reciver_fullname(reciver_fullname)
                 .phone_number(phone_number)
                 .house_number(house_number)
-                .region(region)
-                .district(district)
-                .ward(ward)
+                .region(region.id)
+                .district(district.id)
+                .ward(ward.id)
                 .build();
     }
 
     public static Mono<AddressData> FromModel(UserAddress src) {
         String region_text_format = "";
+
+        VietNamAddress.AddressItemData region = VietNamAddress.AddressItemData.builder()
+                .id(-1)
+                .name("undefiend")
+                .build();
+
+        VietNamAddress.AddressItemData district= VietNamAddress.AddressItemData.builder()
+                .id(-1)
+                .name("undefiend")
+                .build();
+
+        VietNamAddress.AddressItemData ward= VietNamAddress.AddressItemData.builder()
+                .id(-1)
+                .name("undefiend")
+                .build();
         try {
-            region_text_format = VietNamAddress.getInstance().GetWardName(src.getRegion(), src.getDistrict(), src.getWard()) + ", "
-                    + VietNamAddress.getInstance().GetDistrictName(src.getRegion(), src.getDistrict()) + ", "
-                    + VietNamAddress.getInstance().GetRegionName(src.getRegion());
+            region.setId(src.getRegion());
+            region.setName(VietNamAddress.getInstance().GetRegionName(src.getRegion()));
+
+            district.setId(src.getDistrict());
+            district.setName(VietNamAddress.getInstance().GetDistrictName(src.getRegion(), src.getDistrict()));
+
+            ward.setId(src.getWard());
+            ward.setName(VietNamAddress.getInstance().GetWardName(src.getRegion(), src.getDistrict(), src.getWard()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        region_text_format = ward.getName() + ", "
+                + district.getName() + ", "
+                + region.getName();
+
         return Mono.just(AddressData.builder()
                 .address_id(src.getAddress_id())
                 .device_id(src.getDevice_id())
                 .reciver_fullname(src.getReciver_fullname())
                 .phone_number(src.getPhone_number())
                 .house_number(src.getHouse_number())
-                .region(src.getRegion())
-                .district(src.getDistrict())
-                .ward(src.getWard())
+                .region(region)
+                .district(district)
+                .ward(ward)
                 .region_text_format(region_text_format)
                 .build());
     }

@@ -1,10 +1,7 @@
 package com.example.heroku.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,12 +19,11 @@ public class VietNamAddress {
 
     private AddressFromat allAddress;
 
-    private VietNamAddress(){
+    private VietNamAddress() {
     }
 
     synchronized public static VietNamAddress getInstance() {
-        if (instance == null)
-        {
+        if (instance == null) {
             instance = new VietNamAddress();
         }
         return instance;
@@ -78,9 +74,9 @@ public class VietNamAddress {
         if (allAddress == null) {
             this.SaveAllToDatabase(false);
         }
-        for (VietNamAddress.AddressFromat.Region region:
+        for (VietNamAddress.AddressFromat.Region region :
                 allAddress.getRegions()) {
-            if(region.id == regionID)
+            if (region.id == regionID)
                 return region.name;
         }
         return null;
@@ -90,9 +86,9 @@ public class VietNamAddress {
         if (allAddress == null) {
             this.SaveAllToDatabase(false);
         }
-        for (VietNamAddress.AddressFromat.Region region:
+        for (VietNamAddress.AddressFromat.Region region :
                 allAddress.getRegions()) {
-            if(region.id == regionID) {
+            if (region.id == regionID) {
                 for (AddressFromat.Region.DistrictContent.District district :
                         region.districts.data) {
                     if (district.id == districtID)
@@ -107,9 +103,9 @@ public class VietNamAddress {
         if (allAddress == null) {
             this.SaveAllToDatabase(false);
         }
-        for (VietNamAddress.AddressFromat.Region region:
+        for (VietNamAddress.AddressFromat.Region region :
                 allAddress.getRegions()) {
-            if(region.id == regionID) {
+            if (region.id == regionID) {
                 for (AddressFromat.Region.DistrictContent.District district :
                         region.districts.data) {
                     if (district.id == districtID) {
@@ -133,7 +129,7 @@ public class VietNamAddress {
                 .flatMap(Mono::just);
     }
 
-    public Flux<VietNamAddress.AddressFromat.Region> GetAllRegionFormat() throws IOException {
+    public Flux<VietNamAddress.AddressItemData> GetAllRegionFormat() throws IOException {
         if (allAddress == null) {
             this.SaveAllToDatabase(false);
         }
@@ -150,11 +146,11 @@ public class VietNamAddress {
                 .filter(region -> region.id == ofRegion)
                 .flatMap(region ->
                         Flux.just(region.districts.data)
-                        .flatMap(Mono::just)
+                                .flatMap(Mono::just)
                 );
     }
 
-    public Flux<VietNamAddress.AddressFromat.Region.DistrictContent.District> GetAllDistrictFormat(int ofRegion) throws IOException {
+    public Flux<VietNamAddress.AddressItemData> GetAllDistrictFormat(int ofRegion) throws IOException {
         if (allAddress == null) {
             this.SaveAllToDatabase(false);
         }
@@ -167,7 +163,7 @@ public class VietNamAddress {
                 );
     }
 
-    public Flux<VietNamAddress.AddressFromat.Region.DistrictContent.District.WardContent.Ward> GetAllWard(int ofRegion, int andDistrict) throws IOException {
+    public Flux<VietNamAddress.AddressItemData> GetAllWard(int ofRegion, int andDistrict) throws IOException {
         if (allAddress == null) {
             this.SaveAllToDatabase(false);
         }
@@ -186,27 +182,34 @@ public class VietNamAddress {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AddressFromat{
+    public static class AddressItemData {
+        public String name;
+        public int id;
+
+        public AddressItemData MainFormat() {
+            return AddressItemData.builder()
+                    .name(this.getName())
+                    .id(this.id)
+                    .build();
+        }
+    }
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddressFromat {
         private Region[] regions;
         private Object[] districts;
         private Object[] wards;
 
-        @Builder
+        @EqualsAndHashCode(callSuper=true)
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
-        public static class Region{
-            private String name;
-            private int id;
+        public static class Region extends AddressItemData {
 
             private DistrictContent districts;
-
-            public Region MainFormat(){
-                return Region.builder()
-                        .name(this.getName())
-                        .id(this.id)
-                        .build();
-            }
 
             @Builder
             @Data
@@ -216,22 +219,15 @@ public class VietNamAddress {
 
                 private District[] data;
 
-                @Builder
+                @EqualsAndHashCode(callSuper=true)
                 @Data
                 @NoArgsConstructor
                 @AllArgsConstructor
-                public static class District {
+                public static class District extends AddressItemData {
 
                     private String name;
                     private int id;
                     private WardContent wards;
-
-                    public District MainFormat(){
-                        return District.builder()
-                                .name(this.getName())
-                                .id(this.id)
-                                .build();
-                    }
 
 
                     @Builder
@@ -242,14 +238,10 @@ public class VietNamAddress {
 
                         private Ward[] data;
 
-                        @Builder
+                        @EqualsAndHashCode(callSuper=true)
                         @Data
                         @NoArgsConstructor
-                        @AllArgsConstructor
-                        public static class Ward {
-
-                            private String name;
-                            private int id;
+                        public static class Ward extends AddressItemData {
                         }
                     }
                 }
