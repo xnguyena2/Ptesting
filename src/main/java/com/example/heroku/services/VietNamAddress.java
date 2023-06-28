@@ -225,8 +225,6 @@ public class VietNamAddress {
                 @AllArgsConstructor
                 public static class District extends AddressItemData {
 
-                    private String name;
-                    private int id;
                     private WardContent wards;
 
 
