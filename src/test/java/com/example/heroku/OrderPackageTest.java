@@ -5,10 +5,8 @@ import com.example.heroku.model.BeerUnit;
 import com.example.heroku.model.BeerUnitOrder;
 import com.example.heroku.model.PackageOrder;
 import com.example.heroku.model.repository.BeerUnitRepository;
-import com.example.heroku.request.beer.BeerInfo;
-import com.example.heroku.request.beer.BeerSubmitData;
-import com.example.heroku.request.beer.PackageOrderData;
-import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.request.beer.*;
+import com.example.heroku.request.client.UserID;
 import com.example.heroku.request.voucher.VoucherData;
 import com.example.heroku.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,6 +52,8 @@ public class OrderPackageTest extends TestConfig {
     @Autowired
     com.example.heroku.services.Buyer buyer;
 
+    @Autowired
+    UserPackage userPackageAPI;
 
     @Autowired
     StatisticServices statisticServices;
@@ -247,6 +247,8 @@ public class OrderPackageTest extends TestConfig {
                     assertThat(totalOrder).isEqualTo(81300f);
                 })
                 .verifyComplete();
+
+        addBeerToPackage();
 
     }
 
@@ -1202,7 +1204,126 @@ public class OrderPackageTest extends TestConfig {
                 .block();
         userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("iphone").user_first_name("Ho DUong").user_last_name("Vuong").build())
                 .block();
+        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("order_test").user_first_name("Ho DUong").user_last_name("Vuong").build())
+                .block();
 
+    }
+
+    void addBeerToPackage(){
+
+        AtomicReference<String> beerUnit4561ID = new AtomicReference<String>();
+        AtomicReference<String> beerUnit4562ID = new AtomicReference<String>();
+        this.beerAPI.GetBeerByID("beer_order1")
+                .map(BeerSubmitData::GetBeerInfo)
+                .as(StepVerifier::create)
+                .consumeNextWith(beerInfo -> {
+                    assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("beer_order1");
+                    assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.CRAB);
+                    assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
+                    Flux.just(beerInfo.getBeerUnit())
+                            .sort(Comparator.comparing(BeerUnit::getName))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerUnit -> {
+                                if (beerUnit.getName().equals("lon")) {
+                                    beerUnit4561ID.set(beerUnit.getBeer_unit_second_id());
+                                } else {
+                                    beerUnit4562ID.set(beerUnit.getBeer_unit_second_id());
+                                }
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                if (beerUnit.getName().equals("lon")) {
+                                    beerUnit4561ID.set(beerUnit.getBeer_unit_second_id());
+                                } else {
+                                    beerUnit4562ID.set(beerUnit.getBeer_unit_second_id());
+                                }
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+        BeerPackage beerPackage = BeerPackage.builder()
+                .beerID("beer_order1")
+                .deviceID("order_test")
+                .beerUnits(new BeerPackage.BeerUnit[]{
+                        BeerPackage.BeerUnit.builder()
+                                .beerUnitID(beerUnit4561ID.get())
+                                .numberUnit(100)
+                                .build(),
+                        BeerPackage.BeerUnit.builder()
+                                .beerUnitID(beerUnit4562ID.get())
+                                .numberUnit(9)
+                                .build()
+                })
+                .build();
+        userPackageAPI.AddBeerToPackage(beerPackage)
+                .block();
+
+
+        PackageOrderData packageOrderData = PackageOrderData
+                .builder()
+                .packageOrder(
+                        PackageOrder
+                                .builder()
+                                .region_id(294)
+                                .district_id(484)
+                                .phone_number("1234567890")
+                                .reciver_fullname("Nguyen Phong")
+                                .reciver_address("232 bau cat, tan binh")
+                                .user_device_id("order_test")
+                                .build()
+                )
+                .preOrder(true)
+                .beerOrders(
+                        new PackageOrderData.BeerOrderData[]{
+                                PackageOrderData.BeerOrderData
+                                        .builder()
+                                        .beerOrder(
+                                                com.example.heroku.model.BeerOrder
+                                                        .builder()
+                                                        .beer_second_id("beer_order1")
+                                                        .voucher_second_id("ORDER_GIAM_30%")
+                                                        .build()
+                                        )
+                                        .beerUnitOrders(
+                                                new BeerUnitOrder[]{
+                                                        BeerUnitOrder
+                                                                .builder()
+                                                                .beer_unit_second_id(beerUnit4561ID.get())
+                                                                .beer_second_id("beer_order1")
+                                                                .number_unit(10)
+                                                                .build(),
+                                                }
+                                        )
+                                        .build()
+                        }
+                )
+                .build();
+
+        beerOrder.createOrder(packageOrderData)
+                .as(StepVerifier::create)
+                .consumeNextWith(packageOrder -> {
+                    System.out.println(packageOrder.getReal_price());
+                    assertThat(packageOrder.getReal_price()).isEqualTo(160.0f);// 10*110*0.7 + (20*10*0.8 + 2*10*0.9)*0.7
+                    //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
+                })
+                .verifyComplete();
+
+        userPackageAPI.GetMyPackage(UserID.builder().id("order_test").page( 0).size( 1000).build())
+                .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(userPackage.getDevice_id()).isEqualTo("order_test");
+                    assertThat(userPackage.getBeer_id()).isEqualTo("beer_order1");
+                    assertThat(userPackage.getBeer_unit()).isEqualTo(beerUnit4562ID.get());
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(9);
+                    assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("beer_order1");
+                    assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .verifyComplete();
     }
 
     void createProvider() throws Exception {

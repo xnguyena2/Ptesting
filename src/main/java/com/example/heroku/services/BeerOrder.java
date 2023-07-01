@@ -4,12 +4,11 @@ import com.example.heroku.firebase.MyFireBase;
 import com.example.heroku.model.BeerUnit;
 import com.example.heroku.model.BeerUnitOrder;
 import com.example.heroku.model.PackageOrder;
+import com.example.heroku.model.UserPackage;
 import com.example.heroku.model.repository.*;
 import com.example.heroku.request.Order.OrderSearchResult;
 import com.example.heroku.request.beer.PackageOrderData;
 import com.example.heroku.util.Util;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,8 +20,7 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Component
@@ -157,15 +155,18 @@ public class BeerOrder {
     }
 
     private Mono<Object> cleanPackage(PackageOrderData packageOrderData, Flux<PackageOrderData.BeerOrderData> beerOrderDataFlux) {
-        return Mono.just(packageOrderData).filter(PackageOrderData::isPreOrder)
-                .map(packageOrderData1 ->
-                        beerOrderDataFlux
-                                .flatMap(beerOrder ->
-                                        Flux.just(beerOrder.getBeerUnitOrders())
-                                                .flatMap(beerUnitOrder ->
-                                                        userPackageRepository.DeleteProductByBeerUnit(packageOrderData1.getPackageOrder().getUser_device_id(), beerUnitOrder.getBeer_unit_second_id())
-                                                )
-                                ));
+        if (!packageOrderData.isPreOrder()) {
+            return Mono.empty();
+        }
+        return beerOrderDataFlux
+                .flatMap(beerOrder ->
+                        Flux.just(beerOrder.getBeerUnitOrders())
+
+                ).flatMap(beerUnitOrder -> {
+                            System.out.println("Clean Package: " + packageOrderData.getPackageOrder().getUser_device_id() + ", " + beerUnitOrder.getBeer_unit_second_id());
+                            return userPackageRepository.DeleteProductByBeerUnit(packageOrderData.getPackageOrder().getUser_device_id(), beerUnitOrder.getBeer_unit_second_id());
+                        }
+                ).then(Mono.empty());
     }
 
     public Mono<PackageOrder> createOrder(PackageOrderData packageOrderData) {
@@ -265,20 +266,19 @@ public class BeerOrder {
                                                                         return voucher;
                                                                     })
                                                                     .then(
-                                                                            Mono.just(cleanPackage(packageOrderData, beerOrderDataFlux))
-                                                                    )
-                                                                    .then(
-                                                                            Mono.just(packageOrderData.getPackageOrder())
-                                                                                    .flatMap(packageOrder -> {
-                                                                                        if (!packageOrderData.isPreOrder()) {
-                                                                                            //send to admin
-                                                                                            myFireBase.SendNotification(packageOrder.getReciver_fullname(), "Mua: " + packageOrderData.getPackageOrder().getReal_price());
-                                                                                            severEventAdapter.SendEvent(new OrderSearchResult.PackageOrderData(packageOrder));
-                                                                                            return packageOrderRepository.save(packageOrder);
-                                                                                        } else {
-                                                                                            return Mono.just(packageOrder);
-                                                                                        }
-                                                                                    })
+                                                                            cleanPackage(packageOrderData, beerOrderDataFlux).then(
+                                                                                    Mono.just(packageOrderData.getPackageOrder())
+                                                                                            .flatMap(packageOrder -> {
+                                                                                                if (!packageOrderData.isPreOrder()) {
+                                                                                                    //send to admin
+                                                                                                    myFireBase.SendNotification(packageOrder.getReciver_fullname(), "Mua: " + packageOrderData.getPackageOrder().getReal_price());
+                                                                                                    severEventAdapter.SendEvent(new OrderSearchResult.PackageOrderData(packageOrder));
+                                                                                                    return packageOrderRepository.save(packageOrder);
+                                                                                                } else {
+                                                                                                    return Mono.just(packageOrder);
+                                                                                                }
+                                                                                            })
+                                                                            )
                                                                     );
                                                         })
                                         )
