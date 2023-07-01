@@ -21,6 +21,8 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Component
@@ -50,6 +52,8 @@ public class BeerOrder {
     @Autowired
     Voucher voucherServices;
 
+    @Autowired
+    UserPackageRepository userPackageRepository;
 
     @Autowired
     MyFireBase myFireBase;
@@ -144,20 +148,38 @@ public class BeerOrder {
         return Mono.just(result);
     }
 
+    private Flux<PackageOrderData.BeerOrderData> getProductOrderDataModel(PackageOrderData packageOrderData) {
+        return Flux.just(packageOrderData.getBeerOrders())
+                .flatMap(beerOrderData ->
+                        beerRepository.findBySecondIDCanOrder(beerOrderData.getBeerOrder().getBeer_second_id())
+                                .map(beerOrderData::UpdateName)
+                );
+    }
+
+    private Mono<Object> cleanPackage(PackageOrderData packageOrderData, Flux<PackageOrderData.BeerOrderData> beerOrderDataFlux) {
+        return Mono.just(packageOrderData).filter(PackageOrderData::isPreOrder)
+                .map(packageOrderData1 ->
+                        beerOrderDataFlux
+                                .flatMap(beerOrder ->
+                                        Flux.just(beerOrder.getBeerUnitOrders())
+                                                .flatMap(beerUnitOrder ->
+                                                        userPackageRepository.DeleteProductByBeerUnit(packageOrderData1.getPackageOrder().getUser_device_id(), beerUnitOrder.getBeer_unit_second_id())
+                                                )
+                                ));
+    }
+
     public Mono<PackageOrder> createOrder(PackageOrderData packageOrderData) {
         System.out.println("New request from: " + packageOrderData.getPackageOrder().getUser_device_id());
         packageOrderData.getPackageOrder().AutoFill(packageOrderData.isPreOrder());
         Timestamp currentTime = new Timestamp(new Date().getTime());
+        Mono<ShippingProvider.GHN> shippingProvider = shippingProviderAPI.GetGHNShippingProvider();
+        Flux<PackageOrderData.BeerOrderData> beerOrderDataFlux = getProductOrderDataModel(packageOrderData);
         return Mono.just(getUserVoucherAndEmpty(packageOrderData))
                 .flatMap(vouchers ->
                         vouchers.map(vc -> Util.getInstance().obserVoucher(packageOrderData.getPackageOrder().getUser_device_id() + vc.getVoucher_second_id()))
-                                .then(shippingProviderAPI.GetGHNShippingProvider()
+                                .then(shippingProvider
                                         .flatMap(ghn ->
-                                                Flux.just(packageOrderData.getBeerOrders())
-                                                        .flatMap(beerOrderData ->
-                                                                beerRepository.findBySecondIDCanOrder(beerOrderData.getBeerOrder().getBeer_second_id())
-                                                                        .map(beerOrderData::UpdateName)
-                                                        )
+                                                beerOrderDataFlux
                                                         .flatMap(beerOrder ->
                                                                 Flux.just(beerOrder.getBeerUnitOrders())
                                                                         .flatMap(beerUnitOrder ->
@@ -242,6 +264,9 @@ public class BeerOrder {
                                                                                 .subscribe();
                                                                         return voucher;
                                                                     })
+                                                                    .then(
+                                                                            Mono.just(cleanPackage(packageOrderData, beerOrderDataFlux))
+                                                                    )
                                                                     .then(
                                                                             Mono.just(packageOrderData.getPackageOrder())
                                                                                     .flatMap(packageOrder -> {
