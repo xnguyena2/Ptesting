@@ -155,7 +155,7 @@ public class BeerOrder {
     }
 
     private Mono<Object> cleanPackage(PackageOrderData packageOrderData, Flux<PackageOrderData.BeerOrderData> beerOrderDataFlux) {
-        if (!packageOrderData.isPreOrder()) {
+        if (packageOrderData.isPreOrder()) {
             return Mono.empty();
         }
         return beerOrderDataFlux

@@ -1271,7 +1271,7 @@ public class OrderPackageTest extends TestConfig {
                                 .user_device_id("order_test")
                                 .build()
                 )
-                .preOrder(true)
+                .preOrder(false)
                 .beerOrders(
                         new PackageOrderData.BeerOrderData[]{
                                 PackageOrderData.BeerOrderData
