@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS package_order;
 DROP TABLE IF EXISTS beer_order;
 DROP TABLE IF EXISTS beer_unit_order;
 DROP TABLE IF EXISTS user_device;
+DROP TABLE IF EXISTS user_fcm;
 DROP TABLE IF EXISTS user_address;
 DROP TABLE IF EXISTS user_package;
 DROP TABLE IF EXISTS voucher;

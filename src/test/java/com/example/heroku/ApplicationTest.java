@@ -62,6 +62,14 @@ public class ApplicationTest extends TestConfig{
     @Autowired
     ProductImport productImport;
 
+    @Autowired
+    UserFCMS fcmServices;
+
+    @Test
+    public  void fcmTest(){
+        UserFCMTest.builder().userFCMAPI(fcmServices).build().UserFCMTest();
+    }
+
     @Test
     public void userTest() {
         UserAccountTest.builder().userAccount(userAccount).build().test();
