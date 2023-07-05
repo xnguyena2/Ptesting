@@ -271,7 +271,7 @@ public class BeerOrder {
                                                                                             .flatMap(packageOrder -> {
                                                                                                 if (!packageOrderData.isPreOrder()) {
                                                                                                     //send to admin
-                                                                                                    myFireBase.SendNotification(packageOrder.getReciver_fullname(), "Mua: " + packageOrderData.getPackageOrder().getReal_price());
+                                                                                                    myFireBase.SendNotification2Admin(packageOrder.getReciver_fullname(), "Mua: " + packageOrderData.getPackageOrder().getReal_price());
                                                                                                     severEventAdapter.SendEvent(new OrderSearchResult.PackageOrderData(packageOrder));
                                                                                                     return packageOrderRepository.save(packageOrder);
                                                                                                 } else {

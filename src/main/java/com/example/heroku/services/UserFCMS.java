@@ -1,7 +1,9 @@
 package com.example.heroku.services;
 
+import com.example.heroku.firebase.MyFireBase;
 import com.example.heroku.model.UserFCM;
 import com.example.heroku.model.repository.UserFCMRepository;
+import com.example.heroku.request.client.Notification;
 import com.example.heroku.response.Format;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,9 @@ public class UserFCMS {
     @Autowired
     private UserFCMRepository userFCMRepository;
 
+    @Autowired
+    MyFireBase myFireBase;
+
     public Mono<ResponseEntity<Format>> createFCMToken(@Valid @ModelAttribute com.example.heroku.model.UserFCM info) {
         return
                 Mono.just(info)
@@ -27,6 +32,16 @@ public class UserFCMS {
                         .flatMap(userFCM ->
                                 Mono.just(ok(Format.builder().response(userFCM.getDevice_id()).build()))
                         );
+    }
+
+    public Mono<ResponseEntity<Format>> sendNotification(@Valid @ModelAttribute Notification notification) {
+        return userFCMRepository.findByDeviceId(notification.getDevice_id())
+                .flatMap(userFCM ->
+                        Mono.just(myFireBase.SendNotification(notification.getTitle(), notification.getMsg(), userFCM.getFcm_id()))
+                )
+                .flatMap(response ->
+                        Mono.just(ok(Format.builder().response(response).build()))
+                );
     }
 
     public Mono<UserFCM> findByDeviceID(String device_id) {

@@ -22,6 +22,8 @@ import java.io.InputStream;
 @RequiredArgsConstructor
 public class MyFireBase {
 
+    final String registrationTopic = "trumbien";
+
     @Value("${firebase.admin.credential}")
     private String firebaseCredential;
 
@@ -60,15 +62,43 @@ public class MyFireBase {
         return isAuthSuccess;
     }
 
-    public void SendNotification(String title, String msg) {
+    public String SendNotification(String title, String msg, String token) {
+
+        if (!isAuthSuccess) {
+            return "not AuthSuccess";
+        }
+
+        try {
+
+            Message message = Message.builder()
+//                    .setNotification(
+//                            Notification.builder()
+//                                    .setTitle(title)
+//                                    .setBody(msg)
+//                                    .build()
+//                    )
+                    .putData("title", title)
+                    .putData("body", msg)
+                    .setToken(token)
+                    .build();
+
+            String response = FirebaseMessaging.getInstance().send(message);
+
+            System.out.println("Successfully sent message: " + response);
+            return response;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "Not success!";
+    }
+
+    public void SendNotification2Admin(String title, String msg) {
 
         if (!isAuthSuccess) {
             return;
         }
 
         try {
-            String registrationTopic = "trumbien";
-
             Message message = Message.builder()
 //                    .setNotification(
 //                            Notification.builder()
