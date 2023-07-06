@@ -4,6 +4,7 @@ import com.flickr4java.flickr.FlickrException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.AndroidConfig;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
@@ -71,12 +72,15 @@ public class MyFireBase {
         try {
 
             Message message = Message.builder()
-//                    .setNotification(
-//                            Notification.builder()
-//                                    .setTitle(title)
-//                                    .setBody(msg)
-//                                    .build()
-//                    )
+                    .setNotification(
+                            Notification.builder()
+                                    .setTitle(title)
+                                    .setBody(msg)
+                                    .build()
+                    )
+                    .setAndroidConfig(AndroidConfig.builder()
+                            .setPriority(AndroidConfig.Priority.HIGH)
+                            .build())
                     .putData("title", title)
                     .putData("body", msg)
                     .setToken(token)
