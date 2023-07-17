@@ -1,8 +1,8 @@
 package com.example.heroku.request.beer;
 
-import com.example.heroku.model.Beer;
-import com.example.heroku.model.BeerUnit;
+import com.example.heroku.model.Product;
 import com.example.heroku.model.Image;
+import com.example.heroku.model.ProductUnit;
 import com.example.heroku.request.datetime.NgbDateStruct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,9 +29,9 @@ public class BeerSubmitData {
 
     public BeerInfo GetBeerInfo() {
 
-        List<com.example.heroku.model.BeerUnit> listMapedUnit = new ArrayList<>();
+        List<ProductUnit> listMapedUnit = new ArrayList<>();
         for (BeerUnit beerUnit : this.listUnit) {
-            listMapedUnit.add(com.example.heroku.model.BeerUnit.builder()
+            listMapedUnit.add(ProductUnit.builder()
                     .name(beerUnit.name)
                     .beer(this.beerSecondID)
                     .price(beerUnit.price)
@@ -39,21 +39,21 @@ public class BeerSubmitData {
                     .volumetric(beerUnit.volumetric)
                     .weight(beerUnit.weight)
                     .beer_unit_second_id(beerUnit.beer_unit_second_id)
-                    .status(com.example.heroku.model.BeerUnit.Status.get(beerUnit.status))
+                    .status(ProductUnit.Status.get(beerUnit.status))
                     .date_expire(beerUnit.GetExpirDateTime())
                     .build());
         }
 
         return BeerInfo
                 .builder()
-                .beer(
-                        Beer
+                .product(
+                        Product
                                 .builder()
                                 .beer_second_id(this.beerSecondID)
                                 .name(this.name)
                                 .detail(this.detail)
-                                .category(Beer.Category.get(this.category))
-                                .status(Beer.Status.get(this.status))
+                                .category(Product.Category.get(this.category))
+                                .status(Product.Status.get(this.status))
                                 .build()
                 )
                 .build()
@@ -68,29 +68,29 @@ public class BeerSubmitData {
         return this;
     }
 
-    public BeerSubmitData FromBeer(Beer beer) {
+    public BeerSubmitData FromBeer(Product product) {
         return BeerSubmitData.builder()
-                .beerSecondID(beer.getBeer_second_id())
-                .name(beer.getName())
-                .detail(beer.getDetail())
-                .category(beer.GetCategoryNuable().getName())
-                .status(beer.GetStatusNuable().getName())
+                .beerSecondID(product.getBeer_second_id())
+                .name(product.getName())
+                .detail(product.getDetail())
+                .category(product.GetCategoryNuable().getName())
+                .status(product.GetStatusNuable().getName())
                 .build();
     }
 
-    public BeerSubmitData SetBeerUnit(List<com.example.heroku.model.BeerUnit> beerUnitList) {
-        listUnit = new BeerUnit[beerUnitList.size()];
+    public BeerSubmitData SetBeerUnit(List<ProductUnit> productUnitList) {
+        listUnit = new BeerUnit[productUnitList.size()];
         for (int i = 0; i < listUnit.length; i++) {
             BeerUnit newB = new BeerUnit();
-            newB.setBeer(beerUnitList.get(i).getBeer());
-            newB.setName(beerUnitList.get(i).getName());
-            newB.setPrice(beerUnitList.get(i).getPrice());
-            newB.setDiscount(beerUnitList.get(i).getDiscount());
-            newB.setDateExpir(NgbDateStruct.FromTimestamp(beerUnitList.get(i).getDate_expire()));
-            newB.setVolumetric(beerUnitList.get(i).getVolumetric());
-            newB.setWeight(beerUnitList.get(i).getWeight());
-            newB.setBeer_unit_second_id(beerUnitList.get(i).getBeer_unit_second_id());
-            newB.setStatus(beerUnitList.get(i).GetStatusNuable().toString());
+            newB.setBeer(productUnitList.get(i).getBeer());
+            newB.setName(productUnitList.get(i).getName());
+            newB.setPrice(productUnitList.get(i).getPrice());
+            newB.setDiscount(productUnitList.get(i).getDiscount());
+            newB.setDateExpir(NgbDateStruct.FromTimestamp(productUnitList.get(i).getDate_expire()));
+            newB.setVolumetric(productUnitList.get(i).getVolumetric());
+            newB.setWeight(productUnitList.get(i).getWeight());
+            newB.setBeer_unit_second_id(productUnitList.get(i).getBeer_unit_second_id());
+            newB.setStatus(productUnitList.get(i).GetStatusNuable().toString());
             listUnit[i] = newB;
         }
         return this;

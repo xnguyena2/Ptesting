@@ -1,15 +1,12 @@
 package com.example.heroku.services;
 
-import com.example.heroku.model.VoucherRelateBeer;
+import com.example.heroku.model.VoucherRelateProduct;
 import com.example.heroku.model.VoucherRelateUserDevice;
 import com.example.heroku.model.repository.VoucherRelateBeerRepository;
 import com.example.heroku.model.repository.VoucherRelateUserDeviceRepository;
 import com.example.heroku.model.repository.VoucherRepository;
 import com.example.heroku.request.voucher.VoucherData;
-import com.example.heroku.response.Format;
-import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -66,7 +63,7 @@ public class Voucher {
                                                 .distinct()
                                                 .map(
                                                         beerID ->
-                                                                VoucherRelateBeer
+                                                                VoucherRelateProduct
                                                                         .builder()
                                                                         .beer_second_id(beerID)
                                                                         .voucher_second_id(voucher.getVoucher_second_id())
@@ -87,7 +84,7 @@ public class Voucher {
                         Mono.just(new ArrayList<String>())
                                 .flatMap(listProduct ->
                                         voucherRelateBeerRepository.getByVoucherSecondId(voucherData.getVoucher_second_id())
-                                                .map(voucherRelateBeer -> listProduct.add(voucherRelateBeer.getBeer_second_id()))
+                                                .map(voucherRelateProduct -> listProduct.add(voucherRelateProduct.getBeer_second_id()))
                                                 .then(Mono.just(listProduct))
                                                 .map(voucherData::SetListProduct)
                                 ).then(Mono.just(voucherData))

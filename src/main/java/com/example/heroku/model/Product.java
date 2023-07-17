@@ -1,6 +1,5 @@
 package com.example.heroku.model;
 
-import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.util.Util;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,12 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Entity
-@Table(name="beer")
+@Table(name="product")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Beer {
+public class Product {
 
     @Id
     String id;
@@ -50,12 +49,12 @@ public class Beer {
         return Util.getInstance().RemoveAccent(name + " " + detail);
     }
 
-    public Beer UpdateMetaSearch(){
+    public Product UpdateMetaSearch(){
         this.meta_search = this.getTokens();
         return this;
     }
 
-    public Beer AutoFill(){
+    public Product AutoFill(){
         this.createat = new Timestamp(new Date().getTime());
         return this;
     }

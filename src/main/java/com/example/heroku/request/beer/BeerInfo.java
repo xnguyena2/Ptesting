@@ -1,7 +1,7 @@
 package com.example.heroku.request.beer;
 
-import com.example.heroku.model.Beer;
-import com.example.heroku.model.BeerUnit;
+import com.example.heroku.model.Product;
+import com.example.heroku.model.ProductUnit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,13 +14,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BeerInfo {
-    private Beer beer;
+    private Product product;
 
-    private BeerUnit[] beerUnit;
+    private ProductUnit[] productUnit;
 
-    public BeerInfo SetBeerUnit(List<BeerUnit> beerUnitList){
-        beerUnit = new BeerUnit[beerUnitList.size()];
-        beerUnitList.toArray(beerUnit);
+    public BeerInfo SetBeerUnit(List<ProductUnit> productUnitList){
+        productUnit = new ProductUnit[productUnitList.size()];
+        productUnitList.toArray(productUnit);
         return this;
     }
 }

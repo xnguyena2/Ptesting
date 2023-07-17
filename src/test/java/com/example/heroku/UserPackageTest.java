@@ -1,10 +1,9 @@
 package com.example.heroku;
 
-import com.example.heroku.model.Beer;
-import com.example.heroku.model.BeerUnit;
+import com.example.heroku.model.Product;
+import com.example.heroku.model.ProductUnit;
 import com.example.heroku.request.beer.BeerPackage;
 import com.example.heroku.request.beer.BeerSubmitData;
-import com.example.heroku.request.beer.BeerUnitDelete;
 import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.services.UserPackage;
@@ -16,7 +15,6 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,11 +38,11 @@ public class UserPackageTest {
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("sold_out");
-                    assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.CRAB);
-                    assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
-                    Flux.just(beerInfo.getBeerUnit())
-                            .sort(Comparator.comparing(BeerUnit::getName))
+                    assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("sold_out");
+                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    Flux.just(beerInfo.getProductUnit())
+                            .sort(Comparator.comparing(ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
@@ -71,11 +69,11 @@ public class UserPackageTest {
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("123");
-                    assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.CRAB);
-                    assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
-                    Flux.just(beerInfo.getBeerUnit())
-                            .sort(Comparator.comparing(BeerUnit::getName))
+                    assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("123");
+                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    Flux.just(beerInfo.getProductUnit())
+                            .sort(Comparator.comparing(ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
@@ -102,11 +100,11 @@ public class UserPackageTest {
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("456");
-                    assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.CRAB);
-                    assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
-                    Flux.just(beerInfo.getBeerUnit())
-                            .sort(Comparator.comparing(BeerUnit::getName))
+                    assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("456");
+                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    Flux.just(beerInfo.getProductUnit())
+                            .sort(Comparator.comparing(ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {

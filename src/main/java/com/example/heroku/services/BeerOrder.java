@@ -1,10 +1,10 @@
 package com.example.heroku.services;
 
 import com.example.heroku.firebase.MyFireBase;
-import com.example.heroku.model.BeerUnit;
-import com.example.heroku.model.BeerUnitOrder;
+import com.example.heroku.model.ProductOrder;
+import com.example.heroku.model.ProductUnit;
+import com.example.heroku.model.ProductUnitOrder;
 import com.example.heroku.model.PackageOrder;
-import com.example.heroku.model.UserPackage;
 import com.example.heroku.model.repository.*;
 import com.example.heroku.request.Order.OrderSearchResult;
 import com.example.heroku.request.beer.PackageOrderData;
@@ -20,7 +20,6 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Component
@@ -59,7 +58,7 @@ public class BeerOrder {
     private Flux<com.example.heroku.model.Voucher> getUserVoucherAndEmpty(PackageOrderData packageOrderData) {
         return Flux.just(packageOrderData.getBeerOrders())
                 .flatMap(packaBeerOrderData ->
-                            voucherServices.getDeviceVoucher(packaBeerOrderData.getBeerOrder().getVoucher_second_id(), packageOrderData.getPackageOrder().getUser_device_id(), packageOrderData.getPackageOrder().getPhone_number_clean(), packaBeerOrderData.getBeerOrder().getBeer_second_id())
+                            voucherServices.getDeviceVoucher(packaBeerOrderData.getProductOrder().getVoucher_second_id(), packageOrderData.getPackageOrder().getUser_device_id(), packageOrderData.getPackageOrder().getPhone_number_clean(), packaBeerOrderData.getProductOrder().getBeer_second_id())
                 )
                 .distinct(
                         com.example.heroku.model.Voucher::getVoucher_second_id
@@ -67,8 +66,8 @@ public class BeerOrder {
                 .switchIfEmpty(Flux.just(com.example.heroku.model.Voucher.builder().build()));
     }
 
-    private Mono<VoucherMerge> caculatorVoucherOfProduct(Timestamp currentTime, Flux<com.example.heroku.model.Voucher> vouchers, String device, com.example.heroku.model.BeerOrder beerOrder) {
-        return vouchers.filter(voucher -> voucher.IsOnlyApplyForProduct(beerOrder.getVoucher_second_id()))
+    private Mono<VoucherMerge> caculatorVoucherOfProduct(Timestamp currentTime, Flux<com.example.heroku.model.Voucher> vouchers, String device, ProductOrder productOrder) {
+        return vouchers.filter(voucher -> voucher.IsOnlyApplyForProduct(productOrder.getVoucher_second_id()))
                 .switchIfEmpty(Mono.just(com.example.heroku.model.Voucher.builder().reuse(0).build()))
                 .map(voucher -> {
                     AtomicReference<Float> discount = new AtomicReference<>((float) 0);
@@ -78,11 +77,11 @@ public class BeerOrder {
                         voucher.comsumeVoucherSync(device, (shareReuse) -> {
                             if (voucher.getDiscount() > 0) {
                                 discount.updateAndGet(v -> (v + voucher.getDiscount()));
-                                System.out.println("--------> comsume only BeerOrder: " + beerOrder.getBeer_second_id() + ", voucher: " + voucher.getVoucher_second_id() + ", discount: " + voucher.getDiscount() + "%");
+                                System.out.println("--------> comsume only BeerOrder: " + productOrder.getBeer_second_id() + ", voucher: " + voucher.getVoucher_second_id() + ", discount: " + voucher.getDiscount() + "%");
                             }
                             if (voucher.getAmount() > 0) {
                                 amount.updateAndGet(v -> (v + voucher.getAmount()));
-                                System.out.println("--------> comsume only BeerOrder: " + beerOrder.getBeer_second_id() + ", voucher: " + voucher.getVoucher_second_id() + ", amount: " + voucher.getAmount());
+                                System.out.println("--------> comsume only BeerOrder: " + productOrder.getBeer_second_id() + ", voucher: " + voucher.getVoucher_second_id() + ", amount: " + voucher.getAmount());
                             }
                         });
                     }
@@ -123,24 +122,24 @@ public class BeerOrder {
                 );
     }
 
-    private Mono<WeightAndVolumetricContainer> calculatorProductPrice(VoucherMerge voucherMerge, BeerUnitOrder beerUnitOrder, BeerUnit beerUnit, PackageOrderData packageOrderData){
-        float price = beerUnitOrder.getNumber_unit() * beerUnit.getPrice();
+    private Mono<WeightAndVolumetricContainer> calculatorProductPrice(VoucherMerge voucherMerge, ProductUnitOrder productUnitOrder, ProductUnit productUnit, PackageOrderData packageOrderData){
+        float price = productUnitOrder.getNumber_unit() * productUnit.getPrice();
         price *= (100 - voucherMerge.getDiscount()) / 100;
         price -= voucherMerge.getAmount();
         if (price < 0) {
             price = 0;
         }
-        System.out.println("calculate beer unit: " + beerUnit.getBeer_unit_second_id() + ", price: " + price);
-        beerUnitOrder.setPrice(price);
+        System.out.println("calculate beer unit: " + productUnit.getBeer_unit_second_id() + ", price: " + price);
+        productUnitOrder.setPrice(price);
         WeightAndVolumetricContainer result = WeightAndVolumetricContainer
                 .builder()
                 .price(price)
-                .weight(beerUnitOrder.getNumber_unit() * beerUnit.getWeight())
-                .volumetric(beerUnitOrder.getNumber_unit() * beerUnit.getVolumetric())
+                .weight(productUnitOrder.getNumber_unit() * productUnit.getWeight())
+                .volumetric(productUnitOrder.getNumber_unit() * productUnit.getVolumetric())
                 .build();
         //save beer order unit;
         if (!packageOrderData.isPreOrder()) {
-            return beerUnitOrderRepository.save(beerUnitOrder.AutoFill(packageOrderData.getPackageOrder().getPackage_order_second_id()))
+            return beerUnitOrderRepository.save(productUnitOrder.AutoFill(packageOrderData.getPackageOrder().getPackage_order_second_id()))
                     .then(Mono.just(result));
         }
         return Mono.just(result);
@@ -149,7 +148,7 @@ public class BeerOrder {
     private Flux<PackageOrderData.BeerOrderData> getProductOrderDataModel(PackageOrderData packageOrderData) {
         return Flux.just(packageOrderData.getBeerOrders())
                 .flatMap(beerOrderData ->
-                        beerRepository.findBySecondIDCanOrder(beerOrderData.getBeerOrder().getBeer_second_id())
+                        beerRepository.findBySecondIDCanOrder(beerOrderData.getProductOrder().getBeer_second_id())
                                 .map(beerOrderData::UpdateName)
                 );
     }
@@ -160,7 +159,7 @@ public class BeerOrder {
         }
         return beerOrderDataFlux
                 .flatMap(beerOrder ->
-                        Flux.just(beerOrder.getBeerUnitOrders())
+                        Flux.just(beerOrder.getProductUnitOrders())
 
                 ).flatMap(beerUnitOrder -> {
                             System.out.println("Clean Package: " + packageOrderData.getPackageOrder().getUser_device_id() + ", " + beerUnitOrder.getBeer_unit_second_id());
@@ -182,14 +181,14 @@ public class BeerOrder {
                                         .flatMap(ghn ->
                                                 beerOrderDataFlux
                                                         .flatMap(beerOrder ->
-                                                                Flux.just(beerOrder.getBeerUnitOrders())
+                                                                Flux.just(beerOrder.getProductUnitOrders())
                                                                         .flatMap(beerUnitOrder ->
                                                                                 beerUnitRepository.findByBeerUnitIDCanOrder(beerUnitOrder.getBeer_unit_second_id())
-                                                                                        .map(BeerUnit::CheckDiscount)
+                                                                                        .map(ProductUnit::CheckDiscount)
                                                                                         .map(beerUnitOrder::UpdateName)
-                                                                                        .map(BeerUnit::UpdateToRealPrice)
+                                                                                        .map(ProductUnit::UpdateToRealPrice)
                                                                                         .flatMap(beerUnit ->
-                                                                                                caculatorVoucherOfProduct(currentTime, vouchers, packageOrderData.getPackageOrder().getUser_device_id(), beerOrder.getBeerOrder())
+                                                                                                caculatorVoucherOfProduct(currentTime, vouchers, packageOrderData.getPackageOrder().getUser_device_id(), beerOrder.getProductOrder())
                                                                                                         .flatMap(voucherMerge ->
                                                                                                                 calculatorProductPrice(voucherMerge, beerUnitOrder, beerUnit, packageOrderData))
                                                                                         )
@@ -205,11 +204,11 @@ public class BeerOrder {
                                                                         )
                                                                         .flatMap(beerOrderWeightAndVolumetricContainer -> {
                                                                                     float price = beerOrderWeightAndVolumetricContainer.getPrice();
-                                                                                    System.out.println("BeerOrder: " + beerOrder.getBeerOrder().getBeer_second_id() + ", Total price: " + price);
-                                                                                    beerOrder.getBeerOrder().setTotal_price(price);
+                                                                                    System.out.println("BeerOrder: " + beerOrder.getProductOrder().getBeer_second_id() + ", Total price: " + price);
+                                                                                    beerOrder.getProductOrder().setTotal_price(price);
                                                                                     //save beer order
                                                                                     if (!packageOrderData.isPreOrder()) {
-                                                                                        return beerOrderRepository.save(beerOrder.getBeerOrder().AutoFill(packageOrderData.getPackageOrder().getPackage_order_second_id()))
+                                                                                        return beerOrderRepository.save(beerOrder.getProductOrder().AutoFill(packageOrderData.getPackageOrder().getPackage_order_second_id()))
                                                                                                 .then(Mono.just(beerOrderWeightAndVolumetricContainer));
                                                                                     }
                                                                                     return Mono.just(beerOrderWeightAndVolumetricContainer);

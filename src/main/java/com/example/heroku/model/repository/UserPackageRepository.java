@@ -20,7 +20,7 @@ public interface UserPackageRepository extends ReactiveCrudRepository<UserPackag
     @Query(value = "DELETE FROM user_package WHERE device_id = :id")
     Flux<UserPackage> DeleteProductByUserID(@Param("id") String id);
 
-    @Query(value = "INSERT INTO user_package(device_id, beer_id, beer_unit, number_unit, status, createat) SELECT :device_id, :beer_id, :beer_unit, :number_unit, :status, NOW() WHERE EXISTS (SELECT * FROM beer WHERE beer_second_id=:beer_id) AND EXISTS (SELECT * FROM beer_unit WHERE beer=:beer_id AND beer_unit_second_id=:beer_unit) AND NOT EXISTS (SELECT * FROM beer WHERE beer_second_id=:beer_id AND (status = 'SOLD_OUT' OR status = 'HIDE')) AND NOT EXISTS (SELECT * FROM beer_unit WHERE beer=:beer_id AND beer_unit_second_id=:beer_unit AND (status = 'SOLD_OUT' OR status = 'HIDE'))")
+    @Query(value = "INSERT INTO user_package(device_id, beer_id, beer_unit, number_unit, status, createat) SELECT :device_id, :beer_id, :beer_unit, :number_unit, :status, NOW() WHERE EXISTS (SELECT * FROM product WHERE beer_second_id=:beer_id) AND EXISTS (SELECT * FROM product_unit WHERE beer=:beer_id AND beer_unit_second_id=:beer_unit) AND NOT EXISTS (SELECT * FROM product WHERE beer_second_id=:beer_id AND (status = 'SOLD_OUT' OR status = 'HIDE')) AND NOT EXISTS (SELECT * FROM product_unit WHERE beer=:beer_id AND beer_unit_second_id=:beer_unit AND (status = 'SOLD_OUT' OR status = 'HIDE'))")
     Mono<UserPackage> AddPackage(@Param("device_id") String device_id, @Param("beer_id") String beer_id, @Param("beer_unit") String beer_unit, @Param("number_unit") int number_unit, @Param("status") UserPackage.Status status);
 
 }

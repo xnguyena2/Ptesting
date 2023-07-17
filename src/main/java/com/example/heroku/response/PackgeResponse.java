@@ -1,6 +1,5 @@
 package com.example.heroku.response;
 
-import com.example.heroku.model.BeerUnit;
 import com.example.heroku.model.UserPackage;
 import com.example.heroku.request.beer.BeerSubmitData;
 import lombok.*;

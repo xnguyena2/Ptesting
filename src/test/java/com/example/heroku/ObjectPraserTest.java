@@ -1,6 +1,6 @@
 package com.example.heroku;
 
-import com.example.heroku.model.Beer;
+import com.example.heroku.model.Product;
 import com.example.heroku.model.UserPackage;
 import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerPackage;
@@ -21,55 +21,55 @@ public class ObjectPraserTest {
 
         BeerInfo beerInfo = new ObjectMapper().readValue(json, BeerSubmitData.class).GetBeerInfo();
 
-        assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("1");
-        assertThat(beerInfo.getBeer().getName()).isEqualTo("Bia Trung Quốc");
-        assertThat(beerInfo.getBeer().getDetail()).isEqualTo("Vành đai 1 đoạn Hoàng Cầu - Voi Phục dài 2,27 km, tổng đầu tư hơn 7.200 tỷ đồng, do Ban Quản lý dự án đầu tư xây dựng công trình dân dụng và công nghiệp thành phố đang triển khai bằng nguồn vốn ngân sách TP Hà Nội.\n\nVành đai 2 trên cao, đoạn Vĩnh Tuy - Ngã Tư Vọng kết hợp mở rộng phần từ Vĩnh Tuy đến Ngã Tư Sở đang thực hiện theo hợp đồng BT (xây dựng - chuyển giao) ký kết giữa Hà Nội và Tập đoàn Vingroup.");
-        assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.SQUID);
+        assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("1");
+        assertThat(beerInfo.getProduct().getName()).isEqualTo("Bia Trung Quốc");
+        assertThat(beerInfo.getProduct().getDetail()).isEqualTo("Vành đai 1 đoạn Hoàng Cầu - Voi Phục dài 2,27 km, tổng đầu tư hơn 7.200 tỷ đồng, do Ban Quản lý dự án đầu tư xây dựng công trình dân dụng và công nghiệp thành phố đang triển khai bằng nguồn vốn ngân sách TP Hà Nội.\n\nVành đai 2 trên cao, đoạn Vĩnh Tuy - Ngã Tư Vọng kết hợp mở rộng phần từ Vĩnh Tuy đến Ngã Tư Sở đang thực hiện theo hợp đồng BT (xây dựng - chuyển giao) ký kết giữa Hà Nội và Tập đoàn Vingroup.");
+        assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.SQUID);
 
-        assertThat(beerInfo.getBeerUnit().length).isEqualTo(1);
-        assertThat(beerInfo.getBeerUnit()[0].getName()).isEqualTo("Lon");
-        assertThat(beerInfo.getBeerUnit()[0].getBeer()).isEqualTo("1");
-        assertThat(beerInfo.getBeerUnit()[0].getDate_expire()).isEqualTo(null);
-        assertThat(beerInfo.getBeerUnit()[0].getDiscount()).isEqualTo(0);
-        assertThat(beerInfo.getBeerUnit()[0].getPrice()).isEqualTo(17000);
-        assertThat(beerInfo.getBeerUnit()[0].getVolumetric()).isEqualTo(0.33f);
-        assertThat(beerInfo.getBeerUnit()[0].getWeight()).isEqualTo(0.2f);
+        assertThat(beerInfo.getProductUnit().length).isEqualTo(1);
+        assertThat(beerInfo.getProductUnit()[0].getName()).isEqualTo("Lon");
+        assertThat(beerInfo.getProductUnit()[0].getBeer()).isEqualTo("1");
+        assertThat(beerInfo.getProductUnit()[0].getDate_expire()).isEqualTo(null);
+        assertThat(beerInfo.getProductUnit()[0].getDiscount()).isEqualTo(0);
+        assertThat(beerInfo.getProductUnit()[0].getPrice()).isEqualTo(17000);
+        assertThat(beerInfo.getProductUnit()[0].getVolumetric()).isEqualTo(0.33f);
+        assertThat(beerInfo.getProductUnit()[0].getWeight()).isEqualTo(0.2f);
 
         json = "{\"beerSecondID\":\"1\",\"listUnit\":[{\"beer\":\"1\",\"name\":\"\",\"price\":0,\"discount\":0,\"volumetric\":0,\"weight\":0,\"beer_unit_second_id\":null,\"dateExpir\":null}]}";
         beerInfo = new ObjectMapper().readValue(json, BeerSubmitData.class).GetBeerInfo();
 
-        assertThat(beerInfo.getBeerUnit().length).isEqualTo(1);
-        assertThat(beerInfo.getBeerUnit()[0].getBeer()).isEqualTo("1");
-        assertThat(beerInfo.getBeerUnit()[0].getDate_expire()).isEqualTo(null);
-        assertThat(beerInfo.getBeerUnit()[0].getDiscount()).isEqualTo(0);
-        assertThat(beerInfo.getBeerUnit()[0].getPrice()).isEqualTo(0);
-        assertThat(beerInfo.getBeerUnit()[0].getWeight()).isEqualTo(0);
-        assertThat(beerInfo.getBeerUnit()[0].getVolumetric()).isEqualTo(0);
+        assertThat(beerInfo.getProductUnit().length).isEqualTo(1);
+        assertThat(beerInfo.getProductUnit()[0].getBeer()).isEqualTo("1");
+        assertThat(beerInfo.getProductUnit()[0].getDate_expire()).isEqualTo(null);
+        assertThat(beerInfo.getProductUnit()[0].getDiscount()).isEqualTo(0);
+        assertThat(beerInfo.getProductUnit()[0].getPrice()).isEqualTo(0);
+        assertThat(beerInfo.getProductUnit()[0].getWeight()).isEqualTo(0);
+        assertThat(beerInfo.getProductUnit()[0].getVolumetric()).isEqualTo(0);
 
         json = "{\"name\":\"Bia Nhập Lậu\",\"beerSecondID\":\"1\",\"detail\":\"Tỉnh lộ 769 từ nút giao Dầu Giây đến quốc lộ 51 sẽ được đầu tư hơn 1.600 tỷ đồng để mở rộng, đón đầu kết nối sân bay Long Thành.\\n\\nSở Giao thông vận tải Đồng Nai vừa trình UBND tỉnh Đồng Nai phê duyệt đầu tư dự án nâng cấp, mở rộng đường tỉnh 769 đi qua hai huyện Thống Nhất và Long Thành. Dự án là công trình giao thông chiến lược trong 5 năm tới nhằm kết nối các quốc lộ trọng yếu đi qua Đồng Nai như quốc lộ 1A, 20 và 51.\",\"category\":\"holothurian\",\"listUnit\":[{\"beer\":\"1\",\"name\":\"Lon\",\"price\":12000,\"discount\":0,\"volumetric\":0.4,\"weight\":0.5,\"beer_unit_second_id\":null,\"dateExpir\":{\"year\":2021,\"month\":1,\"day\":31}},{\"beer\":\"1\",\"name\":\"Thùng\",\"price\":200000,\"discount\":10,\"volumetric\":6,\"weight\":0.5,\"beer_unit_second_id\":null,\"dateExpir\":{\"year\":2020,\"month\":12,\"day\":24}}]}";
         beerInfo = new ObjectMapper().readValue(json, BeerSubmitData.class).GetBeerInfo();
 
-        assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("1");
-        assertThat(beerInfo.getBeer().getName()).isEqualTo("Bia Nhập Lậu");
-        assertThat(beerInfo.getBeer().getDetail()).isEqualTo("Tỉnh lộ 769 từ nút giao Dầu Giây đến quốc lộ 51 sẽ được đầu tư hơn 1.600 tỷ đồng để mở rộng, đón đầu kết nối sân bay Long Thành.\n\nSở Giao thông vận tải Đồng Nai vừa trình UBND tỉnh Đồng Nai phê duyệt đầu tư dự án nâng cấp, mở rộng đường tỉnh 769 đi qua hai huyện Thống Nhất và Long Thành. Dự án là công trình giao thông chiến lược trong 5 năm tới nhằm kết nối các quốc lộ trọng yếu đi qua Đồng Nai như quốc lộ 1A, 20 và 51.");
-        assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.HOLOTHURIAN);
+        assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("1");
+        assertThat(beerInfo.getProduct().getName()).isEqualTo("Bia Nhập Lậu");
+        assertThat(beerInfo.getProduct().getDetail()).isEqualTo("Tỉnh lộ 769 từ nút giao Dầu Giây đến quốc lộ 51 sẽ được đầu tư hơn 1.600 tỷ đồng để mở rộng, đón đầu kết nối sân bay Long Thành.\n\nSở Giao thông vận tải Đồng Nai vừa trình UBND tỉnh Đồng Nai phê duyệt đầu tư dự án nâng cấp, mở rộng đường tỉnh 769 đi qua hai huyện Thống Nhất và Long Thành. Dự án là công trình giao thông chiến lược trong 5 năm tới nhằm kết nối các quốc lộ trọng yếu đi qua Đồng Nai như quốc lộ 1A, 20 và 51.");
+        assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.HOLOTHURIAN);
 
-        assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
-        assertThat(beerInfo.getBeerUnit()[0].getName()).isEqualTo("Lon");
-        assertThat(beerInfo.getBeerUnit()[0].getBeer()).isEqualTo("1");
-        assertThat(NgbDateStruct.FromTimestamp(beerInfo.getBeerUnit()[0].getDate_expire())).isEqualTo(NgbDateStruct.builder().day(31).month(1).year(2021).build());
-        assertThat(beerInfo.getBeerUnit()[0].getDiscount()).isEqualTo(0);
-        assertThat(beerInfo.getBeerUnit()[0].getPrice()).isEqualTo(12000);
-        assertThat(beerInfo.getBeerUnit()[0].getVolumetric()).isEqualTo(0.4f);
-        assertThat(beerInfo.getBeerUnit()[0].getWeight()).isEqualTo(0.5f);
+        assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+        assertThat(beerInfo.getProductUnit()[0].getName()).isEqualTo("Lon");
+        assertThat(beerInfo.getProductUnit()[0].getBeer()).isEqualTo("1");
+        assertThat(NgbDateStruct.FromTimestamp(beerInfo.getProductUnit()[0].getDate_expire())).isEqualTo(NgbDateStruct.builder().day(31).month(1).year(2021).build());
+        assertThat(beerInfo.getProductUnit()[0].getDiscount()).isEqualTo(0);
+        assertThat(beerInfo.getProductUnit()[0].getPrice()).isEqualTo(12000);
+        assertThat(beerInfo.getProductUnit()[0].getVolumetric()).isEqualTo(0.4f);
+        assertThat(beerInfo.getProductUnit()[0].getWeight()).isEqualTo(0.5f);
 
-        assertThat(beerInfo.getBeerUnit()[1].getName()).isEqualTo("Thùng");
-        assertThat(beerInfo.getBeerUnit()[1].getBeer()).isEqualTo("1");
-        assertThat(NgbDateStruct.FromTimestamp(beerInfo.getBeerUnit()[1].getDate_expire())).isEqualTo(NgbDateStruct.builder().day(24).month(12).year(2020).build());
-        assertThat(beerInfo.getBeerUnit()[1].getDiscount()).isEqualTo(10);
-        assertThat(beerInfo.getBeerUnit()[1].getPrice()).isEqualTo(200000);
-        assertThat(beerInfo.getBeerUnit()[1].getVolumetric()).isEqualTo(6f);
-        assertThat(beerInfo.getBeerUnit()[1].getWeight()).isEqualTo(0.5f);
+        assertThat(beerInfo.getProductUnit()[1].getName()).isEqualTo("Thùng");
+        assertThat(beerInfo.getProductUnit()[1].getBeer()).isEqualTo("1");
+        assertThat(NgbDateStruct.FromTimestamp(beerInfo.getProductUnit()[1].getDate_expire())).isEqualTo(NgbDateStruct.builder().day(24).month(12).year(2020).build());
+        assertThat(beerInfo.getProductUnit()[1].getDiscount()).isEqualTo(10);
+        assertThat(beerInfo.getProductUnit()[1].getPrice()).isEqualTo(200000);
+        assertThat(beerInfo.getProductUnit()[1].getVolumetric()).isEqualTo(6f);
+        assertThat(beerInfo.getProductUnit()[1].getWeight()).isEqualTo(0.5f);
     }
 
 

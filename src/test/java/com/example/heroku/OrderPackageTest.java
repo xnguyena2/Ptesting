@@ -1,14 +1,16 @@
 package com.example.heroku;
 
-import com.example.heroku.model.Beer;
-import com.example.heroku.model.BeerUnit;
-import com.example.heroku.model.BeerUnitOrder;
+import com.example.heroku.model.*;
 import com.example.heroku.model.PackageOrder;
 import com.example.heroku.model.repository.BeerUnitRepository;
 import com.example.heroku.request.beer.*;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.request.voucher.VoucherData;
 import com.example.heroku.services.*;
+import com.example.heroku.services.ShippingProvider;
+import com.example.heroku.services.UserDevice;
+import com.example.heroku.services.UserPackage;
+import com.example.heroku.services.Voucher;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -254,20 +256,20 @@ public class OrderPackageTest extends TestConfig {
 
     void orderTest() {
 
-        AtomicReference<BeerUnit> beerUnit1= new AtomicReference<BeerUnit>();
-        AtomicReference<BeerUnit> beerUnit2 = new AtomicReference<BeerUnit>();
+        AtomicReference<ProductUnit> beerUnit1= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beerUnit2 = new AtomicReference<ProductUnit>();
 
-        AtomicReference<BeerUnit> beerUnit3= new AtomicReference<BeerUnit>();
-        AtomicReference<BeerUnit> beerUnit4 = new AtomicReference<BeerUnit>();
+        AtomicReference<ProductUnit> beerUnit3= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beerUnit4 = new AtomicReference<ProductUnit>();
 
-        AtomicReference<BeerUnit> beerUnitsold_out1= new AtomicReference<BeerUnit>();
-        AtomicReference<BeerUnit> beerUnitsold_out2 = new AtomicReference<BeerUnit>();
+        AtomicReference<ProductUnit> beerUnitsold_out1= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beerUnitsold_out2 = new AtomicReference<ProductUnit>();
 
-        AtomicReference<BeerUnit> beerUnitsold_out21= new AtomicReference<BeerUnit>();
-        AtomicReference<BeerUnit> beerUnitsold_out22 = new AtomicReference<BeerUnit>();
+        AtomicReference<ProductUnit> beerUnitsold_out21= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beerUnitsold_out22 = new AtomicReference<ProductUnit>();
 
-        AtomicReference<BeerUnit> beerUnithide1= new AtomicReference<BeerUnit>();
-        AtomicReference<BeerUnit> beerUnithide2 = new AtomicReference<BeerUnit>();
+        AtomicReference<ProductUnit> beerUnithide1= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beerUnithide2 = new AtomicReference<ProductUnit>();
 
         beerUnitRepository.findByBeerID("beer_order1")
                 .as(StepVerifier::create)
@@ -300,31 +302,31 @@ public class OrderPackageTest extends TestConfig {
                 .verifyComplete();
 
         if(beerUnit2.get().getName().equals("thung")){
-            BeerUnit temp = beerUnit2.get();
+            ProductUnit temp = beerUnit2.get();
             beerUnit2.set(beerUnit1.get());
             beerUnit1.set(temp);
         }
 
         if(beerUnit4.get().getName().equals("thung")){
-            BeerUnit temp = beerUnit4.get();
+            ProductUnit temp = beerUnit4.get();
             beerUnit4.set(beerUnit3.get());
             beerUnit3.set(temp);
         }
 
         if(beerUnitsold_out2.get().getName().equals("thung")){
-            BeerUnit temp = beerUnitsold_out2.get();
+            ProductUnit temp = beerUnitsold_out2.get();
             beerUnitsold_out2.set(beerUnitsold_out1.get());
             beerUnitsold_out1.set(temp);
         }
 
         if(beerUnitsold_out22.get().getName().equals("thung")){
-            BeerUnit temp = beerUnitsold_out22.get();
+            ProductUnit temp = beerUnitsold_out22.get();
             beerUnitsold_out22.set(beerUnitsold_out21.get());
             beerUnitsold_out21.set(temp);
         }
 
         if(beerUnithide2.get().getName().equals("thung")){
-            BeerUnit temp = beerUnithide2.get();
+            ProductUnit temp = beerUnithide2.get();
             beerUnithide2.set(beerUnithide1.get());
             beerUnithide1.set(temp);
         }
@@ -347,21 +349,21 @@ public class OrderPackageTest extends TestConfig {
                         new PackageOrderData.BeerOrderData[]{
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order1")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit1.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit2.get().getBeer())
@@ -400,22 +402,22 @@ public class OrderPackageTest extends TestConfig {
                         new PackageOrderData.BeerOrderData[]{
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_5K")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit1.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit2.get().getBeer())
@@ -455,22 +457,22 @@ public class OrderPackageTest extends TestConfig {
                         new PackageOrderData.BeerOrderData[]{
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_5Kk")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit1.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit2.get().getBeer())
@@ -509,22 +511,22 @@ public class OrderPackageTest extends TestConfig {
                         new PackageOrderData.BeerOrderData[]{
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit1.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit2.get().getBeer())
@@ -536,22 +538,22 @@ public class OrderPackageTest extends TestConfig {
                                 ,
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order2")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit3.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit3.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit4.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit4.get().getBeer())
@@ -590,22 +592,22 @@ public class OrderPackageTest extends TestConfig {
                         new PackageOrderData.BeerOrderData[]{
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit1.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit2.get().getBeer())
@@ -617,22 +619,22 @@ public class OrderPackageTest extends TestConfig {
                                 ,
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order2")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit3.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit3.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit4.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit4.get().getBeer())
@@ -672,22 +674,22 @@ public class OrderPackageTest extends TestConfig {
                         new PackageOrderData.BeerOrderData[]{
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit1.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit2.get().getBeer())
@@ -699,22 +701,22 @@ public class OrderPackageTest extends TestConfig {
                                 ,
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order2")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit3.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit3.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit4.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit4.get().getBeer())
@@ -754,22 +756,22 @@ public class OrderPackageTest extends TestConfig {
                         new PackageOrderData.BeerOrderData[]{
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit1.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit2.get().getBeer())
@@ -781,22 +783,22 @@ public class OrderPackageTest extends TestConfig {
                                 ,
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order_sold_out1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnitsold_out1.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnitsold_out1.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnitsold_out2.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnitsold_out2.get().getBeer())
@@ -836,22 +838,22 @@ public class OrderPackageTest extends TestConfig {
                         new PackageOrderData.BeerOrderData[]{
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit1.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnit2.get().getBeer())
@@ -863,22 +865,22 @@ public class OrderPackageTest extends TestConfig {
                                 ,
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order_sold_out2")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnitsold_out21.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnitsold_out21.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnitsold_out22.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnitsold_out22.get().getBeer())
@@ -919,22 +921,22 @@ public class OrderPackageTest extends TestConfig {
                         new PackageOrderData.BeerOrderData[]{
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order_hide2")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnithide1.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnithide1.get().getBeer())
                                                                 .number_unit(10)
                                                                 .build(),
-                                                        BeerUnitOrder
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnithide2.get().getBeer_unit_second_id())
                                                                 .beer_second_id(beerUnithide2.get().getBeer())
@@ -1000,8 +1002,8 @@ public class OrderPackageTest extends TestConfig {
         beerAPI.CreateBeer(
                 BeerInfo
                         .builder()
-                        .beerUnit(new BeerUnit[]{
-                                BeerUnit
+                        .productUnit(new ProductUnit[]{
+                                ProductUnit
                                         .builder()
                                         .beer("beer_order1")
                                         .price(10)
@@ -1010,7 +1012,7 @@ public class OrderPackageTest extends TestConfig {
                                         .date_expire(new Timestamp(new Date().getTime()))
                                         .name("thung")
                                         .build(),
-                                BeerUnit
+                                ProductUnit
                                         .builder()
                                         .beer("beer_order1")
                                         .price(20)
@@ -1020,9 +1022,9 @@ public class OrderPackageTest extends TestConfig {
                                         .name("lon")
                                         .build()
                         })
-                        .beer(Beer
+                        .product(Product
                                 .builder()
-                                .category(Beer.Category.CRAB)
+                                .category(Product.Category.CRAB)
                                 .name("beer tigerrrrr")
                                 .beer_second_id("beer_order1")
                                 .detail("bia for order 1")
@@ -1036,8 +1038,8 @@ public class OrderPackageTest extends TestConfig {
         beerAPI.CreateBeer(
                 BeerInfo
                         .builder()
-                        .beerUnit(new BeerUnit[]{
-                                BeerUnit
+                        .productUnit(new ProductUnit[]{
+                                ProductUnit
                                         .builder()
                                         .beer("beer_order2")
                                         .price(50)
@@ -1045,7 +1047,7 @@ public class OrderPackageTest extends TestConfig {
                                         .date_expire(new Timestamp(new Date().getTime()))
                                         .name("thung")
                                         .build(),
-                                BeerUnit
+                                ProductUnit
                                         .builder()
                                         .beer("beer_order2")
                                         .price(60)
@@ -1054,9 +1056,9 @@ public class OrderPackageTest extends TestConfig {
                                         .name("lon")
                                         .build()
                         })
-                        .beer(Beer
+                        .product(Product
                                 .builder()
-                                .category(Beer.Category.CRAB)
+                                .category(Product.Category.CRAB)
                                 .name("beer tigerrrrr")
                                 .beer_second_id("beer_order2")
                                 .detail("bia for order 2")
@@ -1070,8 +1072,8 @@ public class OrderPackageTest extends TestConfig {
         beerAPI.CreateBeer(
                 BeerInfo
                         .builder()
-                        .beerUnit(new BeerUnit[]{
-                                BeerUnit
+                        .productUnit(new ProductUnit[]{
+                                ProductUnit
                                         .builder()
                                         .beer("beer_order3")
                                         .price(100)
@@ -1079,16 +1081,16 @@ public class OrderPackageTest extends TestConfig {
                                         .date_expire(new Timestamp(new Date().getTime()))
                                         .name("thung")
                                         .build(),
-                                BeerUnit
+                                ProductUnit
                                         .builder()
                                         .beer("beer_order3")
                                         .price(110)
                                         .name("lon")
                                         .build()
                         })
-                        .beer(Beer
+                        .product(Product
                                 .builder()
-                                .category(Beer.Category.CRAB)
+                                .category(Product.Category.CRAB)
                                 .name("beer tigerrrrr")
                                 .beer_second_id("beer_order3")
                                 .detail("bia for order 3")
@@ -1102,8 +1104,8 @@ public class OrderPackageTest extends TestConfig {
         beerAPI.CreateBeer(
                         BeerInfo
                                 .builder()
-                                .beerUnit(new BeerUnit[]{
-                                        BeerUnit
+                                .productUnit(new ProductUnit[]{
+                                        ProductUnit
                                                 .builder()
                                                 .beer("beer_order_sold_out1")
                                                 .price(100)
@@ -1111,20 +1113,20 @@ public class OrderPackageTest extends TestConfig {
                                                 .date_expire(new Timestamp(new Date().getTime()))
                                                 .name("thung")
                                                 .build(),
-                                        BeerUnit
+                                        ProductUnit
                                                 .builder()
                                                 .beer("beer_order_sold_out1")
                                                 .price(110)
                                                 .name("lon")
                                                 .build()
                                 })
-                                .beer(Beer
+                                .product(Product
                                         .builder()
-                                        .category(Beer.Category.CRAB)
+                                        .category(Product.Category.CRAB)
                                         .name("sold out 1")
                                         .beer_second_id("beer_order_sold_out1")
                                         .detail("sold out 1")
-                                        .status(Beer.Status.SOLD_OUT)
+                                        .status(Product.Status.SOLD_OUT)
                                         .build()
                                         .AutoFill()
                                 )
@@ -1135,26 +1137,26 @@ public class OrderPackageTest extends TestConfig {
         beerAPI.CreateBeer(
                         BeerInfo
                                 .builder()
-                                .beerUnit(new BeerUnit[]{
-                                        BeerUnit
+                                .productUnit(new ProductUnit[]{
+                                        ProductUnit
                                                 .builder()
                                                 .beer("beer_order_sold_out2")
                                                 .price(100)
                                                 .discount(10)
                                                 .date_expire(new Timestamp(new Date().getTime()))
                                                 .name("thung")
-                                                .status(BeerUnit.Status.SOLD_OUT)
+                                                .status(ProductUnit.Status.SOLD_OUT)
                                                 .build(),
-                                        BeerUnit
+                                        ProductUnit
                                                 .builder()
                                                 .beer("beer_order_sold_out2")
                                                 .price(110)
                                                 .name("lon")
                                                 .build()
                                 })
-                                .beer(Beer
+                                .product(Product
                                         .builder()
-                                        .category(Beer.Category.CRAB)
+                                        .category(Product.Category.CRAB)
                                         .name("sold out 2")
                                         .beer_second_id("beer_order_sold_out2")
                                         .detail("sold out 2")
@@ -1168,8 +1170,8 @@ public class OrderPackageTest extends TestConfig {
         beerAPI.CreateBeer(
                         BeerInfo
                                 .builder()
-                                .beerUnit(new BeerUnit[]{
-                                        BeerUnit
+                                .productUnit(new ProductUnit[]{
+                                        ProductUnit
                                                 .builder()
                                                 .beer("beer_order_hide2")
                                                 .price(100)
@@ -1177,19 +1179,19 @@ public class OrderPackageTest extends TestConfig {
                                                 .date_expire(new Timestamp(new Date().getTime()))
                                                 .name("thung")
                                                 .build(),
-                                        BeerUnit
+                                        ProductUnit
                                                 .builder()
                                                 .beer("beer_order_hide2")
                                                 .price(110)
                                                 .name("lon")
                                                 .build()
                                 })
-                                .beer(Beer
+                                .product(Product
                                         .builder()
-                                        .category(Beer.Category.CRAB)
+                                        .category(Product.Category.CRAB)
                                         .name("sold out 2")
                                         .beer_second_id("beer_order_hide2")
-                                        .status(Beer.Status.HIDE)
+                                        .status(Product.Status.HIDE)
                                         .detail("sold out 2")
                                         .build()
                                         .AutoFill()
@@ -1217,11 +1219,11 @@ public class OrderPackageTest extends TestConfig {
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getBeer().getBeer_second_id()).isEqualTo("beer_order1");
-                    assertThat(beerInfo.getBeer().getCategory()).isEqualTo(Beer.Category.CRAB);
-                    assertThat(beerInfo.getBeerUnit().length).isEqualTo(2);
-                    Flux.just(beerInfo.getBeerUnit())
-                            .sort(Comparator.comparing(BeerUnit::getName))
+                    assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("beer_order1");
+                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    Flux.just(beerInfo.getProductUnit())
+                            .sort(Comparator.comparing(ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
@@ -1276,16 +1278,16 @@ public class OrderPackageTest extends TestConfig {
                         new PackageOrderData.BeerOrderData[]{
                                 PackageOrderData.BeerOrderData
                                         .builder()
-                                        .beerOrder(
-                                                com.example.heroku.model.BeerOrder
+                                        .productOrder(
+                                                ProductOrder
                                                         .builder()
                                                         .beer_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
-                                        .beerUnitOrders(
-                                                new BeerUnitOrder[]{
-                                                        BeerUnitOrder
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
                                                                 .builder()
                                                                 .beer_unit_second_id(beerUnit4561ID.get())
                                                                 .beer_second_id("beer_order1")

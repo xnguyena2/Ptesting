@@ -1,10 +1,9 @@
 package com.example.heroku.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
@@ -13,23 +12,24 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
-@Table(name="beer_unit_order")
-@SuperBuilder
+@Table(name="voucher_relate_product")
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BeerUnitOrder extends entity.BeerUnitOrder{
+public class VoucherRelateProduct {
+
     @Id
     String id;
 
-    public BeerUnitOrder AutoFill(String packageOrderSecondID) {
-        this.package_order_second_id = packageOrderSecondID;
+    private String voucher_second_id;
+
+    private String beer_second_id;
+
+    private Timestamp createat;
+
+    public VoucherRelateProduct AutoFill(){
         this.createat = new Timestamp(new Date().getTime());
         return this;
     }
-
-    public BeerUnit UpdateName(BeerUnit beerUnit){
-        this.name = beerUnit.getName();
-        return beerUnit;
-    }
-
 }

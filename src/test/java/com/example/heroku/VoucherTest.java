@@ -1,6 +1,5 @@
 package com.example.heroku;
 
-import com.example.heroku.model.BeerUnit;
 import com.example.heroku.request.voucher.VoucherData;
 import com.example.heroku.services.Voucher;
 import lombok.Builder;

@@ -1,6 +1,6 @@
 package com.example.heroku.response;
 
-import com.example.heroku.model.BeerOrder;
+import com.example.heroku.model.ProductOrder;
 import com.example.heroku.model.PackageOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BeerOrderStatus extends BeerOrder {
+public class ProductOrderStatus extends ProductOrder {
 
     private PackageOrder.Status status;
 }

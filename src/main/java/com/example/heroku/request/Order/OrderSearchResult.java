@@ -1,6 +1,6 @@
 package com.example.heroku.request.Order;
 
-import com.example.heroku.model.BeerUnitOrder;
+import com.example.heroku.model.ProductUnitOrder;
 import com.example.heroku.model.PackageOrder;
 import com.example.heroku.services.VietNamAddress;
 
@@ -69,7 +69,7 @@ public class OrderSearchResult  extends order.OrderSearchResult {
 
             }
 
-            public BeerOrderData Add(BeerUnitOrder newItem) {
+            public BeerOrderData Add(ProductUnitOrder newItem) {
                 if (beerUnitOrderList == null) {
                     beerUnitOrderList = new ArrayList<>();
                 }

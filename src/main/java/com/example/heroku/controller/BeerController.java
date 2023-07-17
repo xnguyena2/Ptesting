@@ -1,7 +1,7 @@
 package com.example.heroku.controller;
 
-import com.example.heroku.model.Beer;
-import com.example.heroku.model.BeerUnit;
+import com.example.heroku.model.Product;
+import com.example.heroku.model.ProductUnit;
 import com.example.heroku.model.Image;
 import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
@@ -57,15 +57,15 @@ public class BeerController {
 
     @PostMapping("/admin/create")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<BeerUnit> addBeerInfo(@RequestBody @Valid BeerSubmitData beerInfo) {
+    public Flux<ProductUnit> addBeerInfo(@RequestBody @Valid BeerSubmitData beerInfo) {
         BeerInfo beerInf = beerInfo.GetBeerInfo();
-        System.out.println("add or update beer: " + beerInf.getBeer().getName());
+        System.out.println("add or update beer: " + beerInf.getProduct().getName());
         return beerAPI.CreateBeer(beerInf);
     }
 
     @DeleteMapping("/admin/delete/{id}")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<Beer> delete(@PathVariable("id") String beerID) {
+    public Mono<Product> delete(@PathVariable("id") String beerID) {
         System.out.println("delete beer: " + beerID);
         return beerAPI.DeleteBeerByID(beerID);
     }

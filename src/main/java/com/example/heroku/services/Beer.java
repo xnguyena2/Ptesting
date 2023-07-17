@@ -1,6 +1,7 @@
 package com.example.heroku.services;
 
-import com.example.heroku.model.BeerUnit;
+import com.example.heroku.model.ProductUnit;
+import com.example.heroku.model.Product;
 import com.example.heroku.model.repository.*;
 import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
@@ -39,14 +40,14 @@ public class Beer {
     @Autowired
     BeerUnitRepository beerUnitRepository;
 
-    public Flux<BeerUnit> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
+    public Flux<ProductUnit> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
         return Mono.just(info)
                 .flatMap(beerInfo ->
-                        this.beerRepository.deleteBySecondId(beerInfo.getBeer().getBeer_second_id())
+                        this.beerRepository.deleteBySecondId(beerInfo.getProduct().getBeer_second_id())
                 )
                 .then(Mono.just(info)
                         .flatMap(beerInfo ->
-                                this.beerRepository.save(beerInfo.getBeer().UpdateMetaSearch().AutoFill())
+                                this.beerRepository.save(beerInfo.getProduct().UpdateMetaSearch().AutoFill())
                         )
                 )
                 .flatMap(beer ->
@@ -54,25 +55,25 @@ public class Beer {
                 )
                 .then(Mono.just(info)
                         .flatMap(beerInfo ->
-                                this.searchBeer.saveToken(beerInfo.getBeer().getBeer_second_id(),
-                                        beerInfo.getBeer().getTokens()
+                                this.searchBeer.saveToken(beerInfo.getProduct().getBeer_second_id(),
+                                        beerInfo.getProduct().getTokens()
                                 )
                         )
                 )
                 .then(Mono.just(info)
                         .flatMap(
                                 beerInfo ->
-                                        this.beerUnitRepository.deleteByBeerId(info.getBeer().getBeer_second_id())
+                                        this.beerUnitRepository.deleteByBeerId(info.getProduct().getBeer_second_id())
                         )
                 )
-                .thenMany(Flux.just(info.getBeerUnit())
+                .thenMany(Flux.just(info.getProductUnit())
                         .flatMap(beerUnit ->
                                 this.beerUnitRepository.save(beerUnit.AutoFill())
                         )
                 );
     }
 
-    public Mono<com.example.heroku.model.Beer> DeleteBeerByID(String id) {
+    public Mono<Product> DeleteBeerByID(String id) {
         return imageRepository.findByCategory(id)
                 .flatMap(image -> imageAPI.Delete(IDContainer.builder().id(image.getImgid()).build()))
                 .then(
@@ -175,13 +176,13 @@ public class Beer {
                 );
     }
 
-    public Mono<BeerSubmitData> CoverToSubmitData(com.example.heroku.model.Beer beer) {
-        return Mono.just(BeerSubmitData.builder().build().FromBeer(beer))
+    public Mono<BeerSubmitData> CoverToSubmitData(Product product) {
+        return Mono.just(BeerSubmitData.builder().build().FromBeer(product))
                 .flatMap(beerSubmitData ->
-                        Mono.just(new ArrayList<BeerUnit>())
+                        Mono.just(new ArrayList<ProductUnit>())
                                 .flatMap(beerUnits ->
                                         beerUnitRepository.findByBeerID(beerSubmitData.getBeerSecondID())
-                                                .map(BeerUnit::CheckDiscount)
+                                                .map(ProductUnit::CheckDiscount)
                                                 .map(beerUnits::add)
                                                 .then(
                                                         Mono.just(beerUnits)
@@ -351,7 +352,7 @@ public class Beer {
     }
 
     public Mono<SearchResult<BeerSubmitData>> AdminCountGetAllBeerByCategory(SearchQuery query) {
-        final com.example.heroku.model.Beer.Category category = com.example.heroku.model.Beer.Category.get(query.getQuery());
+        final Product.Category category = Product.Category.get(query.getQuery());
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();
@@ -389,7 +390,7 @@ public class Beer {
     }
 
     public Mono<SearchResult<BeerSubmitData>> CountGetAllBeerByCategory(SearchQuery query) {
-        final com.example.heroku.model.Beer.Category category = com.example.heroku.model.Beer.Category.get(query.getQuery());
+        final Product.Category category = Product.Category.get(query.getQuery());
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();

@@ -11,15 +11,15 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
-@Table(name="beer_order")
+@Table(name="product_order")
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BeerOrder extends entity.BeerOrder {
+public class ProductOrder extends entity.BeerOrder {
     @Id
     String id;
 
-    public BeerOrder AutoFill(String packageOrderSecondID) {
+    public ProductOrder AutoFill(String packageOrderSecondID) {
         this.package_order_second_id = packageOrderSecondID;
         this.createat = new Timestamp(new Date().getTime());
         return this;

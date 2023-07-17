@@ -1,6 +1,6 @@
 package com.example.heroku.services;
 
-import com.example.heroku.model.BeerOrder;
+import com.example.heroku.model.ProductOrder;
 import com.example.heroku.model.repository.BeerOrderRepository;
 import com.example.heroku.model.repository.BeerUnitOrderRepository;
 import com.example.heroku.model.repository.PackageOrderRepository;
@@ -50,7 +50,7 @@ public class PackageOrder {
                 .map(OrderSearchResult.PackageOrderData::new)
                 .flatMap(packageOrderData ->
                         beerOrderRepository.findBySecondID(packageOrderData.getPackage_order_second_id())
-                                .distinct(BeerOrder::getBeer_second_id)
+                                .distinct(ProductOrder::getBeer_second_id)
                                 .map(OrderSearchResult.PackageOrderData.BeerOrderData::new)
                                 .map(packageOrderData::Add)
                                 .flatMap(beerOrderData ->
