@@ -1,7 +1,10 @@
 package com.example.heroku.model;
 
 import com.example.heroku.util.Util;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 
@@ -10,9 +13,9 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name="package_order")
-@EqualsAndHashCode(callSuper=false)
 @Data
 @SuperBuilder
 @NoArgsConstructor

@@ -2,18 +2,19 @@ package entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PackageOrder {
+public class PackageOrder extends BaseEntity {
 
     protected String package_order_second_id;
 
@@ -40,8 +41,6 @@ public class PackageOrder {
     protected float ship_price;
 
     protected Status status;
-
-    protected Timestamp createat;
 
     public enum Status{
         PRE_ORDER("PRE_ORDER"),

@@ -1,18 +1,16 @@
 package entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.sql.Timestamp;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BeerUnitOrder {
+public class BeerUnitOrder extends BaseEntity {
 
     protected String name;
 
@@ -27,6 +25,4 @@ public class BeerUnitOrder {
     protected float price;
 
     protected float total_discount;
-
-    protected Timestamp createat;
 }
