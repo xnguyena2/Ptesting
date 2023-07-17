@@ -24,7 +24,7 @@ public class VoucherData {
 
     private String status;
 
-    private boolean for_all_beer;
+    private boolean for_all_product;
 
     private boolean for_all_user;
 
@@ -52,7 +52,7 @@ public class VoucherData {
                 .reuse(getReuse())
                 .date_expire(GetExpirDateTime())
                 .status(Voucher.Status.get(getStatus()))
-                .for_all_beer(isFor_all_beer())
+                .for_all_product(isFor_all_product())
                 .for_all_user(isFor_all_user())
                 .build();
     }
@@ -66,7 +66,7 @@ public class VoucherData {
         setReuse(v.getReuse());
         setDateExpir(NgbDateStruct.FromTimestamp(v.getDate_expire()));
         setStatus(v.getStatus().getName());
-        setFor_all_beer(v.isFor_all_beer());
+        setFor_all_product(v.isFor_all_product());
         setFor_all_user(v.isFor_all_user());
         return this;
     }

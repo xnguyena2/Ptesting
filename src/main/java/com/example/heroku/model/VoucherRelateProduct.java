@@ -24,7 +24,7 @@ public class VoucherRelateProduct {
 
     private String voucher_second_id;
 
-    private String beer_second_id;
+    private String product_second_id;
 
     private Timestamp createat;
 

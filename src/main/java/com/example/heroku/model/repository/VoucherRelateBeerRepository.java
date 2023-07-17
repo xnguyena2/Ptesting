@@ -14,6 +14,6 @@ public interface VoucherRelateBeerRepository extends ReactiveCrudRepository<Vouc
     @Query(value = "SELECT * FROM voucher_relate_product WHERE voucher_relate_product.voucher_second_id = :id")
     Flux<VoucherRelateProduct> getByVoucherSecondId(@Param("id")String id);
 
-    @Query(value = "SELECT * FROM voucher_relate_product WHERE voucher_relate_product.voucher_second_id = :id AND voucher_relate_product.beer_second_id = :beer_id")
+    @Query(value = "SELECT * FROM voucher_relate_product WHERE voucher_relate_product.voucher_second_id = :id AND voucher_relate_product.product_second_id = :beer_id")
     Mono<VoucherRelateProduct> getByVoucherSecondIdAndBeerSecondID(@Param("id")String id, @Param("beer_id")String beerID);
 }

@@ -964,7 +964,7 @@ public class OrderPackageTest extends TestConfig {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .for_all_beer(true)
+                                .for_all_product(true)
                                 .for_all_user(true)
                                 .voucher_second_id("ORDER_GIAM_5K")
                                 .detail("Giảm 5k trên toàn bộ sản phẩm")
@@ -976,7 +976,7 @@ public class OrderPackageTest extends TestConfig {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .for_all_beer(true)
+                                .for_all_product(true)
                                 .voucher_second_id("ORDER_GIAM_30%")
                                 .discount(30)
                                 .reuse(200)

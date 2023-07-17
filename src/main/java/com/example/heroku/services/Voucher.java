@@ -57,7 +57,7 @@ public class Voucher {
                         )
                 )
                 .then(Mono.just(voucherData)
-                        .filter(vd -> !vd.isFor_all_beer())
+                        .filter(vd -> !vd.isFor_all_product())
                         .flatMap(vd ->
                                 voucherRelateBeerRepository.saveAll(Flux.just(vd.getListBeer())
                                                 .distinct()
@@ -65,7 +65,7 @@ public class Voucher {
                                                         beerID ->
                                                                 VoucherRelateProduct
                                                                         .builder()
-                                                                        .beer_second_id(beerID)
+                                                                        .product_second_id(beerID)
                                                                         .voucher_second_id(voucher.getVoucher_second_id())
                                                                         .build()
                                                                         .AutoFill()
@@ -84,7 +84,7 @@ public class Voucher {
                         Mono.just(new ArrayList<String>())
                                 .flatMap(listProduct ->
                                         voucherRelateBeerRepository.getByVoucherSecondId(voucherData.getVoucher_second_id())
-                                                .map(voucherRelateProduct -> listProduct.add(voucherRelateProduct.getBeer_second_id()))
+                                                .map(voucherRelateProduct -> listProduct.add(voucherRelateProduct.getProduct_second_id()))
                                                 .then(Mono.just(listProduct))
                                                 .map(voucherData::SetListProduct)
                                 ).then(Mono.just(voucherData))

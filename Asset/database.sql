@@ -16,10 +16,10 @@ CREATE TABLE IF NOT EXISTS user_device (id SERIAL PRIMARY KEY, device_id VARCHAR
 CREATE TABLE IF NOT EXISTS user_fcm (id SERIAL PRIMARY KEY, device_id VARCHAR, fcm_id VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS user_address (id SERIAL PRIMARY KEY, address_id VARCHAR, device_id VARCHAR, reciver_fullname VARCHAR, phone_number VARCHAR, house_number VARCHAR, region INTEGER, district INTEGER, ward INTEGER, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS user_package (id SERIAL PRIMARY KEY, device_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, number_unit INTEGER, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS voucher (id SERIAL PRIMARY KEY, voucher_second_id VARCHAR, detail VARCHAR, discount float8, amount float8, reuse INTEGER, for_all_beer BOOLEAN, for_all_user BOOLEAN, date_expire TIMESTAMP, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS voucher (id SERIAL PRIMARY KEY, voucher_second_id VARCHAR, detail VARCHAR, discount float8, amount float8, reuse INTEGER, for_all_product BOOLEAN, for_all_user BOOLEAN, date_expire TIMESTAMP, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS voucher_relate_user_device (id SERIAL PRIMARY KEY, voucher_second_id VARCHAR, reuse INTEGER, device_id VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS voucher_relate_product (id SERIAL PRIMARY KEY, voucher_second_id VARCHAR, beer_second_id VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_view_count (id SERIAL PRIMARY KEY, beer_id VARCHAR, device_id VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS voucher_relate_product (id SERIAL PRIMARY KEY, voucher_second_id VARCHAR, product_second_id VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_view_count (id SERIAL PRIMARY KEY, product_second_id VARCHAR, device_id VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS notification (id SERIAL PRIMARY KEY, notification_second_id VARCHAR, title VARCHAR, detail VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS notification_relate_user_device (id SERIAL PRIMARY KEY, notification_second_id VARCHAR, user_device_id VARCHAR, createat TIMESTAMP, status VARCHAR);
 CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, provider_id VARCHAR, name VARCHAR, config TEXT, createat TIMESTAMP);

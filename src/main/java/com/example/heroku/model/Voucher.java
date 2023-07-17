@@ -41,7 +41,7 @@ public class Voucher {
 
     private Timestamp createat;
 
-    private boolean for_all_beer;
+    private boolean for_all_product;
 
     private boolean for_all_user;
 
@@ -126,6 +126,6 @@ public class Voucher {
     public boolean IsOnlyApplyForProduct(String productVOucher){
         if(voucher_second_id == null)
             return false;
-        return !isFor_all_beer() && voucher_second_id.equals(productVOucher);
+        return !isFor_all_product() && voucher_second_id.equals(productVOucher);
     }
 }

@@ -94,7 +94,7 @@ public class BeerOrder {
     }
 
     private Mono<VoucherMerge> calculatorVoucherForAllBeer(Timestamp currentTime, Flux<com.example.heroku.model.Voucher> vouchers, String device) {
-        return vouchers.filter(com.example.heroku.model.Voucher::isFor_all_beer)
+        return vouchers.filter(com.example.heroku.model.Voucher::isFor_all_product)
                 .switchIfEmpty(Mono.just(com.example.heroku.model.Voucher.builder().reuse(0).build()))
                 .flatMap(voucher ->
                 {

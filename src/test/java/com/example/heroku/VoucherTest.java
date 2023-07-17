@@ -20,7 +20,7 @@ public class VoucherTest {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .for_all_beer(true)
+                                .for_all_product(true)
                                 .for_all_user(true)
                                 .voucher_second_id("GIAM_5K")
                                 .detail("Giảm 5k trên toàn bộ sản phẩm")
@@ -31,7 +31,7 @@ public class VoucherTest {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .for_all_beer(true)
+                                .for_all_product(true)
                                 .voucher_second_id("GIAM_30%")
                                 .discount(30)
                                 .reuse(1)
@@ -70,7 +70,7 @@ public class VoucherTest {
                     assertThat(voucher.getDiscount()).isEqualTo(30);
                     assertThat(voucher.getDetail()).isEqualTo("Giảm 30% trên toàn bộ sản phẩm, chỉ áp dụng cho ai nhận được.");
                     assertThat(voucher.isFor_all_user()).isEqualTo(false);
-                    assertThat(voucher.isFor_all_beer()).isEqualTo(true);
+                    assertThat(voucher.isFor_all_product()).isEqualTo(true);
                 })
                 .consumeNextWith(voucher -> {
                     assertThat(voucher.getVoucher_second_id()).isEqualTo("GIAM_50k");
@@ -83,7 +83,7 @@ public class VoucherTest {
                     assertThat(voucher.getAmount()).isEqualTo(5000);
                     assertThat(voucher.getDetail()).isEqualTo("Giảm 5k trên toàn bộ sản phẩm");
                     assertThat(voucher.isFor_all_user()).isEqualTo(true);
-                    assertThat(voucher.isFor_all_beer()).isEqualTo(true);
+                    assertThat(voucher.isFor_all_product()).isEqualTo(true);
                 })
                 .consumeNextWith(voucher -> {
                     assertThat(voucher.getVoucher_second_id()).isEqualTo("GIAM_BIA_666");
@@ -229,7 +229,7 @@ public class VoucherTest {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .for_all_beer(true)
+                                .for_all_product(true)
                                 .for_all_user(true)
                                 .voucher_second_id("GIAM_5K")
                                 .detail("Giảm 5k trên toàn bộ sản phẩm")
