@@ -33,12 +33,12 @@ public class BeerSubmitData {
         for (BeerUnit beerUnit : this.listUnit) {
             listMapedUnit.add(ProductUnit.builder()
                     .name(beerUnit.name)
-                    .beer(this.beerSecondID)
+                    .product_second_id(this.beerSecondID)
                     .price(beerUnit.price)
                     .discount(beerUnit.discount)
                     .volumetric(beerUnit.volumetric)
                     .weight(beerUnit.weight)
-                    .beer_unit_second_id(beerUnit.beer_unit_second_id)
+                    .product_unit_second_id(beerUnit.beer_unit_second_id)
                     .status(ProductUnit.Status.get(beerUnit.status))
                     .date_expire(beerUnit.GetExpirDateTime())
                     .build());
@@ -49,7 +49,7 @@ public class BeerSubmitData {
                 .product(
                         Product
                                 .builder()
-                                .beer_second_id(this.beerSecondID)
+                                .product_second_id(this.beerSecondID)
                                 .name(this.name)
                                 .detail(this.detail)
                                 .category(Product.Category.get(this.category))
@@ -70,7 +70,7 @@ public class BeerSubmitData {
 
     public BeerSubmitData FromBeer(Product product) {
         return BeerSubmitData.builder()
-                .beerSecondID(product.getBeer_second_id())
+                .beerSecondID(product.getProduct_second_id())
                 .name(product.getName())
                 .detail(product.getDetail())
                 .category(product.GetCategoryNuable().getName())
@@ -82,14 +82,14 @@ public class BeerSubmitData {
         listUnit = new BeerUnit[productUnitList.size()];
         for (int i = 0; i < listUnit.length; i++) {
             BeerUnit newB = new BeerUnit();
-            newB.setBeer(productUnitList.get(i).getBeer());
+            newB.setBeer(productUnitList.get(i).getProduct_second_id());
             newB.setName(productUnitList.get(i).getName());
             newB.setPrice(productUnitList.get(i).getPrice());
             newB.setDiscount(productUnitList.get(i).getDiscount());
             newB.setDateExpir(NgbDateStruct.FromTimestamp(productUnitList.get(i).getDate_expire()));
             newB.setVolumetric(productUnitList.get(i).getVolumetric());
             newB.setWeight(productUnitList.get(i).getWeight());
-            newB.setBeer_unit_second_id(productUnitList.get(i).getBeer_unit_second_id());
+            newB.setBeer_unit_second_id(productUnitList.get(i).getProduct_unit_second_id());
             newB.setStatus(productUnitList.get(i).GetStatusNuable().toString());
             listUnit[i] = newB;
         }

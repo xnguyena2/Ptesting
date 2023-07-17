@@ -61,7 +61,7 @@ public class OrderSearchResult  extends order.OrderSearchResult {
             public BeerOrderData(entity.BeerOrder source) {
 
                 setPackage_order_second_id(source.getPackage_order_second_id());
-                setBeer_second_id(source.getBeer_second_id());
+                setProduct_second_id(source.getProduct_second_id());
                 setVoucher_second_id(source.getVoucher_second_id());
                 setTotal_price(source.getTotal_price());
                 setShip_price(source.getShip_price());

@@ -32,14 +32,14 @@ public class BeerTest {
                 BeerInfo
                         .builder()
                         .productUnit(new ProductUnit[]{
-                                ProductUnit.builder().beer("sold_out").name("thung").status(ProductUnit.Status.SOLD_OUT).build(),
-                                ProductUnit.builder().beer("sold_out").name("lon").build()
+                                ProductUnit.builder().product_second_id("sold_out").name("thung").status(ProductUnit.Status.SOLD_OUT).build(),
+                                ProductUnit.builder().product_second_id("sold_out").name("lon").build()
                         })
                         .product(Product
                                 .builder()
                                 .category(Product.Category.CRAB)
                                 .name("beer tiger(sold out)")
-                                .beer_second_id("sold_out")
+                                .product_second_id("sold_out")
                                 .status(Product.Status.SOLD_OUT)
                                 .build()
                                 .AutoFill()
@@ -51,14 +51,14 @@ public class BeerTest {
                 BeerInfo
                         .builder()
                         .productUnit(new ProductUnit[]{
-                                ProductUnit.builder().beer("123").name("thung").build(),
-                                ProductUnit.builder().beer("123").name("lon").build()
+                                ProductUnit.builder().product_second_id("123").name("thung").build(),
+                                ProductUnit.builder().product_second_id("123").name("lon").build()
                         })
                         .product(Product
                                 .builder()
                                 .category(Product.Category.CRAB)
                                 .name("beer tiger")
-                                .beer_second_id("123")
+                                .product_second_id("123")
                                 .build()
                                 .AutoFill()
                         )
@@ -74,12 +74,12 @@ public class BeerTest {
                         .productUnit(new ProductUnit[]{
                                 ProductUnit
                                         .builder()
-                                        .beer("456")
+                                        .product_second_id("456")
                                         .name("thung")
                                         .build(),
                                 ProductUnit
                                         .builder()
-                                        .beer("456")
+                                        .product_second_id("456")
                                         .name("lon")
                                         .build()
                         })
@@ -91,7 +91,7 @@ public class BeerTest {
                                         "- bia nhập ngoại\n" +
                                         "- bia sản xuất từ hà lan")
                                 .name("beer tiger")
-                                .beer_second_id("456")
+                                .product_second_id("456")
                                 .build()
                                 .AutoFill()
                         )
@@ -100,20 +100,20 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerUnit -> {
                     if (beerUnit.getName().equals("lon")) {
-                        beerUnit1ID.set(beerUnit.getBeer_unit_second_id());
+                        beerUnit1ID.set(beerUnit.getProduct_unit_second_id());
                     } else {
-                        beerUnit2ID.set(beerUnit.getBeer_unit_second_id());
+                        beerUnit2ID.set(beerUnit.getProduct_unit_second_id());
                     }
-                    assertThat(beerUnit.getBeer_unit_second_id()).isNotNull();
+                    assertThat(beerUnit.getProduct_unit_second_id()).isNotNull();
 
                 })
                 .consumeNextWith(beerUnit -> {
                     if (beerUnit.getName().equals("lon")) {
-                        beerUnit1ID.set(beerUnit.getBeer_unit_second_id());
+                        beerUnit1ID.set(beerUnit.getProduct_unit_second_id());
                     } else {
-                        beerUnit2ID.set(beerUnit.getBeer_unit_second_id());
+                        beerUnit2ID.set(beerUnit.getProduct_unit_second_id());
                     }
-                    assertThat(beerUnit.getBeer_unit_second_id()).isNotNull();
+                    assertThat(beerUnit.getProduct_unit_second_id()).isNotNull();
                 })
                 .verifyComplete();
 
@@ -124,8 +124,8 @@ public class BeerTest {
                         .productUnit(new ProductUnit[]{
                                 ProductUnit
                                         .builder()
-                                        .beer_unit_second_id(beerUnit1ID.get())
-                                        .beer("456")
+                                        .product_unit_second_id(beerUnit1ID.get())
+                                        .product_second_id("456")
                                         .price(10)
                                         .weight(0.3f)
                                         .discount(10)
@@ -134,8 +134,8 @@ public class BeerTest {
                                         .build(),
                                 ProductUnit
                                         .builder()
-                                        .beer_unit_second_id(beerUnit2ID.get())
-                                        .beer("456")
+                                        .product_unit_second_id(beerUnit2ID.get())
+                                        .product_second_id("456")
                                         .price(10)
                                         .weight(0.3f)
                                         .discount(10)
@@ -151,7 +151,7 @@ public class BeerTest {
                                         "- bia nhập ngoại\n" +
                                         "- bia sản xuất từ hà lan")
                                 .name("beer tiger")
-                                .beer_second_id("456").build()
+                                .product_second_id("456").build()
                                 .AutoFill()
                         )
                         .build()
@@ -159,10 +159,10 @@ public class BeerTest {
                 .sort(Comparator.comparing(ProductUnit::getName))
                 .as(StepVerifier::create)
                 .consumeNextWith(beerUnit -> {
-                    assertThat(beerUnit.getBeer_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(beerUnit.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                 })
                 .consumeNextWith(beerUnit -> {
-                    assertThat(beerUnit.getBeer_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(beerUnit.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                 })
                 .verifyComplete();
 
@@ -173,7 +173,7 @@ public class BeerTest {
                                 .productUnit(new ProductUnit[]{
                                         ProductUnit
                                                 .builder()
-                                                .beer("hide")
+                                                .product_second_id("hide")
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
@@ -182,7 +182,7 @@ public class BeerTest {
                                                 .build(),
                                         ProductUnit
                                                 .builder()
-                                                .beer("hide")
+                                                .product_second_id("hide")
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
@@ -199,7 +199,7 @@ public class BeerTest {
                                                 "- bia sản xuất từ hà lan")
                                         .name("beer tiger")
                                         .status(Product.Status.HIDE)
-                                        .beer_second_id("hide").build()
+                                        .product_second_id("hide").build()
                                         .AutoFill()
                                 )
                                 .build()
@@ -216,7 +216,7 @@ public class BeerTest {
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("123");
+                    assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
@@ -238,7 +238,7 @@ public class BeerTest {
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("456");
+                    assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("456");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
@@ -1331,8 +1331,8 @@ public class BeerTest {
                         .productUnit(new ProductUnit[]{
                                 ProductUnit
                                         .builder()
-                                        .beer_unit_second_id(beerUnit1ID.get())
-                                        .beer("444")
+                                        .product_unit_second_id(beerUnit1ID.get())
+                                        .product_second_id("444")
                                         .price(10)
                                         .weight(0.3f)
                                         .discount(10)
@@ -1341,8 +1341,8 @@ public class BeerTest {
                                         .build(),
                                 ProductUnit
                                         .builder()
-                                        .beer_unit_second_id(beerUnit2ID.get())
-                                        .beer("444")
+                                        .product_unit_second_id(beerUnit2ID.get())
+                                        .product_second_id("444")
                                         .price(10)
                                         .weight(0.3f)
                                         .discount(10)
@@ -1358,7 +1358,7 @@ public class BeerTest {
                                         "- bia nhập ngoại\n" +
                                         "- bia sản xuất từ hà lan")
                                 .name("beer tiger")
-                                .beer_second_id("444").build()
+                                .product_second_id("444").build()
                                 .AutoFill()
                         )
                         .build()
@@ -1374,7 +1374,7 @@ public class BeerTest {
                                 .productUnit(new ProductUnit[]{
                                         ProductUnit
                                                 .builder()
-                                                .beer("444")
+                                                .product_second_id("444")
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
@@ -1383,7 +1383,7 @@ public class BeerTest {
                                                 .build(),
                                         ProductUnit
                                                 .builder()
-                                                .beer("444")
+                                                .product_second_id("444")
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
@@ -1399,7 +1399,7 @@ public class BeerTest {
                                                 "- bia nhập ngoại\n" +
                                                 "- bia sản xuất từ hà lan")
                                         .name("beer tiger")
-                                        .beer_second_id("444").build()
+                                        .product_second_id("444").build()
                                         .AutoFill()
                                 )
                                 .build()
@@ -1409,7 +1409,7 @@ public class BeerTest {
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("444");
+                    assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("444");
                 })
                 .verifyComplete();
 
@@ -1439,7 +1439,7 @@ public class BeerTest {
                         .productUnit(new ProductUnit[]{
                                 ProductUnit
                                         .builder()
-                                        .beer(id)
+                                        .product_second_id(id)
                                         .price(price)
                                         .weight(0.3f)
                                         .discount(10)
@@ -1448,7 +1448,7 @@ public class BeerTest {
                                         .build(),
                                 ProductUnit
                                         .builder()
-                                        .beer(id)
+                                        .product_second_id(id)
                                         .price(10000)
                                         .weight(0.3f)
                                         .discount(10)
@@ -1461,7 +1461,7 @@ public class BeerTest {
                                 .category(category)
                                 .detail("nhưng Milan khởi đầu ấn tượng. Với Mandzukic lần đầu đá chính, cùng sự hỗ trợ của bộ ba Castillejo, Krunic, Rebic, đội nhì bảng Serie A liên tục gây sóng gió về phía cầu môn Sao Đỏ. Chỉ trong 13 phút đầu, Milan")
                                 .name(id + " beer tiger")
-                                .beer_second_id(id).build()
+                                .product_second_id(id).build()
                                 .AutoFill()
                         )
                         .build();

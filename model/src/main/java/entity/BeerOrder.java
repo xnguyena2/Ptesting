@@ -17,7 +17,7 @@ public class BeerOrder {
 
     protected String package_order_second_id;
 
-    protected String beer_second_id;
+    protected String product_second_id;
 
     protected String voucher_second_id;
 

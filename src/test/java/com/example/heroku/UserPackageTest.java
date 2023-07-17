@@ -38,7 +38,7 @@ public class UserPackageTest {
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("sold_out");
+                    assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("sold_out");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
@@ -46,16 +46,16 @@ public class UserPackageTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
-                                    beerUnitsold_out1ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnitsold_out1ID.set(beerUnit.getProduct_unit_second_id());
                                 } else {
-                                    beerUnitsold_out2ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnitsold_out2ID.set(beerUnit.getProduct_unit_second_id());
                                 }
                             })
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
-                                    beerUnitsold_out1ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnitsold_out1ID.set(beerUnit.getProduct_unit_second_id());
                                 } else {
-                                    beerUnitsold_out2ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnitsold_out2ID.set(beerUnit.getProduct_unit_second_id());
                                 }
                             })
                             .verifyComplete();
@@ -69,7 +69,7 @@ public class UserPackageTest {
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("123");
+                    assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
@@ -77,16 +77,16 @@ public class UserPackageTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
-                                    beerUnit1ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnit1ID.set(beerUnit.getProduct_unit_second_id());
                                 } else {
-                                    beerUnit2ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnit2ID.set(beerUnit.getProduct_unit_second_id());
                                 }
                             })
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
-                                    beerUnit1ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnit1ID.set(beerUnit.getProduct_unit_second_id());
                                 } else {
-                                    beerUnit2ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnit2ID.set(beerUnit.getProduct_unit_second_id());
                                 }
                             })
                             .verifyComplete();
@@ -100,7 +100,7 @@ public class UserPackageTest {
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("456");
+                    assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("456");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
@@ -108,16 +108,16 @@ public class UserPackageTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
-                                    beerUnit4561ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnit4561ID.set(beerUnit.getProduct_unit_second_id());
                                 } else {
-                                    beerUnit4562ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnit4562ID.set(beerUnit.getProduct_unit_second_id());
                                 }
                             })
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
-                                    beerUnit4561ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnit4561ID.set(beerUnit.getProduct_unit_second_id());
                                 } else {
-                                    beerUnit4562ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnit4562ID.set(beerUnit.getProduct_unit_second_id());
                                 }
                             })
                             .verifyComplete();
@@ -205,8 +205,8 @@ public class UserPackageTest {
                         e.printStackTrace();
                     }
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
-                    assertThat(userPackage.getBeer_id()).isEqualTo("123");
-                    assertThat(userPackage.getBeer_unit()).isEqualTo(beerUnit1ID.get());
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(100);
                     assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
@@ -218,8 +218,8 @@ public class UserPackageTest {
                         e.printStackTrace();
                     }
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
-                    assertThat(userPackage.getBeer_id()).isEqualTo("123");
-                    assertThat(userPackage.getBeer_unit()).isEqualTo(beerUnit2ID.get());
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(9);
                     assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
@@ -253,8 +253,8 @@ public class UserPackageTest {
                         e.printStackTrace();
                     }
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
-                    assertThat(userPackage.getBeer_id()).isEqualTo("456");
-                    assertThat(userPackage.getBeer_unit()).isEqualTo(beerUnit4561ID.get());
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("456");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit4561ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(109);
                     assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("456");
                     assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
@@ -266,8 +266,8 @@ public class UserPackageTest {
                         e.printStackTrace();
                     }
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
-                    assertThat(userPackage.getBeer_id()).isEqualTo("123");
-                    assertThat(userPackage.getBeer_unit()).isEqualTo(beerUnit1ID.get());
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(100);
                     assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
@@ -279,8 +279,8 @@ public class UserPackageTest {
                         e.printStackTrace();
                     }
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
-                    assertThat(userPackage.getBeer_id()).isEqualTo("123");
-                    assertThat(userPackage.getBeer_unit()).isEqualTo(beerUnit2ID.get());
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(9);
                     assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
@@ -294,16 +294,16 @@ public class UserPackageTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
-                    assertThat(userPackage.getBeer_id()).isEqualTo("456");
-                    assertThat(userPackage.getBeer_unit()).isEqualTo(beerUnit4561ID.get());
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("456");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit4561ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(109);
                     assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("456");
                     assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .consumeNextWith(userPackage -> {
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
-                    assertThat(userPackage.getBeer_id()).isEqualTo("123");
-                    assertThat(userPackage.getBeer_unit()).isEqualTo(beerUnit2ID.get());
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(9);
                     assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);

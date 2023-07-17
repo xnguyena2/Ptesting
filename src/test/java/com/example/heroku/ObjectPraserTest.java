@@ -21,14 +21,14 @@ public class ObjectPraserTest {
 
         BeerInfo beerInfo = new ObjectMapper().readValue(json, BeerSubmitData.class).GetBeerInfo();
 
-        assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("1");
+        assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("1");
         assertThat(beerInfo.getProduct().getName()).isEqualTo("Bia Trung Quốc");
         assertThat(beerInfo.getProduct().getDetail()).isEqualTo("Vành đai 1 đoạn Hoàng Cầu - Voi Phục dài 2,27 km, tổng đầu tư hơn 7.200 tỷ đồng, do Ban Quản lý dự án đầu tư xây dựng công trình dân dụng và công nghiệp thành phố đang triển khai bằng nguồn vốn ngân sách TP Hà Nội.\n\nVành đai 2 trên cao, đoạn Vĩnh Tuy - Ngã Tư Vọng kết hợp mở rộng phần từ Vĩnh Tuy đến Ngã Tư Sở đang thực hiện theo hợp đồng BT (xây dựng - chuyển giao) ký kết giữa Hà Nội và Tập đoàn Vingroup.");
         assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.SQUID);
 
         assertThat(beerInfo.getProductUnit().length).isEqualTo(1);
         assertThat(beerInfo.getProductUnit()[0].getName()).isEqualTo("Lon");
-        assertThat(beerInfo.getProductUnit()[0].getBeer()).isEqualTo("1");
+        assertThat(beerInfo.getProductUnit()[0].getProduct_second_id()).isEqualTo("1");
         assertThat(beerInfo.getProductUnit()[0].getDate_expire()).isEqualTo(null);
         assertThat(beerInfo.getProductUnit()[0].getDiscount()).isEqualTo(0);
         assertThat(beerInfo.getProductUnit()[0].getPrice()).isEqualTo(17000);
@@ -39,7 +39,7 @@ public class ObjectPraserTest {
         beerInfo = new ObjectMapper().readValue(json, BeerSubmitData.class).GetBeerInfo();
 
         assertThat(beerInfo.getProductUnit().length).isEqualTo(1);
-        assertThat(beerInfo.getProductUnit()[0].getBeer()).isEqualTo("1");
+        assertThat(beerInfo.getProductUnit()[0].getProduct_second_id()).isEqualTo("1");
         assertThat(beerInfo.getProductUnit()[0].getDate_expire()).isEqualTo(null);
         assertThat(beerInfo.getProductUnit()[0].getDiscount()).isEqualTo(0);
         assertThat(beerInfo.getProductUnit()[0].getPrice()).isEqualTo(0);
@@ -49,14 +49,14 @@ public class ObjectPraserTest {
         json = "{\"name\":\"Bia Nhập Lậu\",\"beerSecondID\":\"1\",\"detail\":\"Tỉnh lộ 769 từ nút giao Dầu Giây đến quốc lộ 51 sẽ được đầu tư hơn 1.600 tỷ đồng để mở rộng, đón đầu kết nối sân bay Long Thành.\\n\\nSở Giao thông vận tải Đồng Nai vừa trình UBND tỉnh Đồng Nai phê duyệt đầu tư dự án nâng cấp, mở rộng đường tỉnh 769 đi qua hai huyện Thống Nhất và Long Thành. Dự án là công trình giao thông chiến lược trong 5 năm tới nhằm kết nối các quốc lộ trọng yếu đi qua Đồng Nai như quốc lộ 1A, 20 và 51.\",\"category\":\"holothurian\",\"listUnit\":[{\"beer\":\"1\",\"name\":\"Lon\",\"price\":12000,\"discount\":0,\"volumetric\":0.4,\"weight\":0.5,\"beer_unit_second_id\":null,\"dateExpir\":{\"year\":2021,\"month\":1,\"day\":31}},{\"beer\":\"1\",\"name\":\"Thùng\",\"price\":200000,\"discount\":10,\"volumetric\":6,\"weight\":0.5,\"beer_unit_second_id\":null,\"dateExpir\":{\"year\":2020,\"month\":12,\"day\":24}}]}";
         beerInfo = new ObjectMapper().readValue(json, BeerSubmitData.class).GetBeerInfo();
 
-        assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("1");
+        assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("1");
         assertThat(beerInfo.getProduct().getName()).isEqualTo("Bia Nhập Lậu");
         assertThat(beerInfo.getProduct().getDetail()).isEqualTo("Tỉnh lộ 769 từ nút giao Dầu Giây đến quốc lộ 51 sẽ được đầu tư hơn 1.600 tỷ đồng để mở rộng, đón đầu kết nối sân bay Long Thành.\n\nSở Giao thông vận tải Đồng Nai vừa trình UBND tỉnh Đồng Nai phê duyệt đầu tư dự án nâng cấp, mở rộng đường tỉnh 769 đi qua hai huyện Thống Nhất và Long Thành. Dự án là công trình giao thông chiến lược trong 5 năm tới nhằm kết nối các quốc lộ trọng yếu đi qua Đồng Nai như quốc lộ 1A, 20 và 51.");
         assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.HOLOTHURIAN);
 
         assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
         assertThat(beerInfo.getProductUnit()[0].getName()).isEqualTo("Lon");
-        assertThat(beerInfo.getProductUnit()[0].getBeer()).isEqualTo("1");
+        assertThat(beerInfo.getProductUnit()[0].getProduct_second_id()).isEqualTo("1");
         assertThat(NgbDateStruct.FromTimestamp(beerInfo.getProductUnit()[0].getDate_expire())).isEqualTo(NgbDateStruct.builder().day(31).month(1).year(2021).build());
         assertThat(beerInfo.getProductUnit()[0].getDiscount()).isEqualTo(0);
         assertThat(beerInfo.getProductUnit()[0].getPrice()).isEqualTo(12000);
@@ -64,7 +64,7 @@ public class ObjectPraserTest {
         assertThat(beerInfo.getProductUnit()[0].getWeight()).isEqualTo(0.5f);
 
         assertThat(beerInfo.getProductUnit()[1].getName()).isEqualTo("Thùng");
-        assertThat(beerInfo.getProductUnit()[1].getBeer()).isEqualTo("1");
+        assertThat(beerInfo.getProductUnit()[1].getProduct_second_id()).isEqualTo("1");
         assertThat(NgbDateStruct.FromTimestamp(beerInfo.getProductUnit()[1].getDate_expire())).isEqualTo(NgbDateStruct.builder().day(24).month(12).year(2020).build());
         assertThat(beerInfo.getProductUnit()[1].getDiscount()).isEqualTo(10);
         assertThat(beerInfo.getProductUnit()[1].getPrice()).isEqualTo(200000);
@@ -92,14 +92,14 @@ public class ObjectPraserTest {
 
         assertThat(userPackages.length).isEqualTo(2);
 
-        assertThat(userPackages[0].getBeer_id()).isEqualTo("7788900");
+        assertThat(userPackages[0].getProduct_second_id()).isEqualTo("7788900");
         assertThat(userPackages[0].getDevice_id()).isEqualTo("vuong");
-        assertThat(userPackages[0].getBeer_unit()).isEqualTo("333");
+        assertThat(userPackages[0].getProduct_unit_second_id()).isEqualTo("333");
         assertThat(userPackages[0].getNumber_unit()).isEqualTo(10);
 
-        assertThat(userPackages[1].getBeer_id()).isEqualTo("7788900");
+        assertThat(userPackages[1].getProduct_second_id()).isEqualTo("7788900");
         assertThat(userPackages[1].getDevice_id()).isEqualTo("vuong");
-        assertThat(userPackages[1].getBeer_unit()).isEqualTo("444");
+        assertThat(userPackages[1].getProduct_unit_second_id()).isEqualTo("444");
         assertThat(userPackages[1].getNumber_unit()).isEqualTo(5);
     }
 

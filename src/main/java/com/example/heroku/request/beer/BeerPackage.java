@@ -36,8 +36,8 @@ public class BeerPackage {
         for (int i = 0; i < beerUnits.length; i++) {
             BeerUnit beer = beerUnits[i];
             listResult[i] = UserPackage.builder()
-                    .beer_id(this.beerID)
-                    .beer_unit(beer.beerUnitID)
+                    .product_second_id(this.beerID)
+                    .product_unit_second_id(beer.beerUnitID)
                     .device_id(this.deviceID)
                     .number_unit(beer.numberUnit)
                     .createat(new Timestamp(new Date().getTime()))

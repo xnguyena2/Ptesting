@@ -21,7 +21,7 @@ public class PackgeResponse extends UserPackage {
         BeerSubmitData.BeerUnit beerUnit = null;
         for (BeerSubmitData.BeerUnit unit :
                 b.getListUnit()) {
-            if (unit.getBeer_unit_second_id().equals(this.getBeer_unit())) {
+            if (unit.getBeer_unit_second_id().equals(this.getProduct_unit_second_id())) {
                 beerUnit = unit;
             }
         }

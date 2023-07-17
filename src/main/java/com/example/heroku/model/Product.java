@@ -25,7 +25,7 @@ public class Product {
     @Id
     String id;
 
-    private String beer_second_id;
+    private String product_second_id;
 
     private String name;
 

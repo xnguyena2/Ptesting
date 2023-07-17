@@ -58,7 +58,7 @@ public class BeerOrder {
     private Flux<com.example.heroku.model.Voucher> getUserVoucherAndEmpty(PackageOrderData packageOrderData) {
         return Flux.just(packageOrderData.getBeerOrders())
                 .flatMap(packaBeerOrderData ->
-                            voucherServices.getDeviceVoucher(packaBeerOrderData.getProductOrder().getVoucher_second_id(), packageOrderData.getPackageOrder().getUser_device_id(), packageOrderData.getPackageOrder().getPhone_number_clean(), packaBeerOrderData.getProductOrder().getBeer_second_id())
+                            voucherServices.getDeviceVoucher(packaBeerOrderData.getProductOrder().getVoucher_second_id(), packageOrderData.getPackageOrder().getUser_device_id(), packageOrderData.getPackageOrder().getPhone_number_clean(), packaBeerOrderData.getProductOrder().getProduct_second_id())
                 )
                 .distinct(
                         com.example.heroku.model.Voucher::getVoucher_second_id
@@ -77,11 +77,11 @@ public class BeerOrder {
                         voucher.comsumeVoucherSync(device, (shareReuse) -> {
                             if (voucher.getDiscount() > 0) {
                                 discount.updateAndGet(v -> (v + voucher.getDiscount()));
-                                System.out.println("--------> comsume only BeerOrder: " + productOrder.getBeer_second_id() + ", voucher: " + voucher.getVoucher_second_id() + ", discount: " + voucher.getDiscount() + "%");
+                                System.out.println("--------> comsume only BeerOrder: " + productOrder.getProduct_second_id() + ", voucher: " + voucher.getVoucher_second_id() + ", discount: " + voucher.getDiscount() + "%");
                             }
                             if (voucher.getAmount() > 0) {
                                 amount.updateAndGet(v -> (v + voucher.getAmount()));
-                                System.out.println("--------> comsume only BeerOrder: " + productOrder.getBeer_second_id() + ", voucher: " + voucher.getVoucher_second_id() + ", amount: " + voucher.getAmount());
+                                System.out.println("--------> comsume only BeerOrder: " + productOrder.getProduct_second_id() + ", voucher: " + voucher.getVoucher_second_id() + ", amount: " + voucher.getAmount());
                             }
                         });
                     }
@@ -129,7 +129,7 @@ public class BeerOrder {
         if (price < 0) {
             price = 0;
         }
-        System.out.println("calculate beer unit: " + productUnit.getBeer_unit_second_id() + ", price: " + price);
+        System.out.println("calculate beer unit: " + productUnit.getProduct_unit_second_id() + ", price: " + price);
         productUnitOrder.setPrice(price);
         WeightAndVolumetricContainer result = WeightAndVolumetricContainer
                 .builder()
@@ -148,7 +148,7 @@ public class BeerOrder {
     private Flux<PackageOrderData.BeerOrderData> getProductOrderDataModel(PackageOrderData packageOrderData) {
         return Flux.just(packageOrderData.getBeerOrders())
                 .flatMap(beerOrderData ->
-                        beerRepository.findBySecondIDCanOrder(beerOrderData.getProductOrder().getBeer_second_id())
+                        beerRepository.findBySecondIDCanOrder(beerOrderData.getProductOrder().getProduct_second_id())
                                 .map(beerOrderData::UpdateName)
                 );
     }
@@ -162,8 +162,8 @@ public class BeerOrder {
                         Flux.just(beerOrder.getProductUnitOrders())
 
                 ).flatMap(beerUnitOrder -> {
-                            System.out.println("Clean Package: " + packageOrderData.getPackageOrder().getUser_device_id() + ", " + beerUnitOrder.getBeer_unit_second_id());
-                            return userPackageRepository.DeleteProductByBeerUnit(packageOrderData.getPackageOrder().getUser_device_id(), beerUnitOrder.getBeer_unit_second_id());
+                            System.out.println("Clean Package: " + packageOrderData.getPackageOrder().getUser_device_id() + ", " + beerUnitOrder.getProduct_unit_second_id());
+                            return userPackageRepository.DeleteProductByBeerUnit(packageOrderData.getPackageOrder().getUser_device_id(), beerUnitOrder.getProduct_unit_second_id());
                         }
                 ).then(Mono.empty());
     }
@@ -183,7 +183,7 @@ public class BeerOrder {
                                                         .flatMap(beerOrder ->
                                                                 Flux.just(beerOrder.getProductUnitOrders())
                                                                         .flatMap(beerUnitOrder ->
-                                                                                beerUnitRepository.findByBeerUnitIDCanOrder(beerUnitOrder.getBeer_unit_second_id())
+                                                                                beerUnitRepository.findByBeerUnitIDCanOrder(beerUnitOrder.getProduct_unit_second_id())
                                                                                         .map(ProductUnit::CheckDiscount)
                                                                                         .map(beerUnitOrder::UpdateName)
                                                                                         .map(ProductUnit::UpdateToRealPrice)
@@ -204,7 +204,7 @@ public class BeerOrder {
                                                                         )
                                                                         .flatMap(beerOrderWeightAndVolumetricContainer -> {
                                                                                     float price = beerOrderWeightAndVolumetricContainer.getPrice();
-                                                                                    System.out.println("BeerOrder: " + beerOrder.getProductOrder().getBeer_second_id() + ", Total price: " + price);
+                                                                                    System.out.println("BeerOrder: " + beerOrder.getProductOrder().getProduct_second_id() + ", Total price: " + price);
                                                                                     beerOrder.getProductOrder().setTotal_price(price);
                                                                                     //save beer order
                                                                                     if (!packageOrderData.isPreOrder()) {

@@ -23,9 +23,9 @@ public class UserPackage {
 
     private String device_id;
 
-    private String beer_id;
+    private String product_second_id;
 
-    private String beer_unit;
+    private String product_unit_second_id;
 
     private int number_unit;
 
@@ -36,8 +36,8 @@ public class UserPackage {
     public UserPackage(UserPackage s){
         this.id = s.id;
         this.device_id = s.device_id;
-        this.beer_id = s.beer_id;
-        this.beer_unit = s.beer_unit;
+        this.product_second_id = s.product_second_id;
+        this.product_unit_second_id = s.product_unit_second_id;
         this.number_unit = s.number_unit;
         this.status = s.status;
         this.createat = s.createat;

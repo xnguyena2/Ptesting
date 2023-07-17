@@ -10,10 +10,10 @@ import reactor.core.publisher.Mono;
 
 public interface ResultWithCountRepository extends ReactiveCrudRepository<ResultWithCount, String> {
 
-    @Query(value = "SELECT COUNT(*) as count FROM product INNER JOIN search_token ON search_token.beer_second_id = product.beer_second_id WHERE search_token.tokens @@ to_tsquery(:search)")
+    @Query(value = "SELECT COUNT(*) as count FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id WHERE search_token.tokens @@ to_tsquery(:search)")
     Mono<ResultWithCount> adminCountSearchBeer(@Param("search")String search);
 
-    @Query(value = "SELECT COUNT(*) AS COUNT FROM product INNER JOIN search_token ON search_token.beer_second_id = product.beer_second_id WHERE search_token.tokens @@ to_tsquery(:search) AND (product.status IS NULL OR product.status != 'HIDE')")
+    @Query(value = "SELECT COUNT(*) AS COUNT FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id WHERE search_token.tokens @@ to_tsquery(:search) AND (product.status IS NULL OR product.status != 'HIDE')")
     Mono<ResultWithCount> countSearchBeer(@Param("search")String search);
 
     @Query(value = "SELECT COUNT(*) as count FROM product")

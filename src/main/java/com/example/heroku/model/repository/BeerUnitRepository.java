@@ -9,15 +9,15 @@ import reactor.core.publisher.Mono;
 
 public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, String> {
 
-    @Query(value = "DELETE FROM product_unit WHERE product_unit.beer = :id")
+    @Query(value = "DELETE FROM product_unit WHERE product_unit.product_second_id = :id")
     Mono<ProductUnit> deleteByBeerId(@Param("id")String id);
 
-    @Query(value = "SELECT * FROM product_unit WHERE product_unit.beer = :id")
+    @Query(value = "SELECT * FROM product_unit WHERE product_unit.product_second_id = :id")
     Flux<ProductUnit> findByBeerID(@Param("id")String id);
 
-    @Query(value = "SELECT * FROM product_unit WHERE product_unit.beer_unit_second_id = :id")
+    @Query(value = "SELECT * FROM product_unit WHERE product_unit.product_unit_second_id = :id")
     Mono<ProductUnit> findByBeerUnitID(@Param("id")String id);
 
-    @Query(value = "SELECT * FROM product_unit WHERE product_unit.beer_unit_second_id = :id AND (product_unit.status IS NULL OR (product_unit.status != 'SOLD_OUT' AND product_unit.status != 'HIDE'))")
+    @Query(value = "SELECT * FROM product_unit WHERE product_unit.product_unit_second_id = :id AND (product_unit.status IS NULL OR (product_unit.status != 'SOLD_OUT' AND product_unit.status != 'HIDE'))")
     Mono<ProductUnit> findByBeerUnitIDCanOrder(@Param("id")String id);
 }

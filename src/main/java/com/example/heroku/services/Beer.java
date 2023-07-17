@@ -43,7 +43,7 @@ public class Beer {
     public Flux<ProductUnit> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
         return Mono.just(info)
                 .flatMap(beerInfo ->
-                        this.beerRepository.deleteBySecondId(beerInfo.getProduct().getBeer_second_id())
+                        this.beerRepository.deleteBySecondId(beerInfo.getProduct().getProduct_second_id())
                 )
                 .then(Mono.just(info)
                         .flatMap(beerInfo ->
@@ -51,11 +51,11 @@ public class Beer {
                         )
                 )
                 .flatMap(beer ->
-                        this.searchBeer.deleteBySecondId(beer.getBeer_second_id())
+                        this.searchBeer.deleteBySecondId(beer.getProduct_second_id())
                 )
                 .then(Mono.just(info)
                         .flatMap(beerInfo ->
-                                this.searchBeer.saveToken(beerInfo.getProduct().getBeer_second_id(),
+                                this.searchBeer.saveToken(beerInfo.getProduct().getProduct_second_id(),
                                         beerInfo.getProduct().getTokens()
                                 )
                         )
@@ -63,7 +63,7 @@ public class Beer {
                 .then(Mono.just(info)
                         .flatMap(
                                 beerInfo ->
-                                        this.beerUnitRepository.deleteByBeerId(info.getProduct().getBeer_second_id())
+                                        this.beerUnitRepository.deleteByBeerId(info.getProduct().getProduct_second_id())
                         )
                 )
                 .thenMany(Flux.just(info.getProductUnit())

@@ -7,6 +7,6 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 
 public interface BeerUnitOrderRepository extends ReactiveCrudRepository<ProductUnitOrder, String> {
-    @Query(value = "SELECT * FROM product_unit_order WHERE product_unit_order.package_order_second_id = :package AND product_unit_order.beer_second_id = :beer")
+    @Query(value = "SELECT * FROM product_unit_order WHERE product_unit_order.package_order_second_id = :package AND product_unit_order.product_second_id = :beer")
     Flux<ProductUnitOrder> findByBeerAndOrder(@Param("package")String packageID, @Param("beer")String beer);
 }

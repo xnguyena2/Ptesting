@@ -2,14 +2,12 @@ package com.example.heroku.services;
 
 import com.example.heroku.model.repository.UserPackageRepository;
 import com.example.heroku.request.beer.BeerPackage;
-import com.example.heroku.request.beer.BeerUnitDelete;
 import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.Format;
 import com.example.heroku.response.PackgeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -33,7 +31,7 @@ public class UserPackage {
             return Mono.just(badRequest().body(Format.builder().response("user package empty").build()));
         return Flux.just(userPackages)
                 .flatMap(userPackage ->
-                        userPackageRepository.AddPackage(userPackage.getDevice_id(),userPackage.getBeer_id(), userPackage.getBeer_unit(), userPackage.getNumber_unit(), userPackage.getStatus())
+                        userPackageRepository.AddPackage(userPackage.getDevice_id(),userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(), userPackage.getNumber_unit(), userPackage.getStatus())
                 )
                 .then(Mono.just(ok(Format.builder().response("done").build())));
 
@@ -42,7 +40,7 @@ public class UserPackage {
     public Flux<PackgeResponse> GetMyPackage(UserID userID) {
         return userPackageRepository.GetDevicePackage(userID.getId(), userID.getPage(), userID.getSize())
                 .flatMap(userPackage ->
-                        beerAPI.GetBeerByID(userPackage.getBeer_id())
+                        beerAPI.GetBeerByID(userPackage.getProduct_second_id())
                                 .map(beerSubmitData -> new PackgeResponse(userPackage).SetBeerData(beerSubmitData))
                 );
     }

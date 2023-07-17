@@ -50,11 +50,11 @@ public class PackageOrder {
                 .map(OrderSearchResult.PackageOrderData::new)
                 .flatMap(packageOrderData ->
                         beerOrderRepository.findBySecondID(packageOrderData.getPackage_order_second_id())
-                                .distinct(ProductOrder::getBeer_second_id)
+                                .distinct(ProductOrder::getProduct_second_id)
                                 .map(OrderSearchResult.PackageOrderData.BeerOrderData::new)
                                 .map(packageOrderData::Add)
                                 .flatMap(beerOrderData ->
-                                        beerUnitOrderRepository.findByBeerAndOrder(packageOrderData.getPackage_order_second_id(), beerOrderData.getBeer_second_id())
+                                        beerUnitOrderRepository.findByBeerAndOrder(packageOrderData.getPackage_order_second_id(), beerOrderData.getProduct_second_id())
                                                 .map(beerOrderData::Add)
                                 )
                                 .then(Mono.just(packageOrderData))

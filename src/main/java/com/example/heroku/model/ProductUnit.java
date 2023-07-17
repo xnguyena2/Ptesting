@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Entity
-@Table(name="beer_unit")
+@Table(name="product_unit")
 @Data
 @Builder
 @NoArgsConstructor
@@ -25,9 +25,9 @@ public class ProductUnit {
     @Id
     String id;
 
-    private String beer_unit_second_id;
+    private String product_unit_second_id;
 
-    private String beer;
+    private String product_second_id;
 
     private String name;
 
@@ -101,8 +101,8 @@ public class ProductUnit {
 
 
     public ProductUnit AutoFill() {
-        if (this.beer_unit_second_id == null || this.beer_unit_second_id.equals(""))
-            this.beer_unit_second_id = Util.getInstance().GenerateID();
+        if (this.product_unit_second_id == null || this.product_unit_second_id.equals(""))
+            this.product_unit_second_id = Util.getInstance().GenerateID();
         this.createat = new Timestamp(new Date().getTime());
         return this;
     }

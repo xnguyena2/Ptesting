@@ -352,21 +352,21 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order1")
+                                                        .product_second_id("beer_order1")
                                                         .build()
                                         )
                                         .productUnitOrders(
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit1.get().getBeer())
+                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit2.get().getBeer())
+                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
                                                                 .number_unit(1)
                                                                 .build()
                                                 }
@@ -405,7 +405,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order1")
+                                                        .product_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_5K")
                                                         .build()
                                         )
@@ -413,14 +413,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit1.get().getBeer())
+                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit2.get().getBeer())
+                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -460,7 +460,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order1")
+                                                        .product_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_5Kk")
                                                         .build()
                                         )
@@ -468,14 +468,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit1.get().getBeer())
+                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit2.get().getBeer())
+                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -514,7 +514,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order1")
+                                                        .product_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
@@ -522,14 +522,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit1.get().getBeer())
+                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit2.get().getBeer())
+                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -541,7 +541,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order2")
+                                                        .product_second_id("beer_order2")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
@@ -549,14 +549,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit3.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit3.get().getBeer())
+                                                                .product_unit_second_id(beerUnit3.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit3.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit4.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit4.get().getBeer())
+                                                                .product_unit_second_id(beerUnit4.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit4.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
@@ -595,7 +595,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order1")
+                                                        .product_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
@@ -603,14 +603,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit1.get().getBeer())
+                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit2.get().getBeer())
+                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -622,7 +622,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order2")
+                                                        .product_second_id("beer_order2")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
@@ -630,14 +630,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit3.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit3.get().getBeer())
+                                                                .product_unit_second_id(beerUnit3.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit3.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit4.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit4.get().getBeer())
+                                                                .product_unit_second_id(beerUnit4.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit4.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
@@ -677,7 +677,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order1")
+                                                        .product_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
@@ -685,14 +685,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit1.get().getBeer())
+                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit2.get().getBeer())
+                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -704,7 +704,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order2")
+                                                        .product_second_id("beer_order2")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
@@ -712,14 +712,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit3.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit3.get().getBeer())
+                                                                .product_unit_second_id(beerUnit3.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit3.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit4.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit4.get().getBeer())
+                                                                .product_unit_second_id(beerUnit4.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit4.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
@@ -759,7 +759,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order1")
+                                                        .product_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
@@ -767,14 +767,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit1.get().getBeer())
+                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit2.get().getBeer())
+                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -786,7 +786,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order_sold_out1")
+                                                        .product_second_id("beer_order_sold_out1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
@@ -794,14 +794,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnitsold_out1.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnitsold_out1.get().getBeer())
+                                                                .product_unit_second_id(beerUnitsold_out1.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnitsold_out1.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnitsold_out2.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnitsold_out2.get().getBeer())
+                                                                .product_unit_second_id(beerUnitsold_out2.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnitsold_out2.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
@@ -841,7 +841,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order1")
+                                                        .product_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
@@ -849,14 +849,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit1.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit1.get().getBeer())
+                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit2.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnit2.get().getBeer())
+                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -868,7 +868,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order_sold_out2")
+                                                        .product_second_id("beer_order_sold_out2")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
@@ -876,14 +876,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnitsold_out21.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnitsold_out21.get().getBeer())
+                                                                .product_unit_second_id(beerUnitsold_out21.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnitsold_out21.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnitsold_out22.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnitsold_out22.get().getBeer())
+                                                                .product_unit_second_id(beerUnitsold_out22.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnitsold_out22.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
@@ -924,7 +924,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order_hide2")
+                                                        .product_second_id("beer_order_hide2")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
@@ -932,14 +932,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnithide1.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnithide1.get().getBeer())
+                                                                .product_unit_second_id(beerUnithide1.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnithide1.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnithide2.get().getBeer_unit_second_id())
-                                                                .beer_second_id(beerUnithide2.get().getBeer())
+                                                                .product_unit_second_id(beerUnithide2.get().getProduct_unit_second_id())
+                                                                .product_second_id(beerUnithide2.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
@@ -1005,7 +1005,7 @@ public class OrderPackageTest extends TestConfig {
                         .productUnit(new ProductUnit[]{
                                 ProductUnit
                                         .builder()
-                                        .beer("beer_order1")
+                                        .product_second_id("beer_order1")
                                         .price(10)
                                         .weight(0.3f)
                                         .discount(10)
@@ -1014,7 +1014,7 @@ public class OrderPackageTest extends TestConfig {
                                         .build(),
                                 ProductUnit
                                         .builder()
-                                        .beer("beer_order1")
+                                        .product_second_id("beer_order1")
                                         .price(20)
                                         .weight(1)
                                         .discount(20)
@@ -1026,7 +1026,7 @@ public class OrderPackageTest extends TestConfig {
                                 .builder()
                                 .category(Product.Category.CRAB)
                                 .name("beer tigerrrrr")
-                                .beer_second_id("beer_order1")
+                                .product_second_id("beer_order1")
                                 .detail("bia for order 1")
                                 .build()
                                 .AutoFill()
@@ -1041,7 +1041,7 @@ public class OrderPackageTest extends TestConfig {
                         .productUnit(new ProductUnit[]{
                                 ProductUnit
                                         .builder()
-                                        .beer("beer_order2")
+                                        .product_second_id("beer_order2")
                                         .price(50)
                                         .discount(50)
                                         .date_expire(new Timestamp(new Date().getTime()))
@@ -1049,7 +1049,7 @@ public class OrderPackageTest extends TestConfig {
                                         .build(),
                                 ProductUnit
                                         .builder()
-                                        .beer("beer_order2")
+                                        .product_second_id("beer_order2")
                                         .price(60)
                                         .discount(50)
                                         .date_expire(new Timestamp(new Date().getTime()))
@@ -1060,7 +1060,7 @@ public class OrderPackageTest extends TestConfig {
                                 .builder()
                                 .category(Product.Category.CRAB)
                                 .name("beer tigerrrrr")
-                                .beer_second_id("beer_order2")
+                                .product_second_id("beer_order2")
                                 .detail("bia for order 2")
                                 .build()
                                 .AutoFill()
@@ -1075,7 +1075,7 @@ public class OrderPackageTest extends TestConfig {
                         .productUnit(new ProductUnit[]{
                                 ProductUnit
                                         .builder()
-                                        .beer("beer_order3")
+                                        .product_second_id("beer_order3")
                                         .price(100)
                                         .discount(10)
                                         .date_expire(new Timestamp(new Date().getTime()))
@@ -1083,7 +1083,7 @@ public class OrderPackageTest extends TestConfig {
                                         .build(),
                                 ProductUnit
                                         .builder()
-                                        .beer("beer_order3")
+                                        .product_second_id("beer_order3")
                                         .price(110)
                                         .name("lon")
                                         .build()
@@ -1092,7 +1092,7 @@ public class OrderPackageTest extends TestConfig {
                                 .builder()
                                 .category(Product.Category.CRAB)
                                 .name("beer tigerrrrr")
-                                .beer_second_id("beer_order3")
+                                .product_second_id("beer_order3")
                                 .detail("bia for order 3")
                                 .build()
                                 .AutoFill()
@@ -1107,7 +1107,7 @@ public class OrderPackageTest extends TestConfig {
                                 .productUnit(new ProductUnit[]{
                                         ProductUnit
                                                 .builder()
-                                                .beer("beer_order_sold_out1")
+                                                .product_second_id("beer_order_sold_out1")
                                                 .price(100)
                                                 .discount(10)
                                                 .date_expire(new Timestamp(new Date().getTime()))
@@ -1115,7 +1115,7 @@ public class OrderPackageTest extends TestConfig {
                                                 .build(),
                                         ProductUnit
                                                 .builder()
-                                                .beer("beer_order_sold_out1")
+                                                .product_second_id("beer_order_sold_out1")
                                                 .price(110)
                                                 .name("lon")
                                                 .build()
@@ -1124,7 +1124,7 @@ public class OrderPackageTest extends TestConfig {
                                         .builder()
                                         .category(Product.Category.CRAB)
                                         .name("sold out 1")
-                                        .beer_second_id("beer_order_sold_out1")
+                                        .product_second_id("beer_order_sold_out1")
                                         .detail("sold out 1")
                                         .status(Product.Status.SOLD_OUT)
                                         .build()
@@ -1140,7 +1140,7 @@ public class OrderPackageTest extends TestConfig {
                                 .productUnit(new ProductUnit[]{
                                         ProductUnit
                                                 .builder()
-                                                .beer("beer_order_sold_out2")
+                                                .product_second_id("beer_order_sold_out2")
                                                 .price(100)
                                                 .discount(10)
                                                 .date_expire(new Timestamp(new Date().getTime()))
@@ -1149,7 +1149,7 @@ public class OrderPackageTest extends TestConfig {
                                                 .build(),
                                         ProductUnit
                                                 .builder()
-                                                .beer("beer_order_sold_out2")
+                                                .product_second_id("beer_order_sold_out2")
                                                 .price(110)
                                                 .name("lon")
                                                 .build()
@@ -1158,7 +1158,7 @@ public class OrderPackageTest extends TestConfig {
                                         .builder()
                                         .category(Product.Category.CRAB)
                                         .name("sold out 2")
-                                        .beer_second_id("beer_order_sold_out2")
+                                        .product_second_id("beer_order_sold_out2")
                                         .detail("sold out 2")
                                         .build()
                                         .AutoFill()
@@ -1173,7 +1173,7 @@ public class OrderPackageTest extends TestConfig {
                                 .productUnit(new ProductUnit[]{
                                         ProductUnit
                                                 .builder()
-                                                .beer("beer_order_hide2")
+                                                .product_second_id("beer_order_hide2")
                                                 .price(100)
                                                 .discount(10)
                                                 .date_expire(new Timestamp(new Date().getTime()))
@@ -1181,7 +1181,7 @@ public class OrderPackageTest extends TestConfig {
                                                 .build(),
                                         ProductUnit
                                                 .builder()
-                                                .beer("beer_order_hide2")
+                                                .product_second_id("beer_order_hide2")
                                                 .price(110)
                                                 .name("lon")
                                                 .build()
@@ -1190,7 +1190,7 @@ public class OrderPackageTest extends TestConfig {
                                         .builder()
                                         .category(Product.Category.CRAB)
                                         .name("sold out 2")
-                                        .beer_second_id("beer_order_hide2")
+                                        .product_second_id("beer_order_hide2")
                                         .status(Product.Status.HIDE)
                                         .detail("sold out 2")
                                         .build()
@@ -1219,7 +1219,7 @@ public class OrderPackageTest extends TestConfig {
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
-                    assertThat(beerInfo.getProduct().getBeer_second_id()).isEqualTo("beer_order1");
+                    assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("beer_order1");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
@@ -1227,16 +1227,16 @@ public class OrderPackageTest extends TestConfig {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
-                                    beerUnit4561ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnit4561ID.set(beerUnit.getProduct_unit_second_id());
                                 } else {
-                                    beerUnit4562ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnit4562ID.set(beerUnit.getProduct_unit_second_id());
                                 }
                             })
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
-                                    beerUnit4561ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnit4561ID.set(beerUnit.getProduct_unit_second_id());
                                 } else {
-                                    beerUnit4562ID.set(beerUnit.getBeer_unit_second_id());
+                                    beerUnit4562ID.set(beerUnit.getProduct_unit_second_id());
                                 }
                             })
                             .verifyComplete();
@@ -1281,7 +1281,7 @@ public class OrderPackageTest extends TestConfig {
                                         .productOrder(
                                                 ProductOrder
                                                         .builder()
-                                                        .beer_second_id("beer_order1")
+                                                        .product_second_id("beer_order1")
                                                         .voucher_second_id("ORDER_GIAM_30%")
                                                         .build()
                                         )
@@ -1289,8 +1289,8 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .beer_unit_second_id(beerUnit4561ID.get())
-                                                                .beer_second_id("beer_order1")
+                                                                .product_unit_second_id(beerUnit4561ID.get())
+                                                                .product_second_id("beer_order1")
                                                                 .number_unit(10)
                                                                 .build(),
                                                 }
@@ -1319,8 +1319,8 @@ public class OrderPackageTest extends TestConfig {
                         e.printStackTrace();
                     }
                     assertThat(userPackage.getDevice_id()).isEqualTo("order_test");
-                    assertThat(userPackage.getBeer_id()).isEqualTo("beer_order1");
-                    assertThat(userPackage.getBeer_unit()).isEqualTo(beerUnit4562ID.get());
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("beer_order1");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit4562ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(9);
                     assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("beer_order1");
                     assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);

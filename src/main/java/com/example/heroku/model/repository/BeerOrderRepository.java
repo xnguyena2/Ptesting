@@ -11,7 +11,7 @@ public interface BeerOrderRepository extends ReactiveCrudRepository<ProductOrder
     @Query(value = "SELECT * FROM product_order WHERE product_order.package_order_second_id = :id")
     Flux<ProductOrder> findBySecondID(@Param("id")String packageID);
 
-    @Query(value = "SELECT TEMP.*, package_order.status FROM (SELECT * FROM product_order WHERE product_order.beer_second_id = :id AND DATE_PART('day', NOW() - createat) <= :date LIMIT :size OFFSET (:page*:size)) TEMP LEFT JOIN package_order ON package_order.package_order_second_id = TEMP.package_order_second_id")
+    @Query(value = "SELECT TEMP.*, package_order.status FROM (SELECT * FROM product_order WHERE product_order.product_second_id = :id AND DATE_PART('day', NOW() - createat) <= :date LIMIT :size OFFSET (:page*:size)) TEMP LEFT JOIN package_order ON package_order.package_order_second_id = TEMP.package_order_second_id")
     Flux<ProductOrderStatus> getAllByProductID(@Param("id")String productID, @Param("page")int page, @Param("size")int size, @Param("date")int date);
 
     @Query(value = "SELECT TEMP.*, package_order.status FROM (SELECT * FROM product_order WHERE DATE_PART('day', NOW() - createat) <= :date LIMIT :size OFFSET (:page*:size)) TEMP LEFT JOIN package_order ON package_order.package_order_second_id = TEMP.package_order_second_id")
