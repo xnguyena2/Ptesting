@@ -2,10 +2,7 @@ package com.example.heroku.response;
 
 import com.example.heroku.model.ProductOrder;
 import com.example.heroku.model.PackageOrder;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @EqualsAndHashCode(callSuper=true)

@@ -1,7 +1,7 @@
 package com.example.heroku.model;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import entity.BaseEntity;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 
@@ -12,12 +12,26 @@ import java.util.Date;
 
 @Entity
 @Table(name="product_order")
+@EqualsAndHashCode(callSuper = true)
+@Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductOrder extends entity.BeerOrder {
+public class ProductOrder extends BaseEntity {
     @Id
     String id;
+
+    protected String name;
+
+    protected String package_order_second_id;
+
+    protected String product_second_id;
+
+    protected String voucher_second_id;
+
+    protected float total_price;
+
+    protected float ship_price;
 
     public ProductOrder AutoFill(String packageOrderSecondID) {
         this.package_order_second_id = packageOrderSecondID;

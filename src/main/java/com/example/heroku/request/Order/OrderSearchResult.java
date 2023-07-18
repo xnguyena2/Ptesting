@@ -1,12 +1,23 @@
 package com.example.heroku.request.Order;
 
-import com.example.heroku.model.ProductUnitOrder;
 import com.example.heroku.model.PackageOrder;
+import com.example.heroku.model.ProductOrder;
+import com.example.heroku.model.ProductUnitOrder;
+import com.example.heroku.model.count.ResultWithCount;
 import com.example.heroku.services.VietNamAddress;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class OrderSearchResult  extends order.OrderSearchResult {
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class OrderSearchResult extends ResultWithCount {
+    protected List<PackageOrderData> result;
 
     public OrderSearchResult Add(PackageOrderData newItem) {
         if (result == null) {
@@ -20,7 +31,45 @@ public class OrderSearchResult  extends order.OrderSearchResult {
         return result.toArray(new PackageOrderData[0]);
     }
 
-    public static class PackageOrderData extends order.OrderSearchResult.PackageOrderData {
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PackageOrderData extends PackageOrder{
+
+        protected String region;
+        protected String district;
+        protected String ward;
+
+        protected List<BeerOrderData> beerOrderList;
+
+        @EqualsAndHashCode(callSuper = true)
+        @Data
+        @SuperBuilder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class BeerOrderData extends ProductOrder {
+            protected List<ProductUnitOrder> beerUnitOrderList;
+
+            public BeerOrderData(ProductOrder source) {
+
+                setPackage_order_second_id(source.getPackage_order_second_id());
+                setProduct_second_id(source.getProduct_second_id());
+                setVoucher_second_id(source.getVoucher_second_id());
+                setTotal_price(source.getTotal_price());
+                setShip_price(source.getShip_price());
+                setName(source.getName());
+
+            }
+
+            public BeerOrderData Add(ProductUnitOrder newItem) {
+                if (beerUnitOrderList == null) {
+                    beerUnitOrderList = new ArrayList<>();
+                }
+                beerUnitOrderList.add(newItem);
+                return this;
+            }
+        }
 
         public PackageOrderData(PackageOrder source) {
 
@@ -43,7 +92,7 @@ public class OrderSearchResult  extends order.OrderSearchResult {
             setCreateat(source.getCreateat());
         }
 
-        public BeerOrderData Add(entity.BeerOrder newItem) {
+        public BeerOrderData Add(ProductOrder newItem) {
             if (beerOrderList == null) {
                 beerOrderList = new ArrayList<>();
             }
@@ -54,28 +103,6 @@ public class OrderSearchResult  extends order.OrderSearchResult {
 
         public BeerOrderData[] GetResultAsArray() {
             return beerOrderList.toArray(new BeerOrderData[0]);
-        }
-
-        public static class BeerOrderData extends order.OrderSearchResult.PackageOrderData.BeerOrderData {
-
-            public BeerOrderData(entity.BeerOrder source) {
-
-                setPackage_order_second_id(source.getPackage_order_second_id());
-                setProduct_second_id(source.getProduct_second_id());
-                setVoucher_second_id(source.getVoucher_second_id());
-                setTotal_price(source.getTotal_price());
-                setShip_price(source.getShip_price());
-                setName(source.getName());
-
-            }
-
-            public BeerOrderData Add(ProductUnitOrder newItem) {
-                if (beerUnitOrderList == null) {
-                    beerUnitOrderList = new ArrayList<>();
-                }
-                beerUnitOrderList.add(newItem);
-                return this;
-            }
         }
     }
 }
