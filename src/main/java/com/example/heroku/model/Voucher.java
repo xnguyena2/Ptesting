@@ -80,7 +80,7 @@ public class Voucher {
 
         private String name;
 
-        Status(String name){
+        Status(String name) {
             this.name = name;
         }
 
@@ -90,19 +90,16 @@ public class Voucher {
 
         private static final Map<String, Status> lookup = new HashMap<>();
 
-        static
-        {
-            for(Status sts : Status.values())
-            {
+        static {
+            for (Status sts : Status.values()) {
                 lookup.put(sts.getName(), sts);
             }
         }
 
-        public static Status get(String text)
-        {
+        public static Status get(String text) {
             try {
                 Status val = lookup.get(text);
-                if(val == null){
+                if (val == null) {
                     return AVARIABLE;
                 }
                 return val;
@@ -123,8 +120,9 @@ public class Voucher {
         void doSync(int reuse);
     }
 
-    public boolean IsOnlyApplyForProduct(String productVOucher){
-        if(voucher_second_id == null)
+    public boolean IsOnlyApplyForProduct(String productVOucher) {
+        System.out.println("checking voucher: " + voucher_second_id + ", productVOucher: " + productVOucher);
+        if (voucher_second_id == null)
             return false;
         return !isFor_all_product() && voucher_second_id.equals(productVOucher);
     }

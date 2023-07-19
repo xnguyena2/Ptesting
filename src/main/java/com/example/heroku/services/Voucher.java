@@ -110,8 +110,8 @@ public class Voucher {
                 .flatMap(voucher -> this.ConvertVoucherToVoucherData(Mono.just(voucher)));
     }
 
-    public Mono<com.example.heroku.model.Voucher> getDeviceVoucher(String voucherID, String device, String phoneclean, String productID) {
-        return voucherRepository.getVoucherOfUser(voucherID, device, phoneclean, productID);
+    public Mono<com.example.heroku.model.Voucher> getDeviceVoucher(String voucherID, String device, String productID) {
+        return voucherRepository.getVoucherOfUser(voucherID, device, productID);
     }
 
     public Mono<com.example.heroku.model.Voucher> getVoucher(String bySecondID) {

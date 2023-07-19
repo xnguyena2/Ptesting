@@ -108,7 +108,6 @@ public class ProductUnit {
     }
 
     public ProductUnit UpdateToRealPrice() {
-        System.out.println("Update price");
         price *= (100 - discount) / 100;
         return this;
     }

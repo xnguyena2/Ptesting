@@ -65,9 +65,14 @@ public class OrderPackageTest extends TestConfig {
         VoucherTest.builder().voucherAPI(voucherAPI).build().VoucherTest();
     }
 
+    AtomicReference<Float> voucher5K = new AtomicReference<>((float) 0);
+    AtomicReference<Float> voucher30Percent = new AtomicReference<>((float) 0);
 
     @Test
     public void OrderTest() throws Exception {
+
+        final int totalSaveOrder = 9;// if not save success will 8
+
         createDevice();
         createProvider();
         createBeer();
@@ -89,28 +94,27 @@ public class OrderPackageTest extends TestConfig {
             t.join();
         }
 
+
+        assertThat(voucher5K.get()).isEqualTo(122*5 + (122-5)*25);
+        assertThat(voucher30Percent.get().intValue()).isEqualTo((int)(122*10 + (122*0.7)*20));
+
         voucherAPI.getAllMyVoucher("iphone")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
-                    System.out.println(voucher.getVoucher_second_id());
-                    System.out.println(voucher.getReuse());
+                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
                 })
                 .consumeNextWith(voucher -> {
-                    System.out.println(voucher.getVoucher_second_id());
-                    System.out.println(voucher.getReuse());
+                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
                 })
                 .consumeNextWith(voucher -> {
-                    System.out.println(voucher.getVoucher_second_id());
-                    System.out.println(voucher.getReuse());
+                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
                 })
                 .consumeNextWith(voucher -> {
-                    System.out.println(voucher.getVoucher_second_id());
-                    System.out.println(voucher.getReuse());
+                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
                 })
-                .consumeNextWith(voucher -> {
-                    System.out.println(voucher.getVoucher_second_id());
-                    System.out.println(voucher.getReuse());
-                })
+//                .consumeNextWith(voucher -> {
+//                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+//                })
                 .verifyComplete();
 
         beerAPI.CountSearchBeer(SearchQuery.builder().query("tigerrrrr").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).build())
@@ -158,17 +162,25 @@ public class OrderPackageTest extends TestConfig {
                             .verifyComplete();
                 })
                 .verifyComplete();
+
+
+        AtomicReference<Float> donePrice = new AtomicReference<>((float)0);
+        AtomicReference<Float> cancelPrice = new AtomicReference<>((float)0);
         AtomicReference<String> orderDoneID = new AtomicReference<>();
         AtomicReference<String> orderCancelID = new AtomicReference<>();
         packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(200).filter("30").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
+                    System.out.println("total order: " + orderSearchResult.getCount());
+                    System.out.println("total order size: " + orderSearchResult.getResult().size());
                     orderDoneID.set(orderSearchResult.getResult().get(0).getPackage_order_second_id());
                     orderCancelID.set(orderSearchResult.getResult().get(1).getPackage_order_second_id());
+                    donePrice.updateAndGet(v->v+orderSearchResult.getResult().get(0).getReal_price());
+                    cancelPrice.updateAndGet(v->v+orderSearchResult.getResult().get(1).getReal_price());
                     System.out.println("Done order value: " + orderSearchResult.getResult().get(0).getReal_price());
                     System.out.println("Cancel order value: " + orderSearchResult.getResult().get(1).getReal_price());
-                    assertThat(orderSearchResult.getCount()).isEqualTo(testcase * 8);
-                    assertThat(orderSearchResult.getResult().size()).isEqualTo(Math.min(200, testcase * 8));
+                    assertThat(orderSearchResult.getCount()).isEqualTo(testcase * totalSaveOrder);
+                    assertThat(orderSearchResult.getResult().size()).isEqualTo(Math.min(200, testcase * totalSaveOrder));
                 })
                 .verifyComplete();
 
@@ -179,8 +191,8 @@ public class OrderPackageTest extends TestConfig {
         packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(300).filter("30").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
-                    assertThat(orderSearchResult.getCount()).isEqualTo(testcase * 8 - 2);
-                    assertThat(orderSearchResult.getResult().size()).isEqualTo(testcase * 8 - 2);
+                    assertThat(orderSearchResult.getCount()).isEqualTo(testcase * totalSaveOrder - 2);
+                    assertThat(orderSearchResult.getResult().size()).isEqualTo(testcase * totalSaveOrder - 2);
                 })
                 .verifyComplete();
 
@@ -202,7 +214,7 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getTotal_price()).isEqualTo(59935f - 106f * 2);
+                    assertThat(buyerData.getTotal_price()).isEqualTo(66349f - donePrice.get() - cancelPrice.get());// 66349 = (106 + 122 + 365.4*3 + 672) * 30 + (122*5 + (122-5)*25) + (122*10 + 122*20*0.7)
                 })
                 .verifyComplete();
 
@@ -210,7 +222,7 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getTotal_price()).isEqualTo(106f);
+                    assertThat(buyerData.getTotal_price()).isEqualTo(donePrice.get());
                 })
                 .verifyComplete();
 
@@ -218,15 +230,15 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getTotal_price()).isEqualTo(106f);
+                    assertThat(buyerData.getTotal_price()).isEqualTo(cancelPrice.get());
                 })
                 .verifyComplete();
 
         statisticServices.getTotal(SearchQuery.builder().filter("30").query(PackageOrder.Status.DONE.getName()).page(0).size(300).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(totalOrder -> {
-                    assertThat(totalOrder.getReal_price()).isEqualTo(106f);
-                    assertThat(totalOrder.getTotal_price()).isEqualTo(106f);
+                    assertThat(totalOrder.getReal_price()).isEqualTo(donePrice.get());
+                    assertThat(totalOrder.getTotal_price()).isEqualTo(donePrice.get());
                 })
                 .verifyComplete();
 
@@ -236,7 +248,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .as(StepVerifier::create)
                 .consumeNextWith(totalOrder -> {
-                    assertThat(totalOrder).isEqualTo(28800f);
+                    assertThat(totalOrder.intValue()).isEqualTo(24649);
                 })
                 .verifyComplete();
 
@@ -246,7 +258,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .as(StepVerifier::create)
                 .consumeNextWith(totalOrder -> {
-                    assertThat(totalOrder).isEqualTo(81300f);
+                    assertThat(Math.round(totalOrder)).isEqualTo(66349);
                 })
                 .verifyComplete();
 
@@ -256,79 +268,79 @@ public class OrderPackageTest extends TestConfig {
 
     void orderTest() {
 
-        AtomicReference<ProductUnit> beerUnit1= new AtomicReference<ProductUnit>();
-        AtomicReference<ProductUnit> beerUnit2 = new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order1_Thung_10_10= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order1_Lon_20_20 = new AtomicReference<ProductUnit>();
 
-        AtomicReference<ProductUnit> beerUnit3= new AtomicReference<ProductUnit>();
-        AtomicReference<ProductUnit> beerUnit4 = new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order2_Thung_50_50= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order2_Lon_60_50 = new AtomicReference<ProductUnit>();
 
-        AtomicReference<ProductUnit> beerUnitsold_out1= new AtomicReference<ProductUnit>();
-        AtomicReference<ProductUnit> beerUnitsold_out2 = new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order_sold_out1_Thung_100_10_soldout= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order_sold_out1_Lon_110_0_soldout = new AtomicReference<ProductUnit>();
 
-        AtomicReference<ProductUnit> beerUnitsold_out21= new AtomicReference<ProductUnit>();
-        AtomicReference<ProductUnit> beerUnitsold_out22 = new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order_sold_out2_Thung_100_10_soldout= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order_sold_out2_Lon_110_0_soldout = new AtomicReference<ProductUnit>();
 
-        AtomicReference<ProductUnit> beerUnithide1= new AtomicReference<ProductUnit>();
-        AtomicReference<ProductUnit> beerUnithide2 = new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order_hide2_Thung_100_10_hide= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order_hide2_Lon_110_0_hide = new AtomicReference<ProductUnit>();
 
         beerUnitRepository.findByBeerID("beer_order1")
                 .as(StepVerifier::create)
-                .consumeNextWith(beerUnit1::set)
-                .consumeNextWith(beerUnit2::set)
+                .consumeNextWith(beer_order1_Thung_10_10::set)
+                .consumeNextWith(beer_order1_Lon_20_20::set)
         .verifyComplete();
 
         beerUnitRepository.findByBeerID("beer_order2")
                 .as(StepVerifier::create)
-                .consumeNextWith(beerUnit3::set)
-                .consumeNextWith(beerUnit4::set)
+                .consumeNextWith(beer_order2_Thung_50_50::set)
+                .consumeNextWith(beer_order2_Lon_60_50::set)
                 .verifyComplete();
 
         beerUnitRepository.findByBeerID("beer_order_sold_out1")
                 .as(StepVerifier::create)
-                .consumeNextWith(beerUnitsold_out1::set)
-                .consumeNextWith(beerUnitsold_out2::set)
+                .consumeNextWith(beer_order_sold_out1_Thung_100_10_soldout::set)
+                .consumeNextWith(beer_order_sold_out1_Lon_110_0_soldout::set)
                 .verifyComplete();
 
         beerUnitRepository.findByBeerID("beer_order_sold_out2")
                 .as(StepVerifier::create)
-                .consumeNextWith(beerUnitsold_out21::set)
-                .consumeNextWith(beerUnitsold_out22::set)
+                .consumeNextWith(beer_order_sold_out2_Thung_100_10_soldout::set)
+                .consumeNextWith(beer_order_sold_out2_Lon_110_0_soldout::set)
                 .verifyComplete();
 
         beerUnitRepository.findByBeerID("beer_order_hide2")
                 .as(StepVerifier::create)
-                .consumeNextWith(beerUnithide1::set)
-                .consumeNextWith(beerUnithide2::set)
+                .consumeNextWith(beer_order_hide2_Thung_100_10_hide::set)
+                .consumeNextWith(beer_order_hide2_Lon_110_0_hide::set)
                 .verifyComplete();
 
-        if(beerUnit2.get().getName().equals("thung")){
-            ProductUnit temp = beerUnit2.get();
-            beerUnit2.set(beerUnit1.get());
-            beerUnit1.set(temp);
+        if(beer_order1_Lon_20_20.get().getName().equals("thung")){
+            ProductUnit temp = beer_order1_Lon_20_20.get();
+            beer_order1_Lon_20_20.set(beer_order1_Thung_10_10.get());
+            beer_order1_Thung_10_10.set(temp);
         }
 
-        if(beerUnit4.get().getName().equals("thung")){
-            ProductUnit temp = beerUnit4.get();
-            beerUnit4.set(beerUnit3.get());
-            beerUnit3.set(temp);
+        if(beer_order2_Lon_60_50.get().getName().equals("thung")){
+            ProductUnit temp = beer_order2_Lon_60_50.get();
+            beer_order2_Lon_60_50.set(beer_order2_Thung_50_50.get());
+            beer_order2_Thung_50_50.set(temp);
         }
 
-        if(beerUnitsold_out2.get().getName().equals("thung")){
-            ProductUnit temp = beerUnitsold_out2.get();
-            beerUnitsold_out2.set(beerUnitsold_out1.get());
-            beerUnitsold_out1.set(temp);
+        if(beer_order_sold_out1_Lon_110_0_soldout.get().getName().equals("thung")){
+            ProductUnit temp = beer_order_sold_out1_Lon_110_0_soldout.get();
+            beer_order_sold_out1_Lon_110_0_soldout.set(beer_order_sold_out1_Thung_100_10_soldout.get());
+            beer_order_sold_out1_Thung_100_10_soldout.set(temp);
         }
 
-        if(beerUnitsold_out22.get().getName().equals("thung")){
-            ProductUnit temp = beerUnitsold_out22.get();
-            beerUnitsold_out22.set(beerUnitsold_out21.get());
-            beerUnitsold_out21.set(temp);
+        if(beer_order_sold_out2_Lon_110_0_soldout.get().getName().equals("thung")){
+            ProductUnit temp = beer_order_sold_out2_Lon_110_0_soldout.get();
+            beer_order_sold_out2_Lon_110_0_soldout.set(beer_order_sold_out2_Thung_100_10_soldout.get());
+            beer_order_sold_out2_Thung_100_10_soldout.set(temp);
         }
 
-        if(beerUnithide2.get().getName().equals("thung")){
-            ProductUnit temp = beerUnithide2.get();
-            beerUnithide2.set(beerUnithide1.get());
-            beerUnithide1.set(temp);
+        if(beer_order_hide2_Lon_110_0_hide.get().getName().equals("thung")){
+            ProductUnit temp = beer_order_hide2_Lon_110_0_hide.get();
+            beer_order_hide2_Lon_110_0_hide.set(beer_order_hide2_Thung_100_10_hide.get());
+            beer_order_hide2_Thung_100_10_hide.set(temp);
         }
 
         PackageOrderData packageOrderData = PackageOrderData
@@ -359,14 +371,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Thung_10_10.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Thung_10_10.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Lon_20_20.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Lon_20_20.get().getProduct_second_id())
                                                                 .number_unit(1)
                                                                 .build()
                                                 }
@@ -413,14 +425,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Thung_10_10.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Thung_10_10.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Lon_20_20.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Lon_20_20.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -433,9 +445,10 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
-                    System.out.println("Using order ORDER_GIAM_5K: "+ packageOrder.getReal_price());
-                    //assertThat(packageOrder.getTotal_price()).isEqualTo(117);// 10*10*0.9 + 20*1*0.8
-                    //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
+                    System.out.println("Using order ORDER_GIAM_5K: " + packageOrder.getReal_price());
+                    voucher5K.updateAndGet(v -> v += packageOrder.getReal_price());
+//                    assertThat(packageOrder.getTotal_price()).isEqualTo(117);// 10*10*0.9 + 20*2*0.8 - 5
+                    assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
 
@@ -468,14 +481,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Thung_10_10.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Thung_10_10.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Lon_20_20.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Lon_20_20.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -488,7 +501,7 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
-                    assertThat(packageOrder.getReal_price()).isEqualTo(122);// 10*10*0.9 + 20*1*0.8
+                    assertThat(packageOrder.getReal_price()).isEqualTo(122);// 10*10*0.9 + 20*1*0.8 - 0
                     assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
@@ -522,14 +535,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Thung_10_10.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Thung_10_10.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Lon_20_20.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Lon_20_20.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -549,14 +562,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit3.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit3.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order2_Thung_50_50.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order2_Thung_50_50.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit4.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit4.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order2_Lon_60_50.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order2_Lon_60_50.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
@@ -569,8 +582,9 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
-                    //assertThat(packageOrder.getTotal_price()).isEqualTo(365.4f);// 10*10*0.9 + 20*1*0.8
-                    //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
+                    System.out.println("Using order ORDER_GIAM_30%: " + packageOrder.getReal_price());
+                    assertThat(packageOrder.getTotal_price()).isEqualTo(365.4f);// 10*10*0.9 + 20*1*0.8
+                    assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
 
@@ -603,14 +617,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Thung_10_10.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Thung_10_10.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Lon_20_20.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Lon_20_20.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -630,14 +644,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit3.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit3.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order2_Thung_50_50.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order2_Thung_50_50.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit4.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit4.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order2_Lon_60_50.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order2_Lon_60_50.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
@@ -650,90 +664,9 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
-                    //assertThat(packageOrder.getTotal_price()).isEqualTo(485.4f);// 10*10*0.9 + 20*1*0.8
-                    //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
-                })
-                .verifyComplete();
-
-
-        packageOrderData = PackageOrderData
-                .builder()
-                .packageOrder(
-                        PackageOrder
-                                .builder()
-                                .region_id(294)
-                                .district_id(484)
-                                .phone_number("1234567890")
-                                .reciver_fullname("Nguyen Phong")
-                                .reciver_address("232 bau cat, tan binh")
-                                .user_device_id("iphone")
-                                .build()
-                )
-                .preOrder(false)
-                .beerOrders(
-                        new PackageOrderData.BeerOrderData[]{
-                                PackageOrderData.BeerOrderData
-                                        .builder()
-                                        .productOrder(
-                                                ProductOrder
-                                                        .builder()
-                                                        .product_second_id("beer_order1")
-                                                        .voucher_second_id("ORDER_GIAM_30%")
-                                                        .build()
-                                        )
-                                        .productUnitOrders(
-                                                new ProductUnitOrder[]{
-                                                        ProductUnitOrder
-                                                                .builder()
-                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
-                                                                .number_unit(10)
-                                                                .build(),
-                                                        ProductUnitOrder
-                                                                .builder()
-                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
-                                                                .number_unit(2)
-                                                                .build()
-                                                }
-                                        )
-                                        .build()
-                                ,
-                                PackageOrderData.BeerOrderData
-                                        .builder()
-                                        .productOrder(
-                                                ProductOrder
-                                                        .builder()
-                                                        .product_second_id("beer_order2")
-                                                        .voucher_second_id("ORDER_GIAM_30%")
-                                                        .build()
-                                        )
-                                        .productUnitOrders(
-                                                new ProductUnitOrder[]{
-                                                        ProductUnitOrder
-                                                                .builder()
-                                                                .product_unit_second_id(beerUnit3.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit3.get().getProduct_second_id())
-                                                                .number_unit(10)
-                                                                .build(),
-                                                        ProductUnitOrder
-                                                                .builder()
-                                                                .product_unit_second_id(beerUnit4.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit4.get().getProduct_second_id())
-                                                                .number_unit(5)
-                                                                .build()
-                                                }
-                                        )
-                                        .build()
-                        }
-                )
-                .build();
-
-        beerOrder.createOrder(packageOrderData)
-                .as(StepVerifier::create)
-                .consumeNextWith(packageOrder -> {
-                    //assertThat(packageOrder.getTotal_price()).isEqualTo(522f);// 10*10*0.9 + 20*1*0.8
-                    //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
+                    System.out.println("Using again 2 order ORDER_GIAM_30%: " + packageOrder.getReal_price());
+                    assertThat(packageOrder.getTotal_price()).isEqualTo(365.4f);// 10*10*0.9 + 20*1*0.8
+                    assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
 
@@ -767,14 +700,97 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Thung_10_10.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Thung_10_10.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Lon_20_20.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Lon_20_20.get().getProduct_second_id())
+                                                                .number_unit(2)
+                                                                .build()
+                                                }
+                                        )
+                                        .build()
+                                ,
+                                PackageOrderData.BeerOrderData
+                                        .builder()
+                                        .productOrder(
+                                                ProductOrder
+                                                        .builder()
+                                                        .product_second_id("beer_order2")
+                                                        .voucher_second_id("ORDER_GIAM_30%")
+                                                        .build()
+                                        )
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
+                                                                .builder()
+                                                                .product_unit_second_id(beer_order2_Thung_50_50.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order2_Thung_50_50.get().getProduct_second_id())
+                                                                .number_unit(10)
+                                                                .build(),
+                                                        ProductUnitOrder
+                                                                .builder()
+                                                                .product_unit_second_id(beer_order2_Lon_60_50.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order2_Lon_60_50.get().getProduct_second_id())
+                                                                .number_unit(5)
+                                                                .build()
+                                                }
+                                        )
+                                        .build()
+                        }
+                )
+                .build();
+
+        beerOrder.createOrder(packageOrderData)
+                .as(StepVerifier::create)
+                .consumeNextWith(packageOrder -> {
+                    System.out.println("Using again 3 order ORDER_GIAM_30%: " + packageOrder.getReal_price());
+                    assertThat(packageOrder.getTotal_price()).isEqualTo(365.4f);// 10*10*0.9 + 20*1*0.8
+                    assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
+                })
+                .verifyComplete();
+
+
+        packageOrderData = PackageOrderData
+                .builder()
+                .packageOrder(
+                        PackageOrder
+                                .builder()
+                                .region_id(294)
+                                .district_id(484)
+                                .phone_number("1234567890")
+                                .reciver_fullname("Nguyen Phong")
+                                .reciver_address("232 bau cat, tan binh")
+                                .user_device_id("iphone")
+                                .build()
+                )
+                .preOrder(false)
+                .beerOrders(
+                        new PackageOrderData.BeerOrderData[]{
+                                PackageOrderData.BeerOrderData
+                                        .builder()
+                                        .productOrder(
+                                                ProductOrder
+                                                        .builder()
+                                                        .product_second_id("beer_order1")
+                                                        .voucher_second_id("ORDER_GIAM_30%")
+                                                        .build()
+                                        )
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
+                                                                .builder()
+                                                                .product_unit_second_id(beer_order1_Thung_10_10.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Thung_10_10.get().getProduct_second_id())
+                                                                .number_unit(10)
+                                                                .build(),
+                                                        ProductUnitOrder
+                                                                .builder()
+                                                                .product_unit_second_id(beer_order1_Lon_20_20.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Lon_20_20.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -794,14 +810,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnitsold_out1.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnitsold_out1.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order_sold_out1_Thung_100_10_soldout.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order_sold_out1_Thung_100_10_soldout.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnitsold_out2.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnitsold_out2.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order_sold_out1_Lon_110_0_soldout.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order_sold_out1_Lon_110_0_soldout.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
@@ -814,8 +830,10 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
+                    System.out.println("Using again 4 order ORDER_GIAM_30%: " + packageOrder.getReal_price());
+                    voucher30Percent.updateAndGet(v -> v += packageOrder.getReal_price());
                     //assertThat(packageOrder.getTotal_price()).isEqualTo(522f);// 10*10*0.9 + 20*1*0.8
-                    //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
+                    assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
 
@@ -849,14 +867,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit1.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit1.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Thung_10_10.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Thung_10_10.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnit2.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnit2.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order1_Lon_20_20.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Lon_20_20.get().getProduct_second_id())
                                                                 .number_unit(2)
                                                                 .build()
                                                 }
@@ -876,14 +894,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnitsold_out21.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnitsold_out21.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order_sold_out2_Thung_100_10_soldout.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order_sold_out2_Thung_100_10_soldout.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnitsold_out22.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnitsold_out22.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order_sold_out2_Lon_110_0_soldout.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order_sold_out2_Lon_110_0_soldout.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
@@ -896,9 +914,9 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
-                    System.out.println(packageOrder.getReal_price());
-                    assertThat(packageOrder.getReal_price()).isEqualTo(470.4f);// 10*110*0.7 + (20*10*0.8 + 2*10*0.9)*0.7
-                    //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
+                    System.out.println("Using again 5 order ORDER_GIAM_30%: " + packageOrder.getReal_price());
+                    assertThat(packageOrder.getReal_price()).isEqualTo(672f);// 5*110 + (20*2*0.8 + 10*10*0.9)
+                    assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
 
@@ -932,14 +950,14 @@ public class OrderPackageTest extends TestConfig {
                                                 new ProductUnitOrder[]{
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnithide1.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnithide1.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order_hide2_Thung_100_10_hide.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order_hide2_Thung_100_10_hide.get().getProduct_second_id())
                                                                 .number_unit(10)
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beerUnithide2.get().getProduct_unit_second_id())
-                                                                .product_second_id(beerUnithide2.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order_hide2_Lon_110_0_hide.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order_hide2_Lon_110_0_hide.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
@@ -952,7 +970,7 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
-                    System.out.println(packageOrder.getReal_price());
+                    System.out.println("Using again 6 order ORDER_GIAM_30%: " + packageOrder.getReal_price());
                     assertThat(packageOrder.getReal_price()).isEqualTo(0f);// 10*110*0.7 + (20*10*0.8 + 2*10*0.9)*0.7
                     //assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
