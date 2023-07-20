@@ -278,13 +278,13 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        statisticServices.getByProductID(SearchQuery.builder().filter("30").query("beer_order1").page(0).size(3000).build())
+        statisticServices.getByProductID(SearchQuery.builder().filter("30").query("beer_order1").page(0).size(30000).build())
                 .reduce(0f, (total, product) -> {
                     return total + product.getTotal_price();
                 })
                 .as(StepVerifier::create)
                 .consumeNextWith(totalOrder -> {
-                    assertThat(totalOrder.intValue()).isEqualTo(24649);
+                    assertThat(totalOrder.intValue()).isEqualTo(28309);// 28309 = (106 + 122*3 +122*0.7*3)*30 + 122*5 + (122-5)*25 + 122*10 + 122*0.7*20
                 })
                 .verifyComplete();
 
@@ -294,7 +294,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .as(StepVerifier::create)
                 .consumeNextWith(totalOrder -> {
-                    assertThat(Math.round(totalOrder)).isEqualTo(66349);
+                    assertThat(Math.round(totalOrder)).isEqualTo(86509); //(106 + 122 + 365.4*3 + 672*2)*30 + 122*5 + 117*25 + 122*10 + 122*0.7*20
                 })
                 .verifyComplete();
 
@@ -314,7 +314,7 @@ public class OrderPackageTest extends TestConfig {
         AtomicReference<ProductUnit> beer_order_sold_out1_Lon_110_0_soldout = new AtomicReference<ProductUnit>();
 
         AtomicReference<ProductUnit> beer_order_sold_out2_Thung_100_10_soldout= new AtomicReference<ProductUnit>();
-        AtomicReference<ProductUnit> beer_order_sold_out2_Lon_110_0_soldout = new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order_sold_out2_Lon_110_0 = new AtomicReference<ProductUnit>();
 
         AtomicReference<ProductUnit> beer_order_hide2_Thung_100_10_hide= new AtomicReference<ProductUnit>();
         AtomicReference<ProductUnit> beer_order_hide2_Lon_110_0_hide = new AtomicReference<ProductUnit>();
@@ -340,7 +340,7 @@ public class OrderPackageTest extends TestConfig {
         beerUnitRepository.findByBeerID("beer_order_sold_out2")
                 .as(StepVerifier::create)
                 .consumeNextWith(beer_order_sold_out2_Thung_100_10_soldout::set)
-                .consumeNextWith(beer_order_sold_out2_Lon_110_0_soldout::set)
+                .consumeNextWith(beer_order_sold_out2_Lon_110_0::set)
                 .verifyComplete();
 
         beerUnitRepository.findByBeerID("beer_order_hide2")
@@ -367,9 +367,9 @@ public class OrderPackageTest extends TestConfig {
             beer_order_sold_out1_Thung_100_10_soldout.set(temp);
         }
 
-        if(beer_order_sold_out2_Lon_110_0_soldout.get().getName().equals("thung")){
-            ProductUnit temp = beer_order_sold_out2_Lon_110_0_soldout.get();
-            beer_order_sold_out2_Lon_110_0_soldout.set(beer_order_sold_out2_Thung_100_10_soldout.get());
+        if(beer_order_sold_out2_Lon_110_0.get().getName().equals("thung")){
+            ProductUnit temp = beer_order_sold_out2_Lon_110_0.get();
+            beer_order_sold_out2_Lon_110_0.set(beer_order_sold_out2_Thung_100_10_soldout.get());
             beer_order_sold_out2_Thung_100_10_soldout.set(temp);
         }
 
@@ -938,8 +938,8 @@ public class OrderPackageTest extends TestConfig {
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beer_order_sold_out2_Lon_110_0_soldout.get().getProduct_unit_second_id())
-                                                                .product_second_id(beer_order_sold_out2_Lon_110_0_soldout.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order_sold_out2_Lon_110_0.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order_sold_out2_Lon_110_0.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
@@ -1023,8 +1023,8 @@ public class OrderPackageTest extends TestConfig {
                                                                 .build(),
                                                         ProductUnitOrder
                                                                 .builder()
-                                                                .product_unit_second_id(beer_order_sold_out2_Lon_110_0_soldout.get().getProduct_unit_second_id())
-                                                                .product_second_id(beer_order_sold_out2_Lon_110_0_soldout.get().getProduct_second_id())
+                                                                .product_unit_second_id(beer_order_sold_out2_Lon_110_0.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order_sold_out2_Lon_110_0.get().getProduct_second_id())
                                                                 .number_unit(5)
                                                                 .build()
                                                 }
