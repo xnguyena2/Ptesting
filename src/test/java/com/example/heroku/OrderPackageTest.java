@@ -67,11 +67,12 @@ public class OrderPackageTest extends TestConfig {
 
     AtomicReference<Float> voucher5K = new AtomicReference<>((float) 0);
     AtomicReference<Float> voucher30Percent = new AtomicReference<>((float) 0);
+    AtomicReference<Float> packageVoucher5K = new AtomicReference<>((float) 0);
 
     @Test
     public void OrderTest() throws Exception {
 
-        final int totalSaveOrder = 9;// if not save success will 8
+        final int totalSaveOrder = 10;// if not save success will 8
 
         createDevice();
         createProvider();
@@ -97,12 +98,44 @@ public class OrderPackageTest extends TestConfig {
 
         assertThat(voucher5K.get()).isEqualTo(122*5 + (122-5)*25);
         assertThat(voucher30Percent.get().intValue()).isEqualTo((int)(122*10 + (122*0.7)*20));
+        assertThat(packageVoucher5K.get().intValue()).isEqualTo((int)(672*10 + (672-5)*20));
+
+
+        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_30%","hello")
+                .as(StepVerifier::create)
+                .consumeNextWith(voucher -> {
+                    System.out.println("package voucher of hello: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+                    assertThat(voucher.getReuse()).isEqualTo(45);
+                })
+                .verifyComplete();
+
+
+        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_30%","iphone")
+                .as(StepVerifier::create)
+                .consumeNextWith(voucher -> {
+                    System.out.println("package voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+                    assertThat(voucher.getReuse()).isEqualTo(15);
+                })
+                .verifyComplete();
+
+        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_5K","hello")
+                .as(StepVerifier::create)
+                .verifyComplete();
+
+        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_5K","android")
+                .as(StepVerifier::create)
+                .consumeNextWith(voucher -> {
+                    System.out.println("package voucher of android: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+                    assertThat(voucher.getReuse()).isEqualTo(20);
+                })
+                .verifyComplete();
+
+        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_5K","iphone")
+                .as(StepVerifier::create)
+                .verifyComplete();
 
         voucherAPI.getAllMyVoucher("iphone")
                 .as(StepVerifier::create)
-                .consumeNextWith(voucher -> {
-                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
-                })
                 .consumeNextWith(voucher -> {
                     System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
                 })
@@ -213,11 +246,11 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.ORDER.getName()).page(0).size(300).build())
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.ORDER.getName()).page(0).size(500).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getTotal_price()).isEqualTo(66349f - donePrice.get() - cancelPrice.get());// 66349 = (106 + 122 + 365.4*3 + 672) * 30 + (122*5 + (122-5)*25) + (122*10 + 122*20*0.7)
+                    assertThat(buyerData.getTotal_price()).isEqualTo(80361f - donePrice.get() - cancelPrice.get());// 80361 = (106 + 122 + 365.4*3 + 672 * 0.7) * 30 + (122*5 + (122-5)*25) + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
                 })
                 .verifyComplete();
 
@@ -768,6 +801,7 @@ public class OrderPackageTest extends TestConfig {
                                 .reciver_fullname("Nguyen Phong")
                                 .reciver_address("232 bau cat, tan binh")
                                 .user_device_id("iphone")
+                                .voucher_second_id("ORDER_GIAM_30%_wrong")
                                 .build()
                 )
                 .preOrder(false)
@@ -852,6 +886,7 @@ public class OrderPackageTest extends TestConfig {
                                 .reciver_fullname("Nguyen Phong")
                                 .reciver_address("232 bau cat, tan binh")
                                 .user_device_id("iphone")
+                                .voucher_second_id("PACKAGE_VOUCHER_5K")
                                 .build()
                 )
                 .preOrder(false)
@@ -917,8 +952,9 @@ public class OrderPackageTest extends TestConfig {
         beerOrder.createOrder(packageOrderData)
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
-                    System.out.println("Using again 5 order ORDER_GIAM_30%: " + packageOrder.getReal_price());
-                    assertThat(packageOrder.getReal_price()).isEqualTo(672f);// 5*110 + (20*2*0.8 + 10*10*0.9)
+                    System.out.println("Using again 5 order ORDER_GIAM_30% and PACKAGE_VOUCHER_5K: " + packageOrder.getReal_price());
+                    packageVoucher5K.updateAndGet(v->v+packageOrder.getReal_price());
+//                    assertThat(packageOrder.getReal_price()).isEqualTo(672f - 5);// 5*110 + (20*2*0.8 + 10*10*0.9) - 5
                     assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
@@ -935,6 +971,91 @@ public class OrderPackageTest extends TestConfig {
                                 .reciver_fullname("Nguyen Phong")
                                 .reciver_address("232 bau cat, tan binh")
                                 .user_device_id("iphone")
+                                .voucher_second_id("PACKAGE_VOUCHER_30%")
+                                .build()
+                )
+                .preOrder(false)
+                .beerOrders(
+                        new PackageOrderData.BeerOrderData[]{
+                                PackageOrderData.BeerOrderData
+                                        .builder()
+                                        .productOrder(
+                                                ProductOrder
+                                                        .builder()
+                                                        .product_second_id("beer_order1")
+                                                        .voucher_second_id("ORDER_GIAM_30%")
+                                                        .build()
+                                        )
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
+                                                                .builder()
+                                                                .product_unit_second_id(beer_order1_Thung_10_10.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Thung_10_10.get().getProduct_second_id())
+                                                                .number_unit(10)
+                                                                .build(),
+                                                        ProductUnitOrder
+                                                                .builder()
+                                                                .product_unit_second_id(beer_order1_Lon_20_20.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order1_Lon_20_20.get().getProduct_second_id())
+                                                                .number_unit(2)
+                                                                .build()
+                                                }
+                                        )
+                                        .build()
+                                ,
+                                PackageOrderData.BeerOrderData
+                                        .builder()
+                                        .productOrder(
+                                                ProductOrder
+                                                        .builder()
+                                                        .product_second_id("beer_order_sold_out2")
+                                                        .voucher_second_id("ORDER_GIAM_30%")
+                                                        .build()
+                                        )
+                                        .productUnitOrders(
+                                                new ProductUnitOrder[]{
+                                                        ProductUnitOrder
+                                                                .builder()
+                                                                .product_unit_second_id(beer_order_sold_out2_Thung_100_10_soldout.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order_sold_out2_Thung_100_10_soldout.get().getProduct_second_id())
+                                                                .number_unit(10)
+                                                                .build(),
+                                                        ProductUnitOrder
+                                                                .builder()
+                                                                .product_unit_second_id(beer_order_sold_out2_Lon_110_0_soldout.get().getProduct_unit_second_id())
+                                                                .product_second_id(beer_order_sold_out2_Lon_110_0_soldout.get().getProduct_second_id())
+                                                                .number_unit(5)
+                                                                .build()
+                                                }
+                                        )
+                                        .build()
+                        }
+                )
+                .build();
+
+        beerOrder.createOrder(packageOrderData)
+                .as(StepVerifier::create)
+                .consumeNextWith(packageOrder -> {
+                    System.out.println("Using again 5 order ORDER_GIAM_30% and PACKAGE_VOUCHER_30%: " + packageOrder.getReal_price());
+                    assertThat(packageOrder.getReal_price()).isEqualTo(672f*0.7f);// [5*110 + (20*2*0.8 + 10*10*0.9)] * 0.7
+                    assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
+                })
+                .verifyComplete();
+
+
+        packageOrderData = PackageOrderData
+                .builder()
+                .packageOrder(
+                        PackageOrder
+                                .builder()
+                                .region_id(294)
+                                .district_id(484)
+                                .phone_number("1234567890")
+                                .reciver_fullname("Nguyen Phong")
+                                .reciver_address("232 bau cat, tan binh")
+                                .user_device_id("iphone")
+                                .voucher_second_id("ORDER_GIAM_30%")
                                 .build()
                 )
                 .preOrder(false)

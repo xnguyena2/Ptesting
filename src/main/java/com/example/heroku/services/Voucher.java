@@ -114,6 +114,10 @@ public class Voucher {
         return voucherRepository.getVoucherBySecondIDAndUserDeviceAndBeerSecondID(voucherID, device, productID);
     }
 
+    public Mono<com.example.heroku.model.Voucher> getPackageVoucher(String voucherID, String device) {
+        return voucherRepository.getPackageVoucherBySecondIDAndUserDevice(voucherID, device);
+    }
+
     public Mono<com.example.heroku.model.Voucher> getVoucher(String bySecondID) {
         return voucherRepository.getVoucherBySecondID(bySecondID);
     }
@@ -132,13 +136,15 @@ public class Voucher {
                                                 .device_id(userDeviceID)
                                                 .voucher_second_id(voucherSecondID)
                                                 .build()
-                                        ))
-                                .flatMap(
-                                        voucherRelateUserDevice ->
-                                                voucherRelateUserDeviceRepository.deleteByVoucherSecondIdAndUserDeviceID(voucherSecondID, userDeviceID)
-                                                        .then(voucherRelateUserDeviceRepository.save(voucherRelateUserDevice.ResetID().ComsumeVoucher().AutoFill()))
+                                        )
                                 )
-                                .then(Mono.just(voucher))
+                                .map(
+                                        voucherRelateUserDevice -> voucherRelateUserDevice.ResetID().ComsumeVoucher().AutoFill()
+                                )
+                                .flatMap(voucherRelateUserDevice ->
+                                        voucherRelateUserDeviceRepository.updateOrInsert(voucherRelateUserDevice.getVoucher_second_id(), voucherRelateUserDevice.getDevice_id(), voucherRelateUserDevice.getReuse())
+                                                .then(Mono.just(voucher))
+                                )
                 );
     }
 

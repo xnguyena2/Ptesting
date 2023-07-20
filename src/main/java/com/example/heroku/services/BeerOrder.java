@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Component
@@ -72,6 +73,16 @@ public class BeerOrder {
                                     packaBeerOrderData.setVoucher(voucher);
                                     return packaBeerOrderData;
                                 })
+                )
+                .concatWith(Mono.just(packageOrderData.getPackageOrder())
+                        .filter(packageOrder -> packageOrder.getVoucher_second_id() != null)
+                        .flatMap(
+                                packageOrder ->
+                                        voucherServices.getPackageVoucher(packageOrder.getVoucher_second_id(), packageOrder.getUser_device_id())
+                                                .map(voucher ->
+                                                        ProductWithVoucher.builder().voucher(voucher).build()
+                                                )
+                        )
                 );
     }
 
@@ -96,8 +107,10 @@ public class BeerOrder {
                 });
     }
 
-    private Mono<VoucherMerge> calculatorVoucherForAllBeer(Timestamp currentTime, String device) {
-        return Flux.just(com.example.heroku.model.Voucher.builder().reuse(0).build())
+    private Mono<VoucherMerge> calculatorVoucherForAllBeer(Flux<ProductWithVoucher> vouchers, Timestamp currentTime, String device) {
+        return vouchers
+                .filter(productWithVoucher -> productWithVoucher.getProductOrder() == null)
+                .map(ProductWithVoucher::getVoucher)
                 .map(voucher ->
                 {
                     VoucherMerge voucherMerge = VoucherMerge.builder().amount(0).discount(0).build();
@@ -166,6 +179,7 @@ public class BeerOrder {
                                 )
                                 .then(
                                         vouchers
+                                                .filter(productWithVoucher -> productWithVoucher.getProductOrder() != null)
                                                 .flatMap(productWithVoucher ->
                                                         Flux.just(productWithVoucher.getProductOrder().getProductUnitOrders())
                                                                 //calculate unit price
@@ -221,45 +235,45 @@ public class BeerOrder {
                                                                         .price(x1.getPrice() + x2.getPrice())
                                                                         .build()
                                                 )
-                                                // apply voucher for whole package
-                                                .flatMap(weightAndVolumetricContainer ->
-                                                        calculatorVoucherForAllBeer(currentTime, packageOrderData.getPackageOrder().getUser_device_id())
-                                                                .map(voucherMerge -> {
-                                                                    float price = weightAndVolumetricContainer.getPrice();
-                                                                    if (voucherMerge.discount > 0) {
-                                                                        price *= (100 - voucherMerge.discount) / 100;
-                                                                    }
-                                                                    if (voucherMerge.amount > 0) {
-                                                                        price -= voucherMerge.amount;
-                                                                    }
-                                                                    if (price < 0) {
-                                                                        price = 0;
-                                                                    }
-                                                                    weightAndVolumetricContainer.setRealPrice(price);
-                                                                    return weightAndVolumetricContainer;
-                                                                })
-                                                )
-                                                .flatMap(weightAndVolumetricContainerMono ->
-                                                        shippingProvider.map(ghn -> {
-                                                                    float real_price = weightAndVolumetricContainerMono.getRealPrice();
-                                                                    float total_price = weightAndVolumetricContainerMono.getPrice();
-                                                                    System.out.println("Total Price: " + real_price);
+                                )
+                                // apply voucher for whole package
+                                .flatMap(weightAndVolumetricContainer ->
+                                        calculatorVoucherForAllBeer(vouchers, currentTime, packageOrderData.getPackageOrder().getUser_device_id())
+                                                .map(voucherMerge -> {
+                                                    float price = weightAndVolumetricContainer.getPrice();
+                                                    if (voucherMerge.discount > 0) {
+                                                        price *= (100 - voucherMerge.discount) / 100;
+                                                    }
+                                                    if (voucherMerge.amount > 0) {
+                                                        price -= voucherMerge.amount;
+                                                    }
+                                                    if (price < 0) {
+                                                        price = 0;
+                                                    }
+                                                    weightAndVolumetricContainer.setRealPrice(price);
+                                                    return weightAndVolumetricContainer;
+                                                })
+                                )
+                                .flatMap(weightAndVolumetricContainerMono ->
+                                        shippingProvider.map(ghn -> {
+                                                    float real_price = weightAndVolumetricContainerMono.getRealPrice();
+                                                    float total_price = weightAndVolumetricContainerMono.getPrice();
+                                                    System.out.println("Total Price: " + real_price);
 
-                                                                    if (real_price == 0) {
-                                                                        return Mono.just(packageOrderData.getPackageOrder());
-                                                                    }
+                                                    if (real_price == 0) {
+                                                        return Mono.just(packageOrderData.getPackageOrder());
+                                                    }
 
-                                                                    float ship_price = ghn.CalculateShipPrice(weightAndVolumetricContainerMono.getWeight(), weightAndVolumetricContainerMono.getVolumetric(), packageOrderData.getPackageOrder().getRegion_id(), packageOrderData.getPackageOrder().getDistrict_id());
-                                                                    System.out.println("Total Ship Price: " + ship_price);
+                                                    float ship_price = ghn.CalculateShipPrice(weightAndVolumetricContainerMono.getWeight(), weightAndVolumetricContainerMono.getVolumetric(), packageOrderData.getPackageOrder().getRegion_id(), packageOrderData.getPackageOrder().getDistrict_id());
+                                                    System.out.println("Total Ship Price: " + ship_price);
 
-                                                                    packageOrderData.getPackageOrder().setReal_price(real_price);
-                                                                    packageOrderData.getPackageOrder().setTotal_price(total_price);
-                                                                    packageOrderData.getPackageOrder().setShip_price(ship_price);
+                                                    packageOrderData.getPackageOrder().setReal_price(real_price);
+                                                    packageOrderData.getPackageOrder().setTotal_price(total_price);
+                                                    packageOrderData.getPackageOrder().setShip_price(ship_price);
 
-                                                                    return packageOrderData;
-                                                                }
-                                                        )
-                                                )
+                                                    return packageOrderData;
+                                                }
+                                        )
                                 )
                                 .then(vouchers.filter(productWithVoucher -> Util.getInstance().CleanMap(packageOrderData.getPackageOrder().getUser_device_id() + productWithVoucher.getVoucher().getVoucher_second_id()) && !packageOrderData.isPreOrder())
                                         .map(productWithVoucher -> {
@@ -271,7 +285,9 @@ public class BeerOrder {
                                         }).then()
                                 )
                                 .then(
-                                        vouchers.flatMap(productWithVoucher ->
+                                        vouchers
+                                                .filter(productWithVoucher -> productWithVoucher.getProductOrder() != null)
+                                                .flatMap(productWithVoucher ->
                                                         cleanPackage(packageOrderData, productWithVoucher.getProductOrder())
                                                 )
                                                 .then()

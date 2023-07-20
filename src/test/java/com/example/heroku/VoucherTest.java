@@ -200,8 +200,6 @@ public class VoucherTest {
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        System.out.println("DEBUG!!!!");
-
         voucherAPI.comsumeVoucher("GIAM_5K", "555555", "456")
                 .block();
 

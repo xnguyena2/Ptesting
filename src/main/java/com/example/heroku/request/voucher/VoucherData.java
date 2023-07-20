@@ -56,6 +56,7 @@ public class VoucherData {
                 .status(Voucher.Status.get(getStatus()))
                 .for_all_product(isFor_all_product())
                 .for_all_user(isFor_all_user())
+                .package_voucher(isPackage_voucher())
                 .build();
     }
 
