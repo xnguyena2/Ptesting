@@ -45,6 +45,8 @@ public class Voucher {
 
     private boolean for_all_user;
 
+    private boolean package_voucher;
+
     public Voucher AutoFill() {
         this.createat = new Timestamp(new Date().getTime());
         return this;

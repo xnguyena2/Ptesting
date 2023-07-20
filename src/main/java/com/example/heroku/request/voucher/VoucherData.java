@@ -28,6 +28,8 @@ public class VoucherData {
 
     private boolean for_all_user;
 
+    private boolean package_voucher;
+
     private NgbDateStruct dateExpir;
 
     private String[] listUser;

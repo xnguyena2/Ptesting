@@ -112,9 +112,12 @@ public class OrderPackageTest extends TestConfig {
                 .consumeNextWith(voucher -> {
                     System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
                 })
-//                .consumeNextWith(voucher -> {
-//                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
-//                })
+                .consumeNextWith(voucher -> {
+                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+                })
+                .consumeNextWith(voucher -> {
+                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+                })
                 .verifyComplete();
 
         beerAPI.CountSearchBeer(SearchQuery.builder().query("tigerrrrr").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).build())
@@ -1011,6 +1014,31 @@ public class OrderPackageTest extends TestConfig {
                                 .reuse(2)
                                 .listBeer(new String[]{"beer_order1", "beer_order2"})
                                 .listUser(new String[]{"android", "iphone"})
+                                .build())
+                .block();
+
+        voucherAPI.createVoucher(
+                        VoucherData.builder()
+                                .voucher_second_id("PACKAGE_VOUCHER_5K")
+                                .detail("Giảm 5k trên toàn bộ bill")
+                                .amount(5)
+                                .reuse(20)
+                                .package_voucher(true)
+                                .listBeer(new String[]{"beer_order1", "beer_order2"})
+                                .listUser(new String[]{"android", "iphone"})
+                                .build())
+                .block();
+
+        voucherAPI.createVoucher(
+                        VoucherData.builder()
+                                .voucher_second_id("PACKAGE_VOUCHER_30%")
+                                .detail("Giảm 30% trên toàn bộ bill")
+                                .discount(30)
+                                .reuse(45)
+                                .package_voucher(true)
+                                .listBeer(new String[]{"beer_order1", "beer_order2"})
+                                .listUser(new String[]{"android", "iphone"})
+                                .for_all_user(true)
                                 .build())
                 .block();
     }

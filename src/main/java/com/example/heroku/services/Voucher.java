@@ -57,7 +57,7 @@ public class Voucher {
                         )
                 )
                 .then(Mono.just(voucherData)
-                        .filter(vd -> !vd.isFor_all_product())
+                        .filter(vd -> !vd.isFor_all_product() && !vd.isPackage_voucher())
                         .flatMap(vd ->
                                 voucherRelateBeerRepository.saveAll(Flux.just(vd.getListBeer())
                                                 .distinct()
@@ -111,7 +111,7 @@ public class Voucher {
     }
 
     public Mono<com.example.heroku.model.Voucher> getDeviceVoucher(String voucherID, String device, String productID) {
-        return voucherRepository.getVoucherOfUser(voucherID, device, productID);
+        return voucherRepository.getVoucherBySecondIDAndUserDeviceAndBeerSecondID(voucherID, device, productID);
     }
 
     public Mono<com.example.heroku.model.Voucher> getVoucher(String bySecondID) {

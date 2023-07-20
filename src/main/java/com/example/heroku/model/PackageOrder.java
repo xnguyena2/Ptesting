@@ -32,6 +32,8 @@ public class PackageOrder extends entity.BaseEntity {
 
     protected String user_device_id;
 
+    private String voucher_second_id;
+
     protected String reciver_address;
 
     protected int region_id;
