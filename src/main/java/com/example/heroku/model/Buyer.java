@@ -27,5 +27,5 @@ public class Buyer {
 
     private int ward_id;
 
-    private float total_price;
+    private float real_price;
 }

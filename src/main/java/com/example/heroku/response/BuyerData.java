@@ -26,7 +26,7 @@ public class BuyerData {
         setPhone_number(b.getPhone_number());
         setReciver_address(b.getReciver_address());
         setReciver_fullname(b.getReciver_fullname());
-        setTotal_price(b.getTotal_price());
+        setTotal_price(b.getReal_price());
         try {
             setRegion(VietNamAddress.getInstance().GetRegionName(b.getRegion_id()));
             setDistrict(VietNamAddress.getInstance().GetDistrictName(b.getRegion_id(), b.getDistrict_id()));
