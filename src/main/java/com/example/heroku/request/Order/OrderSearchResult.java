@@ -13,7 +13,7 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderSearchResult extends ResultWithCount {

@@ -32,11 +32,9 @@ public class PackageOrder {
         final com.example.heroku.model.PackageOrder.Status status = com.example.heroku.model.PackageOrder.Status.get(query.getQuery());
         final int date = Integer.parseInt(dateTxt);
         return this.resultWithCountRepository.countPackageOrder(status, date)
-                .map(resultWithCount -> {
-                    OrderSearchResult result = new OrderSearchResult();
-                    result.setCount(resultWithCount.getCount());
-                    return result;
-                })
+                .map(resultWithCount ->
+                        (OrderSearchResult) OrderSearchResult.builder().count(resultWithCount.getCount()).build()
+                )
                 .flatMap(orderSearchResult ->
                         packageOrderRepository.getAll(page, size, status, date)
                                 .flatMap(this::coverToData)

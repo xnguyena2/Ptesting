@@ -2,13 +2,14 @@ package com.example.heroku.request.beer;
 
 import com.example.heroku.model.count.ResultWithCount;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchResult<T> extends ResultWithCount {

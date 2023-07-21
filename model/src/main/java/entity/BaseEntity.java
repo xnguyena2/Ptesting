@@ -12,6 +12,6 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BaseEntity {
-    protected String group;
+    protected String group_id;
     protected Timestamp createat;
 }
