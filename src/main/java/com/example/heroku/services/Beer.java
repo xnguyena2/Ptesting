@@ -352,7 +352,7 @@ public class Beer {
     }
 
     public Mono<SearchResult<BeerSubmitData>> AdminCountGetAllBeerByCategory(SearchQuery query) {
-        final Product.Category category = Product.Category.get(query.getQuery());
+        final String category = query.getQuery();
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();
@@ -390,7 +390,7 @@ public class Beer {
     }
 
     public Mono<SearchResult<BeerSubmitData>> CountGetAllBeerByCategory(SearchQuery query) {
-        final Product.Category category = Product.Category.get(query.getQuery());
+        final String category = query.getQuery();
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();

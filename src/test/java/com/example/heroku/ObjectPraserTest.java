@@ -24,7 +24,7 @@ public class ObjectPraserTest {
         assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("1");
         assertThat(beerInfo.getProduct().getName()).isEqualTo("Bia Trung Quốc");
         assertThat(beerInfo.getProduct().getDetail()).isEqualTo("Vành đai 1 đoạn Hoàng Cầu - Voi Phục dài 2,27 km, tổng đầu tư hơn 7.200 tỷ đồng, do Ban Quản lý dự án đầu tư xây dựng công trình dân dụng và công nghiệp thành phố đang triển khai bằng nguồn vốn ngân sách TP Hà Nội.\n\nVành đai 2 trên cao, đoạn Vĩnh Tuy - Ngã Tư Vọng kết hợp mở rộng phần từ Vĩnh Tuy đến Ngã Tư Sở đang thực hiện theo hợp đồng BT (xây dựng - chuyển giao) ký kết giữa Hà Nội và Tập đoàn Vingroup.");
-        assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.SQUID);
+        assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.SQUID.getName());
 
         assertThat(beerInfo.getProductUnit().length).isEqualTo(1);
         assertThat(beerInfo.getProductUnit()[0].getName()).isEqualTo("Lon");
@@ -52,7 +52,7 @@ public class ObjectPraserTest {
         assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("1");
         assertThat(beerInfo.getProduct().getName()).isEqualTo("Bia Nhập Lậu");
         assertThat(beerInfo.getProduct().getDetail()).isEqualTo("Tỉnh lộ 769 từ nút giao Dầu Giây đến quốc lộ 51 sẽ được đầu tư hơn 1.600 tỷ đồng để mở rộng, đón đầu kết nối sân bay Long Thành.\n\nSở Giao thông vận tải Đồng Nai vừa trình UBND tỉnh Đồng Nai phê duyệt đầu tư dự án nâng cấp, mở rộng đường tỉnh 769 đi qua hai huyện Thống Nhất và Long Thành. Dự án là công trình giao thông chiến lược trong 5 năm tới nhằm kết nối các quốc lộ trọng yếu đi qua Đồng Nai như quốc lộ 1A, 20 và 51.");
-        assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.HOLOTHURIAN);
+        assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.HOLOTHURIAN.getName());
 
         assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
         assertThat(beerInfo.getProductUnit()[0].getName()).isEqualTo("Lon");

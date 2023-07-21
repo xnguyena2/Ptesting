@@ -54,33 +54,33 @@ public interface BeerRepository extends ReactiveCrudRepository<Product, String> 
     Flux<Product> getAllBeerSortBySoldDESC(@Param("page")int page, @Param("size")int size);
 
     //search by category
-    Flux<Product> findByCategory(Product.Category category, Pageable pageable);
+    Flux<Product> findByCategory(String category, Pageable pageable);
 
     @Query(value = "SELECT product.* FROM (SELECT product.product_second_id, MAX(product_unit.price) AS price FROM product LEFT JOIN product_unit ON product.product_second_id = product_unit.product_second_id WHERE product.category = :category GROUP BY product.product_second_id ORDER BY price ASC LIMIT :size OFFSET (:page*:size)) beer_temp INNER JOIN product ON product.product_second_id = beer_temp.product_second_id")
-    Flux<Product> AdminFindByCategoryBeerSortByPriceASC(@Param("category") Product.Category category, @Param("page")int page, @Param("size")int size);
+    Flux<Product> AdminFindByCategoryBeerSortByPriceASC(@Param("category") String category, @Param("page")int page, @Param("size")int size);
 
     @Query(value = "SELECT product.* FROM (SELECT product.product_second_id, MAX(product_unit.price) AS price FROM product LEFT JOIN product_unit ON product.product_second_id = product_unit.product_second_id WHERE product.category = :category GROUP BY product.product_second_id ORDER BY price DESC LIMIT :size OFFSET (:page*:size)) beer_temp INNER JOIN product ON product.product_second_id = beer_temp.product_second_id")
-    Flux<Product> AdminFindByCategoryBeerSortByPriceDESC(@Param("category") Product.Category category, @Param("page")int page, @Param("size")int size);
+    Flux<Product> AdminFindByCategoryBeerSortByPriceDESC(@Param("category") String category, @Param("page")int page, @Param("size")int size);
 
     @Query(value = "SELECT product.* FROM (SELECT product.product_second_id, CASE WHEN SUM(product_unit_order.number_unit) IS NULL THEN 0 ELSE SUM(product_unit_order.number_unit) END AS sold FROM product LEFT JOIN product_unit_order ON product.product_second_id = product_unit_order.product_second_id WHERE product.category = :category GROUP BY product.product_second_id ORDER BY sold DESC LIMIT :size OFFSET (:page*:size)) beer_temp INNER JOIN product ON product.product_second_id = beer_temp.product_second_id")
-    Flux<Product> AdminFindByCategoryBeerSortBySoldDESC(@Param("category") Product.Category category, @Param("page")int page, @Param("size")int size);
+    Flux<Product> AdminFindByCategoryBeerSortBySoldDESC(@Param("category") String category, @Param("page")int page, @Param("size")int size);
 
 
     //search by category
     @Query(value = "SELECT * FROM product WHERE (product.category = :category) AND (product.status IS NULL OR product.status != 'HIDE') ORDER BY :property DESC LIMIT :size OFFSET (:page*:size)")
-    Flux<Product> findByCategoryDESC(@Param("category") Product.Category category, @Param("page")int page, @Param("size")int size, @Param("property")String property);
+    Flux<Product> findByCategoryDESC(@Param("category") String category, @Param("page")int page, @Param("size")int size, @Param("property")String property);
     //search by category
     @Query(value = "SELECT * FROM product WHERE (product.category = :category) AND (product.status IS NULL OR product.status != 'HIDE') ORDER BY :property ASC LIMIT :size OFFSET (:page*:size)")
-    Flux<Product> findByCategoryASC(@Param("category") Product.Category category, @Param("page")int page, @Param("size")int size, @Param("property")String property);
+    Flux<Product> findByCategoryASC(@Param("category") String category, @Param("page")int page, @Param("size")int size, @Param("property")String property);
 
     @Query(value = "SELECT product.* FROM (SELECT product.product_second_id, MAX(product_unit.price) AS price FROM product LEFT JOIN product_unit ON product.product_second_id = product_unit.product_second_id WHERE product.category = :category AND (product.status IS NULL OR product.status != 'HIDE') GROUP BY product.product_second_id ORDER BY price ASC LIMIT :size OFFSET (:page*:size)) beer_temp INNER JOIN product ON product.product_second_id = beer_temp.product_second_id")
-    Flux<Product> findByCategoryBeerSortByPriceASC(@Param("category") Product.Category category, @Param("page")int page, @Param("size")int size);
+    Flux<Product> findByCategoryBeerSortByPriceASC(@Param("category") String category, @Param("page")int page, @Param("size")int size);
 
     @Query(value = "SELECT product.* FROM (SELECT product.product_second_id, MAX(product_unit.price) AS price FROM product LEFT JOIN product_unit ON product.product_second_id = product_unit.product_second_id WHERE product.category = :category AND (product.status IS NULL OR product.status != 'HIDE') GROUP BY product.product_second_id ORDER BY price DESC LIMIT :size OFFSET (:page*:size)) beer_temp INNER JOIN product ON product.product_second_id = beer_temp.product_second_id")
-    Flux<Product> findByCategoryBeerSortByPriceDESC(@Param("category") Product.Category category, @Param("page")int page, @Param("size")int size);
+    Flux<Product> findByCategoryBeerSortByPriceDESC(@Param("category") String category, @Param("page")int page, @Param("size")int size);
 
     @Query(value = "SELECT product.* FROM (SELECT product.product_second_id, CASE WHEN SUM(product_unit_order.number_unit) IS NULL THEN 0 ELSE SUM(product_unit_order.number_unit) END AS sold FROM product LEFT JOIN product_unit_order ON product.product_second_id = product_unit_order.product_second_id WHERE product.category = :category AND (product.status IS NULL OR product.status != 'HIDE') GROUP BY product.product_second_id ORDER BY sold DESC LIMIT :size OFFSET (:page*:size)) beer_temp INNER JOIN product ON product.product_second_id = beer_temp.product_second_id")
-    Flux<Product> findByCategoryBeerSortBySoldDESC(@Param("category") Product.Category category, @Param("page")int page, @Param("size")int size);
+    Flux<Product> findByCategoryBeerSortBySoldDESC(@Param("category") String category, @Param("page")int page, @Param("size")int size);
 
 
 

@@ -52,7 +52,7 @@ public class BeerSubmitData {
                                 .product_second_id(this.beerSecondID)
                                 .name(this.name)
                                 .detail(this.detail)
-                                .category(Product.Category.get(this.category))
+                                .category(this.category)
                                 .status(Product.Status.get(this.status))
                                 .build()
                 )
@@ -73,7 +73,7 @@ public class BeerSubmitData {
                 .beerSecondID(product.getProduct_second_id())
                 .name(product.getName())
                 .detail(product.getDetail())
-                .category(product.GetCategoryNuable().getName())
+                .category(product.getCategory())
                 .status(product.GetStatusNuable().getName())
                 .build();
     }

@@ -33,7 +33,7 @@ public class Product {
 
     private String meta_search;
 
-    private Category category;
+    private String category;
 
     private Timestamp createat;
 
@@ -57,13 +57,6 @@ public class Product {
     public Product AutoFill(){
         this.createat = new Timestamp(new Date().getTime());
         return this;
-    }
-
-    public Category GetCategoryNuable() {
-        if (category == null) {
-            return Category.CRAB;
-        }
-        return category;
     }
 
     public Status GetStatusNuable() {
@@ -112,56 +105,6 @@ public class Product {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return AVARIABLE;
-            }
-        }
-
-        @Override
-        public String toString() {
-            return this.name;
-        }
-    }
-
-    public enum Category {
-        CRAB("crab"),
-        SHRIMP("shrimp"),
-        SQUID("squid"),
-        HOLOTHURIAN("holothurian"),
-        HALIOTIS("haliotis"),
-        OYSTER("oyster"),
-        FISH("fish"),
-        SNAIL("snail");
-
-        private String name;
-
-        Category(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        private static final Map<String, Category> lookup = new HashMap<>();
-
-        static
-        {
-            for(Category ctg : Category.values())
-            {
-                lookup.put(ctg.getName(), ctg);
-            }
-        }
-
-        public static Category get(String text)
-        {
-            try {
-                Category val = lookup.get(text);
-                if(val == null){
-                    return CRAB;
-                }
-                return val;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                return CRAB;
             }
         }
 

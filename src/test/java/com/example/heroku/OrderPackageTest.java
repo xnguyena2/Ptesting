@@ -1191,7 +1191,7 @@ public class OrderPackageTest extends TestConfig {
                         })
                         .product(Product
                                 .builder()
-                                .category(Product.Category.CRAB)
+                                .category(Category.CRAB.getName())
                                 .name("beer tigerrrrr")
                                 .product_second_id("beer_order1")
                                 .detail("bia for order 1")
@@ -1225,7 +1225,7 @@ public class OrderPackageTest extends TestConfig {
                         })
                         .product(Product
                                 .builder()
-                                .category(Product.Category.CRAB)
+                                .category(Category.CRAB.getName())
                                 .name("beer tigerrrrr")
                                 .product_second_id("beer_order2")
                                 .detail("bia for order 2")
@@ -1257,7 +1257,7 @@ public class OrderPackageTest extends TestConfig {
                         })
                         .product(Product
                                 .builder()
-                                .category(Product.Category.CRAB)
+                                .category(Category.CRAB.getName())
                                 .name("beer tigerrrrr")
                                 .product_second_id("beer_order3")
                                 .detail("bia for order 3")
@@ -1289,7 +1289,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
-                                        .category(Product.Category.CRAB)
+                                        .category(Category.CRAB.getName())
                                         .name("sold out 1")
                                         .product_second_id("beer_order_sold_out1")
                                         .detail("sold out 1")
@@ -1323,7 +1323,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
-                                        .category(Product.Category.CRAB)
+                                        .category(Category.CRAB.getName())
                                         .name("sold out 2")
                                         .product_second_id("beer_order_sold_out2")
                                         .detail("sold out 2")
@@ -1355,7 +1355,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
-                                        .category(Product.Category.CRAB)
+                                        .category(Category.CRAB.getName())
                                         .name("sold out 2")
                                         .product_second_id("beer_order_hide2")
                                         .status(Product.Status.HIDE)
@@ -1387,7 +1387,7 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("beer_order1");
-                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
+                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))

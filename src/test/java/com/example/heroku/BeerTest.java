@@ -37,7 +37,7 @@ public class BeerTest {
                         })
                         .product(Product
                                 .builder()
-                                .category(Product.Category.CRAB)
+                                .category(Category.CRAB.getName())
                                 .name("beer tiger(sold out)")
                                 .product_second_id("sold_out")
                                 .status(Product.Status.SOLD_OUT)
@@ -56,7 +56,7 @@ public class BeerTest {
                         })
                         .product(Product
                                 .builder()
-                                .category(Product.Category.CRAB)
+                                .category(Category.CRAB.getName())
                                 .name("beer tiger")
                                 .product_second_id("123")
                                 .build()
@@ -85,7 +85,7 @@ public class BeerTest {
                         })
                         .product(Product
                                 .builder()
-                                .category(Product.Category.CRAB)
+                                .category(Category.CRAB.getName())
                                 .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
                                         "- bia thơm ngon\n" +
                                         "- bia nhập ngoại\n" +
@@ -145,7 +145,7 @@ public class BeerTest {
                         })
                         .product(Product
                                 .builder()
-                                .category(Product.Category.CRAB)
+                                .category(Category.CRAB.getName())
                                 .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
                                         "- bia thơm ngon\n" +
                                         "- bia nhập ngoại\n" +
@@ -192,7 +192,7 @@ public class BeerTest {
                                 })
                                 .product(Product
                                         .builder()
-                                        .category(Product.Category.CRAB)
+                                        .category(Category.CRAB.getName())
                                         .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
                                                 "- bia thơm ngon\n" +
                                                 "- bia nhập ngoại\n" +
@@ -217,7 +217,7 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
-                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
+                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
@@ -239,7 +239,7 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("456");
-                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Product.Category.CRAB);
+                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
@@ -1005,7 +1005,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_ASC.getName()).query(Product.Category.CRAB.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_ASC.getName()).query(Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1036,7 +1036,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_DESC.getName()).query(Product.Category.CRAB.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_DESC.getName()).query(Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1067,7 +1067,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_ASC.getName()).query(Product.Category.CRAB.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_ASC.getName()).query(Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1098,7 +1098,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_DESC.getName()).query(Product.Category.CRAB.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_DESC.getName()).query(Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1129,7 +1129,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.CREATE_DESC.getName()).query(Product.Category.CRAB.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.CREATE_DESC.getName()).query(Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1160,7 +1160,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).query(Product.Category.CRAB.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).query(Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1191,7 +1191,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).query(Product.Category.CRAB.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).query(Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1222,7 +1222,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.DEFAULT.getName()).query(Product.Category.CRAB.getName()).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.DEFAULT.getName()).query(Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1253,7 +1253,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.AdminCountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).query(Product.Category.CRAB.getName()).build())
+        this.beerAPI.AdminCountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).query(Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1288,7 +1288,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.AdminCountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.DEFAULT.getName()).query(Product.Category.CRAB.getName()).build())
+        this.beerAPI.AdminCountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.DEFAULT.getName()).query(Category.CRAB.getName()).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1352,7 +1352,7 @@ public class BeerTest {
                         })
                         .product(Product
                                 .builder()
-                                .category(Product.Category.CRAB)
+                                .category(Category.CRAB.getName())
                                 .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
                                         "- bia thơm ngon\n" +
                                         "- bia nhập ngoại\n" +
@@ -1393,7 +1393,7 @@ public class BeerTest {
                                 })
                                 .product(Product
                                         .builder()
-                                        .category(Product.Category.CRAB)
+                                        .category(Category.CRAB.getName())
                                         .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
                                                 "- bia thơm ngon\n" +
                                                 "- bia nhập ngoại\n" +
@@ -1423,15 +1423,15 @@ public class BeerTest {
 
     private BeerInfo createTestBeer(int idi, int price) {
         String id = idi + "";
-        Product.Category category = Product.Category.CRAB;
+        Category category = Category.CRAB;
         if (idi < 24) {
-            category = Product.Category.SHRIMP;
+            category = Category.SHRIMP;
         } else if (idi < 50) {
-            category = Product.Category.SQUID;
+            category = Category.SQUID;
         } else if (idi < 60) {
-            category = Product.Category.OYSTER;
+            category = Category.OYSTER;
         } else if (idi < 75) {
-            category = Product.Category.HOLOTHURIAN;
+            category = Category.HOLOTHURIAN;
         }
         return
                 BeerInfo
@@ -1458,7 +1458,7 @@ public class BeerTest {
                         })
                         .product(Product
                                 .builder()
-                                .category(category)
+                                .category(category.getName())
                                 .detail("nhưng Milan khởi đầu ấn tượng. Với Mandzukic lần đầu đá chính, cùng sự hỗ trợ của bộ ba Castillejo, Krunic, Rebic, đội nhì bảng Serie A liên tục gây sóng gió về phía cầu môn Sao Đỏ. Chỉ trong 13 phút đầu, Milan")
                                 .name(id + " beer tiger")
                                 .product_second_id(id).build()

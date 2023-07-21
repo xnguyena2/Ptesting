@@ -23,10 +23,10 @@ public interface ResultWithCountRepository extends ReactiveCrudRepository<Result
     Mono<ResultWithCount> countAll();
 
     @Query(value = "SELECT COUNT(*) as count FROM product WHERE product.category = :category")
-    Mono<ResultWithCount> AdminCountCategory(@Param("category") Product.Category category);
+    Mono<ResultWithCount> AdminCountCategory(@Param("category") String category);
 
     @Query(value = "SELECT COUNT(*) as count FROM product WHERE product.category = :category AND (product.status IS NULL OR product.status != 'HIDE')")
-    Mono<ResultWithCount> countCategory(@Param("category") Product.Category category);
+    Mono<ResultWithCount> countCategory(@Param("category") String category);
 
 
     @Query(value = "SELECT COUNT(*) as count FROM product WHERE product.meta_search LIKE :search")

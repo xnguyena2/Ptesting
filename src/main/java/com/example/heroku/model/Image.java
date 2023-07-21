@@ -22,6 +22,8 @@ public class Image {
 
     private String imgid;
 
+    private  String tag;
+
     private String thumbnail;
 
     private String medium;
