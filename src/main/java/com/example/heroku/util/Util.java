@@ -147,9 +147,8 @@ public class Util {
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(password.getBytes());
         byte[] digest = md.digest();
-        String myHash = DatatypeConverter
+        return DatatypeConverter
                 .printHexBinary(digest).toUpperCase();
-        return myHash;
     }
 
     public static char RemoveAccent(char ch) {

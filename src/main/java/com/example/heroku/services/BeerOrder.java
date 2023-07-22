@@ -276,13 +276,12 @@ public class BeerOrder {
                                         )
                                 )
                                 .then(vouchers.filter(productWithVoucher -> Util.getInstance().CleanMap(packageOrderData.getPackageOrder().getUser_device_id() + productWithVoucher.getVoucher().getVoucher_second_id()) && !packageOrderData.isPreOrder())
-                                        .map(productWithVoucher -> {
+                                        .map(productWithVoucher ->
                                             voucherServices
                                                     .ForceSaveVoucher(productWithVoucher.getVoucher().getVoucher_second_id(), packageOrderData.getPackageOrder().getUser_device_id(),
                                                             Util.getInstance().CleanReuse(packageOrderData.getPackageOrder().getUser_device_id() + productWithVoucher.getVoucher().getVoucher_second_id())
-                                                    ).subscribe();
-                                            return productWithVoucher;
-                                        }).then()
+                                                    ).subscribe()
+                                        ).then()
                                 )
                                 .then(
                                         vouchers
