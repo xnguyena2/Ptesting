@@ -27,7 +27,7 @@ import java.util.List;
 /*
 @AutoConfigureWebTestClient(timeout = "36000")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AuthenticationTest extends TestConfig{
+public class AuthenticationTest extends TestConfig {
 
     @Value("${authentication.auth.accessTokenCookieName}")
     private String accessTokenCookieName;
@@ -92,7 +92,7 @@ public class AuthenticationTest extends TestConfig{
                 .expectStatus();
     }
 
-    StatusAssertions createAcc(String username, String password, String token, List<String> roles) throws NoSuchAlgorithmException {
+    StatusAssertions createAcc(String username, String password, String token, List<String> roles, String group_id) throws NoSuchAlgorithmException {
 
         return client.post().uri("/auth/admin/account/create").cookies(cookies -> cookies.add(accessTokenCookieName, token))
                 .body(BodyInserters.fromValue(
@@ -101,6 +101,7 @@ public class AuthenticationTest extends TestConfig{
                                 .username(username)
                                 .newpassword(Util.getInstance().HashPassword(password))
                                 .roles(roles)
+                                .group_id(group_id)
                                 .build())
                 )
                 .exchange()
@@ -141,6 +142,8 @@ public class AuthenticationTest extends TestConfig{
     @Test
     public void AuthenticationTest() throws NoSuchAlgorithmException {
 
+        final String group_id = "trumbien_store";
+
         String finalAuthToken = getToken(adminName, adminPass);
 
         signinAcc(adminName, adminName)
@@ -151,7 +154,8 @@ public class AuthenticationTest extends TestConfig{
                 .expectStatus()
                 .isOk()
                 .expectBody()
-                .jsonPath("name").isEqualTo(adminName);
+                .jsonPath("name").isEqualTo(adminName)
+                .jsonPath("group_id").isEqualTo(group_id);
 
         client.get().uri("/auth/me").cookies(cookies -> cookies.add(accessTokenCookieName, "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2dW9uZyIsInJvbGVzIjoiUk9MRV9BRE1JTixST0xFX1VTRVIiLCJpYXQiOjE2MzM1MjU5NDksImV4cCI6MTYzMzUyOTU0OX0.DCcMxsHsXjyKxIKfX_Smbi-0zQGHz-sB-W7zYuQw9bo"))
                 .exchange()
@@ -170,26 +174,26 @@ public class AuthenticationTest extends TestConfig{
                 .expectBody()
                 .jsonPath("token").exists();
 
-        createAcc("quin", "quin123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
+        createAcc("quin", "quin123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()), group_id)
                 .isOk();
 
 
-        createAcc("nhanvien", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()))
+        createAcc("nhanvien", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()), group_id)
                 .isOk();
 
 
-        createAcc("binh", "quin123", finalAuthToken, null)
+        createAcc("binh", "quin123", finalAuthToken, null, null)
                 .is5xxServerError();
 
 
-        createAcc("binh", "binh123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
+        createAcc("binh", "binh123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()), group_id)
                 .isOk();
 
 
         deleteAcc("binh", "binh123", finalAuthToken, true)
                 .isOk();
 
-        createAcc("binh", "binh123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
+        createAcc("binh", "binh123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()), group_id)
                 .isOk();
 
         String finalAuthToken1 = getToken("binh", "binh123");
@@ -231,19 +235,19 @@ public class AuthenticationTest extends TestConfig{
                 .isOk();
 
 
-        createAcc("nhanvien1", "nhanvien111", finalAuthToken3, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
+        createAcc("nhanvien1", "nhanvien111", finalAuthToken3, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()), group_id)
                 .isForbidden();
 
 
 
-        createAcc("nhanvien1", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()))
+        createAcc("nhanvien1", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()), group_id)
                 .isOk();
 
-        createAcc("nhanvien2", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()))
+        createAcc("nhanvien2", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()), group_id)
                 .isOk();
 
 
-        createAcc("nhanvien3", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()))
+        createAcc("nhanvien3", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()), group_id)
                 .isOk();
 
         String finalAuthToken4 = getToken("nhanvien2", "nhanvien123");
@@ -257,6 +261,16 @@ public class AuthenticationTest extends TestConfig{
         deleteAcc("quin", "qqqqq123", finalAuthToken4, false)
                 .isUnauthorized();
 
+
+        client.get().uri("/auth/me").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken4))
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("name").isEqualTo("nhanvien2")
+                .jsonPath("group_id").isEqualTo(group_id);
+
+
         deleteAcc("nhanvien2", "nhanvien123", finalAuthToken4, false)
                 .isOk();
 
@@ -266,6 +280,7 @@ public class AuthenticationTest extends TestConfig{
         deleteAcc("quin", adminPass, finalAuthToken, true)
                 .isOk();
 
+
         deleteAcc("nhanvien3", adminPass, finalAuthToken, true)
                 .isOk();
 
@@ -274,6 +289,15 @@ public class AuthenticationTest extends TestConfig{
 
         deleteAcc("nhanvien", adminPass, finalAuthToken, true)
                 .isOk();
+
+
+        client.get().uri("/auth/me").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken4))
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("name").isEqualTo("nhanvien2")
+                .jsonPath("group_id").isEqualTo(group_id);
     }
 
     @Test
@@ -297,4 +321,5 @@ public class AuthenticationTest extends TestConfig{
     }
 }
 */
+
 public class AuthenticationTest{}

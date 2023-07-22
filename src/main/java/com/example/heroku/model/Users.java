@@ -1,31 +1,28 @@
 package com.example.heroku.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import entity.BaseEntity;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(value = "users")
-public class Users implements UserDetails {
+public class Users extends BaseEntity implements UserDetails, CredentialsContainer {
 
     @Id
     String id;
@@ -36,12 +33,70 @@ public class Users implements UserDetails {
 
     private String createby;
 
+    @Transient
+    private UserDetails user;
+
+    public Users(String username, String password, String group_id, Collection<? extends GrantedAuthority> authorities) {
+        this(username, password, group_id, true, authorities);
+    }
+
+    public Users(String username, String password, String group_id, boolean enabled, Collection<? extends GrantedAuthority> authorities) {
+        if (username != null && !"".equals(username) && password != null) {
+            this.username = username;
+            this.password = password;
+            this.active = enabled;
+            this.group_id = group_id;
+            this.user = User
+                    .withUsername(username)
+                    .password(password)
+                    .authorities(authorities)
+                    .accountExpired(!isActive())
+                    .credentialsExpired(!isActive())
+                    .disabled(!isActive())
+                    .accountLocked(!isActive())
+                    .build();
+        } else {
+            throw new IllegalArgumentException("Cannot pass null or empty values to constructor");
+        }
+    }
+
+    public Users parseauthorities() {
+        this.user = User
+                .withUsername(username)
+                .password(password)
+                .authorities(getRoles().toArray(new String[0]))
+                .accountExpired(!isActive())
+                .credentialsExpired(!isActive())
+                .disabled(!isActive())
+                .accountLocked(!isActive())
+                .build();
+        return  this;
+    }
+
+    public boolean equals(Object rhs) {
+        return rhs instanceof Users && this.username.equals(((Users) rhs).username);
+    }
+
+    public int hashCode() {
+        return this.username.hashCode();
+    }
+
+    public String toString() {
+        if (user == null) {
+            return null;
+        }
+        return user.toString();
+    }
+
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(toList());
+        if (user == null) {
+            return null;
+        }
+        return user.getAuthorities();
     }
 
     @Override
@@ -82,5 +137,10 @@ public class Users implements UserDetails {
 
     public List<String> getRoles() {
         return roles.stream().map(x -> x.replace("{","").replace("}","")).collect(Collectors.toList());
+    }
+
+    @Override
+    public void eraseCredentials() {
+        this.password = null;
     }
 }

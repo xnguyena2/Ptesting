@@ -110,12 +110,16 @@ public class AuthenticationController {
     }
 
     @GetMapping("/me")
-    public Mono<Map<String, Object>> current(@AuthenticationPrincipal Mono<UserDetails> principal) {
-        return principal.map(user -> new HashMap<String, Object>() {{
-                    put("name", user.getUsername());
-                    put("roles", AuthorityUtils.authorityListToSet(user.getAuthorities()));
-                }}
-        );
+    public Mono<Map<String, Object>> current(@AuthenticationPrincipal Mono<Users> principal) {
+        return principal
+                .map(user -> new HashMap<String, Object>() {
+                            {
+                                put("name", user.getUsername());
+                                put("roles", AuthorityUtils.authorityListToSet(user.getAuthorities()));
+                                put("group_id", user.getGroup_id());
+                            }
+                        }
+                );
     }
 
     @PostMapping("/account/update")
@@ -222,6 +226,7 @@ public class AuthenticationController {
                 Mono.just(newAccount)
                         .map(UpdatePassword::getRoles)
                         .map(roles -> Users.builder()
+                                .group_id(newAccount.getGroup_id())
                                 .username(newAccount.getUsername())
                                 .password(this.passwordEncoder.encode(newAccount.getNewpassword()))
                                 .roles(Collections.singletonList(role.getName()))

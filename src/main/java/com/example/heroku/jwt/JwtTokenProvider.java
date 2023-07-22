@@ -1,5 +1,6 @@
 package com.example.heroku.jwt;
 
+import com.example.heroku.model.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -53,6 +54,8 @@ public class JwtTokenProvider {
 
     private static final String AUTHORITIES_KEY = "roles";
 
+    private static final String GROUP_ID_KEY = "group";
+
     private SecretKey secretKey;
 
     @PostConstruct
@@ -65,10 +68,14 @@ public class JwtTokenProvider {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    private String createToken(String userName, Collection<? extends GrantedAuthority> authorities){
+    private String createToken(String userName, Collection<? extends GrantedAuthority> authorities, String groupID) {
         Claims claims = Jwts.claims().setSubject(userName);
         if (!authorities.isEmpty()) {
             claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority).collect(joining(",")));
+        }
+
+        if (groupID != null) {
+            claims.put(GROUP_ID_KEY, groupID);
         }
 
         Date now = new Date();
@@ -83,16 +90,27 @@ public class JwtTokenProvider {
     }
 
     public String createToken(UserDetails user){
+
+        String groupID = null;
+        if (user instanceof Users) {
+            groupID = ((Users) user).getGroup_id();
+        }
+
         String username = user.getUsername();
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
-        return createToken(username, authorities);
+        return createToken(username, authorities, groupID);
     }
 
     public String createToken(Authentication authentication) {
 
+        String groupID = null;
+        if (authentication.getPrincipal() instanceof Users) {
+            groupID = ((Users) authentication.getPrincipal()).getGroup_id();
+        }
+
         String username = authentication.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        return createToken(username, authorities);
+        return createToken(username, authorities, groupID);
     }
 
     public Authentication getAuthentication(String token) {
@@ -100,10 +118,17 @@ public class JwtTokenProvider {
 
         Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
 
+        Object groupClaim = claims.get(GROUP_ID_KEY);
+
+        String group_id = null;
+        if (groupClaim != null) {
+            group_id = groupClaim.toString();
+        }
+
         Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null ? AuthorityUtils.NO_AUTHORITIES
                 : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
 
-        User principal = new User(claims.getSubject(), "", authorities);
+        Users principal = new Users(claims.getSubject(), "", group_id, authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }

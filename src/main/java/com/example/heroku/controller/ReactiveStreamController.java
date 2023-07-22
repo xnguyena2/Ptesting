@@ -45,9 +45,7 @@ public class ReactiveStreamController {
             return timg;
         }).subscribe();
 
-        return severEventAdapter.FolkEvent(() -> {
-                    heartBeat.dispose();
-                })
+        return severEventAdapter.FolkEvent(heartBeat::dispose)
                 .map(sequence -> {
                             if (sequence.equals("heart beat")) {
                                 return ServerSentEvent.builder()

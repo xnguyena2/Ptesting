@@ -111,14 +111,15 @@ public class SecurityConfig {
         return username -> users.findByUsername(username)
                 .map(u -> {
                     u.setPassword(u.getPassword().trim());
-                    return User
-                            .withUsername(u.getUsername()).password(u.getPassword())
-                            .authorities(u.getRoles().toArray(new String[0]))
-                            .accountExpired(!u.isActive())
-                            .credentialsExpired(!u.isActive())
-                            .disabled(!u.isActive())
-                            .accountLocked(!u.isActive())
-                            .build();
+                    return u.parseauthorities();
+//                    return User
+//                            .withUsername(u.getUsername()).password(u.getPassword())
+//                            .authorities(u.getRoles().toArray(new String[0]))
+//                            .accountExpired(!u.isActive())
+//                            .credentialsExpired(!u.isActive())
+//                            .disabled(!u.isActive())
+//                            .accountLocked(!u.isActive())
+//                            .build();
                         }
                 );
     }

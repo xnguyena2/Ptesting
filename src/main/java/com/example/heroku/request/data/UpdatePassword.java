@@ -20,5 +20,6 @@ public class UpdatePassword implements Serializable {
     private String username;
     private String oldpassword;
     private String newpassword;
+    private String group_id;
     List<String> roles;
 }
