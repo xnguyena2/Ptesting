@@ -25,7 +25,7 @@ public class UserAccount {
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();
-        return this.resultWithCountRepository.userCountAll()
+        return this.resultWithCountRepository.userCountAll(query.getGroup_id())
                 .map(resultWithCount -> {
                     SearchResult<Users> result = new SearchResult<>();
                     result.setCount(resultWithCount.getCount());

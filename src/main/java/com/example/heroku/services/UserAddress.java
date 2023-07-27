@@ -20,7 +20,7 @@ public class UserAddress {
 
     public Mono<ResponseEntity<Format>> CreateAddress(com.example.heroku.model.UserAddress address) {
         address.setStatus(com.example.heroku.model.UserAddress.Status.FAIL);
-        return userAddressRepository.findByDeviceID(address.getDevice_id(), address.getRegion(), address.getDistrict(), address.getWard())
+        return userAddressRepository.findByDeviceID(address.getGroup_id(), address.getDevice_id(), address.getRegion(), address.getDistrict(), address.getWard())
                 .filter(userAddress -> userAddress.getHouse_number().equals(address.getHouse_number()))
                 .switchIfEmpty(
                         userAddressRepository.save(address.changeStatus(com.example.heroku.model.UserAddress.Status.SUCCESS).AutoFill())
@@ -34,16 +34,16 @@ public class UserAddress {
                 });
     }
 
-    public Flux<com.example.heroku.model.UserAddress> GetUserAddress(String deviceID) {
-        return userAddressRepository.findallByDeviceID(deviceID);
+    public Flux<com.example.heroku.model.UserAddress> GetUserAddress(String groupid, String deviceID) {
+        return userAddressRepository.findallByDeviceID(groupid, deviceID);
     }
 
-    public Mono<com.example.heroku.model.UserAddress> DeleteAddress(String id) {
-        return userAddressRepository.deleteAddress(id);
+    public Mono<com.example.heroku.model.UserAddress> DeleteAddress(String groupid, String id) {
+        return userAddressRepository.deleteAddress(groupid, id);
     }
 
     public Mono<com.example.heroku.model.UserAddress> UpdateAddress(com.example.heroku.model.UserAddress address) {
-        return userAddressRepository.deleteAddress(address.getAddress_id())
+        return userAddressRepository.deleteAddress(address.getGroup_id(), address.getAddress_id())
                 .then(Mono.just(address))
                 .flatMap(address1 -> {
                     address.setId(null);

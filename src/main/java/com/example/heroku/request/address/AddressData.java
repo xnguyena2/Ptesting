@@ -17,6 +17,8 @@ import java.io.IOException;
 @AllArgsConstructor
 public class AddressData {
 
+    private String group_id;
+
     private String address_id;
 
     private String device_id;
@@ -37,7 +39,7 @@ public class AddressData {
 
     public UserAddress CovertModel(boolean isResetID) {
         return UserAddress.builder()
-                .address_id(isResetID?Util.getInstance().GenerateID():address_id)
+                .address_id(isResetID ? Util.getInstance().GenerateID() : address_id)
                 .device_id(device_id)
                 .reciver_fullname(reciver_fullname)
                 .phone_number(phone_number)
@@ -45,6 +47,7 @@ public class AddressData {
                 .region(region.id)
                 .district(district.id)
                 .ward(ward.id)
+                .group_id(group_id)
                 .build();
     }
 
@@ -56,12 +59,12 @@ public class AddressData {
                 .name("undefiend")
                 .build();
 
-        VietNamAddress.AddressItemData district= VietNamAddress.AddressItemData.builder()
+        VietNamAddress.AddressItemData district = VietNamAddress.AddressItemData.builder()
                 .id(-1)
                 .name("undefiend")
                 .build();
 
-        VietNamAddress.AddressItemData ward= VietNamAddress.AddressItemData.builder()
+        VietNamAddress.AddressItemData ward = VietNamAddress.AddressItemData.builder()
                 .id(-1)
                 .name("undefiend")
                 .build();
@@ -92,6 +95,7 @@ public class AddressData {
                 .district(district)
                 .ward(ward)
                 .region_text_format(region_text_format)
+                .group_id(src.getGroup_id())
                 .build());
     }
 }

@@ -6,6 +6,7 @@ import com.example.heroku.request.beer.SearchQuery;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
+import org.springframework.beans.factory.annotation.Value;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -17,11 +18,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Builder
 public class UserAccountTest {
 
+
+    @Value("${account.admin.username}")
+    private String adminName;
+
+
     com.example.heroku.services.UserAccount userAccount;
 
     public void test(){
 
-        this.userAccount.getAll(SearchQuery.builder().page(0).size(100).build())
+        this.userAccount.getAll(SearchQuery.builder().page(0).size(100).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -35,7 +41,7 @@ public class UserAccountTest {
                             .sort(Comparator.comparing(Users::getUsername))
                             .as(StepVerifier::create)
                             .consumeNextWith(users -> {
-                                assertThat(users.getUsername()).isEqualTo("binhdiepquin");
+                                assertThat(users.getUsername()).isEqualTo(adminName);
                             })
                             .verifyComplete();
                 })

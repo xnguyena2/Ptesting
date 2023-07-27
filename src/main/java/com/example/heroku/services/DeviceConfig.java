@@ -19,7 +19,7 @@ public class DeviceConfig {
 
     public Mono<ResponseEntity<Format>> UpdateConfig(@Valid @ModelAttribute com.example.heroku.model.DeviceConfig config) {
         return
-                this.deviceConfigRepository.deleteAll()
+                this.deviceConfigRepository.deleteByGroupID(config.getGroup_id())
                 .then(Mono.just(config)
                         .flatMap(deviceConfig ->
                                 this.deviceConfigRepository.save(config)
@@ -30,7 +30,7 @@ public class DeviceConfig {
                 );
     }
 
-    public Mono<com.example.heroku.model.DeviceConfig> GetConfig() {
-        return this.deviceConfigRepository.getConfig();
+    public Mono<com.example.heroku.model.DeviceConfig> GetConfig(String groupID) {
+        return this.deviceConfigRepository.getConfig(groupID);
     }
 }

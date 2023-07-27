@@ -26,6 +26,7 @@ public class UserAddressTest {
                         .region(294)
                         .district(484)
                         .ward(10379)
+                        .group_id(Config.group)
                         .build()
         )
                 .block();
@@ -39,6 +40,7 @@ public class UserAddressTest {
                         .region(294)
                         .district(484)
                         .ward(10379)
+                        .group_id(Config.group)
                         .build()
         )
                 .block();
@@ -52,6 +54,7 @@ public class UserAddressTest {
                         .region(294)
                         .district(484)
                         .ward(10379)
+                        .group_id(Config.group)
                         .build()
         )
                 .block();
@@ -66,11 +69,12 @@ public class UserAddressTest {
                         .region(294)
                         .district(484)
                         .ward(10379)
+                        .group_id(Config.group)
                         .build()
         )
                 .block();
 
-        userAddressAPI.GetUserAddress("222222")
+        userAddressAPI.GetUserAddress(Config.group, "222222")
                 .as(StepVerifier::create)
                 .consumeNextWith(userAddress -> {
                             assertThat(userAddress.getHouse_number()).isEqualTo("123 Nguyễn Huệ");
@@ -90,11 +94,11 @@ public class UserAddressTest {
                 )
                 .verifyComplete();
 
-        userAddressAPI.GetUserAddress("3333")
+        userAddressAPI.GetUserAddress(Config.group, "3333")
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        userAddressAPI.DeleteAddress(addressID1.get())
+        userAddressAPI.DeleteAddress(Config.group, addressID1.get())
                 .block();
 
 
@@ -108,11 +112,12 @@ public class UserAddressTest {
                         .region(294)
                         .district(484)
                         .ward(10379)
+                        .group_id(Config.group)
                         .build()
         )
                 .block();
 
-        userAddressAPI.GetUserAddress("222222")
+        userAddressAPI.GetUserAddress(Config.group, "222222")
                 .as(StepVerifier::create)
                 .consumeNextWith(userAddress -> {
                             assertThat(userAddress.getHouse_number()).isEqualTo("125 Nguyễn Huệ");

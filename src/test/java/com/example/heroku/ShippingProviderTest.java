@@ -1,5 +1,6 @@
 package com.example.heroku;
 
+import com.example.heroku.request.ship.ShippingProviderData;
 import com.example.heroku.services.ShippingProvider;
 import lombok.Builder;
 import reactor.test.StepVerifier;
@@ -51,12 +52,12 @@ public class ShippingProviderTest {
                 "        }\n" +
                 "    ]\n" +
                 "}";
-        shippingProvider.CreateShipProvider(ShippingProvider.GHN.ID, json)
+        shippingProvider.CreateShipProvider(ShippingProviderData.builder().id(ShippingProvider.GHN.ID).json(json).group_id(Config.group).build())
                 .block();
 
 
 
-        shippingProvider.GetShipProvider(ShippingProvider.GHN.ID)
+        shippingProvider.GetShipProvider(Config.group, ShippingProvider.GHN.ID)
                 .as(StepVerifier::create)
                 .consumeNextWith(shippingProvider -> {
                             assertThat(shippingProvider.getProvider_id()).isEqualTo(ShippingProvider.GHN.ID);
@@ -65,7 +66,7 @@ public class ShippingProviderTest {
                 )
                 .verifyComplete();
 
-        shippingProvider.GetShippingPrice(ShippingProvider.GHN.ID, 2.6f, 10000, 294, 484)
+        shippingProvider.GetShippingPrice(Config.group, ShippingProvider.GHN.ID, 2.6f, 10000, 294, 484)
                 .as(StepVerifier::create)
                 .consumeNextWith(price -> {
                             assertThat(price.getPrice()).isEqualTo(22000);
@@ -73,7 +74,7 @@ public class ShippingProviderTest {
                 )
                 .verifyComplete();
 
-        shippingProvider.GetShippingPrice(ShippingProvider.GHN.ID, 2.6f, 16000, 294, 484)
+        shippingProvider.GetShippingPrice(Config.group, ShippingProvider.GHN.ID, 2.6f, 16000, 294, 484)
                 .as(StepVerifier::create)
                 .consumeNextWith(price -> {
                             assertThat(price.getPrice()).isEqualTo(27000);
@@ -81,7 +82,7 @@ public class ShippingProviderTest {
                 )
                 .verifyComplete();
 
-        shippingProvider.GetShippingPrice(ShippingProvider.GHN.ID, 2.6f, 10000, 291, 371)
+        shippingProvider.GetShippingPrice(Config.group, ShippingProvider.GHN.ID, 2.6f, 10000, 291, 371)
                 .as(StepVerifier::create)
                 .consumeNextWith(price -> {
                             assertThat(price.getPrice()).isEqualTo(67800);

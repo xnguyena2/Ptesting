@@ -5,6 +5,7 @@ import com.example.heroku.model.PackageOrder;
 import com.example.heroku.model.repository.BeerUnitRepository;
 import com.example.heroku.request.beer.*;
 import com.example.heroku.request.client.UserID;
+import com.example.heroku.request.ship.ShippingProviderData;
 import com.example.heroku.request.voucher.VoucherData;
 import com.example.heroku.services.*;
 import com.example.heroku.services.ShippingProvider;
@@ -61,7 +62,7 @@ public class OrderPackageTest extends TestConfig {
     StatisticServices statisticServices;
 
     @Test
-    public void testVoucher(){
+    public void testVoucher() {
         VoucherTest.builder().voucherAPI(voucherAPI).build().VoucherTest();
     }
 
@@ -96,12 +97,12 @@ public class OrderPackageTest extends TestConfig {
         }
 
 
-        assertThat(voucher5K.get()).isEqualTo(122*5 + (122-5)*25);
-        assertThat(voucher30Percent.get().intValue()).isEqualTo((int)(122*10 + (122*0.7)*20));
-        assertThat(packageVoucher5K.get().intValue()).isEqualTo((int)(672*10 + (672-5)*20));
+        assertThat(voucher5K.get()).isEqualTo(122 * 5 + (122 - 5) * 25);
+        assertThat(voucher30Percent.get().intValue()).isEqualTo((int) (122 * 10 + (122 * 0.7) * 20));
+        assertThat(packageVoucher5K.get().intValue()).isEqualTo((int) (672 * 10 + (672 - 5) * 20));
 
 
-        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_30%","hello")
+        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_30%", "hello")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("package voucher of hello: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
@@ -110,7 +111,7 @@ public class OrderPackageTest extends TestConfig {
                 .verifyComplete();
 
 
-        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_30%","iphone")
+        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_30%", "iphone")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("package voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
@@ -118,11 +119,11 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_5K","hello")
+        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_5K", "hello")
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_5K","android")
+        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_5K", "android")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("package voucher of android: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
@@ -130,7 +131,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_5K","iphone")
+        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_5K", "iphone")
                 .as(StepVerifier::create)
                 .verifyComplete();
 
@@ -200,19 +201,19 @@ public class OrderPackageTest extends TestConfig {
                 .verifyComplete();
 
 
-        AtomicReference<Float> donePrice = new AtomicReference<>((float)0);
-        AtomicReference<Float> cancelPrice = new AtomicReference<>((float)0);
+        AtomicReference<Float> donePrice = new AtomicReference<>((float) 0);
+        AtomicReference<Float> cancelPrice = new AtomicReference<>((float) 0);
         AtomicReference<String> orderDoneID = new AtomicReference<>();
         AtomicReference<String> orderCancelID = new AtomicReference<>();
-        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(200).filter("30").build())
+        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).group_id(Config.group).page(0).size(200).filter("30").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
                     System.out.println("total order: " + orderSearchResult.getCount());
                     System.out.println("total order size: " + orderSearchResult.getResult().size());
                     orderDoneID.set(orderSearchResult.getResult().get(0).getPackage_order_second_id());
                     orderCancelID.set(orderSearchResult.getResult().get(1).getPackage_order_second_id());
-                    donePrice.updateAndGet(v->v+orderSearchResult.getResult().get(0).getReal_price());
-                    cancelPrice.updateAndGet(v->v+orderSearchResult.getResult().get(1).getReal_price());
+                    donePrice.updateAndGet(v -> v + orderSearchResult.getResult().get(0).getReal_price());
+                    cancelPrice.updateAndGet(v -> v + orderSearchResult.getResult().get(1).getReal_price());
                     System.out.println("Done order value: " + orderSearchResult.getResult().get(0).getReal_price());
                     System.out.println("Cancel order value: " + orderSearchResult.getResult().get(1).getReal_price());
                     assertThat(orderSearchResult.getCount()).isEqualTo(testcase * totalSaveOrder);
@@ -220,11 +221,11 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        packageOrder.UpdateStatus(orderDoneID.get(), PackageOrder.Status.DONE).block();
+        packageOrder.UpdateStatus(Config.group, orderDoneID.get(), PackageOrder.Status.DONE).block();
 
-        packageOrder.UpdateStatus(orderCancelID.get(), PackageOrder.Status.CANCEL).block();
+        packageOrder.UpdateStatus(Config.group, orderCancelID.get(), PackageOrder.Status.CANCEL).block();
 
-        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).page(0).size(300).filter("30").build())
+        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).group_id(Config.group).page(0).size(300).filter("30").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
                     assertThat(orderSearchResult.getCount()).isEqualTo(testcase * totalSaveOrder - 2);
@@ -232,21 +233,21 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        packageOrder.getOrderDetail(orderDoneID.get())
+        packageOrder.getOrderDetail(Config.group, orderDoneID.get())
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrderData -> {
                     assertThat(packageOrderData.getStatus()).isEqualTo(PackageOrder.Status.DONE);
                 })
                 .verifyComplete();
 
-        packageOrder.getOrderDetail(orderCancelID.get())
+        packageOrder.getOrderDetail(Config.group, orderCancelID.get())
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrderData -> {
                     assertThat(packageOrderData.getStatus()).isEqualTo(PackageOrder.Status.CANCEL);
                 })
                 .verifyComplete();
 
-        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.ORDER.getName()).page(0).size(500).build())
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.ORDER.getName()).group_id(Config.group).page(0).size(500).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
@@ -254,7 +255,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.DONE.getName()).page(0).size(300).build())
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.DONE.getName()).group_id(Config.group).page(0).size(300).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
@@ -262,7 +263,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.CANCEL.getName()).page(0).size(300).build())
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.CANCEL.getName()).group_id(Config.group).page(0).size(300).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
@@ -270,7 +271,15 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        statisticServices.getTotal(SearchQuery.builder().filter("30").query(PackageOrder.Status.DONE.getName()).page(0).size(300).build())
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.PRE_ORDER.getName()).group_id(Config.group).page(0).size(300).build())
+                .as(StepVerifier::create)
+                .verifyComplete();
+
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.SENDING.getName()).group_id(Config.group).page(0).size(300).build())
+                .as(StepVerifier::create)
+                .verifyComplete();
+
+        statisticServices.getTotal(SearchQuery.builder().filter("30").query(PackageOrder.Status.DONE.getName()).page(0).size(300).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(totalOrder -> {
                     assertThat(totalOrder.getReal_price()).isEqualTo(donePrice.get());
@@ -304,26 +313,26 @@ public class OrderPackageTest extends TestConfig {
 
     void orderTest() {
 
-        AtomicReference<ProductUnit> beer_order1_Thung_10_10= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order1_Thung_10_10 = new AtomicReference<ProductUnit>();
         AtomicReference<ProductUnit> beer_order1_Lon_20_20 = new AtomicReference<ProductUnit>();
 
-        AtomicReference<ProductUnit> beer_order2_Thung_50_50= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order2_Thung_50_50 = new AtomicReference<ProductUnit>();
         AtomicReference<ProductUnit> beer_order2_Lon_60_50 = new AtomicReference<ProductUnit>();
 
-        AtomicReference<ProductUnit> beer_order_sold_out1_Thung_100_10_soldout= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order_sold_out1_Thung_100_10_soldout = new AtomicReference<ProductUnit>();
         AtomicReference<ProductUnit> beer_order_sold_out1_Lon_110_0_soldout = new AtomicReference<ProductUnit>();
 
-        AtomicReference<ProductUnit> beer_order_sold_out2_Thung_100_10_soldout= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order_sold_out2_Thung_100_10_soldout = new AtomicReference<ProductUnit>();
         AtomicReference<ProductUnit> beer_order_sold_out2_Lon_110_0 = new AtomicReference<ProductUnit>();
 
-        AtomicReference<ProductUnit> beer_order_hide2_Thung_100_10_hide= new AtomicReference<ProductUnit>();
+        AtomicReference<ProductUnit> beer_order_hide2_Thung_100_10_hide = new AtomicReference<ProductUnit>();
         AtomicReference<ProductUnit> beer_order_hide2_Lon_110_0_hide = new AtomicReference<ProductUnit>();
 
         beerUnitRepository.findByBeerID(Config.group, "beer_order1")
                 .as(StepVerifier::create)
                 .consumeNextWith(beer_order1_Thung_10_10::set)
                 .consumeNextWith(beer_order1_Lon_20_20::set)
-        .verifyComplete();
+                .verifyComplete();
 
         beerUnitRepository.findByBeerID(Config.group, "beer_order2")
                 .as(StepVerifier::create)
@@ -349,31 +358,31 @@ public class OrderPackageTest extends TestConfig {
                 .consumeNextWith(beer_order_hide2_Lon_110_0_hide::set)
                 .verifyComplete();
 
-        if(beer_order1_Lon_20_20.get().getName().equals("thung")){
+        if (beer_order1_Lon_20_20.get().getName().equals("thung")) {
             ProductUnit temp = beer_order1_Lon_20_20.get();
             beer_order1_Lon_20_20.set(beer_order1_Thung_10_10.get());
             beer_order1_Thung_10_10.set(temp);
         }
 
-        if(beer_order2_Lon_60_50.get().getName().equals("thung")){
+        if (beer_order2_Lon_60_50.get().getName().equals("thung")) {
             ProductUnit temp = beer_order2_Lon_60_50.get();
             beer_order2_Lon_60_50.set(beer_order2_Thung_50_50.get());
             beer_order2_Thung_50_50.set(temp);
         }
 
-        if(beer_order_sold_out1_Lon_110_0_soldout.get().getName().equals("thung")){
+        if (beer_order_sold_out1_Lon_110_0_soldout.get().getName().equals("thung")) {
             ProductUnit temp = beer_order_sold_out1_Lon_110_0_soldout.get();
             beer_order_sold_out1_Lon_110_0_soldout.set(beer_order_sold_out1_Thung_100_10_soldout.get());
             beer_order_sold_out1_Thung_100_10_soldout.set(temp);
         }
 
-        if(beer_order_sold_out2_Lon_110_0.get().getName().equals("thung")){
+        if (beer_order_sold_out2_Lon_110_0.get().getName().equals("thung")) {
             ProductUnit temp = beer_order_sold_out2_Lon_110_0.get();
             beer_order_sold_out2_Lon_110_0.set(beer_order_sold_out2_Thung_100_10_soldout.get());
             beer_order_sold_out2_Thung_100_10_soldout.set(temp);
         }
 
-        if(beer_order_hide2_Lon_110_0_hide.get().getName().equals("thung")){
+        if (beer_order_hide2_Lon_110_0_hide.get().getName().equals("thung")) {
             ProductUnit temp = beer_order_hide2_Lon_110_0_hide.get();
             beer_order_hide2_Lon_110_0_hide.set(beer_order_hide2_Thung_100_10_hide.get());
             beer_order_hide2_Thung_100_10_hide.set(temp);
@@ -953,7 +962,7 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
                     System.out.println("Using again 5 order ORDER_GIAM_30% and PACKAGE_VOUCHER_5K: " + packageOrder.getReal_price());
-                    packageVoucher5K.updateAndGet(v->v+packageOrder.getReal_price());
+                    packageVoucher5K.updateAndGet(v -> v + packageOrder.getReal_price());
 //                    assertThat(packageOrder.getReal_price()).isEqualTo(672f - 5);// 5*110 + (20*2*0.8 + 10*10*0.9) - 5
                     assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
@@ -1038,7 +1047,7 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrder -> {
                     System.out.println("Using again 5 order ORDER_GIAM_30% and PACKAGE_VOUCHER_30%: " + packageOrder.getReal_price());
-                    assertThat(packageOrder.getReal_price()).isEqualTo(672f*0.7f);// [5*110 + (20*2*0.8 + 10*10*0.9)] * 0.7
+                    assertThat(packageOrder.getReal_price()).isEqualTo(672f * 0.7f);// [5*110 + (20*2*0.8 + 10*10*0.9)] * 0.7
                     assertThat(packageOrder.getShip_price()).isEqualTo(42000);// inside region and weight is 0!!
                 })
                 .verifyComplete();
@@ -1167,105 +1176,105 @@ public class OrderPackageTest extends TestConfig {
     void createBeer() {
 
         beerAPI.CreateBeer(
-                BeerInfo
-                        .builder()
-                        .productUnit(new ProductUnit[]{
-                                ProductUnit
-                                        .builder()
-                                        .product_second_id("beer_order1")
-                                        .price(10)
-                                        .weight(0.3f)
-                                        .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
-                                        .name("thung")
-                                        .build(),
-                                ProductUnit
-                                        .builder()
-                                        .product_second_id("beer_order1")
-                                        .price(20)
-                                        .weight(1)
-                                        .discount(20)
-                                        .date_expire(new Timestamp(new Date().getTime()))
-                                        .name("lon")
-                                        .build()
-                        })
-                        .product(Product
+                        BeerInfo
                                 .builder()
-                                .category(Category.CRAB.getName())
-                                .name("beer tigerrrrr")
-                                .product_second_id("beer_order1")
-                                .detail("bia for order 1")
+                                .productUnit(new ProductUnit[]{
+                                        ProductUnit
+                                                .builder()
+                                                .product_second_id("beer_order1")
+                                                .price(10)
+                                                .weight(0.3f)
+                                                .discount(10)
+                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .name("thung")
+                                                .build(),
+                                        ProductUnit
+                                                .builder()
+                                                .product_second_id("beer_order1")
+                                                .price(20)
+                                                .weight(1)
+                                                .discount(20)
+                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .name("lon")
+                                                .build()
+                                })
+                                .product(Product
+                                        .builder()
+                                        .category(Category.CRAB.getName())
+                                        .name("beer tigerrrrr")
+                                        .product_second_id("beer_order1")
+                                        .detail("bia for order 1")
+                                        .build()
+                                        .AutoFill()
+                                )
                                 .build()
-                                .AutoFill()
-                        )
-                        .build()
-        )
+                )
                 .blockLast();
 
         beerAPI.CreateBeer(
-                BeerInfo
-                        .builder()
-                        .productUnit(new ProductUnit[]{
-                                ProductUnit
-                                        .builder()
-                                        .product_second_id("beer_order2")
-                                        .price(50)
-                                        .discount(50)
-                                        .date_expire(new Timestamp(new Date().getTime()))
-                                        .name("thung")
-                                        .build(),
-                                ProductUnit
-                                        .builder()
-                                        .product_second_id("beer_order2")
-                                        .price(60)
-                                        .discount(50)
-                                        .date_expire(new Timestamp(new Date().getTime()))
-                                        .name("lon")
-                                        .build()
-                        })
-                        .product(Product
+                        BeerInfo
                                 .builder()
-                                .category(Category.CRAB.getName())
-                                .name("beer tigerrrrr")
-                                .product_second_id("beer_order2")
-                                .detail("bia for order 2")
+                                .productUnit(new ProductUnit[]{
+                                        ProductUnit
+                                                .builder()
+                                                .product_second_id("beer_order2")
+                                                .price(50)
+                                                .discount(50)
+                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .name("thung")
+                                                .build(),
+                                        ProductUnit
+                                                .builder()
+                                                .product_second_id("beer_order2")
+                                                .price(60)
+                                                .discount(50)
+                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .name("lon")
+                                                .build()
+                                })
+                                .product(Product
+                                        .builder()
+                                        .category(Category.CRAB.getName())
+                                        .name("beer tigerrrrr")
+                                        .product_second_id("beer_order2")
+                                        .detail("bia for order 2")
+                                        .build()
+                                        .AutoFill()
+                                )
                                 .build()
-                                .AutoFill()
-                        )
-                        .build()
-        )
+                )
                 .blockLast();
 
         beerAPI.CreateBeer(
-                BeerInfo
-                        .builder()
-                        .productUnit(new ProductUnit[]{
-                                ProductUnit
-                                        .builder()
-                                        .product_second_id("beer_order3")
-                                        .price(100)
-                                        .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
-                                        .name("thung")
-                                        .build(),
-                                ProductUnit
-                                        .builder()
-                                        .product_second_id("beer_order3")
-                                        .price(110)
-                                        .name("lon")
-                                        .build()
-                        })
-                        .product(Product
+                        BeerInfo
                                 .builder()
-                                .category(Category.CRAB.getName())
-                                .name("beer tigerrrrr")
-                                .product_second_id("beer_order3")
-                                .detail("bia for order 3")
+                                .productUnit(new ProductUnit[]{
+                                        ProductUnit
+                                                .builder()
+                                                .product_second_id("beer_order3")
+                                                .price(100)
+                                                .discount(10)
+                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .name("thung")
+                                                .build(),
+                                        ProductUnit
+                                                .builder()
+                                                .product_second_id("beer_order3")
+                                                .price(110)
+                                                .name("lon")
+                                                .build()
+                                })
+                                .product(Product
+                                        .builder()
+                                        .category(Category.CRAB.getName())
+                                        .name("beer tigerrrrr")
+                                        .product_second_id("beer_order3")
+                                        .detail("bia for order 3")
+                                        .build()
+                                        .AutoFill()
+                                )
                                 .build()
-                                .AutoFill()
-                        )
-                        .build()
-        )
+                )
                 .blockLast();
 
         beerAPI.CreateBeer(
@@ -1368,17 +1377,17 @@ public class OrderPackageTest extends TestConfig {
                 .blockLast();
     }
 
-    void createDevice(){
-        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("android").user_first_name("Nguyen").user_last_name("phong").build())
+    void createDevice() {
+        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("android").user_first_name("Nguyen").user_last_name("phong").group_id(Config.group).build())
                 .block();
-        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("iphone").user_first_name("Ho DUong").user_last_name("Vuong").build())
+        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("iphone").user_first_name("Ho DUong").user_last_name("Vuong").group_id(Config.group).build())
                 .block();
-        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("order_test").user_first_name("Ho DUong").user_last_name("Vuong").build())
+        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("order_test").user_first_name("Ho DUong").user_last_name("Vuong").group_id(Config.group).build())
                 .block();
 
     }
 
-    void addBeerToPackage(){
+    void addBeerToPackage() {
 
         AtomicReference<String> beerUnit4561ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit4562ID = new AtomicReference<String>();
@@ -1476,7 +1485,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("order_test").page( 0).size( 1000).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("order_test").page(0).size(1000).build())
                 .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
@@ -1537,7 +1546,7 @@ public class OrderPackageTest extends TestConfig {
                 "        }\n" +
                 "    ]\n" +
                 "}";
-        shippingProvider.CreateShipProvider(ShippingProvider.GHN.ID, json)
+        shippingProvider.CreateShipProvider(ShippingProviderData.builder().id(ShippingProvider.GHN.ID).json(json).group_id(Config.group).build())
                 .block();
     }
 }

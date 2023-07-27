@@ -1,13 +1,16 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.Image;
+import com.example.heroku.model.Users;
 import com.example.heroku.request.carousel.IDContainer;
+import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
 import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,24 +25,36 @@ public class ImageController {
     com.example.heroku.services.Image imageAPI;
 
     //---------- for manage image------------------
-    @PostMapping(value = "/admin/{id}/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+    @PostMapping(value = "/admin/{groupid}/{id}/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<Image>> uploadIMG(@RequestPart("file") Flux<FilePart> file, @PathVariable("id") String categoryID) {
+    public Mono<ResponseEntity<Image>> uploadIMG(@AuthenticationPrincipal Mono<Users> principal, @RequestPart("file") Flux<FilePart> file, @PathVariable("id") String categoryID, @PathVariable("groupid") String groupid) {
         System.out.println("Uplaod image for product!");
-        return imageAPI.Upload(file, categoryID);
+        return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<Image>>builder()
+                .principal(principal)
+                .subject(() -> groupid)
+                .monoAction(() -> imageAPI.Upload(file, categoryID, groupid))
+                .build().toMono();
     }
 
     @PostMapping("/admin/{id}/img/delete")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<Format>> deleteIMG(@Valid @ModelAttribute IDContainer img) {
+    public Mono<ResponseEntity<Format>> deleteIMG(@AuthenticationPrincipal Mono<Users> principal, @Valid @ModelAttribute IDContainer img) {
         System.out.println("delete imgae: " + img.getId());
-        return imageAPI.Delete(img);
+        return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<Format>>builder()
+                .principal(principal)
+                .subject(img::getGroup_id)
+                .monoAction(() -> imageAPI.Delete(img))
+                .build().toMono();
     }
 
-    @GetMapping("/admin/{id}/img/all")
+    @GetMapping("/admin/{groupid}/{id}/img/all")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<Image> getIMGbyID(@PathVariable("id") String categoryID) {
-        return imageAPI.GetAll(categoryID);
+    public Flux<Image> getIMGbyID(@AuthenticationPrincipal Mono<Users> principal, @PathVariable("groupid") String groupid, @PathVariable("id") String categoryID) {
+        return WrapPermissionGroupWithPrincipalAction.<Image>builder()
+                .principal(principal)
+                .subject(() -> groupid)
+                .fluxAction(() -> imageAPI.GetAll(groupid, categoryID))
+                .build().toFlux();
     }
 
     //--------------------end manage image-----------------

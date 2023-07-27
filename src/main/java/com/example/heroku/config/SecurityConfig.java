@@ -54,6 +54,8 @@ public class SecurityConfig {
                 .pathMatchers("/*/admin/**").hasAnyRole("ROOT", "ADMIN")
                 .pathMatchers("/*/admin/*/**").hasAnyRole("ROOT", "ADMIN")
                 .pathMatchers("/*/admin/*/*/**").hasAnyRole("ROOT", "ADMIN")
+                .pathMatchers("/*/admin/*/*/*/**").hasAnyRole("ROOT", "ADMIN")
+                .pathMatchers("/*/admin/*/*/*/*/**").hasAnyRole("ROOT", "ADMIN")
 
                 .pathMatchers("/address/**").permitAll()
                 .pathMatchers("/beer/**").permitAll()

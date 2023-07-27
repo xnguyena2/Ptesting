@@ -35,7 +35,7 @@ public class ClientDevice {
                         )
                 )
                 .flatMap(bootStrapData ->
-                                imageAPI.GetAll("Carousel")
+                                imageAPI.GetAll(groupID, "Carousel")
                                         .switchIfEmpty(Mono.just(com.example.heroku.model.Image.builder().build()))
                                         .map(image ->
                                                 {
@@ -46,7 +46,7 @@ public class ClientDevice {
                                         ).then(Mono.just(bootStrapData))
                 )
                 .flatMap(bootStrapData ->
-                        this.deviceConfigAPI.GetConfig()
+                        this.deviceConfigAPI.GetConfig(groupID)
                                 .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().color("#333333").build()))
                                 .map(bootStrapData::setDeviceConfig)
                 );

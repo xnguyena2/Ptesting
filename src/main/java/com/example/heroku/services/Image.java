@@ -30,7 +30,7 @@ public class Image {
     private FlickrLib flickrLib;
 
 
-    public Mono<ResponseEntity<com.example.heroku.model.Image>> Upload(Flux<FilePart> file, String category) {
+    public Mono<ResponseEntity<com.example.heroku.model.Image>> Upload(Flux<FilePart> file, String category, String groupID) {
         AtomicReference<String> fileName = new AtomicReference<>();
         return file.flatMap(f -> {
                     fileName.set(f.filename());
@@ -47,6 +47,7 @@ public class Image {
                             .large(info[3])
                             .category(category)
                             .createat(new Timestamp(new Date().getTime()))
+                            .group_id(groupID)
                             .build());
                 })
                 .map(ResponseEntity::ok);
@@ -56,7 +57,7 @@ public class Image {
         return Mono.just(img).flatMap(info ->
                 {
                     flickrLib.DeleteImage(info.getId());
-                    return this.imageRepository.deleteImage(info.getId())
+                    return this.imageRepository.deleteImage(img.getGroup_id(), info.getId())
                             .map(deleted ->
                                     ok(Format.builder().response(deleted.getId()).build())
                             );
@@ -64,8 +65,8 @@ public class Image {
         );
     }
 
-    public Flux<com.example.heroku.model.Image> GetAll(String category) {
-        return this.imageRepository.findByCategory(category);
+    public Flux<com.example.heroku.model.Image> GetAll(String groupID, String category) {
+        return this.imageRepository.findByCategory(groupID, category);
     }
 
     public Mono<Void> DeleteAll() {

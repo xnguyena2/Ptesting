@@ -20,6 +20,7 @@ public class ProductImportTest {
                         .price(1000)
                         .amount(10)
                         .product_id("123")
+                        .group_id(Config.group)
                         .build()
         )
                 .block();
@@ -29,11 +30,12 @@ public class ProductImportTest {
                                 .price(1000)
                                 .amount(5)
                                 .product_id("123")
+                                .group_id(Config.group)
                                 .build()
                 )
                 .block();
 
-        productImport.getByProductID(SearchQuery.builder().query("123").page(0).size(100).filter("10").build())
+        productImport.getByProductID(SearchQuery.builder().query("123").page(0).size(100).filter("10").group_id(Config.group).build())
                 .sort(Comparator.comparing(com.example.heroku.model.ProductImport::getCreateat))
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
@@ -41,6 +43,37 @@ public class ProductImportTest {
                 })
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getAmount()).isEqualTo(5);
+                })
+                .verifyComplete();
+
+        productImport.getALL(SearchQuery.builder().page(0).size(100).filter("10").group_id(Config.group).build())
+                .sort(Comparator.comparing(com.example.heroku.model.ProductImport::getCreateat))
+                .as(StepVerifier::create)
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getAmount()).isEqualTo(10);
+                })
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getAmount()).isEqualTo(5);
+                })
+                .verifyComplete();
+
+
+        productImport.deleteRecord(Config.group, "2")
+                .block();
+
+        productImport.getByProductID(SearchQuery.builder().query("123").page(0).size(100).filter("10").group_id(Config.group).build())
+                .sort(Comparator.comparing(com.example.heroku.model.ProductImport::getCreateat))
+                .as(StepVerifier::create)
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getAmount()).isEqualTo(10);
+                })
+                .verifyComplete();
+
+        productImport.getALL(SearchQuery.builder().page(0).size(100).filter("10").group_id(Config.group).build())
+                .sort(Comparator.comparing(com.example.heroku.model.ProductImport::getCreateat))
+                .as(StepVerifier::create)
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getAmount()).isEqualTo(10);
                 })
                 .verifyComplete();
     }

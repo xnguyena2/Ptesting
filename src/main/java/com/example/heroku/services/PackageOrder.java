@@ -31,12 +31,13 @@ public class PackageOrder {
         final int size = query.getSize();
         final com.example.heroku.model.PackageOrder.Status status = com.example.heroku.model.PackageOrder.Status.get(query.getQuery());
         final int date = Integer.parseInt(dateTxt);
-        return this.resultWithCountRepository.countPackageOrder(status, date)
+        final String group_id = query.getGroup_id();
+        return this.resultWithCountRepository.countPackageOrder(group_id, status, date)
                 .map(resultWithCount ->
                         (OrderSearchResult) OrderSearchResult.builder().count(resultWithCount.getCount()).build()
                 )
                 .flatMap(orderSearchResult ->
-                        packageOrderRepository.getAll(page, size, status, date)
+                        packageOrderRepository.getAll(group_id, page, size, status, date)
                                 .flatMap(this::coverToData)
                                 .map(orderSearchResult::Add)
                                 .then(Mono.just(orderSearchResult))
@@ -59,12 +60,12 @@ public class PackageOrder {
                 );
     }
 
-    public Mono<OrderSearchResult.PackageOrderData> getOrderDetail(String id){
-        return packageOrderRepository.getByID(id)
+    public Mono<OrderSearchResult.PackageOrderData> getOrderDetail(String groupid, String id){
+        return packageOrderRepository.getByID(groupid, id)
                 .flatMap(this::coverToData);
     }
 
-    public Mono<com.example.heroku.model.PackageOrder> UpdateStatus(String id, com.example.heroku.model.PackageOrder.Status status) {
-        return packageOrderRepository.changeStatus(id, status);
+    public Mono<com.example.heroku.model.PackageOrder> UpdateStatus(String groupid, String id, com.example.heroku.model.PackageOrder.Status status) {
+        return packageOrderRepository.changeStatus(groupid, id, status);
     }
 }

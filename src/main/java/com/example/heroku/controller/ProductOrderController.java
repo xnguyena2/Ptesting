@@ -1,13 +1,20 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.PackageOrder;
+import com.example.heroku.model.Users;
 import com.example.heroku.request.Order.CloseOrderRequest;
 import com.example.heroku.request.Order.OrderSearchResult;
 import com.example.heroku.request.beer.PackageOrderData;
 import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.request.permission.WrapPermissionAction;
+import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
+import com.example.heroku.response.BuyerData;
+import com.example.heroku.response.Format;
 import com.example.heroku.services.BeerOrder;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -34,24 +41,37 @@ public class ProductOrderController {
 
     @PostMapping("/admin/all")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<OrderSearchResult> getIMGbyID(@RequestBody @Valid SearchQuery query) {
-        return packageOrder.CountGetAllOrder(query);
+    public Mono<OrderSearchResult> getIMGbyID(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
+        return WrapPermissionAction.<OrderSearchResult>builder()
+                .principal(principal)
+                .query(query)
+                .monoAction(q -> packageOrder.CountGetAllOrder(q))
+                .build()
+                .toMono();
     }
 
 
-    @GetMapping("/admin/detail/{id}")
+    @GetMapping("/admin/detail/{groupid}/{id}")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<OrderSearchResult.PackageOrderData> detail(@PathVariable("id") String id) {
+    public Mono<OrderSearchResult.PackageOrderData> detail(@AuthenticationPrincipal Mono<Users> principal, @PathVariable("groupid") String groupid, @PathVariable("id") String id) {
         System.out.println("Detail of order: " + id);
-        return packageOrder.getOrderDetail(id);
+        return WrapPermissionGroupWithPrincipalAction.<OrderSearchResult.PackageOrderData>builder()
+                .principal(principal)
+                .subject(() -> groupid)
+                .monoAction(() -> packageOrder.getOrderDetail(groupid, id))
+                .build().toMono();
     }
 
 
     @PostMapping("/admin/close")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<PackageOrder> closeOrder(@RequestBody @Valid CloseOrderRequest order) {
+    public Mono<PackageOrder> closeOrder(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid CloseOrderRequest order) {
         System.out.println("close order: " + order.getId());
         PackageOrder.Status status = PackageOrder.Status.get(order.getStatus());
-        return packageOrder.UpdateStatus(order.getId(), status);
+        return WrapPermissionGroupWithPrincipalAction.<PackageOrder>builder()
+                .principal(principal)
+                .subject(order::getGroup_id)
+                .monoAction(() -> packageOrder.UpdateStatus(order.getGroup_id(), order.getId(), status))
+                .build().toMono();
     }
 }

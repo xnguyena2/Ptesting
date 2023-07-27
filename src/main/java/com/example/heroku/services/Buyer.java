@@ -16,7 +16,7 @@ public class Buyer {
 
     public Flux<BuyerData> GetAll(SearchQuery query) {
         PackageOrder.Status status = PackageOrder.Status.get(query.GetFilterTxt());
-        return this.buyerRepository.getAll(status, query.getPage(), query.getSize())
+        return this.buyerRepository.getAll(status, query.getGroup_id(), query.getPage(), query.getSize())
                 .map(BuyerData::new);
     }
 }

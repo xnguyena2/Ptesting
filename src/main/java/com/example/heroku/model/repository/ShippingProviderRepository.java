@@ -7,9 +7,9 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
 
 public interface ShippingProviderRepository extends ReactiveCrudRepository<ShippingProvider,String> {
-    @Query(value = "DELETE FROM shipping_provider WHERE shipping_provider.provider_id = :id")
-    Mono<ShippingProvider> deleteByProviderId(@Param("id")String id);
+    @Query(value = "DELETE FROM shipping_provider WHERE shipping_provider.group_id = :group_id AND shipping_provider.provider_id = :id")
+    Mono<ShippingProvider> deleteByProviderId(@Param("group_id")String group_id, @Param("id")String id);
 
-    @Query(value = "SELECT * FROM shipping_provider WHERE shipping_provider.provider_id = :id")
-    Mono<ShippingProvider> findByProviderId(@Param("id")String id);
+    @Query(value = "SELECT * FROM shipping_provider WHERE shipping_provider.group_id = :group_id AND shipping_provider.provider_id = :id")
+    Mono<ShippingProvider> findByProviderId(@Param("group_id")String group_id, @Param("id")String id);
 }

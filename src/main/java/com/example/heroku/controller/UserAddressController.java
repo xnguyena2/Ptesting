@@ -26,17 +26,17 @@ public class UserAddressController {
         return userAddress.CreateAddress(addressInfo.CovertModel(false));
     }
 
-    @GetMapping("/all/{deviceid}")
+    @GetMapping("/all/{groupid}/{deviceid}")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<AddressData> getAllAddress(@PathVariable("deviceid") String deviceID) throws IOException {
-        return userAddress.GetUserAddress(deviceID).flatMap(AddressData::FromModel);
+    public Flux<AddressData> getAllAddress(@PathVariable("groupid") String groupid, @PathVariable("deviceid") String deviceID) throws IOException {
+        return userAddress.GetUserAddress(groupid, deviceID).flatMap(AddressData::FromModel);
     }
 
     @PostMapping("/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<UserAddress> deleteAddress(@RequestBody @Valid AddressData addressInfo) {
         System.out.println("delete address");
-        return userAddress.DeleteAddress(addressInfo.getAddress_id());
+        return userAddress.DeleteAddress(addressInfo.getGroup_id(), addressInfo.getAddress_id());
     }
 
     @PostMapping("/update")

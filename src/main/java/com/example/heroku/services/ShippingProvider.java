@@ -1,6 +1,7 @@
 package com.example.heroku.services;
 
 import com.example.heroku.model.repository.ShippingProviderRepository;
+import com.example.heroku.request.ship.ShippingProviderData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -18,27 +19,37 @@ public class ShippingProvider {
     @Autowired
     ShippingProviderRepository shippingProviderRepository;
 
-    public Mono<com.example.heroku.model.ShippingProvider> CreateShipProvider(String id, String config) throws Exception {
-        if(!id.equals(GHN.ID))
-            throw new Exception("Not match ID");
-        GHN ghn = new ObjectMapper().readValue(config, GHN.class);
-        return shippingProviderRepository
-                .deleteByProviderId(id)
-                .then(Mono.just(ghn)
-                        .flatMap(provider -> shippingProviderRepository.save(
-                                com.example.heroku.model.ShippingProvider.builder()
-                                        .provider_id(id)
-                                        .name(GHN.NAME)
-                                        .config(config)
-                                        .build()
-                        )));
+    public Mono<com.example.heroku.model.ShippingProvider> CreateShipProvider(ShippingProviderData config) {
+        String groupID = config.getGroup_id();
+        String id = config.getId();
+        String configtxt = config.getJson();
+        if (!id.equals(GHN.ID))
+            return Mono.error(new Exception("Not GHN"));
+        try {
+            GHN ghn = new ObjectMapper().readValue(configtxt, GHN.class);
+            return shippingProviderRepository
+                    .deleteByProviderId(groupID, id)
+                    .then(Mono.just(ghn)
+                            .flatMap(provider -> shippingProviderRepository.save(
+                                            com.example.heroku.model.ShippingProvider.builder()
+                                                    .provider_id(id)
+                                                    .name(GHN.NAME)
+                                                    .config(configtxt)
+                                                    .group_id(groupID)
+                                                    .build()
+                                    )
+                            )
+                    );
+        } catch (JsonProcessingException e) {
+            return Mono.error(e);
+        }
     }
 
-    public Mono<com.example.heroku.model.ShippingProvider> GetShipProvider(String id){
-        return shippingProviderRepository.findByProviderId(id);
+    public Mono<com.example.heroku.model.ShippingProvider> GetShipProvider(String groupid, String id){
+        return shippingProviderRepository.findByProviderId(groupid, id);
     }
-    public Mono<GHN> GetGHNShippingProvider() {
-        return shippingProviderRepository.findByProviderId(GHN.ID)
+    public Mono<GHN> GetGHNShippingProvider(String groupid) {
+        return shippingProviderRepository.findByProviderId(groupid, GHN.ID)
                 .map(shippingProvider -> {
                             try {
                                 return new ObjectMapper().readValue(shippingProvider.getConfig(), GHN.class);
@@ -50,8 +61,8 @@ public class ShippingProvider {
                 );
     }
 
-    public Mono<Price> GetShippingPrice(String providerID, float packageWeight, float packageVolumetric, int region, int district) {
-        return shippingProviderRepository.findByProviderId(providerID)
+    public Mono<Price> GetShippingPrice(String groupid, String providerID, float packageWeight, float packageVolumetric, int region, int district) {
+        return shippingProviderRepository.findByProviderId(groupid, providerID)
                 .map(shippingProvider -> {
                             try {
                                 GHN ghn = new ObjectMapper().readValue(shippingProvider.getConfig(), GHN.class);

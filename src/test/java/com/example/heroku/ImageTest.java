@@ -28,37 +28,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Builder
 public class ImageTest {
 
-    private static byte[] getImageBytes(String imageUrl)
-    {
+    private static byte[] getImageBytes(String imageUrl) {
         try {
             URL url = new URL(imageUrl);
 
             ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-            try (InputStream stream = url.openStream())
-            {
+            try (InputStream stream = url.openStream()) {
                 byte[] buffer = new byte[4096];
 
-                while (true)
-                {
+                while (true) {
                     int bytesRead = stream.read(buffer);
-                    if (bytesRead < 0) { break; }
+                    if (bytesRead < 0) {
+                        break;
+                    }
                     output.write(buffer, 0, bytesRead);
                 }
             }
 
             return output.toByteArray();
-        }catch (Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
             return null;
         }
     }
 
-    static class imgMap{
+    static class imgMap {
         public String id;
         public byte[] content;
 
-        public imgMap(String id, byte[] content){
+        public imgMap(String id, byte[] content) {
             this.id = id;
             this.content = content;
         }
@@ -127,8 +126,11 @@ public class ImageTest {
         imageAPI.DeleteAll()
                 .thenMany(Flux.just(imgContent)
                         .flatMap(img ->
-                                imageAPI.Upload(Flux.just(img), "Carousel")
-                                .map(formatResponseEntity -> {imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getImgid(),img); return formatResponseEntity;})
+                                imageAPI.Upload(Flux.just(img), "Carousel", Config.group)
+                                        .map(formatResponseEntity -> {
+                                            imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getImgid(), img);
+                                            return formatResponseEntity;
+                                        })
                         )
                 )
                 .then()
@@ -136,13 +138,16 @@ public class ImageTest {
 
         Flux.just(imgContent)
                 .flatMap(img ->
-                        imageAPI.Upload(Flux.just(img), "456")
-                                .map(formatResponseEntity -> {imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getImgid(),img); return formatResponseEntity;})
+                        imageAPI.Upload(Flux.just(img), "456", Config.group)
+                                .map(formatResponseEntity -> {
+                                    imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getImgid(), img);
+                                    return formatResponseEntity;
+                                })
                 )
                 .then()
                 .block();
 
-        imageAPI.GetAll("Carousel")
+        imageAPI.GetAll(Config.group, "Carousel")
                 .map(image -> new imgMap(image.getImgid(), getImageBytes(image.getLarge())))
                 .as(StepVerifier::create)
                 .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))

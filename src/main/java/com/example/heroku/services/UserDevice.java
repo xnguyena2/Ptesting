@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -19,14 +20,26 @@ public class UserDevice {
 
     public Mono<ResponseEntity<Format>> CreateUserDevice(@Valid @ModelAttribute com.example.heroku.model.UserDevice info) {
         return Mono.just(info)
-                .filter(userDevice ->
-                        userDevice.getDevice_id() != null && !userDevice.getDevice_id().equals(""))
+                .map(com.example.heroku.model.UserDevice::AutoFill)
                 .flatMap(userDevice ->
-                        userDeviceRepository.findByDeviceId(userDevice.getDevice_id())
-                                .switchIfEmpty(userDeviceRepository.save(userDevice.AutoFill()))
+                        userDeviceRepository.saveDevice(userDevice.getGroup_id(), userDevice.getDevice_id(), userDevice.getUser_first_name(),
+                                        userDevice.getUser_last_name(), userDevice.getStatus(), userDevice.getCreateat())
+                                .then(Mono.just(userDevice))
                 )
                 .map(userDevice ->
-                    ok(Format.builder().response(userDevice.getDevice_id()).build())
+                        ok(Format.builder().response(userDevice.getDevice_id()).build())
                 );
+    }
+
+    public Mono<com.example.heroku.model.UserDevice> getDevice(String groupid, String id) {
+        return userDeviceRepository.findByDeviceId(groupid, id);
+    }
+
+    public Mono<com.example.heroku.model.UserDevice> deleteDevice(String groupid, String id) {
+        return userDeviceRepository.deleteByDeviceId(groupid, id);
+    }
+
+    public Flux<com.example.heroku.model.UserDevice> getAllDevice(String groupid, int page, int size) {
+        return userDeviceRepository.findAllByGroupID(groupid, page, size);
     }
 }

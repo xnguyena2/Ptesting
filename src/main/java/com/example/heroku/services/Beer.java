@@ -71,8 +71,8 @@ public class Beer {
     }
 
     public Mono<Product> DeleteBeerByID(String groupID, String id) {
-        return imageRepository.findByCategory(id)
-                .flatMap(image -> imageAPI.Delete(IDContainer.builder().id(image.getImgid()).build()))
+        return imageRepository.findByCategory(groupID, id)
+                .flatMap(image -> imageAPI.Delete(IDContainer.builder().group_id(groupID).id(image.getImgid()).build()))
                 .then(
                         Mono.just(id)
                         .flatMap(
@@ -103,7 +103,7 @@ public class Beer {
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();
-        return this.resultWithCountRepository.adminCountAll()
+        return this.resultWithCountRepository.adminCountAll(query.getGroup_id())
                 .map(resultWithCount -> {
                     SearchResult<BeerSubmitData> result = new SearchResult<>();
                     result.setCount(resultWithCount.getCount());
@@ -140,7 +140,7 @@ public class Beer {
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();
-        return this.resultWithCountRepository.countAll()
+        return this.resultWithCountRepository.countAll(query.getGroup_id())
                 .map(resultWithCount -> {
                     SearchResult<BeerSubmitData> result = new SearchResult<>();
                     result.setCount(resultWithCount.getCount());
@@ -188,7 +188,7 @@ public class Beer {
                                 )
                 )
                 .flatMap(beerSubmitData ->
-                        imageRepository.findByCategory(beerSubmitData.getBeerSecondID())
+                        imageRepository.findByCategory(beerSubmitData.getGroup_id(), beerSubmitData.getBeerSecondID())
                                 .map(beerSubmitData::AddImage)
                                 .then(Mono.just(beerSubmitData))
                 );
@@ -203,7 +203,7 @@ public class Beer {
                 .map(Util.getInstance()::RemoveAccent)
                 .flatMap(searchTxt -> {
                     if (searchTxt.contains("&"))
-                        return this.resultWithCountRepository.adminCountSearchBeer(searchTxt)
+                        return this.resultWithCountRepository.adminCountSearchBeer(query.getGroup_id(), searchTxt)
                                 .map(resultWithCount -> {
                                     SearchResult<BeerSubmitData> result = SearchResult.<BeerSubmitData>builder()
                                             .isNormalSearch(true)
@@ -213,7 +213,7 @@ public class Beer {
                                     return result;
                                 });
                     String finalSearchTxt = "%" + searchTxt + "%";
-                    return this.resultWithCountRepository.adminCountSearchBeerLike(finalSearchTxt)
+                    return this.resultWithCountRepository.adminCountSearchBeerLike(query.getGroup_id(), finalSearchTxt)
                             .map(resultWithCount -> {
                                 SearchResult<BeerSubmitData> result = SearchResult.<BeerSubmitData>builder()
                                         .isNormalSearch(false)
@@ -280,7 +280,7 @@ public class Beer {
                 .map(Util.getInstance()::RemoveAccent)
                 .flatMap(searchTxt -> {
                     if (searchTxt.contains("&"))
-                        return this.resultWithCountRepository.countSearchBeer(searchTxt)
+                        return this.resultWithCountRepository.countSearchBeer(query.getGroup_id(), searchTxt)
                                 .map(resultWithCount -> {
                                     SearchResult<BeerSubmitData> result = SearchResult.<BeerSubmitData>builder()
                                             .isNormalSearch(true)
@@ -290,7 +290,7 @@ public class Beer {
                                     return result;
                                 });
                     String finalSearchTxt = "%" + searchTxt + "%";
-                    return this.resultWithCountRepository.countSearchBeerLike(finalSearchTxt)
+                    return this.resultWithCountRepository.countSearchBeerLike(query.getGroup_id(), finalSearchTxt)
                             .map(resultWithCount -> {
                                 SearchResult<BeerSubmitData> result = SearchResult.<BeerSubmitData>builder()
                                         .isNormalSearch(false)
@@ -353,7 +353,7 @@ public class Beer {
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();
-        return this.resultWithCountRepository.AdminCountCategory(category)
+        return this.resultWithCountRepository.AdminCountCategory(query.getGroup_id(), category)
                 .map(resultWithCount -> {
                     SearchResult<BeerSubmitData> result = new SearchResult<>();
                     result.setCount(resultWithCount.getCount());
@@ -391,7 +391,7 @@ public class Beer {
         final SearchQuery.Filter filter = query.GetFilter();
         final int page = query.getPage();
         final int size = query.getSize();
-        return this.resultWithCountRepository.countCategory(category)
+        return this.resultWithCountRepository.countCategory(query.getGroup_id(), category)
                 .map(resultWithCount -> {
                     SearchResult<BeerSubmitData> result = new SearchResult<>();
                     result.setCount(resultWithCount.getCount());

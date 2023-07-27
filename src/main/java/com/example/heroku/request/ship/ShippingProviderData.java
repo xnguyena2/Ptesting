@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class ShippingProviderData {
 
     private String id;
+    private String group_id;
     private String json;
 
 }

@@ -169,10 +169,10 @@ public class BeerOrder {
 
     public Mono<PackageOrder> createOrder(PackageOrderData packageOrderData) {
         System.out.println("New request from: " + packageOrderData.getPackageOrder().getUser_device_id());
+        String groupID = packageOrderData.getPackageOrder().getGroup_id();
         packageOrderData.getPackageOrder().AutoFill(packageOrderData.isPreOrder());
         Timestamp currentTime = new Timestamp(new Date().getTime());
-        Mono<ShippingProvider.GHN> shippingProvider = shippingProviderAPI.GetGHNShippingProvider();
-        String groupID = packageOrderData.getPackageOrder().getGroup_id();
+        Mono<ShippingProvider.GHN> shippingProvider = shippingProviderAPI.GetGHNShippingProvider(groupID);
         return Mono.just(getUserVoucherAndProductName(packageOrderData))
                 .flatMap(vouchers ->
                         vouchers.map(vc ->

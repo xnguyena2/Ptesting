@@ -9,7 +9,9 @@ import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.beer.SearchResult;
 import com.example.heroku.request.carousel.IDContainer;
+import com.example.heroku.request.permission.WrapPermissionAction;
 import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
+import com.example.heroku.response.BuyerData;
 import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,24 +37,37 @@ public class BeerController {
 
 
     //---------- for manage image------------------
-    @PostMapping(value = "/admin/{id}/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+    @PostMapping(value = "/admin/{groupid}/{id}/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<com.example.heroku.model.Image>> uploadIMG(@RequestPart("file") Flux<FilePart> file, @PathVariable("id") String beerID) {
+    public Mono<ResponseEntity<com.example.heroku.model.Image>> uploadIMG(@AuthenticationPrincipal Mono<Users> principal, @RequestPart("file") Flux<FilePart> file, @PathVariable("groupid") String groupid, @PathVariable("id") String beerID) {
         System.out.println("Uplaod image for beer!");
-        return imageAPI.Upload(file, beerID);
+        return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<com.example.heroku.model.Image>>builder()
+                .principal(principal)
+                .subject(() -> groupid)
+                .monoAction(() -> imageAPI.Upload(file, beerID, groupid))
+                .build().toMono();
     }
 
     @PostMapping("/admin/{id}/img/delete")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<Format>> deleteIMG(@Valid @ModelAttribute IDContainer img) {
+    public Mono<ResponseEntity<Format>> deleteIMG(@AuthenticationPrincipal Mono<Users> principal, @Valid @ModelAttribute IDContainer img) {
         System.out.println("delete imgae: " + img.getId());
-        return imageAPI.Delete(img);
+        return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<Format>>builder()
+                .principal(principal)
+                .subject(img::getGroup_id)
+                .monoAction(() -> imageAPI.Delete(img))
+                .build().toMono();
     }
 
-    @GetMapping("/admin/{id}/img/all")
+    @GetMapping("/admin/{groupid}/{id}/img/all")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<Image> getIMGbyID(@PathVariable("id") String beerID) {
-        return imageAPI.GetAll(beerID);
+    public Flux<Image> getIMGbyID(@AuthenticationPrincipal Mono<Users> principal, @PathVariable("groupid") String groupid, @PathVariable("id") String beerID) {
+        System.out.println("get image: " + beerID + ", groupid: " + groupid);
+        return WrapPermissionGroupWithPrincipalAction.<Image>builder()
+                .principal(principal)
+                .subject(() -> groupid)
+                .fluxAction(() -> imageAPI.GetAll(groupid, beerID))
+                .build().toFlux();
     }
 
     //--------------------end manage image-----------------
@@ -83,9 +98,14 @@ public class BeerController {
 
     @PostMapping("/admin/getall")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<SearchResult<BeerSubmitData>> adminGetAll(@RequestBody @Valid SearchQuery query) {
+    public Mono<SearchResult<BeerSubmitData>> adminGetAll(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
         System.out.println("admin get all beer: " + query.getPage());
-        return beerAPI.AdminCountGetAllBeer(query);
+        return WrapPermissionAction.<SearchResult<BeerSubmitData>>builder()
+                .principal(principal)
+                .query(query)
+                .monoAction(q -> beerAPI.AdminCountGetAllBeer(q))
+                .build()
+                .toMono();
     }
 
 

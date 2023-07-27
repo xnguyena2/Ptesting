@@ -9,9 +9,9 @@ import reactor.core.publisher.Mono;
 
 public interface ImageRepository extends ReactiveCrudRepository<Image, String> {
 
-    @Query(value = "SELECT * FROM image i WHERE i.Category = :catetory")//, nativeQuery = true)
-    Flux<Image> findByCategory(@Param("catetory")String catetory);
+    @Query(value = "SELECT * FROM image WHERE image.category = :catetory AND image.group_id = :group_id")//, nativeQuery = true)
+    Flux<Image> findByCategory(@Param("group_id")String group_id, @Param("catetory")String catetory);
 
-    @Query(value = "DELETE FROM image WHERE image.imgid = :id")
-    Mono<Image> deleteImage(@Param("id")String id);
+    @Query(value = "DELETE FROM image WHERE image.imgid = :imgid AND image.group_id = :group_id")
+    Mono<Image> deleteImage(@Param("group_id")String group_id, @Param("imgid")String imgid);
 }
