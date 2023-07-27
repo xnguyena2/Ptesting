@@ -163,7 +163,8 @@ public class BeerOrder {
             return Mono.empty();
         }
         return Flux.just(beerOrderData.getProductUnitOrders())
-                .flatMap(beerUnitOrder -> userPackageRepository.DeleteProductByBeerUnit(packageOrderData.getPackageOrder().getUser_device_id(), beerUnitOrder.getProduct_unit_second_id())
+                .flatMap(beerUnitOrder -> userPackageRepository.DeleteProductByBeerUnit(packageOrderData.getPackageOrder().getGroup_id(),
+                        packageOrderData.getPackageOrder().getUser_device_id(), beerUnitOrder.getProduct_unit_second_id())
                 ).then(Mono.empty());
     }
 

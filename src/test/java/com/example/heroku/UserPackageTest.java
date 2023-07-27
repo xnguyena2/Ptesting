@@ -126,6 +126,7 @@ public class UserPackageTest {
 
 
         beerPackage = BeerPackage.builder()
+                .group_id(Config.group)
                 .beerID("sold_out")
                 .deviceID("soldoutttt")
                 .beerUnits(new BeerPackage.BeerUnit[]{
@@ -144,6 +145,7 @@ public class UserPackageTest {
 
 
         beerPackage = BeerPackage.builder()
+                .group_id(Config.group)
                 .beerID("123")
                 .deviceID("soldoutttt")
                 .beerUnits(new BeerPackage.BeerUnit[]{
@@ -162,6 +164,7 @@ public class UserPackageTest {
 
 
         beerPackage = BeerPackage.builder()
+                .group_id(Config.group)
                 .beerID("123")
                 .deviceID("222222")
                 .beerUnits(new BeerPackage.BeerUnit[]{
@@ -179,6 +182,7 @@ public class UserPackageTest {
                 .block();
 
         beerPackage = BeerPackage.builder()
+                .group_id(Config.group)
                 .beerID("456")
                 .deviceID("222222")
                 .beerUnits(new BeerPackage.BeerUnit[]{
@@ -195,10 +199,11 @@ public class UserPackageTest {
         userPackageAPI.AddBeerToPackage(beerPackage)
                 .block();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).group_id(Config.group).build())
                 .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
+
                     try {
                         System.out.println(new ObjectMapper().writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
@@ -227,6 +232,7 @@ public class UserPackageTest {
                 .verifyComplete();
 
         beerPackage = BeerPackage.builder()
+                .group_id(Config.group)
                 .beerID("456")
                 .deviceID("222222")
                 .beerUnits(new BeerPackage.BeerUnit[]{
@@ -243,7 +249,7 @@ public class UserPackageTest {
         userPackageAPI.AddBeerToPackage(beerPackage)
                 .block();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).group_id(Config.group).build())
                 .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
@@ -287,9 +293,9 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        userPackageAPI.DeleteByBeerUnit(PackageItemRemove.builder().device_id("222222").unit_id(beerUnit1ID.get()).build()).blockLast();
+        userPackageAPI.DeleteByBeerUnit(PackageItemRemove.builder().device_id("222222").unit_id(beerUnit1ID.get()).group_id(Config.group).build()).blockLast();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).group_id(Config.group).build())
                 .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
@@ -310,9 +316,9 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        userPackageAPI.DeleteByUserID(UserID.builder().id("222222").page( 0).size( 1000).build()).blockLast();
+        userPackageAPI.DeleteByUserID(UserID.builder().id("222222").page( 0).size( 1000).group_id(Config.group).build()).blockLast();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).group_id(Config.group).build())
                 .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
                 .as(StepVerifier::create)
                 .verifyComplete();

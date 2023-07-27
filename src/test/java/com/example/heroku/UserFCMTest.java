@@ -15,46 +15,50 @@ public class UserFCMTest {
         userFCMAPI.createFCMToken(FCMToken.builder()
                         .device_id("fcm_device_1")
                         .fcm_id("fcm_1")
+                        .group_id(Config.group)
                         .build().covertModel())
                 .block();
         userFCMAPI.createFCMToken(FCMToken.builder()
                         .device_id("fcm_device_1")
                         .fcm_id("fcm_11")
+                        .group_id(Config.group)
                         .build().covertModel())
                 .block();
         userFCMAPI.createFCMToken(FCMToken.builder()
                         .device_id("fcm_device_2")
                         .fcm_id("fcm_2")
+                        .group_id(Config.group)
                         .build().covertModel())
                 .block();
         userFCMAPI.createFCMToken(FCMToken.builder()
                         .device_id("fcm_device_2")
                         .fcm_id("fcm_22")
+                        .group_id(Config.group)
                         .build().covertModel())
                 .block();
 
-        userFCMAPI.findByDeviceID("fcm_device_2")
+        userFCMAPI.findByDeviceID(Config.group, "fcm_device_2")
                 .as(StepVerifier::create)
                 .consumeNextWith(fcm -> {
                     assertThat(fcm.getFcm_id().equals("fcm_22"));
                 })
                 .verifyComplete();
 
-        userFCMAPI.findByDeviceID("fcm_device_1")
+        userFCMAPI.findByDeviceID(Config.group, "fcm_device_1")
                 .as(StepVerifier::create)
                 .consumeNextWith(fcm -> {
                     assertThat(fcm.getFcm_id().equals("fcm_11"));
                 })
                 .verifyComplete();
 
-        userFCMAPI.deleteByDeviceID("fcm_device_1")
+        userFCMAPI.deleteByDeviceID(Config.group, "fcm_device_1")
                 .block();
 
-        userFCMAPI.findByDeviceID("fcm_device_1")
+        userFCMAPI.findByDeviceID(Config.group, "fcm_device_1")
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        userFCMAPI.findByDeviceID("fcm_device_2")
+        userFCMAPI.findByDeviceID(Config.group, "fcm_device_2")
                 .as(StepVerifier::create)
                 .consumeNextWith(fcm -> {
                     assertThat(fcm.getFcm_id().equals("fcm_22"));

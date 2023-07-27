@@ -15,6 +15,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class BeerPackage {
 
+    private String group_id;
+
     private String deviceID;
 
     private String beerID;
@@ -40,6 +42,7 @@ public class BeerPackage {
                     .product_unit_second_id(beer.beerUnitID)
                     .device_id(this.deviceID)
                     .number_unit(beer.numberUnit)
+                    .group_id(this.getGroup_id())
                     .createat(new Timestamp(new Date().getTime()))
                     .build();
         }

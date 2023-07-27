@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notification {
+    private String group_id;
     private String device_id;
     private String title;
     private String msg;

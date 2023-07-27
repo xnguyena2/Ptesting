@@ -27,7 +27,7 @@ public class UserFCMS {
         return
                 Mono.just(info)
                         .flatMap(userFCM ->
-                                userFCMRepository.saveToken(userFCM.getDevice_id(), userFCM.getFcm_id(), userFCM.getStatus(), userFCM.getCreateat())
+                                userFCMRepository.saveToken(userFCM.getGroup_id(), userFCM.getDevice_id(), userFCM.getFcm_id(), userFCM.getStatus(), userFCM.getCreateat())
                         )
                         .flatMap(userFCM ->
                                 Mono.just(ok(Format.builder().response(userFCM.getDevice_id()).build()))
@@ -35,7 +35,7 @@ public class UserFCMS {
     }
 
     public Mono<ResponseEntity<Format>> sendNotification(@Valid @ModelAttribute Notification notification) {
-        return userFCMRepository.findByDeviceId(notification.getDevice_id())
+        return findByDeviceID(notification.getGroup_id(), notification.getDevice_id())
                 .flatMap(userFCM ->
                         Mono.just(myFireBase.SendNotification(notification.getTitle(), notification.getMsg(), userFCM.getFcm_id()))
                 )
@@ -44,11 +44,11 @@ public class UserFCMS {
                 );
     }
 
-    public Mono<UserFCM> findByDeviceID(String device_id) {
-        return userFCMRepository.findByDeviceId(device_id);
+    public Mono<UserFCM> findByDeviceID(String groupid, String device_id) {
+        return userFCMRepository.findByDeviceId(groupid, device_id);
     }
 
-    public Mono<UserFCM> deleteByDeviceID(String device_id) {
-        return userFCMRepository.deleteByDeviceId(device_id);
+    public Mono<UserFCM> deleteByDeviceID(String groupid, String device_id) {
+        return userFCMRepository.deleteByDeviceId(groupid, device_id);
     }
 }

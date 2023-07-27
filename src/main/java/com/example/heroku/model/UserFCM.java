@@ -1,9 +1,8 @@
 package com.example.heroku.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import entity.BaseEntity;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
@@ -11,13 +10,14 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name="user_fcm")
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserFCM {
+public class UserFCM extends BaseEntity {
 
     @Id
     private String id;
@@ -27,8 +27,6 @@ public class UserFCM {
     private String fcm_id;
 
     private Status status;
-
-    private Timestamp createat;
 
     public UserFCM AutoFill(){
         this.createat = new Timestamp(new Date().getTime());

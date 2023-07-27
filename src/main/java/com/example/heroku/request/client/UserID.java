@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserID {
+    private String group_id;
     private String id;
     private int page;
     private int size;

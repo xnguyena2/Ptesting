@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PackageItemRemove {
+    private String group_id;
     private String device_id;
 
     private String unit_id;

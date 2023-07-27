@@ -1419,6 +1419,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
         BeerPackage beerPackage = BeerPackage.builder()
+                .group_id(Config.group)
                 .beerID("beer_order1")
                 .deviceID("order_test")
                 .beerUnits(new BeerPackage.BeerUnit[]{
@@ -1485,7 +1486,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("order_test").page(0).size(1000).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("order_test").page(0).size(1000).group_id(Config.group).build())
                 .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {

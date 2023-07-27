@@ -31,14 +31,15 @@ public class UserPackage {
             return Mono.just(badRequest().body(Format.builder().response("user package empty").build()));
         return Flux.just(userPackages)
                 .flatMap(userPackage ->
-                        userPackageRepository.AddPackage(userPackage.getDevice_id(),userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(), userPackage.getNumber_unit(), userPackage.getStatus())
+                        userPackageRepository.AddPackage(userPackage.getGroup_id(), userPackage.getDevice_id(),userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
+                                userPackage.getNumber_unit(), userPackage.getStatus())
                 )
                 .then(Mono.just(ok(Format.builder().response("done").build())));
 
     }
 
     public Flux<PackgeResponse> GetMyPackage(UserID userID) {
-        return userPackageRepository.GetDevicePackage(userID.getId(), userID.getPage(), userID.getSize())
+        return userPackageRepository.GetDevicePackage(userID.getGroup_id(), userID.getId(), userID.getPage(), userID.getSize())
                 .flatMap(userPackage ->
                         beerAPI.GetBeerByID(userPackage.getGroup_id(), userPackage.getProduct_second_id())
                                 .map(beerSubmitData -> new PackgeResponse(userPackage).SetBeerData(beerSubmitData))
@@ -46,10 +47,10 @@ public class UserPackage {
     }
 
     public Flux<com.example.heroku.model.UserPackage> DeleteByBeerUnit(PackageItemRemove beerUnitDelete) {
-        return userPackageRepository.DeleteProductByBeerUnit(beerUnitDelete.getDevice_id(), beerUnitDelete.getUnit_id());
+        return userPackageRepository.DeleteProductByBeerUnit(beerUnitDelete.getGroup_id(), beerUnitDelete.getDevice_id(), beerUnitDelete.getUnit_id());
     }
 
     public Flux<com.example.heroku.model.UserPackage> DeleteByUserID(UserID userID) {
-        return userPackageRepository.DeleteProductByUserID(userID.getId());
+        return userPackageRepository.DeleteProductByUserID(userID.getGroup_id(), userID.getId());
     }
 }

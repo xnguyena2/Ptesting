@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FCMToken {
+    private String group_id;
     private String device_id;
 
     private String fcm_id;
@@ -20,6 +21,7 @@ public class FCMToken {
                 .id(null)
                 .device_id(this.device_id)
                 .fcm_id(this.fcm_id)
+                .group_id(this.group_id)
                 .build()
                 .AutoFill();
     }
