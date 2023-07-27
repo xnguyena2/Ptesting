@@ -19,7 +19,7 @@ public class ClientDevice {
     @Autowired
     DeviceConfig deviceConfigAPI;
 
-    public Mono<BootStrapData> bootStrapData() {
+    public Mono<BootStrapData> bootStrapData(String groupID) {
 
         return Mono.just(
                 BootStrapData.builder()
@@ -27,7 +27,7 @@ public class ClientDevice {
                         .products(new ArrayList<>())
                         .build())
                 .flatMap(bootStrapData ->
-                        beerAPI.GetAllBeer(SearchQuery.builder().page(0).size(24).build())
+                        beerAPI.GetAllBeer(SearchQuery.builder().group_id(groupID).page(0).size(24).build())
                                 .map(beerSubmitData ->
                                         bootStrapData.getProducts().add(beerSubmitData)
                                 ).then(

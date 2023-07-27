@@ -21,20 +21,20 @@ public class StatisticServices {
     public Flux<ProductOrderStatus> getByProductID(SearchQuery query) {
         String dateTxt = query.GetFilterTxt();
         int date = Integer.parseInt(dateTxt);
-        return beerOrderRepository.getAllByProductID(query.getQuery(), query.getPage(), query.getSize(), date);
+        return beerOrderRepository.getAllByProductID(query.getGroup_id(), query.getQuery(), query.getPage(), query.getSize(), date);
     }
 
     public Flux<ProductOrderStatus> getAll(SearchQuery query) {
         String dateTxt = query.GetFilterTxt();
         int date = Integer.parseInt(dateTxt);
-        return beerOrderRepository.getALL(query.getPage(), query.getSize(), date);
+        return beerOrderRepository.getALL(query.getGroup_id(), query.getPage(), query.getSize(), date);
     }
 
     public Mono<StatisticsTotalOrder> getTotal(SearchQuery query){
         String dateTxt = query.GetFilterTxt();
         int date = Integer.parseInt(dateTxt);
         final com.example.heroku.model.PackageOrder.Status status = com.example.heroku.model.PackageOrder.Status.get(query.getQuery());
-        return statisticsRepository.getTotal(date, status);
+        return statisticsRepository.getTotal(query.getGroup_id(), date, status);
 
     }
 }

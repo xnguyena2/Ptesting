@@ -22,11 +22,11 @@ public class ClientDeviceController {
     @Autowired
     UserDevice userDeviceAPI;
 
-    @GetMapping("/bootstrap")
+    @GetMapping("/bootstrap/{groupid}")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<BootStrapData> bootStrapData(){
+    public Mono<BootStrapData> bootStrapData(@PathVariable("groupid") String groupID){
         System.out.println("Get bootstrap!");
-        return clientDeviceAPI.bootStrapData();
+        return clientDeviceAPI.bootStrapData(groupID);
     }
 
     @PostMapping("/admin/register")

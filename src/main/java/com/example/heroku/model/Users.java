@@ -1,6 +1,7 @@
 package com.example.heroku.model;
 
 
+import com.example.heroku.request.permission.GetGroupID;
 import entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 @SuperBuilder
 @NoArgsConstructor
 @Table(value = "users")
-public class Users extends BaseEntity implements UserDetails, CredentialsContainer {
+public class Users extends BaseEntity implements UserDetails, CredentialsContainer, GetGroupID {
 
     @Id
     String id;

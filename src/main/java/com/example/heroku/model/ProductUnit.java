@@ -1,10 +1,9 @@
 package com.example.heroku.model;
 
 import com.example.heroku.util.Util;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import entity.BaseEntity;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
@@ -14,13 +13,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name="product_unit")
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductUnit {
+public class ProductUnit extends BaseEntity {
 
     @Id
     String id;
@@ -41,14 +41,12 @@ public class ProductUnit {
 
     private float weight;
 
-    private Timestamp createat;
-
     private Status status;
 
     public enum Status{
-        AVARIABLE("avariable"),
-        NOT_FOR_SELL("not_for_sell"),
-        SOLD_OUT("sold_out");
+        AVARIABLE("AVARIABLE"),
+        NOT_FOR_SELL("NOT_FOR_SELL"),
+        SOLD_OUT("SOLD_OUT");
 
 
 

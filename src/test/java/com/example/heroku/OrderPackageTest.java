@@ -319,31 +319,31 @@ public class OrderPackageTest extends TestConfig {
         AtomicReference<ProductUnit> beer_order_hide2_Thung_100_10_hide= new AtomicReference<ProductUnit>();
         AtomicReference<ProductUnit> beer_order_hide2_Lon_110_0_hide = new AtomicReference<ProductUnit>();
 
-        beerUnitRepository.findByBeerID("beer_order1")
+        beerUnitRepository.findByBeerID(Config.group, "beer_order1")
                 .as(StepVerifier::create)
                 .consumeNextWith(beer_order1_Thung_10_10::set)
                 .consumeNextWith(beer_order1_Lon_20_20::set)
         .verifyComplete();
 
-        beerUnitRepository.findByBeerID("beer_order2")
+        beerUnitRepository.findByBeerID(Config.group, "beer_order2")
                 .as(StepVerifier::create)
                 .consumeNextWith(beer_order2_Thung_50_50::set)
                 .consumeNextWith(beer_order2_Lon_60_50::set)
                 .verifyComplete();
 
-        beerUnitRepository.findByBeerID("beer_order_sold_out1")
+        beerUnitRepository.findByBeerID(Config.group, "beer_order_sold_out1")
                 .as(StepVerifier::create)
                 .consumeNextWith(beer_order_sold_out1_Thung_100_10_soldout::set)
                 .consumeNextWith(beer_order_sold_out1_Lon_110_0_soldout::set)
                 .verifyComplete();
 
-        beerUnitRepository.findByBeerID("beer_order_sold_out2")
+        beerUnitRepository.findByBeerID(Config.group, "beer_order_sold_out2")
                 .as(StepVerifier::create)
                 .consumeNextWith(beer_order_sold_out2_Thung_100_10_soldout::set)
                 .consumeNextWith(beer_order_sold_out2_Lon_110_0::set)
                 .verifyComplete();
 
-        beerUnitRepository.findByBeerID("beer_order_hide2")
+        beerUnitRepository.findByBeerID(Config.group, "beer_order_hide2")
                 .as(StepVerifier::create)
                 .consumeNextWith(beer_order_hide2_Thung_100_10_hide::set)
                 .consumeNextWith(beer_order_hide2_Lon_110_0_hide::set)
@@ -1382,7 +1382,7 @@ public class OrderPackageTest extends TestConfig {
 
         AtomicReference<String> beerUnit4561ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit4562ID = new AtomicReference<String>();
-        this.beerAPI.GetBeerByID("beer_order1")
+        this.beerAPI.GetBeerByID(Config.group, "beer_order1")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {

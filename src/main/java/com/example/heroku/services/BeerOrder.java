@@ -59,7 +59,7 @@ public class BeerOrder {
     private Flux<ProductWithVoucher> getUserVoucherAndProductName(PackageOrderData packageOrderData) {
         return Flux.just(packageOrderData.getBeerOrders())
                 .flatMap(beerOrderData ->
-                        beerRepository.findBySecondIDCanOrder(beerOrderData.getProductOrder().getProduct_second_id())
+                        beerRepository.findBySecondIDCanOrder(packageOrderData.getPackageOrder().getGroup_id(), beerOrderData.getProductOrder().getProduct_second_id())
                                 .map(beerOrderData::UpdateName)
                 ).map(beerOrderData -> ProductWithVoucher.builder().productOrder(beerOrderData).build())
                 .flatMap(packaBeerOrderData ->
@@ -172,6 +172,7 @@ public class BeerOrder {
         packageOrderData.getPackageOrder().AutoFill(packageOrderData.isPreOrder());
         Timestamp currentTime = new Timestamp(new Date().getTime());
         Mono<ShippingProvider.GHN> shippingProvider = shippingProviderAPI.GetGHNShippingProvider();
+        String groupID = packageOrderData.getPackageOrder().getGroup_id();
         return Mono.just(getUserVoucherAndProductName(packageOrderData))
                 .flatMap(vouchers ->
                         vouchers.map(vc ->
@@ -184,7 +185,7 @@ public class BeerOrder {
                                                         Flux.just(productWithVoucher.getProductOrder().getProductUnitOrders())
                                                                 //calculate unit price
                                                                 .flatMap(beerUnitOrder ->
-                                                                        beerUnitRepository.findByBeerUnitIDCanOrder(beerUnitOrder.getProduct_unit_second_id())
+                                                                        beerUnitRepository.findByBeerUnitIDCanOrder(groupID, beerUnitOrder.getProduct_unit_second_id())
                                                                                 .map(ProductUnit::CheckDiscount)
                                                                                 .map(beerUnitOrder::UpdateName)
                                                                                 .map(ProductUnit::UpdateToRealPrice)

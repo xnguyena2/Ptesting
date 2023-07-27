@@ -47,12 +47,12 @@ public class PackageOrder {
         return Mono.just(packageOrder)
                 .map(OrderSearchResult.PackageOrderData::new)
                 .flatMap(packageOrderData ->
-                        beerOrderRepository.findBySecondID(packageOrderData.getPackage_order_second_id())
+                        beerOrderRepository.findBySecondID(packageOrder.getGroup_id(), packageOrderData.getPackage_order_second_id())
                                 .distinct(ProductOrder::getProduct_second_id)
                                 .map(OrderSearchResult.PackageOrderData.BeerOrderData::new)
                                 .map(packageOrderData::Add)
                                 .flatMap(beerOrderData ->
-                                        beerUnitOrderRepository.findByBeerAndOrder(packageOrderData.getPackage_order_second_id(), beerOrderData.getProduct_second_id())
+                                        beerUnitOrderRepository.findByBeerAndOrder(packageOrder.getGroup_id(), packageOrderData.getPackage_order_second_id(), beerOrderData.getProduct_second_id())
                                                 .map(beerOrderData::Add)
                                 )
                                 .then(Mono.just(packageOrderData))

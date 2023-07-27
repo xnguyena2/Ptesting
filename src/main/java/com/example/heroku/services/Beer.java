@@ -42,63 +42,60 @@ public class Beer {
 
     public Flux<ProductUnit> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
         return Mono.just(info)
-                .flatMap(beerInfo ->
-                        this.beerRepository.deleteBySecondId(beerInfo.getProduct().getProduct_second_id())
+                .map(beerInfo -> beerInfo.getProduct().UpdateMetaSearch().AutoFill())
+                .flatMap(product ->
+                        this.beerRepository.saveProduct(product.getGroup_id(), product.getProduct_second_id(),
+                                product.getName(), product.getDetail(),
+                                product.getCategory(), product.getMeta_search(),
+                                product.getStatus() == null ? null : product.getStatus().getName(), product.getCreateat()
+                        ).then(Mono.just(product))
                 )
-                .then(Mono.just(info)
-                        .flatMap(beerInfo ->
-                                this.beerRepository.save(beerInfo.getProduct().UpdateMetaSearch().AutoFill())
-                        )
+                .flatMap(product -> this.searchBeer.saveToken(product.getGroup_id(), product.getProduct_second_id(),
+                        product.getTokens(), product.getCreateat())
                 )
-                .flatMap(beer ->
-                        this.searchBeer.deleteBySecondId(beer.getProduct_second_id())
-                )
-                .then(Mono.just(info)
-                        .flatMap(beerInfo ->
-                                this.searchBeer.saveToken(beerInfo.getProduct().getProduct_second_id(),
-                                        beerInfo.getProduct().getTokens()
-                                )
-                        )
-                )
-                .then(Mono.just(info)
-                        .flatMap(
-                                beerInfo ->
-                                        this.beerUnitRepository.deleteByBeerId(info.getProduct().getProduct_second_id())
-                        )
+                .then(Mono.just(info.getProduct())
+                        .flatMap(product -> this.beerUnitRepository.deleteByBeerId(product.getGroup_id(), product.getProduct_second_id()))
                 )
                 .thenMany(Flux.just(info.getProductUnit())
-                        .flatMap(beerUnit ->
-                                this.beerUnitRepository.save(beerUnit.AutoFill())
-                        )
+                                .map(ProductUnit::AutoFill)
+                                .flatMap(beerUnit -> this.beerUnitRepository.save(beerUnit)
+//                                this.beerUnitRepository.saveProductUnit(beerUnit.getGroup_id(), beerUnit.getProduct_second_id(), beerUnit.getProduct_unit_second_id(),
+//                                                beerUnit.getName(), beerUnit.getPrice(),
+//                                                beerUnit.getDiscount(), beerUnit.getDate_expire(),
+//                                                beerUnit.getVolumetric(), beerUnit.getWeight(),
+//                                                beerUnit.getStatus() == null ? null : beerUnit.getStatus().getName(), beerUnit.getCreateat()
+//                                        )
+//                                        .then(Mono.just(beerUnit))
+                                )
                 );
     }
 
-    public Mono<Product> DeleteBeerByID(String id) {
+    public Mono<Product> DeleteBeerByID(String groupID, String id) {
         return imageRepository.findByCategory(id)
                 .flatMap(image -> imageAPI.Delete(IDContainer.builder().id(image.getImgid()).build()))
                 .then(
                         Mono.just(id)
                         .flatMap(
                                 beerInfo ->
-                                        this.beerUnitRepository.deleteByBeerId(id)
+                                        this.beerUnitRepository.deleteByBeerId(groupID, id)
                         )
                 )
                 .then(
                         Mono.just(id)
                         .flatMap(
                                 beerInfo ->
-                                        beerRepository.deleteBySecondId(id)
+                                        beerRepository.deleteBySecondId(groupID, id)
                         )
                 );
     }
 
-    public Mono<BeerSubmitData> GetBeerByID(String id) {
-        return beerRepository.findBySecondID(id)
+    public Mono<BeerSubmitData> GetBeerByID(String  groupID, String id) {
+        return beerRepository.findBySecondID(groupID, id)
                 .flatMap(this::CoverToSubmitData);
     }
 
     public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {
-        return this.beerRepository.findByIdNotNull(query.getPage(), query.getSize())
+        return this.beerRepository.findByIdNotNull(query.getGroup_id(), query.getPage(), query.getSize())
                 .flatMap(this::CoverToSubmitData);
     }
 
@@ -116,21 +113,21 @@ public class Beer {
                         Flux.just(searchResult).flatMap(rs -> {
                                     switch (filter) {
                                         case CREATE_ASC:
-                                            return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createat")));
+                                            return this.beerRepository.findByGroupIdASC(query.getGroup_id(), "createat", page, size);
                                         case CREATE_DESC:
-                                            return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createat")));
+                                            return this.beerRepository.findByGroupIdDESC(query.getGroup_id(), "createat", page, size);
                                         case NAME_ASC:
-                                            return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name")));
+                                            return this.beerRepository.findByGroupIdASC(query.getGroup_id(), "name", page, size);
                                         case NAME_DESC:
-                                            return this.beerRepository.findByIdNotNull(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "name")));
+                                            return this.beerRepository.findByGroupIdDESC(query.getGroup_id(), "name", page, size);
                                         case PRICE_ASC:
-                                            return this.beerRepository.adminGetAllBeerSortByPriceASC(page, size);
+                                            return this.beerRepository.adminGetAllBeerSortByPriceASC(query.getGroup_id(), page, size);
                                         case PRICE_DESC:
-                                            return this.beerRepository.adminGetAllBeerSortByPriceDESC(page, size);
+                                            return this.beerRepository.adminGetAllBeerSortByPriceDESC(query.getGroup_id(), page, size);
                                         case SOLD_NUM:
-                                            return this.beerRepository.adminGetAllBeerSortBySoldDESC(page, size);
+                                            return this.beerRepository.adminGetAllBeerSortBySoldDESC(query.getGroup_id(), page, size);
                                         default:
-                                            return this.beerRepository.findByIdNotNull(PageRequest.of(page, size));
+                                            return this.beerRepository.findByGroupIdDESC(query.getGroup_id(), "name", page, size);
                                     }
                                 })
                                 .flatMap(this::CoverToSubmitData)
@@ -153,21 +150,21 @@ public class Beer {
                         Flux.just(searchResult).flatMap(rs -> {
                             switch (filter) {
                                 case CREATE_ASC:
-                                    return this.beerRepository.findByIdNotNullASC(page, size, "createat");
+                                    return this.beerRepository.findByIdNotNullASC(query.getGroup_id(), page, size, "createat");
                                 case CREATE_DESC:
-                                    return this.beerRepository.findByIdNotNullDESC(page, size,  "createat");
+                                    return this.beerRepository.findByIdNotNullDESC(query.getGroup_id(), page, size,  "createat");
                                 case NAME_ASC:
-                                    return this.beerRepository.findByIdNotNullASC(page, size, "name");
+                                    return this.beerRepository.findByIdNotNullASC(query.getGroup_id(), page, size, "name");
                                 case NAME_DESC:
-                                    return this.beerRepository.findByIdNotNullDESC(page, size,  "name");
+                                    return this.beerRepository.findByIdNotNullDESC(query.getGroup_id(), page, size,  "name");
                                 case PRICE_ASC:
-                                    return this.beerRepository.getAllBeerSortByPriceASC(page, size);
+                                    return this.beerRepository.getAllBeerSortByPriceASC(query.getGroup_id(), page, size);
                                 case PRICE_DESC:
-                                    return this.beerRepository.getAllBeerSortByPriceDESC(page, size);
+                                    return this.beerRepository.getAllBeerSortByPriceDESC(query.getGroup_id(), page, size);
                                 case SOLD_NUM:
-                                    return this.beerRepository.getAllBeerSortBySoldDESC(page, size);
+                                    return this.beerRepository.getAllBeerSortBySoldDESC(query.getGroup_id(), page, size);
                                 default:
-                                    return this.beerRepository.findByIdNotNull(page, size);
+                                    return this.beerRepository.findByIdNotNull(query.getGroup_id(), page, size);
                             }
                         })
                                 .flatMap(this::CoverToSubmitData)
@@ -176,12 +173,12 @@ public class Beer {
                 );
     }
 
-    public Mono<BeerSubmitData> CoverToSubmitData(Product product) {
+    private Mono<BeerSubmitData> CoverToSubmitData(Product product) {
         return Mono.just(BeerSubmitData.builder().build().FromBeer(product))
                 .flatMap(beerSubmitData ->
                         Mono.just(new ArrayList<ProductUnit>())
                                 .flatMap(beerUnits ->
-                                        beerUnitRepository.findByBeerID(beerSubmitData.getBeerSecondID())
+                                        beerUnitRepository.findByBeerID(beerSubmitData.getGroup_id(), beerSubmitData.getBeerSecondID())
                                                 .map(ProductUnit::CheckDiscount)
                                                 .map(beerUnits::add)
                                                 .then(
@@ -232,40 +229,40 @@ public class Beer {
                                             if (searchResult.isNormalSearch()) {
                                                 switch (filter){
                                                     case CREATE_ASC:
-                                                        return this.beerRepository.adminSearchBeerSortByCreateASC(searchResult.getSearchTxt(), page, size);
+                                                        return this.beerRepository.adminSearchBeerSortByCreateASC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                     case CREATE_DESC:
-                                                        return this.beerRepository.adminSearchBeerSortByCreateDESC(searchResult.getSearchTxt(), page, size);
+                                                        return this.beerRepository.adminSearchBeerSortByCreateDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                     case NAME_ASC:
-                                                        return this.beerRepository.adminSearchBeerSortByNameASC(searchResult.getSearchTxt(), page, size);
+                                                        return this.beerRepository.adminSearchBeerSortByNameASC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                     case NAME_DESC:
-                                                        return this.beerRepository.adminSearchBeerSortByNameDESC(searchResult.getSearchTxt(), page, size);
+                                                        return this.beerRepository.adminSearchBeerSortByNameDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                     case PRICE_ASC:
-                                                        return this.beerRepository.adminSearchBeerSortByPriceASC(searchResult.getSearchTxt(), page, size);
+                                                        return this.beerRepository.adminSearchBeerSortByPriceASC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                     case PRICE_DESC:
-                                                        return this.beerRepository.adminSearchBeerSortByPriceDESC(searchResult.getSearchTxt(), page, size);
+                                                        return this.beerRepository.adminSearchBeerSortByPriceDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                     case SOLD_NUM:
-                                                        return this.beerRepository.adminSearchBeerSortBySoldDESC(searchResult.getSearchTxt(), page, size);
+                                                        return this.beerRepository.adminSearchBeerSortBySoldDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                     default:
-                                                        return this.beerRepository.adminSearchBeer(searchResult.getSearchTxt(), page, size);
+                                                        return this.beerRepository.adminSearchBeer(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                 }
                                             }
                                             switch (filter){
                                                 case CREATE_ASC:
-                                                    return this.beerRepository.adminSearchBeerLikeSortCreateASC(searchResult.getSearchTxt(), page, size);
+                                                    return this.beerRepository.adminSearchBeerLikeSortCreateASC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                 case CREATE_DESC:
-                                                    return this.beerRepository.adminSearchBeerLikeSortCreateDESC(searchResult.getSearchTxt(), page, size);
+                                                    return this.beerRepository.adminSearchBeerLikeSortCreateDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                 case NAME_ASC:
-                                                    return this.beerRepository.adminSearchBeerLikeSortByNameASC(searchResult.getSearchTxt(), page, size);
+                                                    return this.beerRepository.adminSearchBeerLikeSortByNameASC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                 case NAME_DESC:
-                                                    return this.beerRepository.adminSearchBeerLikeSortByNameDESC(searchResult.getSearchTxt(), page, size);
+                                                    return this.beerRepository.adminSearchBeerLikeSortByNameDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                 case PRICE_ASC:
-                                                    return this.beerRepository.adminSearchBeerLikeSortByPriceASC(searchResult.getSearchTxt(), page, size);
+                                                    return this.beerRepository.adminSearchBeerLikeSortByPriceASC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                 case PRICE_DESC:
-                                                    return this.beerRepository.adminSearchBeerLikeSortByPriceDESC(searchResult.getSearchTxt(), page, size);
+                                                    return this.beerRepository.adminSearchBeerLikeSortByPriceDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                 case SOLD_NUM:
-                                                    return this.beerRepository.adminSearchBeerLikeSortBySoldDESC(searchResult.getSearchTxt(), page, size);
+                                                    return this.beerRepository.adminSearchBeerLikeSortBySoldDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                                 default:
-                                                    return this.beerRepository.adminSearchBeerLike(searchResult.getSearchTxt(), page, size);
+                                                    return this.beerRepository.adminSearchBeerLike(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                             }
                                         })
                                 .flatMap(this::CoverToSubmitData)
@@ -309,40 +306,40 @@ public class Beer {
                                     if (searchResult.isNormalSearch()) {
                                         switch (filter){
                                             case CREATE_ASC:
-                                                return this.beerRepository.searchBeerSortByCreateASC(searchResult.getSearchTxt(), page, size);
+                                                return this.beerRepository.searchBeerSortByCreateASC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                             case CREATE_DESC:
-                                                return this.beerRepository.searchBeerSortByCreateDESC(searchResult.getSearchTxt(), page, size);
+                                                return this.beerRepository.searchBeerSortByCreateDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                             case NAME_ASC:
-                                                return this.beerRepository.searchBeerSortByNameASC(searchResult.getSearchTxt(), page, size);
+                                                return this.beerRepository.searchBeerSortByNameASC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                             case NAME_DESC:
-                                                return this.beerRepository.searchBeerSortByNameDESC(searchResult.getSearchTxt(), page, size);
+                                                return this.beerRepository.searchBeerSortByNameDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                             case PRICE_ASC:
-                                                return this.beerRepository.searchBeerSortByPriceASC(searchResult.getSearchTxt(), page, size);
+                                                return this.beerRepository.searchBeerSortByPriceASC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                             case PRICE_DESC:
-                                                return this.beerRepository.searchBeerSortByPriceDESC(searchResult.getSearchTxt(), page, size);
+                                                return this.beerRepository.searchBeerSortByPriceDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                             case SOLD_NUM:
-                                                return this.beerRepository.searchBeerSortBySoldDESC(searchResult.getSearchTxt(), page, size);
+                                                return this.beerRepository.searchBeerSortBySoldDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                             default:
-                                                return this.beerRepository.searchBeer(searchResult.getSearchTxt(), page, size);
+                                                return this.beerRepository.searchBeer(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                         }
                                     }
                                     switch (filter){
                                         case CREATE_ASC:
-                                            return this.beerRepository.searchBeerLikeSortCreateASC(searchResult.getSearchTxt(), page, size);
+                                            return this.beerRepository.searchBeerLikeSortCreateASC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                         case CREATE_DESC:
-                                            return this.beerRepository.searchBeerLikeSortCreateDESC(searchResult.getSearchTxt(), page, size);
+                                            return this.beerRepository.searchBeerLikeSortCreateDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                         case NAME_ASC:
-                                            return this.beerRepository.searchBeerLikeSortByNameASC(searchResult.getSearchTxt(), page, size);
+                                            return this.beerRepository.searchBeerLikeSortByNameASC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                         case NAME_DESC:
-                                            return this.beerRepository.searchBeerLikeSortByNameDESC(searchResult.getSearchTxt(), page, size);
+                                            return this.beerRepository.searchBeerLikeSortByNameDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                         case PRICE_ASC:
-                                            return this.beerRepository.searchBeerLikeSortByPriceASC(searchResult.getSearchTxt(), page, size);
+                                            return this.beerRepository.searchBeerLikeSortByPriceASC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                         case PRICE_DESC:
-                                            return this.beerRepository.searchBeerLikeSortByPriceDESC(searchResult.getSearchTxt(), page, size);
+                                            return this.beerRepository.searchBeerLikeSortByPriceDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                         case SOLD_NUM:
-                                            return this.beerRepository.searchBeerLikeSortBySoldDESC(searchResult.getSearchTxt(), page, size);
+                                            return this.beerRepository.searchBeerLikeSortBySoldDESC(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                         default:
-                                            return this.beerRepository.searchBeerLike(searchResult.getSearchTxt(), page, size);
+                                            return this.beerRepository.searchBeerLike(query.getGroup_id(), searchResult.getSearchTxt(), page, size);
                                     }
                                 })
                                 .flatMap(this::CoverToSubmitData)
@@ -366,21 +363,21 @@ public class Beer {
                         Flux.just(searchResult).flatMap(rs -> {
                                     switch (filter) {
                                         case CREATE_ASC:
-                                            return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createat")));
+                                            return this.beerRepository.findByGroupIDAndCategory(query.getGroup_id(), category, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createat")));// page, size, Sort.Direction.ASC.name(), "createat");
                                         case CREATE_DESC:
-                                            return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createat")));
+                                            return this.beerRepository.findByGroupIDAndCategory(query.getGroup_id(), category, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createat")));// page, size, Sort.Direction.DESC.name(), "createat");
                                         case NAME_ASC:
-                                            return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name")));
+                                            return this.beerRepository.findByGroupIDAndCategory(query.getGroup_id(), category, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name")));//page, size, Sort.Direction.ASC.name(), "name");
                                         case NAME_DESC:
-                                            return this.beerRepository.findByCategory(category, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "name")));
+                                            return this.beerRepository.findByGroupIDAndCategory(query.getGroup_id(), category, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "name")));//page, size, Sort.Direction.DESC.name(), "name");
                                         case PRICE_ASC:
-                                            return this.beerRepository.AdminFindByCategoryBeerSortByPriceASC(category, page, size);
+                                            return this.beerRepository.AdminFindByCategoryBeerSortByPriceASC(query.getGroup_id(), category, page, size);
                                         case PRICE_DESC:
-                                            return this.beerRepository.AdminFindByCategoryBeerSortByPriceDESC(category, page, size);
+                                            return this.beerRepository.AdminFindByCategoryBeerSortByPriceDESC(query.getGroup_id(), category, page, size);
                                         case SOLD_NUM:
-                                            return this.beerRepository.AdminFindByCategoryBeerSortBySoldDESC(category, page, size);
+                                            return this.beerRepository.AdminFindByCategoryBeerSortBySoldDESC(query.getGroup_id(), category, page, size);
                                         default:
-                                            return this.beerRepository.findByCategory(category, PageRequest.of(page, size));
+                                            return this.beerRepository.findByGroupIDAndCategory(query.getGroup_id(), category, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "name")));//page, size, Sort.Direction.DESC.name(), "name");
                                     }
                                 })
                                 .flatMap(this::CoverToSubmitData)
@@ -404,21 +401,21 @@ public class Beer {
                         Flux.just(searchResult).flatMap(rs -> {
                             switch (filter) {
                                 case CREATE_ASC:
-                                    return this.beerRepository.findByCategoryASC(category, page, size, "createat");
+                                    return this.beerRepository.findByCategoryASC(query.getGroup_id(), category, page, size, "createat");
                                 case CREATE_DESC:
-                                    return this.beerRepository.findByCategoryDESC(category, page, size, "createat");
+                                    return this.beerRepository.findByCategoryDESC(query.getGroup_id(), category, page, size, "createat");
                                 case NAME_ASC:
-                                    return this.beerRepository.findByCategoryASC(category, page, size, "name");
+                                    return this.beerRepository.findByCategoryASC(query.getGroup_id(), category, page, size, "name");
                                 case NAME_DESC:
-                                    return this.beerRepository.findByCategoryDESC(category, page, size, "name");
+                                    return this.beerRepository.findByCategoryDESC(query.getGroup_id(), category, page, size, "name");
                                 case PRICE_ASC:
-                                    return this.beerRepository.findByCategoryBeerSortByPriceASC(category, page, size);
+                                    return this.beerRepository.findByCategoryBeerSortByPriceASC(query.getGroup_id(), category, page, size);
                                 case PRICE_DESC:
-                                    return this.beerRepository.findByCategoryBeerSortByPriceDESC(category, page, size);
+                                    return this.beerRepository.findByCategoryBeerSortByPriceDESC(query.getGroup_id(), category, page, size);
                                 case SOLD_NUM:
-                                    return this.beerRepository.findByCategoryBeerSortBySoldDESC(category, page, size);
+                                    return this.beerRepository.findByCategoryBeerSortBySoldDESC(query.getGroup_id(), category, page, size);
                                 default:
-                                    return this.beerRepository.findByCategoryDESC(category, page, size, "createat");
+                                    return this.beerRepository.findByCategoryDESC(query.getGroup_id(), category, page, size, "createat");
                             }
                         })
                                 .flatMap(this::CoverToSubmitData)

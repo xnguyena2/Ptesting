@@ -34,7 +34,7 @@ public class UserPackageTest {
 
         AtomicReference<String> beerUnitsold_out1ID = new AtomicReference<String>();
         AtomicReference<String> beerUnitsold_out2ID = new AtomicReference<String>();
-        this.beerAPI.GetBeerByID("sold_out")
+        this.beerAPI.GetBeerByID(Config.group, "sold_out")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
@@ -65,7 +65,7 @@ public class UserPackageTest {
 
         AtomicReference<String> beerUnit1ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit2ID = new AtomicReference<String>();
-        this.beerAPI.GetBeerByID("123")
+        this.beerAPI.GetBeerByID(Config.group, "123")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
@@ -96,7 +96,7 @@ public class UserPackageTest {
 
         AtomicReference<String> beerUnit4561ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit4562ID = new AtomicReference<String>();
-        this.beerAPI.GetBeerByID("456")
+        this.beerAPI.GetBeerByID(Config.group, "456")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {

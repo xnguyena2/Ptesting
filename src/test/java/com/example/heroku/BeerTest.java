@@ -32,8 +32,8 @@ public class BeerTest {
                 BeerInfo
                         .builder()
                         .productUnit(new ProductUnit[]{
-                                ProductUnit.builder().product_second_id("sold_out").name("thung").status(ProductUnit.Status.SOLD_OUT).build(),
-                                ProductUnit.builder().product_second_id("sold_out").name("lon").build()
+                                ProductUnit.builder().product_second_id("sold_out").name("thung").status(ProductUnit.Status.SOLD_OUT).group_id(Config.group).build(),
+                                ProductUnit.builder().product_second_id("sold_out").name("lon").group_id(Config.group).build()
                         })
                         .product(Product
                                 .builder()
@@ -41,6 +41,7 @@ public class BeerTest {
                                 .name("beer tiger(sold out)")
                                 .product_second_id("sold_out")
                                 .status(Product.Status.SOLD_OUT)
+                                .group_id(Config.group)
                                 .build()
                                 .AutoFill()
                         )
@@ -51,14 +52,15 @@ public class BeerTest {
                 BeerInfo
                         .builder()
                         .productUnit(new ProductUnit[]{
-                                ProductUnit.builder().product_second_id("123").name("thung").build(),
-                                ProductUnit.builder().product_second_id("123").name("lon").build()
+                                ProductUnit.builder().product_second_id("123").name("thung").group_id(Config.group).build(),
+                                ProductUnit.builder().product_second_id("123").name("lon").group_id(Config.group).build()
                         })
                         .product(Product
                                 .builder()
                                 .category(Category.CRAB.getName())
                                 .name("beer tiger")
                                 .product_second_id("123")
+                                .group_id(Config.group)
                                 .build()
                                 .AutoFill()
                         )
@@ -76,11 +78,13 @@ public class BeerTest {
                                         .builder()
                                         .product_second_id("456")
                                         .name("thung")
+                                        .group_id(Config.group)
                                         .build(),
                                 ProductUnit
                                         .builder()
                                         .product_second_id("456")
                                         .name("lon")
+                                        .group_id(Config.group)
                                         .build()
                         })
                         .product(Product
@@ -92,6 +96,7 @@ public class BeerTest {
                                         "- bia sản xuất từ hà lan")
                                 .name("beer tiger")
                                 .product_second_id("456")
+                                .group_id(Config.group)
                                 .build()
                                 .AutoFill()
                         )
@@ -131,6 +136,7 @@ public class BeerTest {
                                         .discount(10)
                                         .date_expire(Timestamp.valueOf("2021-03-31 20:45:00"))
                                         .name("thung")
+                                        .group_id(Config.group)
                                         .build(),
                                 ProductUnit
                                         .builder()
@@ -141,6 +147,7 @@ public class BeerTest {
                                         .discount(10)
                                         .date_expire(new Timestamp(new Date().getTime()))
                                         .name("lon")
+                                        .group_id(Config.group)
                                         .build()
                         })
                         .product(Product
@@ -151,7 +158,9 @@ public class BeerTest {
                                         "- bia nhập ngoại\n" +
                                         "- bia sản xuất từ hà lan")
                                 .name("beer tiger")
-                                .product_second_id("456").build()
+                                .product_second_id("456")
+                                .group_id(Config.group)
+                                .build()
                                 .AutoFill()
                         )
                         .build()
@@ -179,6 +188,7 @@ public class BeerTest {
                                                 .discount(10)
                                                 .date_expire(Timestamp.valueOf("2021-03-31 20:45:00"))
                                                 .name("thung")
+                                                .group_id(Config.group)
                                                 .build(),
                                         ProductUnit
                                                 .builder()
@@ -188,6 +198,7 @@ public class BeerTest {
                                                 .discount(10)
                                                 .date_expire(new Timestamp(new Date().getTime()))
                                                 .name("lon")
+                                                .group_id(Config.group)
                                                 .build()
                                 })
                                 .product(Product
@@ -199,7 +210,9 @@ public class BeerTest {
                                                 "- bia sản xuất từ hà lan")
                                         .name("beer tiger")
                                         .status(Product.Status.HIDE)
-                                        .product_second_id("hide").build()
+                                        .group_id(Config.group)
+                                        .product_second_id("hide")
+                                        .build()
                                         .AutoFill()
                                 )
                                 .build()
@@ -212,7 +225,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.GetBeerByID("123")
+        this.beerAPI.GetBeerByID(Config.group, "123")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
@@ -234,7 +247,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.GetBeerByID("456")
+        this.beerAPI.GetBeerByID(Config.group, "456")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
@@ -257,7 +270,30 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("hà").page(0).size(100).filter(SearchQuery.Filter.NAME_DESC.getName()).build())
+        for (SearchQuery.Filter filter :
+                SearchQuery.Filter.values()) {
+
+            this.beerAPI.CountSearchBeer(SearchQuery.builder().query("hà").page(0).size(100).filter(filter.getName()).group_id(Config.group).build())
+                    .as(StepVerifier::create)
+                    .consumeNextWith(resultWithCount -> {
+                        try {
+                            System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                        assertThat(resultWithCount.getCount()).isEqualTo(1);
+                        Mono.just(resultWithCount.getResult())
+                                .flatMapMany(Flux::fromIterable)
+                                .as(StepVerifier::create)
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                                })
+                                .verifyComplete();
+                    })
+                    .verifyComplete();
+        }
+
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("hà").page(0).size(100).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -276,7 +312,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("hà").page(0).size(100).filter(SearchQuery.Filter.NAME_ASC.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("hà").page(0).size(100).filter(SearchQuery.Filter.NAME_ASC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -295,7 +331,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("tiger").page(0).size(100).filter(SearchQuery.Filter.PRICE_ASC.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("tiger").page(0).size(100).filter(SearchQuery.Filter.PRICE_ASC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -321,7 +357,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("tiger").page(0).size(100).filter(SearchQuery.Filter.PRICE_DESC.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("tiger").page(0).size(100).filter(SearchQuery.Filter.PRICE_DESC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -347,7 +383,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("tiger").page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("tiger").page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -373,7 +409,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("tiger").page(0).size(100).filter(SearchQuery.Filter.CREATE_DESC.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("tiger").page(0).size(100).filter(SearchQuery.Filter.CREATE_DESC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -399,7 +435,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("tiger").page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("tiger").page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -425,7 +461,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("ha%oai").page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("ha%oai").page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -444,7 +480,29 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bia&ha&lan").page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).build())
+        for (SearchQuery.Filter filter :
+                SearchQuery.Filter.values()) {
+            this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bia&ha&lan").page(0).size(100).filter(filter.getName()).group_id(Config.group).build())
+                    .as(StepVerifier::create)
+                    .consumeNextWith(resultWithCount -> {
+                        try {
+                            System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                        assertThat(resultWithCount.getCount()).isEqualTo(1);
+                        Mono.just(resultWithCount.getResult())
+                                .flatMapMany(Flux::fromIterable)
+                                .as(StepVerifier::create)
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                                })
+                                .verifyComplete();
+                    })
+                    .verifyComplete();
+        }
+
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bia&ha&lan").page(0).size(100).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -463,47 +521,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bia&ha&lan").page(0).size(100).filter(SearchQuery.Filter.CREATE_DESC.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(resultWithCount -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    
-                    Mono.just(resultWithCount.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.NAME_ASC.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(resultWithCount -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
-                    
-                    Mono.just(resultWithCount.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.NAME_DESC.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bia&ha&lan").page(0).size(100).filter(SearchQuery.Filter.CREATE_DESC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -523,7 +541,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.PRICE_ASC.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.NAME_ASC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -543,7 +561,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.PRICE_DESC.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.NAME_DESC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -563,7 +581,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.PRICE_ASC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -583,7 +601,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.CREATE_DESC.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.PRICE_DESC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -603,7 +621,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -623,7 +641,102 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.AdminCountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).build())
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.CREATE_DESC.getName()).group_id(Config.group).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(resultWithCount -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+
+        this.beerAPI.CountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).group_id(Config.group).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(resultWithCount -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+
+
+        for (SearchQuery.Filter filter : SearchQuery.Filter.values()) {
+            this.beerAPI.AdminCountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).filter(filter.getName()).group_id(Config.group).build())
+                    .as(StepVerifier::create)
+                    .consumeNextWith(resultWithCount -> {
+                        try {
+                            System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                        assertThat(resultWithCount.getCount()).isEqualTo(2);
+
+                        Mono.just(resultWithCount.getResult())
+                                .flatMapMany(Flux::fromIterable)
+                                .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                                .as(StepVerifier::create)
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                                })
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("hide");
+                                })
+                                .verifyComplete();
+                    })
+                    .verifyComplete();
+        }
+
+
+        for (SearchQuery.Filter filter : SearchQuery.Filter.values()) {
+            System.out.println("filter: " + filter.getName());
+            this.beerAPI.AdminCountSearchBeer(SearchQuery.builder().query("bia nhập").page(0).size(100).filter(filter.getName()).group_id(Config.group).build())
+                    .as(StepVerifier::create)
+                    .consumeNextWith(resultWithCount -> {
+                        try {
+                            System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                        assertThat(resultWithCount.getCount()).isEqualTo(2);
+
+                        Mono.just(resultWithCount.getResult())
+                                .flatMapMany(Flux::fromIterable)
+                                .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                                .as(StepVerifier::create)
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                                })
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("hide");
+                                })
+                                .verifyComplete();
+                    })
+                    .verifyComplete();
+        }
+
+        this.beerAPI.AdminCountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -647,7 +760,8 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.AdminCountSearchBeer(SearchQuery.builder().query("bi:*&ngo:*&nhap:*").page(0).size(100).build())
+
+        this.beerAPI.AdminCountSearchBeer(SearchQuery.builder().query("bia nhập").page(0).size(100).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -656,7 +770,7 @@ public class BeerTest {
                         e.printStackTrace();
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
-                    
+
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -671,7 +785,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.GetAllBeer(SearchQuery.builder().page(0).size(100).build())
+        this.beerAPI.GetAllBeer(SearchQuery.builder().page(0).size(100).group_id(Config.group).build())
                 .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
@@ -688,68 +802,40 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeer(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.DEFAULT.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
+        for (SearchQuery.Filter filter : SearchQuery.Filter.values()) {
+            this.beerAPI.CountGetAllBeer(SearchQuery.builder().page(0).size(100).filter(filter.getName()).group_id(Config.group).build())
+                    .as(StepVerifier::create)
+                    .consumeNextWith(searchResult -> {
+                        try {
+                            System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                        assertThat(searchResult.getCount()).isEqualTo(3);
 
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
+                        Mono.just(searchResult.getResult())
+                                .flatMapMany(Flux::fromIterable)
+                                .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                                .as(StepVerifier::create)
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
+                                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .verifyComplete();
+                    })
+                    .verifyComplete();
 
-        this.beerAPI.CountGetAllBeer(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_DESC.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
+        }
 
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.CountGetAllBeer(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_ASC.getName()).build())
+        this.beerAPI.CountGetAllBeer(SearchQuery.builder().page(0).size(100).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -780,7 +866,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeer(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_DESC.getName()).build())
+        this.beerAPI.AdminCountGetAllBeer(SearchQuery.builder().page(0).size(3).filter(SearchQuery.Filter.NAME_ASC.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -788,8 +874,8 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
+                    assertThat(searchResult.getCount()).isEqualTo(4);
+
 
                     Mono.just(searchResult.getResult())
                             .flatMapMany(Flux::fromIterable)
@@ -803,6 +889,10 @@ public class BeerTest {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
                                 assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                             })
+//                            .consumeNextWith(beerInfo -> {
+//                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("hide");
+//                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+//                            })
                             .consumeNextWith(beerInfo -> {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
                                 assertThat(beerInfo.getListUnit().length).isEqualTo(2);
@@ -811,131 +901,44 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeer(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
+        for (SearchQuery.Filter filter : SearchQuery.Filter.values()) {
+            this.beerAPI.AdminCountGetAllBeer(SearchQuery.builder().page(0).size(100).filter(filter.getName()).group_id(Config.group).build())
+                    .as(StepVerifier::create)
+                    .consumeNextWith(searchResult -> {
+                        try {
+                            System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                        assertThat(searchResult.getCount()).isEqualTo(4);
 
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
 
-        this.beerAPI.CountGetAllBeer(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.CREATE_DESC.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
+                        Mono.just(searchResult.getResult())
+                                .flatMapMany(Flux::fromIterable)
+                                .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                                .as(StepVerifier::create)
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
+                                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("hide");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .verifyComplete();
+                    })
+                    .verifyComplete();
+        }
 
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.CountGetAllBeer(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
-
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.CountGetAllBeer(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_ASC.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
-
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.AdminCountGetAllBeer(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_ASC.getName()).build())
+        this.beerAPI.AdminCountGetAllBeer(SearchQuery.builder().page(0).size(100).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -970,7 +973,188 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.AdminCountGetAllBeer(SearchQuery.builder().page(0).size(100).build())
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).query(Category.CRAB.getName()).group_id(Config.group).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(searchResult -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(searchResult.getCount()).isEqualTo(3);
+                    
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
+                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                            })
+                            .consumeNextWith(beerInfo -> {
+                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                            })
+                            .consumeNextWith(beerInfo -> {
+                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
+                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_DESC.getName()).query(Category.SQUID.getName()).group_id(Config.group).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(searchResult -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(searchResult.getCount()).isEqualTo(0);
+
+                    assertThat(searchResult.getResult() == null).isEqualTo(true);
+                })
+                .verifyComplete();
+
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).query(Category.SQUID.getName()).group_id(Config.group).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(searchResult -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(searchResult.getCount()).isEqualTo(0);
+
+                    assertThat(searchResult.getResult() == null).isEqualTo(true);
+                })
+                .verifyComplete();
+
+        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).group_id(Config.group).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(searchResult -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(searchResult.getCount()).isEqualTo(0);
+
+                    assertThat(searchResult.getResult() == null).isEqualTo(true);
+                })
+                .verifyComplete();
+
+
+        for (SearchQuery.Filter filter :
+                SearchQuery.Filter.values()) {
+            this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(filter.getName()).query(Category.CRAB.getName()).group_id(Config.group).build())
+                    .as(StepVerifier::create)
+                    .consumeNextWith(searchResult -> {
+                        try {
+                            System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                        assertThat(searchResult.getCount()).isEqualTo(3);
+
+
+                        Mono.just(searchResult.getResult())
+                                .flatMapMany(Flux::fromIterable)
+                                .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                                .as(StepVerifier::create)
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
+                                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .verifyComplete();
+                    })
+                    .verifyComplete();
+        }
+
+        this.beerAPI.AdminCountGetAllBeerByCategory(SearchQuery.builder().page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).query(Category.CRAB.getName()).group_id(Config.group).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(searchResult -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(searchResult.getCount()).isEqualTo(4);
+
+
+                    Mono.just(searchResult.getResult())
+                            .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
+                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                            })
+                            .consumeNextWith(beerInfo -> {
+                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                            })
+//                            .consumeNextWith(beerInfo -> {
+//                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("hide");
+//                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+//                            })
+//                            .consumeNextWith(beerInfo -> {
+//                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
+//                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+//                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+
+        for (SearchQuery.Filter filter :
+                SearchQuery.Filter.values()) {
+            this.beerAPI.AdminCountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(filter.getName()).query(Category.CRAB.getName()).group_id(Config.group).build())
+                    .as(StepVerifier::create)
+                    .consumeNextWith(searchResult -> {
+                        try {
+                            System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                        assertThat(searchResult.getCount()).isEqualTo(4);
+
+
+                        Mono.just(searchResult.getResult())
+                                .flatMapMany(Flux::fromIterable)
+                                .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                                .as(StepVerifier::create)
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
+                                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("hide");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .verifyComplete();
+                    })
+                    .verifyComplete();
+        }
+
+        this.beerAPI.AdminCountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).query(Category.CRAB.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1005,7 +1189,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_ASC.getName()).query(Category.CRAB.getName()).build())
+        this.beerAPI.AdminCountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).query(Category.HOLOTHURIAN.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1013,313 +1197,9 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
+                    assertThat(searchResult.getCount()).isEqualTo(0);
 
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.PRICE_DESC.getName()).query(Category.CRAB.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
-
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_ASC.getName()).query(Category.CRAB.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
-
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.NAME_DESC.getName()).query(Category.CRAB.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
-
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.CREATE_DESC.getName()).query(Category.CRAB.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
-
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.CREATE_ASC.getName()).query(Category.CRAB.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
-
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).query(Category.CRAB.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
-
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.CountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.DEFAULT.getName()).query(Category.CRAB.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
-                    
-
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.AdminCountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.SOLD_NUM.getName()).query(Category.CRAB.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(4);
-                    
-
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("hide");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
-                })
-                .verifyComplete();
-
-        this.beerAPI.AdminCountGetAllBeerByCategory(SearchQuery.builder().page(0).size(100).filter(SearchQuery.Filter.DEFAULT.getName()).query(Category.CRAB.getName()).build())
-                .as(StepVerifier::create)
-                .consumeNextWith(searchResult -> {
-                    try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    assertThat(searchResult.getCount()).isEqualTo(4);
-                    
-
-                    Mono.just(searchResult.getResult())
-                            .flatMapMany(Flux::fromIterable)
-                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
-                            .as(StepVerifier::create)
-                            .consumeNextWith(beerSubmitData -> {
-                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("hide");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
-                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-                            })
-                            .verifyComplete();
+                    assertThat(searchResult.getResult() == null).isEqualTo(true);
                 })
                 .verifyComplete();
 
@@ -1338,6 +1218,7 @@ public class BeerTest {
                                         .discount(10)
                                         .date_expire(new Timestamp(new Date().getTime()))
                                         .name("thung")
+                                        .group_id(Config.group)
                                         .build(),
                                 ProductUnit
                                         .builder()
@@ -1348,6 +1229,7 @@ public class BeerTest {
                                         .discount(10)
                                         .date_expire(new Timestamp(new Date().getTime()))
                                         .name("lon")
+                                        .group_id(Config.group)
                                         .build()
                         })
                         .product(Product
@@ -1358,6 +1240,7 @@ public class BeerTest {
                                         "- bia nhập ngoại\n" +
                                         "- bia sản xuất từ hà lan")
                                 .name("beer tiger")
+                                .group_id(Config.group)
                                 .product_second_id("444").build()
                                 .AutoFill()
                         )
@@ -1380,6 +1263,7 @@ public class BeerTest {
                                                 .discount(10)
                                                 .date_expire(new Timestamp(new Date().getTime()))
                                                 .name("thung")
+                                                .group_id(Config.group)
                                                 .build(),
                                         ProductUnit
                                                 .builder()
@@ -1389,6 +1273,7 @@ public class BeerTest {
                                                 .discount(10)
                                                 .date_expire(new Timestamp(new Date().getTime()))
                                                 .name("lon")
+                                                .group_id(Config.group)
                                                 .build()
                                 })
                                 .product(Product
@@ -1399,13 +1284,14 @@ public class BeerTest {
                                                 "- bia nhập ngoại\n" +
                                                 "- bia sản xuất từ hà lan")
                                         .name("beer tiger")
+                                        .group_id(Config.group)
                                         .product_second_id("444").build()
                                         .AutoFill()
                                 )
                                 .build()
                 ).blockLast();
 
-        this.beerAPI.GetBeerByID("444")
+        this.beerAPI.GetBeerByID(Config.group, "444")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
@@ -1413,9 +1299,9 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.DeleteBeerByID("444").block();
+        this.beerAPI.DeleteBeerByID(Config.group, "444").block();
 
-        this.beerAPI.GetBeerByID("444")
+        this.beerAPI.GetBeerByID(Config.group, "444")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .verifyComplete();
@@ -1445,6 +1331,7 @@ public class BeerTest {
                                         .discount(10)
                                         .date_expire(new Timestamp(new Date().getTime()))
                                         .name("thung")
+                                        .group_id(Config.group)
                                         .build(),
                                 ProductUnit
                                         .builder()
@@ -1454,6 +1341,7 @@ public class BeerTest {
                                         .discount(10)
                                         .date_expire(new Timestamp(new Date().getTime()))
                                         .name("lon")
+                                        .group_id(Config.group)
                                         .build()
                         })
                         .product(Product
@@ -1461,6 +1349,7 @@ public class BeerTest {
                                 .category(category.getName())
                                 .detail("nhưng Milan khởi đầu ấn tượng. Với Mandzukic lần đầu đá chính, cùng sự hỗ trợ của bộ ba Castillejo, Krunic, Rebic, đội nhì bảng Serie A liên tục gây sóng gió về phía cầu môn Sao Đỏ. Chỉ trong 13 phút đầu, Milan")
                                 .name(id + " beer tiger")
+                                .group_id(Config.group)
                                 .product_second_id(id).build()
                                 .AutoFill()
                         )

@@ -38,7 +38,7 @@ public class DeviceConfigTest {
                 )
                 .verifyComplete();
 
-        this.clientDevice.bootStrapData()
+        this.clientDevice.bootStrapData(Config.group)
                 .as(StepVerifier::create)
                 .consumeNextWith(config -> {
                             assertThat(config.getDeviceConfig().getColor()).isEqualTo("#333333");
@@ -70,7 +70,7 @@ public class DeviceConfigTest {
                 )
                 .verifyComplete();
 
-        this.clientDevice.bootStrapData()
+        this.clientDevice.bootStrapData(Config.group)
                 .as(StepVerifier::create)
                 .consumeNextWith(config -> {
                             assertThat(config.getDeviceConfig().getColor()).isEqualTo("#333333");

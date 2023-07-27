@@ -1,10 +1,9 @@
 package com.example.heroku.model;
 
 import com.example.heroku.util.Util;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import entity.BaseEntity;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
@@ -14,13 +13,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name="product")
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class Product extends BaseEntity {
 
     @Id
     String id;
@@ -34,8 +34,6 @@ public class Product {
     private String meta_search;
 
     private String category;
-
-    private Timestamp createat;
 
     private Status status;
 
@@ -55,7 +53,7 @@ public class Product {
     }
 
     public Product AutoFill(){
-        this.createat = new Timestamp(new Date().getTime());
+        super.AutoFill();
         return this;
     }
 
@@ -67,10 +65,10 @@ public class Product {
     }
 
     public enum Status {
-        AVARIABLE("avariable"),
-        NOT_FOR_SELL("not_for_sell"),
-        SOLD_OUT("sold_out"),
-        HIDE("hide");
+        AVARIABLE("AVARIABLE"),
+        NOT_FOR_SELL("NOT_FOR_SELL"),
+        SOLD_OUT("SOLD_OUT"),
+        HIDE("HIDE");
 
 
 

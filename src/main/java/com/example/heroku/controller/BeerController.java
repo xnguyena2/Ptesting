@@ -3,17 +3,20 @@ package com.example.heroku.controller;
 import com.example.heroku.model.Product;
 import com.example.heroku.model.ProductUnit;
 import com.example.heroku.model.Image;
+import com.example.heroku.model.Users;
 import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.beer.SearchResult;
 import com.example.heroku.request.carousel.IDContainer;
+import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
 import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -57,17 +60,25 @@ public class BeerController {
 
     @PostMapping("/admin/create")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<ProductUnit> addBeerInfo(@RequestBody @Valid BeerSubmitData beerInfo) {
+    public Flux<ProductUnit> addBeerInfo(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid BeerSubmitData beerInfo) {
         BeerInfo beerInf = beerInfo.GetBeerInfo();
         System.out.println("add or update beer: " + beerInf.getProduct().getName());
-        return beerAPI.CreateBeer(beerInf);
+        return WrapPermissionGroupWithPrincipalAction.<ProductUnit>builder()
+                .principal(principal)
+                .subject(beerInfo::getGroup_id)
+                .fluxAction(() -> beerAPI.CreateBeer(beerInf))
+                .build().toFlux();
     }
 
-    @DeleteMapping("/admin/delete/{id}")
+    @DeleteMapping("/admin/delete/{groupid}/{id}")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<Product> delete(@PathVariable("id") String beerID) {
+    public Mono<Product> delete(@AuthenticationPrincipal Mono<Users> principal, @PathVariable("groupid") String groupID, @PathVariable("id") String beerID) {
         System.out.println("delete beer: " + beerID);
-        return beerAPI.DeleteBeerByID(beerID);
+        return WrapPermissionGroupWithPrincipalAction.<Product>builder()
+                .principal(principal)
+                .subject(() -> groupID)
+                .monoAction(() -> beerAPI.DeleteBeerByID(groupID, beerID))
+                .build().toMono();
     }
 
     @PostMapping("/admin/getall")
@@ -101,10 +112,10 @@ public class BeerController {
         return beerAPI.CountGetAllBeerByCategory(query);
     }
 
-    @GetMapping("/detail/{id}")
+    @GetMapping("/detail/{groupid}/{id}")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<BeerSubmitData> detail(@PathVariable("id") String beerID) {
+    public Mono<BeerSubmitData> detail(@PathVariable("groupid") String groupID, @PathVariable("id") String beerID) {
         System.out.println("Detail of beer: " + beerID);
-        return beerAPI.GetBeerByID(beerID);
+        return beerAPI.GetBeerByID(groupID, beerID);
     }
 }

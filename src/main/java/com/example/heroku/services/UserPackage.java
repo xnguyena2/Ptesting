@@ -40,7 +40,7 @@ public class UserPackage {
     public Flux<PackgeResponse> GetMyPackage(UserID userID) {
         return userPackageRepository.GetDevicePackage(userID.getId(), userID.getPage(), userID.getSize())
                 .flatMap(userPackage ->
-                        beerAPI.GetBeerByID(userPackage.getProduct_second_id())
+                        beerAPI.GetBeerByID(userPackage.getGroup_id(), userPackage.getProduct_second_id())
                                 .map(beerSubmitData -> new PackgeResponse(userPackage).SetBeerData(beerSubmitData))
                 );
     }

@@ -19,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class BeerSubmitData {
 
+    private String group_id;
     private String beerSecondID;
     private String name;
     private String detail;
@@ -33,6 +34,7 @@ public class BeerSubmitData {
         for (BeerUnit beerUnit : this.listUnit) {
             listMapedUnit.add(ProductUnit.builder()
                     .name(beerUnit.name)
+                    .group_id(this.group_id)
                     .product_second_id(this.beerSecondID)
                     .price(beerUnit.price)
                     .discount(beerUnit.discount)
@@ -49,6 +51,7 @@ public class BeerSubmitData {
                 .product(
                         Product
                                 .builder()
+                                .group_id(this.group_id)
                                 .product_second_id(this.beerSecondID)
                                 .name(this.name)
                                 .detail(this.detail)
@@ -70,6 +73,7 @@ public class BeerSubmitData {
 
     public BeerSubmitData FromBeer(Product product) {
         return BeerSubmitData.builder()
+                .group_id(product.getGroup_id())
                 .beerSecondID(product.getProduct_second_id())
                 .name(product.getName())
                 .detail(product.getDetail())
@@ -81,25 +85,28 @@ public class BeerSubmitData {
     public BeerSubmitData SetBeerUnit(List<ProductUnit> productUnitList) {
         listUnit = new BeerUnit[productUnitList.size()];
         for (int i = 0; i < listUnit.length; i++) {
-            BeerUnit newB = new BeerUnit();
-            newB.setBeer(productUnitList.get(i).getProduct_second_id());
-            newB.setName(productUnitList.get(i).getName());
-            newB.setPrice(productUnitList.get(i).getPrice());
-            newB.setDiscount(productUnitList.get(i).getDiscount());
-            newB.setDateExpir(NgbDateStruct.FromTimestamp(productUnitList.get(i).getDate_expire()));
-            newB.setVolumetric(productUnitList.get(i).getVolumetric());
-            newB.setWeight(productUnitList.get(i).getWeight());
-            newB.setBeer_unit_second_id(productUnitList.get(i).getProduct_unit_second_id());
-            newB.setStatus(productUnitList.get(i).GetStatusNuable().toString());
-            listUnit[i] = newB;
+            listUnit[i] = BeerUnit.builder()
+                    .group_id(productUnitList.get(i).getGroup_id())
+                    .beer(productUnitList.get(i).getProduct_second_id())
+                    .name(productUnitList.get(i).getName())
+                    .price(productUnitList.get(i).getPrice())
+                    .discount(productUnitList.get(i).getDiscount())
+                    .dateExpir(NgbDateStruct.FromTimestamp(productUnitList.get(i).getDate_expire()))
+                    .volumetric(productUnitList.get(i).getVolumetric())
+                    .weight(productUnitList.get(i).getWeight())
+                    .beer_unit_second_id(productUnitList.get(i).getProduct_unit_second_id())
+                    .status(productUnitList.get(i).GetStatusNuable().toString())
+                    .build();
         }
         return this;
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class BeerUnit {
+        private String group_id;
         private String beer;
         private String name;
         private float price;

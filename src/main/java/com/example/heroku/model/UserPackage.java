@@ -1,22 +1,22 @@
 package com.example.heroku.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import entity.BaseEntity;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name="user_package")
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPackage {
+public class UserPackage extends BaseEntity {
 
     @Id
     String id;
@@ -30,8 +30,6 @@ public class UserPackage {
     private int number_unit;
 
     private Status status;
-
-    private Timestamp createat;
 
     public UserPackage(UserPackage s){
         this.id = s.id;

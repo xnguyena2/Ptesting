@@ -24,7 +24,7 @@ public class SearchQuery {
         CREATE_ASC("create_asc"),
         SOLD_NUM("sold_num");
 
-        private String name;
+        private final String name;
 
         Filter(String name) {
             this.name = name;
@@ -61,6 +61,7 @@ public class SearchQuery {
         }
     }
 
+    private String group_id;
     private String query;
     private int page;
     private int size;
