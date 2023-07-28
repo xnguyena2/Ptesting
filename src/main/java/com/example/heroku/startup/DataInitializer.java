@@ -21,11 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-
-import static java.util.Arrays.asList;
 
 @Component
 @Slf4j
@@ -40,6 +37,9 @@ public class DataInitializer {
 
     @Value("${account.admin.password}")
     private String adminPass;
+
+    @Value("${account.admin.store}")
+    private String adminStore;
 
     @Autowired
     com.example.heroku.services.Image imageAPI;
@@ -94,6 +94,7 @@ public class DataInitializer {
                             Mono.just(adminName)
                                     .flatMap(username -> {
                                         Users users = Users.builder()
+                                                .group_id(adminStore)
                                                 .username(username)
                                                 .password(pass)
                                                 .roles(Collections.singletonList(Util.ROLE.ROLE_ROOT.getName()))

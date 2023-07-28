@@ -10,9 +10,10 @@ import reactor.core.publisher.Mono;
 
 public interface UserRepository extends ReactiveCrudRepository<Users, String> {
     //search all
-    //@Query(value = "SELECT * FROM users ORDER BY createat DESC LIMIT :size OFFSET (:page*:size)")
-    Flux<Users> findByIdNotNull(Pageable pageable);
+    @Query(value = "SELECT * FROM users WHERE users.group_id = :group_id")// ORDER BY createat DESC LIMIT :size OFFSET (:page*:size)")
+    Flux<Users> findByIdNotNull(@Param("group_id")String group_id, Pageable pageable);
 
+    //should not edit this function because system using this function
     //@Query(value = "SELECT * FROM USERS WHERE Username = $1")//, nativeQuery = true)
     Mono<Users> findByUsername(String username);
 
@@ -20,7 +21,7 @@ public interface UserRepository extends ReactiveCrudRepository<Users, String> {
     Mono<Users> updatePassword(@Param("username") String username, @Param("newpass") String newpass);
 
     @Query(value = "DELETE FROM users WHERE users.username = :username")
-    Mono<Users> deleteByUserNameAndPassword(@Param("username") String username);
+    Mono<Users> deleteByUserName(@Param("username") String username);
 
     @Query(value = "select checkRole(:useradmin, :userstaff)")
     Mono<Boolean> isPermissionAllow(@Param("useradmin") String useradmin, @Param("userstaff") String userstaff);

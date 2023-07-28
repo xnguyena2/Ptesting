@@ -3,13 +3,11 @@ package com.example.heroku;
 
 import com.example.heroku.jwt.JwtTokenProvider;
 import com.example.heroku.model.Users;
-import com.example.heroku.model.repository.UserRepository;
 import com.example.heroku.request.data.AuthenticationRequest;
 import com.example.heroku.request.data.UpdatePassword;
-import com.example.heroku.response.Format;
+import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
+import com.example.heroku.services.UserAccount;
 import com.example.heroku.util.Util;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,25 +19,17 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-import java.sql.Timestamp;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
-import static org.springframework.http.ResponseEntity.ok;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -58,13 +48,10 @@ public class AuthenticationController {
     private final ReactiveAuthenticationManager authenticationManager;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
     JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserAccount userServices;
 
     private ResponseEntity createAuthBearToken(String jwt) {
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -131,10 +118,7 @@ public class AuthenticationController {
                     .flatMap(login -> this.authenticationManager
                             .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), update.getOldpassword()))
                             .flatMap(authentication ->
-                                    userRepository.updatePassword(
-                                            login.getUsername(),
-                                            this.passwordEncoder.encode(update.getNewpassword())
-                                    )
+                                    userServices.updatePassword(login.getUsername(), update.getNewpassword())
                             )
                     )
                     .then(Mono.just(""))
@@ -158,7 +142,7 @@ public class AuthenticationController {
                             )
                             .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned1")))
                             .flatMap(authentication ->
-                                    userRepository.deleteByUserNameAndPassword(
+                                    userServices.seftDelete(
                                             update.getUsername()
                                     )
                             )
@@ -184,26 +168,21 @@ public class AuthenticationController {
 
     @PostMapping("/admin/account/delete")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity> delete(@AuthenticationPrincipal Mono<UserDetails> principal, @Valid @RequestBody UpdatePassword update) {
+    public Mono<ResponseEntity> delete(@AuthenticationPrincipal Mono<Users> principal, @Valid @RequestBody UpdatePassword update) {
 
-        return principal
-                .flatMap(authentication ->
-                        userRepository.isPermissionAllow(authentication.getUsername(), update.getUsername())
-                                .filter(x -> x)
-                                .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned2")))
-                )
-                .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned2")))
-                .flatMap(authentication ->
-                        userRepository.deleteByUserNameAndPassword(
-                                update.getUsername()
-                        )
-                )
-                .map(ResponseEntity::ok);
+        return userServices.getUser(update.getUsername())
+                .flatMap(users ->
+                        WrapPermissionGroupWithPrincipalAction.<ResponseEntity>builder()
+                                .principal(principal)
+                                .subject(users::getGroup_id)
+                                .monoAction(() -> userServices.deleteAccount(principal, update))
+                                .build().toMono()
+                );
     }
 
     @PostMapping("/admin/account/create")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<Users> create(@AuthenticationPrincipal UserDetails principal, @Valid @RequestBody UpdatePassword newAccount) {
+    public Mono<Users> create(@AuthenticationPrincipal Users principal, @Valid @RequestBody UpdatePassword newAccount) {
 
         System.out.println("create by: " + principal.getUsername());
 
@@ -211,33 +190,22 @@ public class AuthenticationController {
         Util.ROLE creatorRole = getRole(principal);
 
         if (role == null || creatorRole == null) {
-            throw new AccessDeniedException("403 returned");
+            throw new AccessDeniedException("403 creator or new account role is null!!");
         }
 
         if (role == Util.ROLE.ROLE_ROOT) {
-            throw new AccessDeniedException("403 returned");
+            throw new AccessDeniedException("403 can not create root role!!");
         }
 
         if (creatorRole.GetIndex() > role.GetIndex()) {
-            throw new AccessDeniedException("403 returned");
+            throw new AccessDeniedException("403 no permission!!");
         }
 
-        return
-                Mono.just(newAccount)
-                        .map(UpdatePassword::getRoles)
-                        .map(roles -> Users.builder()
-                                .group_id(newAccount.getGroup_id())
-                                .username(newAccount.getUsername())
-                                .password(this.passwordEncoder.encode(newAccount.getNewpassword()))
-                                .roles(Collections.singletonList(role.getName()))
-                                .createat(new Timestamp(new Date().getTime()))
-                                .active(true)
-                                .createby(principal.getUsername())
-                                .build()
-                        )
-                        .flatMap(users ->
-                                this.userRepository.save(users)
-                        );
+        return WrapPermissionGroupWithPrincipalAction.<Users>builder()
+                .principal(Mono.just(principal))
+                .subject(newAccount::getGroup_id)
+                .monoAction(() -> userServices.createAccount(principal.getUsername(), newAccount))
+                .build().toMono();
     }
 
     @PostMapping("/account/logout")

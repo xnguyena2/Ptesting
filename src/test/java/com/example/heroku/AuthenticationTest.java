@@ -38,6 +38,9 @@ public class AuthenticationTest extends TestConfig {
     @Value("${account.admin.password}")
     private String adminPass;
 
+    @Value("${account.admin.store}")
+    private String adminStore;
+
     @LocalServerPort
     private int port;
 
@@ -142,7 +145,7 @@ public class AuthenticationTest extends TestConfig {
     @Test
     public void AuthenticationTest() throws NoSuchAlgorithmException {
 
-        final String group_id = "trumbien_store";
+        final String group_id = adminStore;
 
         String finalAuthToken = getToken(adminName, adminPass);
 
@@ -310,7 +313,7 @@ public class AuthenticationTest extends TestConfig {
         builder.part("file", new FileSystemResource(new File("C:\\Users\\phong\\Downloads\\test.png")));
 
 
-        client.post().uri("/carousel/admin/upload").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken))
+        client.post().uri("/carousel/admin/" + adminStore + "/upload").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken))
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(
                         BodyInserters.fromMultipartData(builder.build())

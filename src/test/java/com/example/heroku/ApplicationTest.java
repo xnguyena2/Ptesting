@@ -6,6 +6,8 @@ import com.example.heroku.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -65,6 +67,12 @@ public class ApplicationTest extends TestConfig{
     @Autowired
     UserFCMS fcmServices;
 
+    @Value("${account.admin.username}")
+    private String adminName;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @Test
     public  void fcmTest(){
         UserFCMTest.builder().userFCMAPI(fcmServices).build().UserFCMTest();
@@ -72,7 +80,7 @@ public class ApplicationTest extends TestConfig{
 
     @Test
     public void userTest() {
-        UserAccountTest.builder().userAccount(userAccount).build().test();
+        UserAccountTest.builder().userAccount(userAccount).adminName(adminName).passwordEncoder(passwordEncoder).build().test();
     }
 
     @Test

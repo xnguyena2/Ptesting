@@ -133,9 +133,6 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
     @Builder.Default()
     private boolean active = true;
 
-    @CreatedDate
-    private Timestamp createat;
-
     public List<String> getRoles() {
         return roles.stream().map(x -> x.replace("{","").replace("}","")).collect(Collectors.toList());
     }
