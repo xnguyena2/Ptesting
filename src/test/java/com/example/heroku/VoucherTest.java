@@ -18,11 +18,13 @@ public class VoucherTest {
     @Autowired
     Voucher voucherAPI;
 
+    String group;
+
     public void VoucherTest() {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .group_id(Config.group)
+                                .group_id(group)
                                 .for_all_product(true)
                                 .for_all_user(true)
                                 .voucher_second_id("GIAM_5K")
@@ -34,7 +36,7 @@ public class VoucherTest {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .group_id(Config.group)
+                                .group_id(group)
                                 .for_all_product(true)
                                 .voucher_second_id("GIAM_30%")
                                 .discount(30)
@@ -46,7 +48,7 @@ public class VoucherTest {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .group_id(Config.group)
+                                .group_id(group)
                                 .voucher_second_id("GIAM_50k")
                                 .detail("Giảm 50k trên 1 loại sản phẩm. Chỉ áp dụng cho ai nhận được.")
                                 .amount(50000)
@@ -58,7 +60,7 @@ public class VoucherTest {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .group_id(Config.group)
+                                .group_id(group)
                                 .for_all_user(true)
                                 .voucher_second_id("GIAM_BIA_666")
                                 .discount(10)
@@ -68,7 +70,7 @@ public class VoucherTest {
                                 .build())
                 .block();
 
-        voucherAPI.getAllVoucher(SearchQuery.builder().page(0).size(100).group_id(Config.group).build())
+        voucherAPI.getAllVoucher(SearchQuery.builder().page(0).size(100).group_id(group).build())
                 .sort(Comparator.comparing(VoucherData::getVoucher_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
@@ -99,7 +101,7 @@ public class VoucherTest {
                 })
                 .verifyComplete();
 
-        voucherAPI.getVoucher(Config.group, "GIAM_BIA_666")
+        voucherAPI.getVoucher(group, "GIAM_BIA_666")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     assertThat(voucher.getVoucher_second_id()).isEqualTo("GIAM_BIA_666");
@@ -109,19 +111,19 @@ public class VoucherTest {
                 })
                 .verifyComplete();
 
-        voucherAPI.getDiscount(Config.group, "GIAM_50Kzk", "222222", "123")
+        voucherAPI.getDiscount(group, "GIAM_50Kzk", "222222", "123")
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        voucherAPI.getDiscount(Config.group, "GIAM_50K", "222222", "456")
+        voucherAPI.getDiscount(group, "GIAM_50K", "222222", "456")
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        voucherAPI.getDiscount(Config.group, "GIAM_50K", "444444", "123")
+        voucherAPI.getDiscount(group, "GIAM_50K", "444444", "123")
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        voucherAPI.getDiscount(Config.group, "GIAM_50k", "222222", "123")
+        voucherAPI.getDiscount(group, "GIAM_50k", "222222", "123")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     assertThat(voucher.getVoucher_second_id()).isEqualTo("GIAM_50k");
@@ -129,7 +131,7 @@ public class VoucherTest {
                 })
                 .verifyComplete();
 
-        voucherAPI.getDiscount(Config.group, "GIAM_5K", "444444", "456")
+        voucherAPI.getDiscount(group, "GIAM_5K", "444444", "456")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     assertThat(voucher.getVoucher_second_id()).isEqualTo("GIAM_5K");
@@ -137,7 +139,7 @@ public class VoucherTest {
                 })
                 .verifyComplete();
 
-        voucherAPI.getAllMyVoucher(Config.group, "222222")
+        voucherAPI.getAllMyVoucher(group, "222222")
                 .sort(Comparator.comparing(com.example.heroku.model.Voucher::getVoucher_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
@@ -162,7 +164,7 @@ public class VoucherTest {
                 })
                 .verifyComplete();
 
-        voucherAPI.getAllMyVoucher(Config.group, "444444")
+        voucherAPI.getAllMyVoucher(group, "444444")
                 .sort(Comparator.comparing(com.example.heroku.model.Voucher::getVoucher_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
@@ -177,22 +179,22 @@ public class VoucherTest {
                 })
                 .verifyComplete();
 
-        voucherAPI.comsumeVoucher(Config.group, "GIAM_50k", "444444", "456")
+        voucherAPI.comsumeVoucher(group, "GIAM_50k", "444444", "456")
                 .block();
 
-        voucherAPI.comsumeVoucher(Config.group, "GIAM_5K", "444444", "456")
+        voucherAPI.comsumeVoucher(group, "GIAM_5K", "444444", "456")
                 .block();
 
-        voucherAPI.comsumeVoucher(Config.group, "GIAM_5K", "444444", "456")
+        voucherAPI.comsumeVoucher(group, "GIAM_5K", "444444", "456")
                 .block();
 
-        voucherAPI.comsumeVoucher(Config.group, "GIAM_5K", "444444", "456")
+        voucherAPI.comsumeVoucher(group, "GIAM_5K", "444444", "456")
                 .block();
 
-        voucherAPI.comsumeVoucher(Config.group, "GIAM_5K", "444444", "456")
+        voucherAPI.comsumeVoucher(group, "GIAM_5K", "444444", "456")
                 .block();
 
-        voucherAPI.getDiscount(Config.group, "GIAM_5K", "444444", "456")
+        voucherAPI.getDiscount(group, "GIAM_5K", "444444", "456")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     assertThat(voucher.getVoucher_second_id()).isEqualTo("GIAM_5K");
@@ -201,17 +203,17 @@ public class VoucherTest {
                 })
                 .verifyComplete();
 
-        voucherAPI.comsumeVoucher(Config.group, "GIAM_5K", "444444", "456")
+        voucherAPI.comsumeVoucher(group, "GIAM_5K", "444444", "456")
                 .block();
 
-        voucherAPI.getDiscount(Config.group, "GIAM_5K", "444444", "456")
+        voucherAPI.getDiscount(group, "GIAM_5K", "444444", "456")
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        voucherAPI.comsumeVoucher(Config.group, "GIAM_5K", "555555", "456")
+        voucherAPI.comsumeVoucher(group, "GIAM_5K", "555555", "456")
                 .block();
 
-        voucherAPI.getAllMyVoucher(Config.group, "555555")
+        voucherAPI.getAllMyVoucher(group, "555555")
                 .sort(Comparator.comparing(com.example.heroku.model.Voucher::getVoucher_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
@@ -226,7 +228,7 @@ public class VoucherTest {
                 })
                 .verifyComplete();
 
-        voucherAPI.getAllMyVoucher(Config.group, "444444")
+        voucherAPI.getAllMyVoucher(group, "444444")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     assertThat(voucher.getVoucher_second_id()).isEqualTo("GIAM_BIA_666");
@@ -238,7 +240,7 @@ public class VoucherTest {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .group_id(Config.group)
+                                .group_id(group)
                                 .for_all_product(true)
                                 .for_all_user(true)
                                 .voucher_second_id("GIAM_5K")
@@ -248,7 +250,7 @@ public class VoucherTest {
                                 .build())
                 .block();
 
-        voucherAPI.getDiscount(Config.group, "GIAM_5K", "444444", "456")
+        voucherAPI.getDiscount(group, "GIAM_5K", "444444", "456")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     assertThat(voucher.getVoucher_second_id()).isEqualTo("GIAM_5K");
@@ -257,7 +259,7 @@ public class VoucherTest {
                 })
                 .verifyComplete();
 
-        voucherAPI.getAllMyVoucher(Config.group, "222222")
+        voucherAPI.getAllMyVoucher(group, "222222")
                 .sort(Comparator.comparing(com.example.heroku.model.Voucher::getVoucher_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
@@ -282,7 +284,7 @@ public class VoucherTest {
                 })
                 .verifyComplete();
 
-        voucherAPI.getAllMyVoucher(Config.group, "444444")
+        voucherAPI.getAllMyVoucher(group, "444444")
                 .sort(Comparator.comparing(com.example.heroku.model.Voucher::getVoucher_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {

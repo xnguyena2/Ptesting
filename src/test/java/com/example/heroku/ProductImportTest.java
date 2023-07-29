@@ -13,6 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ProductImportTest {
     private ProductImport productImport;
 
+    String group;
+
     public void Test(){
         productImport.addNewRecord(
                 com.example.heroku.model.ProductImport.builder()
@@ -20,7 +22,7 @@ public class ProductImportTest {
                         .price(1000)
                         .amount(10)
                         .product_id("123")
-                        .group_id(Config.group)
+                        .group_id(group)
                         .build()
         )
                 .block();
@@ -30,12 +32,12 @@ public class ProductImportTest {
                                 .price(1000)
                                 .amount(5)
                                 .product_id("123")
-                                .group_id(Config.group)
+                                .group_id(group)
                                 .build()
                 )
                 .block();
 
-        productImport.getByProductID(SearchQuery.builder().query("123").page(0).size(100).filter("10").group_id(Config.group).build())
+        productImport.getByProductID(SearchQuery.builder().query("123").page(0).size(100).filter("10").group_id(group).build())
                 .sort(Comparator.comparing(com.example.heroku.model.ProductImport::getCreateat))
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
@@ -46,7 +48,7 @@ public class ProductImportTest {
                 })
                 .verifyComplete();
 
-        productImport.getALL(SearchQuery.builder().page(0).size(100).filter("10").group_id(Config.group).build())
+        productImport.getALL(SearchQuery.builder().page(0).size(100).filter("10").group_id(group).build())
                 .sort(Comparator.comparing(com.example.heroku.model.ProductImport::getCreateat))
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
@@ -58,10 +60,10 @@ public class ProductImportTest {
                 .verifyComplete();
 
 
-        productImport.deleteRecord(Config.group, "2")
+        productImport.deleteRecord(group, "2")
                 .block();
 
-        productImport.getByProductID(SearchQuery.builder().query("123").page(0).size(100).filter("10").group_id(Config.group).build())
+        productImport.getByProductID(SearchQuery.builder().query("123").page(0).size(100).filter("10").group_id(group).build())
                 .sort(Comparator.comparing(com.example.heroku.model.ProductImport::getCreateat))
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
@@ -69,7 +71,7 @@ public class ProductImportTest {
                 })
                 .verifyComplete();
 
-        productImport.getALL(SearchQuery.builder().page(0).size(100).filter("10").group_id(Config.group).build())
+        productImport.getALL(SearchQuery.builder().page(0).size(100).filter("10").group_id(group).build())
                 .sort(Comparator.comparing(com.example.heroku.model.ProductImport::getCreateat))
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {

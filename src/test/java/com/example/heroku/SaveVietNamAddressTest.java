@@ -11,6 +11,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Builder
 public class SaveVietNamAddressTest {
 
+
+    String group;
+
     public void SaveToDataBaseTest() throws IOException {
 
         VietNamAddress.getInstance().SaveAllToDatabase(true);

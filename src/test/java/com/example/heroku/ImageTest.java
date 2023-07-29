@@ -28,6 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Builder
 public class ImageTest {
 
+    String group;
+
     private static byte[] getImageBytes(String imageUrl) {
         try {
             URL url = new URL(imageUrl);
@@ -126,7 +128,7 @@ public class ImageTest {
         imageAPI.DeleteAll()
                 .thenMany(Flux.just(imgContent)
                         .flatMap(img ->
-                                imageAPI.Upload(Flux.just(img), "Carousel", Config.group)
+                                imageAPI.Upload(Flux.just(img), "Carousel", group)
                                         .map(formatResponseEntity -> {
                                             imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getImgid(), img);
                                             return formatResponseEntity;
@@ -138,7 +140,7 @@ public class ImageTest {
 
         Flux.just(imgContent)
                 .flatMap(img ->
-                        imageAPI.Upload(Flux.just(img), "456", Config.group)
+                        imageAPI.Upload(Flux.just(img), "456", group)
                                 .map(formatResponseEntity -> {
                                     imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getImgid(), img);
                                     return formatResponseEntity;
@@ -147,7 +149,7 @@ public class ImageTest {
                 .then()
                 .block();
 
-        imageAPI.GetAll(Config.group, "Carousel")
+        imageAPI.GetAll(group, "Carousel")
                 .map(image -> new imgMap(image.getImgid(), getImageBytes(image.getLarge())))
                 .as(StepVerifier::create)
                 .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))

@@ -16,8 +16,10 @@ public class ClientDeviceTest {
 
     com.example.heroku.services.ClientDevice clientDeviceAPI;
 
+    String group;
+
     public void BootStrapData(){
-        clientDeviceAPI.bootStrapData(Config.group)
+        clientDeviceAPI.bootStrapData(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {
@@ -46,7 +48,7 @@ public class ClientDeviceTest {
     }
 
     public void BootStrapDataWithoutImage(){
-        clientDeviceAPI.bootStrapData(Config.group)
+        clientDeviceAPI.bootStrapData(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {
@@ -73,7 +75,7 @@ public class ClientDeviceTest {
     }
 
     public void BootStrapDataLarge(){
-        clientDeviceAPI.bootStrapData(Config.group)
+        clientDeviceAPI.bootStrapData(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {

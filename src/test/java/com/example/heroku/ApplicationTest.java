@@ -70,33 +70,35 @@ public class ApplicationTest extends TestConfig{
     @Value("${account.admin.username}")
     private String adminName;
 
+    final String mainGroup = Config.mainGroup;
+
     @Autowired
     PasswordEncoder passwordEncoder;
 
     @Test
     public  void fcmTest(){
-        UserFCMTest.builder().userFCMAPI(fcmServices).build().UserFCMTest();
+        UserFCMTest.builder().userFCMAPI(fcmServices).group(mainGroup).build().UserFCMTest();
     }
 
     @Test
     public void userTest() {
-        UserAccountTest.builder().userAccount(userAccount).adminName(adminName).passwordEncoder(passwordEncoder).build().test();
+        UserAccountTest.builder().userAccount(userAccount).adminName(adminName).passwordEncoder(passwordEncoder).group(mainGroup).build().test();
     }
 
     @Test
     public void BeerTest() {
-        BeerTest.builder().beerAPI(beerAPI).build().saveBeerTest();
+        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).build().saveBeerTest();
     }
 
     @Test
     public void ImageTest() {
-        ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).build().Run(listImg);
-        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).build().DeviceConfigTest();
+        ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).group(mainGroup).build().Run(listImg);
+        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).build().DeviceConfigTest();
     }
 
     @Test
     public void ProductImport(){
-        ProductImportTest.builder().productImport(productImport).build().Test();
+        ProductImportTest.builder().productImport(productImport).group(mainGroup).build().Test();
     }
 
 
@@ -118,42 +120,42 @@ public class ApplicationTest extends TestConfig{
 
     @Test
     public void testParsingSubmitData() throws JsonProcessingException {
-        ObjectPraserTest.builder().build().BeerSubmitDataTest();
+        ObjectPraserTest.builder().group(mainGroup).build().BeerSubmitDataTest();
     }
 
     @Test
     public void testParsingBeerPackage() throws JsonProcessingException {
-        ObjectPraserTest.builder().build().BeerPackageTest();
+        ObjectPraserTest.builder().group(mainGroup).build().BeerPackageTest();
     }
 
     @Test
     public void testUserDevice() {
-        UserDeviceTest.builder().userDeviceAPI(this.userDeviceAPI).build().UserTest();
+        UserDeviceTest.builder().userDeviceAPI(this.userDeviceAPI).group(mainGroup).build().UserTest();
     }
 
     @Test
     public void testUserAddBeerToPackage() {
-        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).build().TestUserPackage();
+        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(mainGroup).build().TestUserPackage();
     }
 
     @Test
     public void testSaveVietNamAddress() throws IOException {
-        SaveVietNamAddressTest.builder().build().SaveToDataBaseTest();
+        SaveVietNamAddressTest.builder().group(mainGroup).build().SaveToDataBaseTest();
     }
 
     @Test
     public void testParsingShippingData() throws JsonProcessingException {
-        ObjectPraserTest.builder().build().TestParsingGHN();
+        ObjectPraserTest.builder().group(mainGroup).build().TestParsingGHN();
     }
 
     @Test
     public void testShippingProvider() throws Exception {
-        ShippingProviderTest.builder().shippingProvider(shippingProviderAPI).build().ShipTest();
+        ShippingProviderTest.builder().shippingProvider(shippingProviderAPI).group(mainGroup).build().ShipTest();
     }
 
     @Test
     public void testUserAddress(){
-        UserAddressTest.builder().userAddressAPI(userAddressAPI).build().UserAddressTest();
+        UserAddressTest.builder().userAddressAPI(userAddressAPI).group(mainGroup).build().UserAddressTest();
     }
 
 //    @Test
@@ -169,17 +171,17 @@ public class ApplicationTest extends TestConfig{
     @Test
     public void testBootStrapData() {
 
-        BeerTest.builder().beerAPI(beerAPI).build().saveBeerTest();
+        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).build().saveBeerTest();
 
-        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).build().DeviceConfigTestWithoutImage();
+        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).build().DeviceConfigTestWithoutImage();
 
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).build().BootStrapDataWithoutImage();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).build().BootStrapDataWithoutImage();
 
-        ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).build().Run(listImg);
+        ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).group(mainGroup).build().Run(listImg);
 
-        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).build().DeviceConfigTest();
+        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).build().DeviceConfigTest();
 
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).build().BootStrapData();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).build().BootStrapData();
     }
 
     /*
@@ -197,4 +199,115 @@ public class ApplicationTest extends TestConfig{
     }
 
 */
+
+    //other group testting
+
+    final String anotherGroup = Config.otherGroup;
+
+    @Test
+    public  void fcmTest2(){
+        UserFCMTest.builder().userFCMAPI(fcmServices).group(anotherGroup).build().UserFCMTest();
+    }
+
+    @Test
+    public void userTest2() {
+        UserAccountTest.builder().userAccount(userAccount).adminName(adminName).passwordEncoder(passwordEncoder).group(anotherGroup).build().test();
+    }
+
+    @Test
+    public void BeerTest2() {
+        BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).build().saveBeerTest();
+    }
+
+    @Test
+    public void ImageTest2() {
+        ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).group(anotherGroup).build().Run(listImg);
+        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(anotherGroup).build().DeviceConfigTest();
+    }
+
+    @Test
+    public void ProductImport2(){
+        ProductImportTest.builder().productImport(productImport).group(anotherGroup).build().Test();
+    }
+
+    @Test
+    public void FlickrToken2(){
+
+    }
+
+    @Test
+    public void DeviceConfigTest2() {
+    }
+
+    @Test
+    public void testCurrentUser2() {
+
+    }
+
+    @Test
+    public void testParsingSubmitData2() throws JsonProcessingException {
+        ObjectPraserTest.builder().group(anotherGroup).build().BeerSubmitDataTest();
+    }
+
+    @Test
+    public void testParsingBeerPackage2() throws JsonProcessingException {
+        ObjectPraserTest.builder().group(anotherGroup).build().BeerPackageTest();
+    }
+
+    @Test
+    public void testUserDevice2() {
+        UserDeviceTest.builder().userDeviceAPI(this.userDeviceAPI).group(anotherGroup).build().UserTest();
+    }
+
+    @Test
+    public void testUserAddBeerToPackage2() {
+        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).build().TestUserPackage();
+    }
+
+    @Test
+    public void testSaveVietNamAddress2() throws IOException {
+        SaveVietNamAddressTest.builder().group(anotherGroup).build().SaveToDataBaseTest();
+    }
+
+    @Test
+    public void testParsingShippingData2() throws JsonProcessingException {
+        ObjectPraserTest.builder().group(anotherGroup).build().TestParsingGHN();
+    }
+
+    @Test
+    public void testShippingProvider2() throws Exception {
+        ShippingProviderTest.builder().shippingProvider(shippingProviderAPI).group(anotherGroup).build().ShipTest();
+    }
+
+    @Test
+    public void testUserAddress2(){
+        UserAddressTest.builder().userAddressAPI(userAddressAPI).group(anotherGroup).build().UserAddressTest();
+    }
+
+//    @Test
+//    public void testVoucher(){
+//        VoucherTest.builder().voucherAPI(voucherAPI).build().VoucherTest();
+//    }
+
+    @Test
+    public void testUploadImageToGoogle2() throws IOException, GeneralSecurityException {
+        //PhotoLib.getInstance().RefreshToken();
+    }
+
+    @Test
+    public void testBootStrapData2() {
+
+        BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).build().saveBeerTest();
+
+        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(anotherGroup).build().DeviceConfigTestWithoutImage();
+
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapDataWithoutImage();
+
+        ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).group(anotherGroup).build().Run(listImg);
+
+        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(anotherGroup).build().DeviceConfigTest();
+
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapData();
+    }
+
 }

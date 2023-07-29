@@ -11,6 +11,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ShippingProviderTest {
 
     ShippingProvider shippingProvider;
+
+    String group;
+    
     public void ShipTest() throws Exception {
         String json = "{\n" +
                 "    \"weigitExchange\":0.0002,\n" +
@@ -52,12 +55,12 @@ public class ShippingProviderTest {
                 "        }\n" +
                 "    ]\n" +
                 "}";
-        shippingProvider.CreateShipProvider(ShippingProviderData.builder().id(ShippingProvider.GHN.ID).json(json).group_id(Config.group).build())
+        shippingProvider.CreateShipProvider(ShippingProviderData.builder().id(ShippingProvider.GHN.ID).json(json).group_id(group).build())
                 .block();
 
 
 
-        shippingProvider.GetShipProvider(Config.group, ShippingProvider.GHN.ID)
+        shippingProvider.GetShipProvider(group, ShippingProvider.GHN.ID)
                 .as(StepVerifier::create)
                 .consumeNextWith(shippingProvider -> {
                             assertThat(shippingProvider.getProvider_id()).isEqualTo(ShippingProvider.GHN.ID);
@@ -66,7 +69,7 @@ public class ShippingProviderTest {
                 )
                 .verifyComplete();
 
-        shippingProvider.GetShippingPrice(Config.group, ShippingProvider.GHN.ID, 2.6f, 10000, 294, 484)
+        shippingProvider.GetShippingPrice(group, ShippingProvider.GHN.ID, 2.6f, 10000, 294, 484)
                 .as(StepVerifier::create)
                 .consumeNextWith(price -> {
                             assertThat(price.getPrice()).isEqualTo(22000);
@@ -74,7 +77,7 @@ public class ShippingProviderTest {
                 )
                 .verifyComplete();
 
-        shippingProvider.GetShippingPrice(Config.group, ShippingProvider.GHN.ID, 2.6f, 16000, 294, 484)
+        shippingProvider.GetShippingPrice(group, ShippingProvider.GHN.ID, 2.6f, 16000, 294, 484)
                 .as(StepVerifier::create)
                 .consumeNextWith(price -> {
                             assertThat(price.getPrice()).isEqualTo(27000);
@@ -82,7 +85,7 @@ public class ShippingProviderTest {
                 )
                 .verifyComplete();
 
-        shippingProvider.GetShippingPrice(Config.group, ShippingProvider.GHN.ID, 2.6f, 10000, 291, 371)
+        shippingProvider.GetShippingPrice(group, ShippingProvider.GHN.ID, 2.6f, 10000, 291, 371)
                 .as(StepVerifier::create)
                 .consumeNextWith(price -> {
                             assertThat(price.getPrice()).isEqualTo(67800);

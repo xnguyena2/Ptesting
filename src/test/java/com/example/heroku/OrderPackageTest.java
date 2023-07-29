@@ -61,9 +61,13 @@ public class OrderPackageTest extends TestConfig {
     @Autowired
     StatisticServices statisticServices;
 
+    String mainGroup = Config.mainGroup;
+
+    String otherGroup = Config.otherGroup;
+
     @Test
     public void testVoucher() {
-        VoucherTest.builder().voucherAPI(voucherAPI).build().VoucherTest();
+        VoucherTest.builder().voucherAPI(voucherAPI).group(mainGroup).build().VoucherTest();
     }
 
     AtomicReference<Float> voucher5K = new AtomicReference<>((float) 0);
@@ -75,10 +79,10 @@ public class OrderPackageTest extends TestConfig {
 
         final int totalSaveOrder = 10;// if not save success will 8
 
-        createDevice();
-        createProvider();
-        createBeer();
-        createVoucher();
+        createDevice(mainGroup);
+        createProvider(mainGroup);
+        createBeer(mainGroup);
+        createVoucher(mainGroup);
 
         Thread[] threads = new Thread[testcase];
 
@@ -86,7 +90,7 @@ public class OrderPackageTest extends TestConfig {
             final int i1 = i;
             threads[i] = new Thread(() -> {
                 System.out.println("Thread Running: " + (i1 + 1));
-                orderTest();
+                orderTest(mainGroup);
             });
             //Thread.sleep(5000);
             threads[i].start();
@@ -102,7 +106,7 @@ public class OrderPackageTest extends TestConfig {
         assertThat(packageVoucher5K.get().intValue()).isEqualTo((int) (672 * 10 + (672 - 5) * 20));
 
 
-        voucherAPI.getVoucherByID(Config.group, "PACKAGE_VOUCHER_30%")
+        voucherAPI.getVoucherByID(mainGroup, "PACKAGE_VOUCHER_30%")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("package voucher: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
@@ -113,7 +117,7 @@ public class OrderPackageTest extends TestConfig {
                 .verifyComplete();
 
 
-        voucherAPI.getPackageVoucher(Config.group, "PACKAGE_VOUCHER_30%", "hello")
+        voucherAPI.getPackageVoucher(mainGroup, "PACKAGE_VOUCHER_30%", "hello")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("package voucher of hello: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
@@ -122,7 +126,7 @@ public class OrderPackageTest extends TestConfig {
                 .verifyComplete();
 
 
-        voucherAPI.getPackageVoucher(Config.group, "PACKAGE_VOUCHER_30%", "iphone")
+        voucherAPI.getPackageVoucher(mainGroup, "PACKAGE_VOUCHER_30%", "iphone")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("package voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
@@ -130,11 +134,11 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        voucherAPI.getPackageVoucher(Config.group, "PACKAGE_VOUCHER_5K", "hello")
+        voucherAPI.getPackageVoucher(mainGroup, "PACKAGE_VOUCHER_5K", "hello")
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        voucherAPI.getPackageVoucher(Config.group, "PACKAGE_VOUCHER_5K", "android")
+        voucherAPI.getPackageVoucher(mainGroup, "PACKAGE_VOUCHER_5K", "android")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("package voucher of android: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
@@ -142,11 +146,11 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        voucherAPI.getPackageVoucher(Config.group, "PACKAGE_VOUCHER_5K", "iphone")
+        voucherAPI.getPackageVoucher(mainGroup, "PACKAGE_VOUCHER_5K", "iphone")
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        voucherAPI.getAllMyVoucher(Config.group, "iphone")
+        voucherAPI.getAllMyVoucher(mainGroup, "iphone")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
@@ -165,7 +169,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        beerAPI.CountSearchBeer(SearchQuery.builder().query("tigerrrrr").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).group_id(Config.group).build())
+        beerAPI.CountSearchBeer(SearchQuery.builder().query("tigerrrrr").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).group_id(mainGroup).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -188,7 +192,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        beerAPI.CountSearchBeer(SearchQuery.builder().query("beer&tigerrrrr").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).group_id(Config.group).build())
+        beerAPI.CountSearchBeer(SearchQuery.builder().query("beer&tigerrrrr").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).group_id(mainGroup).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -216,7 +220,7 @@ public class OrderPackageTest extends TestConfig {
         AtomicReference<Float> cancelPrice = new AtomicReference<>((float) 0);
         AtomicReference<String> orderDoneID = new AtomicReference<>();
         AtomicReference<String> orderCancelID = new AtomicReference<>();
-        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).group_id(Config.group).page(0).size(200).filter("30").build())
+        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).group_id(mainGroup).page(0).size(200).filter("30").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
                     System.out.println("total order: " + orderSearchResult.getCount());
@@ -232,11 +236,11 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        packageOrder.UpdateStatus(Config.group, orderDoneID.get(), PackageOrder.Status.DONE).block();
+        packageOrder.UpdateStatus(mainGroup, orderDoneID.get(), PackageOrder.Status.DONE).block();
 
-        packageOrder.UpdateStatus(Config.group, orderCancelID.get(), PackageOrder.Status.CANCEL).block();
+        packageOrder.UpdateStatus(mainGroup, orderCancelID.get(), PackageOrder.Status.CANCEL).block();
 
-        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).group_id(Config.group).page(0).size(300).filter("30").build())
+        packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).group_id(mainGroup).page(0).size(300).filter("30").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
                     assertThat(orderSearchResult.getCount()).isEqualTo(testcase * totalSaveOrder - 2);
@@ -244,21 +248,21 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        packageOrder.getOrderDetail(Config.group, orderDoneID.get())
+        packageOrder.getOrderDetail(mainGroup, orderDoneID.get())
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrderData -> {
                     assertThat(packageOrderData.getStatus()).isEqualTo(PackageOrder.Status.DONE);
                 })
                 .verifyComplete();
 
-        packageOrder.getOrderDetail(Config.group, orderCancelID.get())
+        packageOrder.getOrderDetail(mainGroup, orderCancelID.get())
                 .as(StepVerifier::create)
                 .consumeNextWith(packageOrderData -> {
                     assertThat(packageOrderData.getStatus()).isEqualTo(PackageOrder.Status.CANCEL);
                 })
                 .verifyComplete();
 
-        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.ORDER.getName()).group_id(Config.group).page(0).size(500).build())
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.ORDER.getName()).group_id(mainGroup).page(0).size(500).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
@@ -266,7 +270,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.DONE.getName()).group_id(Config.group).page(0).size(300).build())
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.DONE.getName()).group_id(mainGroup).page(0).size(300).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
@@ -274,7 +278,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.CANCEL.getName()).group_id(Config.group).page(0).size(300).build())
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.CANCEL.getName()).group_id(mainGroup).page(0).size(300).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
@@ -282,15 +286,15 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.PRE_ORDER.getName()).group_id(Config.group).page(0).size(300).build())
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.PRE_ORDER.getName()).group_id(mainGroup).page(0).size(300).build())
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.SENDING.getName()).group_id(Config.group).page(0).size(300).build())
+        buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.SENDING.getName()).group_id(mainGroup).page(0).size(300).build())
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        statisticServices.getTotal(SearchQuery.builder().filter("30").query(PackageOrder.Status.DONE.getName()).page(0).size(300).group_id(Config.group).build())
+        statisticServices.getTotal(SearchQuery.builder().filter("30").query(PackageOrder.Status.DONE.getName()).page(0).size(300).group_id(mainGroup).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(totalOrder -> {
                     assertThat(totalOrder.getReal_price()).isEqualTo(donePrice.get());
@@ -298,7 +302,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        statisticServices.getByProductID(SearchQuery.builder().filter("30").query("beer_order1").page(0).size(30000).group_id(Config.group).build())
+        statisticServices.getByProductID(SearchQuery.builder().filter("30").query("beer_order1").page(0).size(30000).group_id(mainGroup).build())
                 .reduce(0f, (total, product) -> {
                     return total + product.getTotal_price();
                 })
@@ -308,7 +312,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        statisticServices.getAll(SearchQuery.builder().filter("30").page(0).size(3000).group_id(Config.group).build())
+        statisticServices.getAll(SearchQuery.builder().filter("30").page(0).size(3000).group_id(mainGroup).build())
                 .reduce(0f, (total, product) -> {
                     return total + product.getTotal_price();
                 })
@@ -318,11 +322,11 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        addBeerToPackage();
+        addBeerToPackage(mainGroup);
 
     }
 
-    void orderTest() {
+    void orderTest(String mainGroup) {
 
         AtomicReference<ProductUnit> beer_order1_Thung_10_10 = new AtomicReference<ProductUnit>();
         AtomicReference<ProductUnit> beer_order1_Lon_20_20 = new AtomicReference<ProductUnit>();
@@ -339,31 +343,31 @@ public class OrderPackageTest extends TestConfig {
         AtomicReference<ProductUnit> beer_order_hide2_Thung_100_10_hide = new AtomicReference<ProductUnit>();
         AtomicReference<ProductUnit> beer_order_hide2_Lon_110_0_hide = new AtomicReference<ProductUnit>();
 
-        beerUnitRepository.findByBeerID(Config.group, "beer_order1")
+        beerUnitRepository.findByBeerID(mainGroup, "beer_order1")
                 .as(StepVerifier::create)
                 .consumeNextWith(beer_order1_Thung_10_10::set)
                 .consumeNextWith(beer_order1_Lon_20_20::set)
                 .verifyComplete();
 
-        beerUnitRepository.findByBeerID(Config.group, "beer_order2")
+        beerUnitRepository.findByBeerID(mainGroup, "beer_order2")
                 .as(StepVerifier::create)
                 .consumeNextWith(beer_order2_Thung_50_50::set)
                 .consumeNextWith(beer_order2_Lon_60_50::set)
                 .verifyComplete();
 
-        beerUnitRepository.findByBeerID(Config.group, "beer_order_sold_out1")
+        beerUnitRepository.findByBeerID(mainGroup, "beer_order_sold_out1")
                 .as(StepVerifier::create)
                 .consumeNextWith(beer_order_sold_out1_Thung_100_10_soldout::set)
                 .consumeNextWith(beer_order_sold_out1_Lon_110_0_soldout::set)
                 .verifyComplete();
 
-        beerUnitRepository.findByBeerID(Config.group, "beer_order_sold_out2")
+        beerUnitRepository.findByBeerID(mainGroup, "beer_order_sold_out2")
                 .as(StepVerifier::create)
                 .consumeNextWith(beer_order_sold_out2_Thung_100_10_soldout::set)
                 .consumeNextWith(beer_order_sold_out2_Lon_110_0::set)
                 .verifyComplete();
 
-        beerUnitRepository.findByBeerID(Config.group, "beer_order_hide2")
+        beerUnitRepository.findByBeerID(mainGroup, "beer_order_hide2")
                 .as(StepVerifier::create)
                 .consumeNextWith(beer_order_hide2_Thung_100_10_hide::set)
                 .consumeNextWith(beer_order_hide2_Lon_110_0_hide::set)
@@ -404,7 +408,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -458,7 +462,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -515,7 +519,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -570,7 +574,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -653,7 +657,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -737,7 +741,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -821,7 +825,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -907,7 +911,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -993,7 +997,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -1078,7 +1082,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -1132,11 +1136,11 @@ public class OrderPackageTest extends TestConfig {
 
     }
 
-    void createVoucher() {
+    void createVoucher(String mainGroup) {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .for_all_product(true)
                                 .for_all_user(true)
                                 .voucher_second_id("ORDER_GIAM_5K")
@@ -1149,7 +1153,7 @@ public class OrderPackageTest extends TestConfig {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .for_all_product(true)
                                 .voucher_second_id("ORDER_GIAM_30%")
                                 .discount(30)
@@ -1161,7 +1165,7 @@ public class OrderPackageTest extends TestConfig {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .voucher_second_id("ORDER_GIAM_50k")
                                 .detail("Giảm 50k trên 1 loại sản phẩm. Chỉ áp dụng cho ai nhận được.")
                                 .amount(50)
@@ -1173,7 +1177,7 @@ public class OrderPackageTest extends TestConfig {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .voucher_second_id("PACKAGE_VOUCHER_5K")
                                 .detail("Giảm 5k trên toàn bộ bill")
                                 .amount(5)
@@ -1186,7 +1190,7 @@ public class OrderPackageTest extends TestConfig {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .voucher_second_id("PACKAGE_VOUCHER_30%")
                                 .detail("Giảm 30% trên toàn bộ bill")
                                 .discount(30)
@@ -1200,7 +1204,7 @@ public class OrderPackageTest extends TestConfig {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .voucher_second_id("VOUCHER_DELETE")
                                 .detail("Giảm 30% trên toàn bộ bill")
                                 .discount(30)
@@ -1214,7 +1218,7 @@ public class OrderPackageTest extends TestConfig {
                 .block();
         voucherAPI.deleteByID(
                         VoucherData.builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .voucher_second_id("VOUCHER_DELETE")
                                 .detail("Giảm 30% trên toàn bộ bill")
                                 .discount(30)
@@ -1228,7 +1232,7 @@ public class OrderPackageTest extends TestConfig {
                 .block();
     }
 
-    void createBeer() {
+    void createBeer(String mainGroup) {
 
         beerAPI.CreateBeer(
                         BeerInfo
@@ -1255,7 +1259,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
-                                        .group_id(Config.group)
+                                        .group_id(mainGroup)
                                         .category(Category.CRAB.getName())
                                         .name("beer tigerrrrr")
                                         .product_second_id("beer_order1")
@@ -1290,7 +1294,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
-                                        .group_id(Config.group)
+                                        .group_id(mainGroup)
                                         .category(Category.CRAB.getName())
                                         .name("beer tigerrrrr")
                                         .product_second_id("beer_order2")
@@ -1323,7 +1327,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
-                                        .group_id(Config.group)
+                                        .group_id(mainGroup)
                                         .category(Category.CRAB.getName())
                                         .name("beer tigerrrrr")
                                         .product_second_id("beer_order3")
@@ -1356,7 +1360,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
-                                        .group_id(Config.group)
+                                        .group_id(mainGroup)
                                         .category(Category.CRAB.getName())
                                         .name("sold out 1")
                                         .product_second_id("beer_order_sold_out1")
@@ -1391,7 +1395,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
-                                        .group_id(Config.group)
+                                        .group_id(mainGroup)
                                         .category(Category.CRAB.getName())
                                         .name("sold out 2")
                                         .product_second_id("beer_order_sold_out2")
@@ -1424,7 +1428,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
-                                        .group_id(Config.group)
+                                        .group_id(mainGroup)
                                         .category(Category.CRAB.getName())
                                         .name("sold out 2")
                                         .product_second_id("beer_order_hide2")
@@ -1438,21 +1442,21 @@ public class OrderPackageTest extends TestConfig {
                 .blockLast();
     }
 
-    void createDevice() {
-        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("android").user_first_name("Nguyen").user_last_name("phong").group_id(Config.group).build())
+    void createDevice(String mainGroup) {
+        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("android").user_first_name("Nguyen").user_last_name("phong").group_id(mainGroup).build())
                 .block();
-        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("iphone").user_first_name("Ho DUong").user_last_name("Vuong").group_id(Config.group).build())
+        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("iphone").user_first_name("Ho DUong").user_last_name("Vuong").group_id(mainGroup).build())
                 .block();
-        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("order_test").user_first_name("Ho DUong").user_last_name("Vuong").group_id(Config.group).build())
+        userDeviceAPI.CreateUserDevice(com.example.heroku.model.UserDevice.builder().device_id("order_test").user_first_name("Ho DUong").user_last_name("Vuong").group_id(mainGroup).build())
                 .block();
 
     }
 
-    void addBeerToPackage() {
+    void addBeerToPackage(String mainGroup) {
 
         AtomicReference<String> beerUnit4561ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit4562ID = new AtomicReference<String>();
-        this.beerAPI.GetBeerByID(Config.group, "beer_order1")
+        this.beerAPI.GetBeerByID(mainGroup, "beer_order1")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
@@ -1480,7 +1484,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
         BeerPackage beerPackage = BeerPackage.builder()
-                .group_id(Config.group)
+                .group_id(mainGroup)
                 .beerID("beer_order1")
                 .deviceID("order_test")
                 .beerUnits(new BeerPackage.BeerUnit[]{
@@ -1503,7 +1507,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
-                                .group_id(Config.group)
+                                .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -1548,7 +1552,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("order_test").page(0).size(1000).group_id(Config.group).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("order_test").page(0).size(1000).group_id(mainGroup).build())
                 .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
@@ -1567,7 +1571,7 @@ public class OrderPackageTest extends TestConfig {
                 .verifyComplete();
     }
 
-    void createProvider() throws Exception {
+    void createProvider(String mainGroup) throws Exception {
 
         String json = "{\n" +
                 "    \"weigitExchange\":0.0002,\n" +
@@ -1609,7 +1613,7 @@ public class OrderPackageTest extends TestConfig {
                 "        }\n" +
                 "    ]\n" +
                 "}";
-        shippingProvider.CreateShipProvider(ShippingProviderData.builder().id(ShippingProvider.GHN.ID).json(json).group_id(Config.group).build())
+        shippingProvider.CreateShipProvider(ShippingProviderData.builder().id(ShippingProvider.GHN.ID).json(json).group_id(mainGroup).build())
                 .block();
     }
 }

@@ -31,16 +31,18 @@ public class UserAccountTest {
 
     com.example.heroku.services.UserAccount userAccount;
 
+    String group;
+
     public void test(){
 
         this.userAccount.createAccount(adminName, UpdatePassword.builder()
                         .username("phong test")
                         .newpassword("phong test pass")
-                        .group_id(Config.group)
+                        .group_id(group)
                         .roles(Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
                 .build()).block();
 
-        this.userAccount.getAll(SearchQuery.builder().page(0).size(100).group_id(Config.group).build())
+        this.userAccount.getAll(SearchQuery.builder().page(0).size(100).group_id(group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -100,11 +102,11 @@ public class UserAccountTest {
         this.userAccount.createAccount(adminName, UpdatePassword.builder()
                 .username("phong test 2")
                 .newpassword("phong test pass")
-                .group_id(Config.group)
+                .group_id(group)
                 .roles(Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
                 .build()).block();
 
-        this.userAccount.getAll(SearchQuery.builder().page(0).size(100).group_id(Config.group).build())
+        this.userAccount.getAll(SearchQuery.builder().page(0).size(100).group_id(group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -129,7 +131,7 @@ public class UserAccountTest {
 
         this.userAccount.seftDelete("phong test 2").block();
 
-        this.userAccount.getAll(SearchQuery.builder().page(0).size(100).group_id(Config.group).build())
+        this.userAccount.getAll(SearchQuery.builder().page(0).size(100).group_id(group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {

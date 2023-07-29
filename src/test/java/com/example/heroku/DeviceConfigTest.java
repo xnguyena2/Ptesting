@@ -15,11 +15,13 @@ public class DeviceConfigTest {
 
     private ClientDevice clientDevice;
 
+    String group;
+
     public void DeviceConfigTestWithoutImage() {
         this.deviceConfig
-                .UpdateConfig(com.example.heroku.model.DeviceConfig.builder().color("#ffffff").group_id(Config.group).build())
+                .UpdateConfig(com.example.heroku.model.DeviceConfig.builder().color("#ffffff").group_id(group).build())
                 .block();
-        this.deviceConfig.GetConfig(Config.group)
+        this.deviceConfig.GetConfig(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(config -> {
                             assertThat(config.getColor()).isEqualTo("#ffffff");
@@ -28,9 +30,9 @@ public class DeviceConfigTest {
                 .verifyComplete();
 
         this.deviceConfig
-                .UpdateConfig(com.example.heroku.model.DeviceConfig.builder().color("#333333").group_id(Config.group).build())
+                .UpdateConfig(com.example.heroku.model.DeviceConfig.builder().color("#333333").group_id(group).build())
                 .block();
-        this.deviceConfig.GetConfig(Config.group)
+        this.deviceConfig.GetConfig(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(config -> {
                             assertThat(config.getColor()).isEqualTo("#333333");
@@ -38,7 +40,7 @@ public class DeviceConfigTest {
                 )
                 .verifyComplete();
 
-        this.clientDevice.bootStrapData(Config.group)
+        this.clientDevice.bootStrapData(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(config -> {
                             assertThat(config.getDeviceConfig().getColor()).isEqualTo("#333333");
@@ -49,9 +51,9 @@ public class DeviceConfigTest {
 
     public void DeviceConfigTest() {
         this.deviceConfig
-                .UpdateConfig(com.example.heroku.model.DeviceConfig.builder().color("#ffffff").group_id(Config.group).build())
+                .UpdateConfig(com.example.heroku.model.DeviceConfig.builder().color("#ffffff").group_id(group).build())
                 .block();
-        this.deviceConfig.GetConfig(Config.group)
+        this.deviceConfig.GetConfig(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(config -> {
                             assertThat(config.getColor()).isEqualTo("#ffffff");
@@ -60,9 +62,9 @@ public class DeviceConfigTest {
                 .verifyComplete();
 
         this.deviceConfig
-                .UpdateConfig(com.example.heroku.model.DeviceConfig.builder().color("#333333").group_id(Config.group).build())
+                .UpdateConfig(com.example.heroku.model.DeviceConfig.builder().color("#333333").group_id(group).build())
                 .block();
-        this.deviceConfig.GetConfig(Config.group)
+        this.deviceConfig.GetConfig(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(config -> {
                             assertThat(config.getColor()).isEqualTo("#333333");
@@ -70,7 +72,7 @@ public class DeviceConfigTest {
                 )
                 .verifyComplete();
 
-        this.clientDevice.bootStrapData(Config.group)
+        this.clientDevice.bootStrapData(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(config -> {
                             assertThat(config.getDeviceConfig().getColor()).isEqualTo("#333333");

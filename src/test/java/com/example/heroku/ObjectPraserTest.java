@@ -16,6 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Builder
 public class ObjectPraserTest {
 
+    String group;
+
     public void BeerSubmitDataTest() throws JsonProcessingException {
         String json = "{\"name\":\"Bia Trung Quốc\",\"beerSecondID\":\"1\",\"detail\":\"Vành đai 1 đoạn Hoàng Cầu - Voi Phục dài 2,27 km, tổng đầu tư hơn 7.200 tỷ đồng, do Ban Quản lý dự án đầu tư xây dựng công trình dân dụng và công nghiệp thành phố đang triển khai bằng nguồn vốn ngân sách TP Hà Nội.\\n\\nVành đai 2 trên cao, đoạn Vĩnh Tuy - Ngã Tư Vọng kết hợp mở rộng phần từ Vĩnh Tuy đến Ngã Tư Sở đang thực hiện theo hợp đồng BT (xây dựng - chuyển giao) ký kết giữa Hà Nội và Tập đoàn Vingroup.\",\"category\":\"squid\",\"listUnit\":[{\"beer\":\"1\",\"name\":\"Lon\",\"price\":17000,\"discount\":null,\"volumetric\":0.33,\"weight\":0.2,\"beer_unit_second_id\":null,\"dateExpir\":null}]}";
 
