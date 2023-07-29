@@ -2,6 +2,7 @@ package com.example.heroku.services;
 
 import com.example.heroku.model.repository.DeviceConfigRepository;
 import com.example.heroku.response.Format;
+import entity.BaseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ public class DeviceConfig {
         return
                 this.deviceConfigRepository.deleteByGroupID(config.getGroup_id())
                 .then(Mono.just(config)
+                        .map(BaseEntity::AutoFill)
                         .flatMap(deviceConfig ->
                                 this.deviceConfigRepository.save(config)
                         )

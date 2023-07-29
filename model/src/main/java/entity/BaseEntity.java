@@ -16,7 +16,7 @@ public class BaseEntity {
     protected String group_id;
     protected Timestamp createat;
 
-    public BaseEntity AutoFill(){
+    public BaseEntity AutoFill() {
         this.createat = new Timestamp(new Date().getTime());
         return this;
     }

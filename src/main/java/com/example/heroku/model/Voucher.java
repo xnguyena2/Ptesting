@@ -39,8 +39,6 @@ public class Voucher extends BaseEntity {
 
     private Status status;
 
-    private Timestamp createat;
-
     private boolean for_all_product;
 
     private boolean for_all_user;

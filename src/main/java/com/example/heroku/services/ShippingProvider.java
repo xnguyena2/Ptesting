@@ -31,12 +31,13 @@ public class ShippingProvider {
                     .deleteByProviderId(groupID, id)
                     .then(Mono.just(ghn)
                             .flatMap(provider -> shippingProviderRepository.save(
-                                            com.example.heroku.model.ShippingProvider.builder()
+                                    (com.example.heroku.model.ShippingProvider) com.example.heroku.model.ShippingProvider.builder()
                                                     .provider_id(id)
                                                     .name(GHN.NAME)
                                                     .config(configtxt)
                                                     .group_id(groupID)
                                                     .build()
+                                                    .AutoFill()
                                     )
                             )
                     );
