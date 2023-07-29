@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
 
-	compile project(':model')
+	implementation project(':model')
 
 
 
@@ -34,25 +34,25 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-validation"
 	implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
 
-	compile "org.springframework.data:spring-data-relational"
+	implementation "org.springframework.data:spring-data-relational"
 
 	implementation "io.r2dbc:r2dbc-postgresql"
 	runtimeOnly "org.postgresql:postgresql"
 
 
-	compile group: "io.jsonwebtoken", name: "jjwt-api", version: "0.11.2"
-	compile group: "io.jsonwebtoken", name: "jjwt-impl", version: "0.11.2"
-	compile group: "io.jsonwebtoken", name: "jjwt-jackson", version: "0.11.2"
+	implementation group: "io.jsonwebtoken", name: "jjwt-api", version: "0.11.5"
+	implementation group: "io.jsonwebtoken", name: "jjwt-impl", version: "0.11.5"
+	implementation group: "io.jsonwebtoken", name: "jjwt-jackson", version: "0.11.5"
 
-	compile "javax.persistence:javax.persistence-api:2.2"
-	compile "javax.validation:validation-api:2.0.1.Final"
+	implementation "javax.persistence:javax.persistence-api:2.2"
+	implementation "javax.validation:validation-api:2.0.1.Final"
 
-	compile "com.flickr4java:flickr4java:3.0.6"
+	implementation "com.flickr4java:flickr4java:3.0.8"
 
 	//can remove this package
 	//compile "javax.xml.bind:jaxb-api"
 
-	implementation 'com.google.firebase:firebase-admin:8.1.0'
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
 
 	compileOnly "org.projectlombok:lombok:$gradle.ext.lombokV"
 	annotationProcessor "org.projectlombok:lombok:$gradle.ext.lombokV"

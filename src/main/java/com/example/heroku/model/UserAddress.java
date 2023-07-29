@@ -45,8 +45,14 @@ public class UserAddress extends BaseEntity {
         return this;
     }
 
-    public UserAddress AutoFill(){
+    public UserAddress AutoFill() {
         this.createat = new Timestamp(new Date().getTime());
+        return this;
+    }
+
+    public UserAddress Clean() {
+        this.setId(null);
+        AutoFill();
         return this;
     }
 

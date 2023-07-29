@@ -44,10 +44,6 @@ public class UserAddress {
 
     public Mono<com.example.heroku.model.UserAddress> UpdateAddress(com.example.heroku.model.UserAddress address) {
         return userAddressRepository.deleteAddress(address.getGroup_id(), address.getAddress_id())
-                .then(Mono.just(address))
-                .flatMap(address1 -> {
-                    address.setId(null);
-                    return userAddressRepository.save(address);
-                });
+                .then(userAddressRepository.save(address.Clean()));
     }
 }
