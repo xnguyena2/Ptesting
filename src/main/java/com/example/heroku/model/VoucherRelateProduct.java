@@ -1,9 +1,8 @@
 package com.example.heroku.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import entity.BaseEntity;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
@@ -11,13 +10,14 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name="voucher_relate_product")
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VoucherRelateProduct {
+public class VoucherRelateProduct extends BaseEntity {
 
     @Id
     String id;
@@ -25,8 +25,6 @@ public class VoucherRelateProduct {
     private String voucher_second_id;
 
     private String product_second_id;
-
-    private Timestamp createat;
 
     public VoucherRelateProduct AutoFill(){
         this.createat = new Timestamp(new Date().getTime());

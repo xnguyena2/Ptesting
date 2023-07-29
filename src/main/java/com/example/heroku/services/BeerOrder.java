@@ -63,7 +63,7 @@ public class BeerOrder {
                                 .map(beerOrderData::UpdateName)
                 ).map(beerOrderData -> ProductWithVoucher.builder().productOrder(beerOrderData).build())
                 .flatMap(packaBeerOrderData ->
-                        voucherServices.getDeviceVoucher(
+                        voucherServices.getDeviceVoucher(packageOrderData.getPackageOrder().getGroup_id(),
                                         packaBeerOrderData.getProductOrder().getProductOrder().getVoucher_second_id(),
                                         packageOrderData.getPackageOrder().getUser_device_id(),
                                         packaBeerOrderData.getProductOrder().getProductOrder().getProduct_second_id()
@@ -78,7 +78,7 @@ public class BeerOrder {
                         .filter(packageOrder -> packageOrder.getVoucher_second_id() != null)
                         .flatMap(
                                 packageOrder ->
-                                        voucherServices.getPackageVoucher(packageOrder.getVoucher_second_id(), packageOrder.getUser_device_id())
+                                        voucherServices.getPackageVoucher(packageOrder.getGroup_id(), packageOrder.getVoucher_second_id(), packageOrder.getUser_device_id())
                                                 .map(voucher ->
                                                         ProductWithVoucher.builder().voucher(voucher).build()
                                                 )
@@ -277,21 +277,23 @@ public class BeerOrder {
                                                 }
                                         )
                                 )
-                                .then(vouchers.filter(productWithVoucher -> Util.getInstance().CleanMap(packageOrderData.getPackageOrder().getUser_device_id() + productWithVoucher.getVoucher().getVoucher_second_id()) && !packageOrderData.isPreOrder())
-                                        .map(productWithVoucher ->
-                                            voucherServices
-                                                    .ForceSaveVoucher(productWithVoucher.getVoucher().getVoucher_second_id(), packageOrderData.getPackageOrder().getUser_device_id(),
-                                                            Util.getInstance().CleanReuse(packageOrderData.getPackageOrder().getUser_device_id() + productWithVoucher.getVoucher().getVoucher_second_id())
-                                                    ).subscribe()
-                                        ).then()
+                                .thenMany(
+                                        vouchers
+                                                .filter(productWithVoucher -> Util.getInstance().CleanMap(packageOrderData.getPackageOrder().getUser_device_id() + productWithVoucher.getVoucher().getVoucher_second_id()) && !packageOrderData.isPreOrder())
+                                                .map(productWithVoucher ->
+                                                        voucherServices
+                                                                .ForceSaveVoucher(productWithVoucher.getVoucher().getGroup_id(), productWithVoucher.getVoucher().getVoucher_second_id(), packageOrderData.getPackageOrder().getUser_device_id(),
+                                                                        Util.getInstance().CleanReuse(packageOrderData.getPackageOrder().getUser_device_id() + productWithVoucher.getVoucher().getVoucher_second_id())
+                                                                )
+                                                                .subscribe()
+                                                )
                                 )
-                                .then(
+                                .thenMany(
                                         vouchers
                                                 .filter(productWithVoucher -> productWithVoucher.getProductOrder() != null)
                                                 .flatMap(productWithVoucher ->
                                                         cleanPackage(packageOrderData, productWithVoucher.getProductOrder())
                                                 )
-                                                .then()
                                 )
                                 .then(
                                         Mono.just(packageOrderData.getPackageOrder())

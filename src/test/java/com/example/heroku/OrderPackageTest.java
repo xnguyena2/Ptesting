@@ -102,7 +102,18 @@ public class OrderPackageTest extends TestConfig {
         assertThat(packageVoucher5K.get().intValue()).isEqualTo((int) (672 * 10 + (672 - 5) * 20));
 
 
-        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_30%", "hello")
+        voucherAPI.getVoucherByID(Config.group, "PACKAGE_VOUCHER_30%")
+                .as(StepVerifier::create)
+                .consumeNextWith(voucher -> {
+                    System.out.println("package voucher: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+                    assertThat(voucher.getReuse()).isEqualTo(45);
+                    assertThat(voucher.getListBeer()).isEqualTo(new String[]{});
+                    assertThat(voucher.getListUser()).isEqualTo(new String[]{"iphone"});
+                })
+                .verifyComplete();
+
+
+        voucherAPI.getPackageVoucher(Config.group, "PACKAGE_VOUCHER_30%", "hello")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("package voucher of hello: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
@@ -111,7 +122,7 @@ public class OrderPackageTest extends TestConfig {
                 .verifyComplete();
 
 
-        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_30%", "iphone")
+        voucherAPI.getPackageVoucher(Config.group, "PACKAGE_VOUCHER_30%", "iphone")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("package voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
@@ -119,11 +130,11 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_5K", "hello")
+        voucherAPI.getPackageVoucher(Config.group, "PACKAGE_VOUCHER_5K", "hello")
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_5K", "android")
+        voucherAPI.getPackageVoucher(Config.group, "PACKAGE_VOUCHER_5K", "android")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("package voucher of android: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
@@ -131,11 +142,11 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        voucherAPI.getPackageVoucher("PACKAGE_VOUCHER_5K", "iphone")
+        voucherAPI.getPackageVoucher(Config.group, "PACKAGE_VOUCHER_5K", "iphone")
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        voucherAPI.getAllMyVoucher("iphone")
+        voucherAPI.getAllMyVoucher(Config.group, "iphone")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
@@ -154,7 +165,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        beerAPI.CountSearchBeer(SearchQuery.builder().query("tigerrrrr").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).build())
+        beerAPI.CountSearchBeer(SearchQuery.builder().query("tigerrrrr").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -177,7 +188,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        beerAPI.CountSearchBeer(SearchQuery.builder().query("beer&tigerrrrr").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).build())
+        beerAPI.CountSearchBeer(SearchQuery.builder().query("beer&tigerrrrr").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).group_id(Config.group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
@@ -287,7 +298,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        statisticServices.getByProductID(SearchQuery.builder().filter("30").query("beer_order1").page(0).size(30000).build())
+        statisticServices.getByProductID(SearchQuery.builder().filter("30").query("beer_order1").page(0).size(30000).group_id(Config.group).build())
                 .reduce(0f, (total, product) -> {
                     return total + product.getTotal_price();
                 })
@@ -297,7 +308,7 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
-        statisticServices.getAll(SearchQuery.builder().filter("30").page(0).size(3000).build())
+        statisticServices.getAll(SearchQuery.builder().filter("30").page(0).size(3000).group_id(Config.group).build())
                 .reduce(0f, (total, product) -> {
                     return total + product.getTotal_price();
                 })
@@ -393,6 +404,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
+                                .group_id(Config.group)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -446,6 +458,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
+                                .group_id(Config.group)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -502,6 +515,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
+                                .group_id(Config.group)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -556,6 +570,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
+                                .group_id(Config.group)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -638,6 +653,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
+                                .group_id(Config.group)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -721,6 +737,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
+                                .group_id(Config.group)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -804,6 +821,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
+                                .group_id(Config.group)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -889,6 +907,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
+                                .group_id(Config.group)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -974,6 +993,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
+                                .group_id(Config.group)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -1058,6 +1078,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
+                                .group_id(Config.group)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")
@@ -1115,6 +1136,7 @@ public class OrderPackageTest extends TestConfig {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
+                                .group_id(Config.group)
                                 .for_all_product(true)
                                 .for_all_user(true)
                                 .voucher_second_id("ORDER_GIAM_5K")
@@ -1127,6 +1149,7 @@ public class OrderPackageTest extends TestConfig {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
+                                .group_id(Config.group)
                                 .for_all_product(true)
                                 .voucher_second_id("ORDER_GIAM_30%")
                                 .discount(30)
@@ -1138,6 +1161,7 @@ public class OrderPackageTest extends TestConfig {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
+                                .group_id(Config.group)
                                 .voucher_second_id("ORDER_GIAM_50k")
                                 .detail("Giảm 50k trên 1 loại sản phẩm. Chỉ áp dụng cho ai nhận được.")
                                 .amount(50)
@@ -1149,6 +1173,7 @@ public class OrderPackageTest extends TestConfig {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
+                                .group_id(Config.group)
                                 .voucher_second_id("PACKAGE_VOUCHER_5K")
                                 .detail("Giảm 5k trên toàn bộ bill")
                                 .amount(5)
@@ -1161,6 +1186,7 @@ public class OrderPackageTest extends TestConfig {
 
         voucherAPI.createVoucher(
                         VoucherData.builder()
+                                .group_id(Config.group)
                                 .voucher_second_id("PACKAGE_VOUCHER_30%")
                                 .detail("Giảm 30% trên toàn bộ bill")
                                 .discount(30)
@@ -1170,6 +1196,35 @@ public class OrderPackageTest extends TestConfig {
                                 .listUser(new String[]{"android", "iphone"})
                                 .for_all_user(true)
                                 .build())
+                .block();
+
+        voucherAPI.createVoucher(
+                        VoucherData.builder()
+                                .group_id(Config.group)
+                                .voucher_second_id("VOUCHER_DELETE")
+                                .detail("Giảm 30% trên toàn bộ bill")
+                                .discount(30)
+                                .reuse(45)
+                                .package_voucher(true)
+                                .listBeer(new String[]{"beer_order1", "beer_order2"})
+                                .listUser(new String[]{"android", "iphone"})
+                                .for_all_user(true)
+                                .build()
+                )
+                .block();
+        voucherAPI.deleteByID(
+                        VoucherData.builder()
+                                .group_id(Config.group)
+                                .voucher_second_id("VOUCHER_DELETE")
+                                .detail("Giảm 30% trên toàn bộ bill")
+                                .discount(30)
+                                .reuse(45)
+                                .package_voucher(true)
+                                .listBeer(new String[]{"beer_order1", "beer_order2"})
+                                .listUser(new String[]{"android", "iphone"})
+                                .for_all_user(true)
+                                .build()
+                )
                 .block();
     }
 
@@ -1200,6 +1255,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
+                                        .group_id(Config.group)
                                         .category(Category.CRAB.getName())
                                         .name("beer tigerrrrr")
                                         .product_second_id("beer_order1")
@@ -1234,6 +1290,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
+                                        .group_id(Config.group)
                                         .category(Category.CRAB.getName())
                                         .name("beer tigerrrrr")
                                         .product_second_id("beer_order2")
@@ -1266,6 +1323,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
+                                        .group_id(Config.group)
                                         .category(Category.CRAB.getName())
                                         .name("beer tigerrrrr")
                                         .product_second_id("beer_order3")
@@ -1298,6 +1356,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
+                                        .group_id(Config.group)
                                         .category(Category.CRAB.getName())
                                         .name("sold out 1")
                                         .product_second_id("beer_order_sold_out1")
@@ -1332,6 +1391,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
+                                        .group_id(Config.group)
                                         .category(Category.CRAB.getName())
                                         .name("sold out 2")
                                         .product_second_id("beer_order_sold_out2")
@@ -1364,6 +1424,7 @@ public class OrderPackageTest extends TestConfig {
                                 })
                                 .product(Product
                                         .builder()
+                                        .group_id(Config.group)
                                         .category(Category.CRAB.getName())
                                         .name("sold out 2")
                                         .product_second_id("beer_order_hide2")
@@ -1442,6 +1503,7 @@ public class OrderPackageTest extends TestConfig {
                 .packageOrder(
                         PackageOrder
                                 .builder()
+                                .group_id(Config.group)
                                 .region_id(294)
                                 .district_id(484)
                                 .phone_number("1234567890")

@@ -34,12 +34,12 @@ CREATE INDEX product_import_index ON product_import(product_import_second_id);
 CREATE INDEX user_device_index ON user_device(device_id);
 
 ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
-ALTER TABLE product ADD CONSTRAINT UQ_product_second_id UNIQUE(product_second_id);
-ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_second_id UNIQUE(product_unit_second_id);
-ALTER TABLE search_token ADD CONSTRAINT UQ_search_token_product_second_id UNIQUE(product_second_id);
-ALTER TABLE user_fcm ADD CONSTRAINT UQ_user_fcm_device_id UNIQUE(device_id);
-ALTER TABLE voucher_relate_user_device ADD CONSTRAINT UQ_voucher_relate_user_device UNIQUE(voucher_second_id, device_id);
-ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(product_import_second_id);
+ALTER TABLE product ADD CONSTRAINT UQ_product_second_id UNIQUE(group_id, product_second_id);
+ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_second_id UNIQUE(group_id, product_unit_second_id);
+ALTER TABLE search_token ADD CONSTRAINT UQ_search_token_product_second_id UNIQUE(group_id, product_second_id);
+ALTER TABLE user_fcm ADD CONSTRAINT UQ_user_fcm_device_id UNIQUE(group_id, device_id);
+ALTER TABLE voucher_relate_user_device ADD CONSTRAINT UQ_voucher_relate_user_device UNIQUE(group_id, voucher_second_id, device_id);
+ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(group_id, product_import_second_id);
 ALTER TABLE user_device ADD CONSTRAINT UQ_user_device UNIQUE(group_id, device_id);
 
 create or replace function getRoleIndex(roles VARCHAR)

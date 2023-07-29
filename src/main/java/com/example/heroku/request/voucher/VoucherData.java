@@ -12,6 +12,8 @@ import java.util.ArrayList;
 @Builder
 public class VoucherData {
 
+    private String group_id;
+
     private String voucher_second_id;
 
     private String detail;
@@ -47,6 +49,7 @@ public class VoucherData {
     public Voucher GetVoucher() {
 
         return Voucher.builder()
+                .group_id(getGroup_id())
                 .voucher_second_id(getVoucher_second_id())
                 .detail(getDetail())
                 .discount(getDiscount())
@@ -62,6 +65,7 @@ public class VoucherData {
 
     public VoucherData FromVoucher(Voucher v) {
         System.out.println("voucher second id: " + v.getVoucher_second_id());
+        setGroup_id(v.getGroup_id());
         setVoucher_second_id(v.getVoucher_second_id());
         setDetail(v.getDetail());
         setDiscount(v.getDiscount());

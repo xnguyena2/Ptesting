@@ -32,7 +32,13 @@ public class PackageOrderData {
 
         public BeerOrderData UpdateName(Product product) {
             if (productOrder != null) {
+                productOrder.setGroup_id(product.getGroup_id());
                 productOrder.setName(product.getName());
+
+                for (ProductUnitOrder unit :
+                        productUnitOrders) {
+                    unit.setGroup_id(product.getGroup_id());
+                }
             }
             return this;
         }

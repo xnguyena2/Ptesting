@@ -5,6 +5,7 @@ import com.example.heroku.model.VoucherRelateUserDevice;
 import com.example.heroku.model.repository.VoucherRelateBeerRepository;
 import com.example.heroku.model.repository.VoucherRelateUserDeviceRepository;
 import com.example.heroku.model.repository.VoucherRepository;
+import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.voucher.VoucherData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,17 +28,19 @@ public class Voucher {
     @Autowired
     VoucherRelateUserDeviceRepository voucherRelateUserDeviceRepository;
 
-    public Mono<com.example.heroku.model.Voucher> deleteByID(String id) {
-        return voucherRelateUserDeviceRepository.deleteByVoucherSecondId(id)
-                .then(voucherRelateBeerRepository.deleteByVoucherSecondId(id))
-                .then(voucherRepository.deleteBySecondId(id));
+    public Mono<com.example.heroku.model.Voucher> deleteByID(VoucherData voucherData) {
+        String groupID = voucherData.getGroup_id();
+        String voucherID = voucherData.getVoucher_second_id();
+        return voucherRelateUserDeviceRepository.deleteByVoucherSecondId(groupID, voucherID)
+                .then(voucherRelateBeerRepository.deleteByVoucherSecondId(groupID, voucherID))
+                .then(voucherRepository.deleteBySecondId(groupID, voucherID));
     }
 
     public Mono<com.example.heroku.model.Voucher> createVoucher(VoucherData voucherData) {
         com.example.heroku.model.Voucher voucher = voucherData.GetVoucher();
-        return voucherRepository.deleteBySecondId(voucher.getVoucher_second_id())
-                .then(voucherRelateBeerRepository.deleteByVoucherSecondId(voucher.getVoucher_second_id()))
-                .then(voucherRelateUserDeviceRepository.deleteByVoucherSecondId(voucher.getVoucher_second_id()))
+        return voucherRepository.deleteBySecondId(voucher.getGroup_id(), voucher.getVoucher_second_id())
+                .then(voucherRelateBeerRepository.deleteByVoucherSecondId(voucher.getGroup_id(), voucher.getVoucher_second_id()))
+                .then(voucherRelateUserDeviceRepository.deleteByVoucherSecondId(voucher.getGroup_id(), voucher.getVoucher_second_id()))
                 .thenMany(Mono.just(voucherData)
                         .filter(vd -> !vd.isFor_all_user())
                         .flatMap(vd ->
@@ -46,6 +49,7 @@ public class Voucher {
                                                 .map(
                                                         userID ->
                                                                 VoucherRelateUserDevice.builder()
+                                                                        .group_id(vd.getGroup_id())
                                                                         .voucher_second_id(vd.getVoucher_second_id())
                                                                         .device_id(userID)
                                                                         .reuse(vd.getReuse())
@@ -65,6 +69,7 @@ public class Voucher {
                                                         beerID ->
                                                                 VoucherRelateProduct
                                                                         .builder()
+                                                                        .group_id(voucher.getGroup_id())
                                                                         .product_second_id(beerID)
                                                                         .voucher_second_id(voucher.getVoucher_second_id())
                                                                         .build()
@@ -83,7 +88,7 @@ public class Voucher {
                 .flatMap(voucherData ->
                         Mono.just(new ArrayList<String>())
                                 .flatMap(listProduct ->
-                                        voucherRelateBeerRepository.getByVoucherSecondId(voucherData.getVoucher_second_id())
+                                        voucherRelateBeerRepository.getByVoucherSecondId(voucherData.getGroup_id(), voucherData.getVoucher_second_id())
                                                 .map(voucherRelateProduct -> listProduct.add(voucherRelateProduct.getProduct_second_id()))
                                                 .then(Mono.just(listProduct))
                                                 .map(voucherData::SetListProduct)
@@ -92,7 +97,7 @@ public class Voucher {
                 .flatMap(voucherData ->
                         Mono.just(new ArrayList<String>())
                                 .flatMap(listDevice ->
-                                        voucherRelateUserDeviceRepository.getByVoucherSecondId(voucherData.getVoucher_second_id())
+                                        voucherRelateUserDeviceRepository.getByVoucherSecondId(voucherData.getGroup_id(), voucherData.getVoucher_second_id())
                                                 .map(voucherRelateBeer -> listDevice.add(voucherRelateBeer.getDevice_id()))
                                                 .then(Mono.just(listDevice))
                                                 .map(voucherData::SetListUser)
@@ -100,38 +105,42 @@ public class Voucher {
                 );
     }
 
-    public Flux<VoucherData> getAllVoucher(int page, int size) {
-        return voucherRepository.findAll(page, size)
+    public Flux<VoucherData> getAllVoucher(SearchQuery query) {
+        String groupID = query.getGroup_id();
+        int page = query.getPage();
+        int size = query.getSize();
+        return voucherRepository.findAll(groupID, page, size)
                 .flatMap(voucher -> this.ConvertVoucherToVoucherData(Mono.just(voucher)));
     }
 
-    public Mono<VoucherData> getVoucherByID(String voucherID) {
-        return voucherRepository.getVoucherBySecondID(voucherID)
+    public Mono<VoucherData> getVoucherByID(String groupID, String voucherID) {
+        return voucherRepository.getVoucherBySecondID(groupID, voucherID)
                 .flatMap(voucher -> this.ConvertVoucherToVoucherData(Mono.just(voucher)));
     }
 
-    public Mono<com.example.heroku.model.Voucher> getDeviceVoucher(String voucherID, String device, String productID) {
-        return voucherRepository.getVoucherBySecondIDAndUserDeviceAndBeerSecondID(voucherID, device, productID);
+    public Mono<com.example.heroku.model.Voucher> getDeviceVoucher(String groupID, String voucherID, String device, String productID) {
+        return voucherRepository.getVoucherBySecondIDAndUserDeviceAndBeerSecondID(groupID, voucherID, device, productID);
     }
 
-    public Mono<com.example.heroku.model.Voucher> getPackageVoucher(String voucherID, String device) {
-        return voucherRepository.getPackageVoucherBySecondIDAndUserDevice(voucherID, device);
+    public Mono<com.example.heroku.model.Voucher> getPackageVoucher(String groupID, String voucherID, String device) {
+        return voucherRepository.getPackageVoucherBySecondIDAndUserDevice(groupID, voucherID, device);
     }
 
-    public Mono<com.example.heroku.model.Voucher> getVoucher(String bySecondID) {
-        return voucherRepository.getVoucherBySecondID(bySecondID);
+    public Mono<com.example.heroku.model.Voucher> getVoucher(String groupID, String bySecondID) {
+        return voucherRepository.getVoucherBySecondID(groupID, bySecondID);
     }
 
-    public Mono<com.example.heroku.model.Voucher> getDiscount(String voucherSecondID, String userDeviceID, String beerSecondID) {
-        return voucherRepository.getVoucherBySecondIDAndUserDeviceAndBeerSecondID(voucherSecondID, userDeviceID, beerSecondID);
+    public Mono<com.example.heroku.model.Voucher> getDiscount(String groupID, String voucherSecondID, String userDeviceID, String beerSecondID) {
+        return voucherRepository.getVoucherBySecondIDAndUserDeviceAndBeerSecondID(groupID, voucherSecondID, userDeviceID, beerSecondID);
     }
 
-    public Mono<com.example.heroku.model.Voucher> comsumeVoucher(String voucherSecondID, String userDeviceID, String beerSecondID) {
-        return voucherRepository.getVoucherBySecondIDAndUserDeviceAndBeerSecondID(voucherSecondID, userDeviceID, beerSecondID)
+    public Mono<com.example.heroku.model.Voucher> comsumeVoucher(String groupID, String voucherSecondID, String userDeviceID, String beerSecondID) {
+        return voucherRepository.getVoucherBySecondIDAndUserDeviceAndBeerSecondID(groupID, voucherSecondID, userDeviceID, beerSecondID)
                 .flatMap(voucher ->
-                        voucherRelateUserDeviceRepository.getByVoucherSecondIdAndUserDeviceID(voucherSecondID, userDeviceID)
+                        voucherRelateUserDeviceRepository.getByVoucherSecondIdAndUserDeviceID(groupID, voucherSecondID, userDeviceID)
                                 .switchIfEmpty(
                                         Mono.just(VoucherRelateUserDevice.builder()
+                                                .group_id(groupID)
                                                 .reuse(voucher.getReuse())
                                                 .device_id(userDeviceID)
                                                 .voucher_second_id(voucherSecondID)
@@ -142,7 +151,7 @@ public class Voucher {
                                         voucherRelateUserDevice -> voucherRelateUserDevice.ResetID().ComsumeVoucher().AutoFill()
                                 )
                                 .flatMap(voucherRelateUserDevice ->
-                                        voucherRelateUserDeviceRepository.updateOrInsert(voucherRelateUserDevice.getVoucher_second_id(), voucherRelateUserDevice.getDevice_id(), voucherRelateUserDevice.getReuse())
+                                        voucherRelateUserDeviceRepository.updateOrInsert(voucherRelateUserDevice.getGroup_id(), voucherRelateUserDevice.getVoucher_second_id(), voucherRelateUserDevice.getDevice_id(), voucherRelateUserDevice.getReuse())
                                                 .then(Mono.just(voucher))
                                 )
                 );
@@ -151,12 +160,12 @@ public class Voucher {
     /*
     only call this function if the voucher alredy consume
      */
-    public Mono<VoucherRelateUserDevice> ForceSaveVoucher(String voucherSecondID, String userDeviceID, int resue) {
-        System.out.println("Save voucher: " + voucherSecondID + ", reuse: " + resue);
-        return voucherRelateUserDeviceRepository.updateOrInsert(voucherSecondID, userDeviceID, resue);
+    public Mono<VoucherRelateUserDevice> ForceSaveVoucher(String groupID, String voucherSecondID, String userDeviceID, int resue) {
+        System.out.println("Save voucher: " + voucherSecondID + ", reuse: " + resue + ", group: " + groupID);
+        return voucherRelateUserDeviceRepository.updateOrInsert(groupID, voucherSecondID, userDeviceID, resue);
     }
 
-    public Flux<com.example.heroku.model.Voucher> getAllMyVoucher(String userDeviceID) {
-        return voucherRepository.getAllVoucherOfUserDevice(userDeviceID);
+    public Flux<com.example.heroku.model.Voucher> getAllMyVoucher(String groupID, String userDeviceID) {
+        return voucherRepository.getAllVoucherOfUserDevice(groupID, userDeviceID);
     }
 }

@@ -12,7 +12,7 @@ public interface SearchTokenRepository extends ReactiveCrudRepository<SearchToke
     @Query(value = "DELETE FROM search_token WHERE product_second_id = :id")
     Mono<SearchToken> deleteBySecondId(@Param("id")String id);
 
-    @Query(value = "INSERT INTO search_token(group_id, product_second_id, tokens, createat) VALUES ( :group_id, :product_second_id, to_tsvector(:tokens), :createat ) ON CONFLICT (product_second_id) DO UPDATE SET group_id = :group_id, product_second_id = :product_second_id, tokens = to_tsvector(:tokens), createat = :createat")
+    @Query(value = "INSERT INTO search_token(group_id, product_second_id, tokens, createat) VALUES ( :group_id, :product_second_id, to_tsvector(:tokens), :createat ) ON CONFLICT (group_id, product_second_id) DO UPDATE SET group_id = :group_id, product_second_id = :product_second_id, tokens = to_tsvector(:tokens), createat = :createat")
     Mono<SearchToken> saveToken(@Param("group_id")String group_id, @Param("product_second_id")String product_second_id,
                                 @Param("tokens")String tokens, @Param("createat") Timestamp createat);
 }

@@ -42,7 +42,7 @@ public class Beer {
 
     public Flux<ProductUnit> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
         return Mono.just(info)
-                .map(beerInfo -> beerInfo.getProduct().UpdateMetaSearch().AutoFill())
+                .map(beerInfo -> beerInfo.CorrectData().getProduct().UpdateMetaSearch().AutoFill())
                 .flatMap(product ->
                         this.beerRepository.saveProduct(product.getGroup_id(), product.getProduct_second_id(),
                                 product.getName(), product.getDetail(),
