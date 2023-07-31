@@ -92,7 +92,7 @@ public class BeerOrder {
                     AtomicReference<Float> discount = new AtomicReference<>((float) 0);
                     AtomicReference<Float> amount = new AtomicReference<>((float) 0);
                     if (Util.getInstance().DiffirentDays(voucher.getDate_expire(), currentTime) >= 0) {
-                        voucher.comsumeVoucherSync(device, (shareReuse) -> {
+                        voucher.comsumeVoucherSync(vouchers.getGroup_id() + device, (shareReuse) -> {
                             if (voucher.getDiscount() > 0) {
                                 discount.updateAndGet(v -> (v + voucher.getDiscount()));
                                 System.out.println("--------> comsume only BeerOrder: " + productOrder.getProduct_second_id() + ", voucher: " + voucher.getVoucher_second_id() + ", discount: " + voucher.getDiscount() + "%");
@@ -115,7 +115,7 @@ public class BeerOrder {
                 {
                     VoucherMerge voucherMerge = VoucherMerge.builder().amount(0).discount(0).build();
                     if (Util.getInstance().DiffirentDays(voucher.getDate_expire(), currentTime) >= 0) {
-                        voucher.comsumeVoucherSync(device, (shareReuse) -> {
+                        voucher.comsumeVoucherSync(voucher.getGroup_id() + device, (shareReuse) -> {
                             if (voucher.getAmount() > 0) {
                                 voucherMerge.setAmount(voucher.getAmount());
                                 System.out.println("--------> allbeer voucher: " + voucher.getVoucher_second_id() + ", amount: " + voucher.getAmount());
@@ -177,7 +177,7 @@ public class BeerOrder {
         return Mono.just(getUserVoucherAndProductName(packageOrderData))
                 .flatMap(vouchers ->
                         vouchers.map(vc ->
-                                        Util.getInstance().obserVoucher(packageOrderData.getPackageOrder().getUser_device_id() + vc.getVoucher().getVoucher_second_id())
+                                        Util.getInstance().obserVoucher(vc.getVoucher().getGroup_id() + packageOrderData.getPackageOrder().getUser_device_id() + vc.getVoucher().getVoucher_second_id())
                                 )
                                 .then(
                                         vouchers
@@ -279,11 +279,11 @@ public class BeerOrder {
                                 )
                                 .thenMany(
                                         vouchers
-                                                .filter(productWithVoucher -> Util.getInstance().CleanMap(packageOrderData.getPackageOrder().getUser_device_id() + productWithVoucher.getVoucher().getVoucher_second_id()) && !packageOrderData.isPreOrder())
+                                                .filter(productWithVoucher -> Util.getInstance().CleanMap(productWithVoucher.getVoucher().getGroup_id() + packageOrderData.getPackageOrder().getUser_device_id() + productWithVoucher.getVoucher().getVoucher_second_id()) && !packageOrderData.isPreOrder())
                                                 .map(productWithVoucher ->
                                                         voucherServices
                                                                 .ForceSaveVoucher(productWithVoucher.getVoucher().getGroup_id(), productWithVoucher.getVoucher().getVoucher_second_id(), packageOrderData.getPackageOrder().getUser_device_id(),
-                                                                        Util.getInstance().CleanReuse(packageOrderData.getPackageOrder().getUser_device_id() + productWithVoucher.getVoucher().getVoucher_second_id())
+                                                                        Util.getInstance().CleanReuse(productWithVoucher.getVoucher().getGroup_id() + packageOrderData.getPackageOrder().getUser_device_id() + productWithVoucher.getVoucher().getVoucher_second_id())
                                                                 )
                                                                 .subscribe()
                                                 )

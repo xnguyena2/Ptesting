@@ -70,13 +70,34 @@ public class OrderPackageTest extends TestConfig {
         VoucherTest.builder().voucherAPI(voucherAPI).group(mainGroup).build().VoucherTest();
     }
 
-    AtomicReference<Float> voucher5K = new AtomicReference<>((float) 0);
-    AtomicReference<Float> voucher30Percent = new AtomicReference<>((float) 0);
-    AtomicReference<Float> packageVoucher5K = new AtomicReference<>((float) 0);
-
     @Test
     public void OrderTest() throws Exception {
 
+        AtomicReference<Float> voucher5K = new AtomicReference<>((float) 0);
+        AtomicReference<Float> voucher30Percent = new AtomicReference<>((float) 0);
+        AtomicReference<Float> packageVoucher5K = new AtomicReference<>((float) 0);
+
+        makeOrder(mainGroup, voucher5K, voucher30Percent, packageVoucher5K);
+    }
+
+    @Test
+    public void testVoucher2() {
+//        VoucherTest.builder().voucherAPI(voucherAPI).group(otherGroup).build().VoucherTest();
+    }
+
+    @Test
+    public void OrderTest2() throws Exception {
+        VoucherTest.builder().voucherAPI(voucherAPI).group(otherGroup).build().VoucherTest();
+
+        AtomicReference<Float> voucher5K = new AtomicReference<>((float) 0);
+        AtomicReference<Float> voucher30Percent = new AtomicReference<>((float) 0);
+        AtomicReference<Float> packageVoucher5K = new AtomicReference<>((float) 0);
+
+        makeOrder(otherGroup, voucher5K, voucher30Percent, packageVoucher5K);
+    }
+
+    void makeOrder(String group, AtomicReference<Float> voucher5K, AtomicReference<Float> voucher30Percent, AtomicReference<Float> packageVoucher5K)  throws Exception {
+        final String mainGroup = group;
         final int totalSaveOrder = 10;// if not save success will 8
 
         createDevice(mainGroup);
@@ -90,7 +111,7 @@ public class OrderPackageTest extends TestConfig {
             final int i1 = i;
             threads[i] = new Thread(() -> {
                 System.out.println("Thread Running: " + (i1 + 1));
-                orderTest(mainGroup);
+                orderTest(mainGroup, voucher5K, voucher30Percent, packageVoucher5K);
             });
             //Thread.sleep(5000);
             threads[i].start();
@@ -326,7 +347,7 @@ public class OrderPackageTest extends TestConfig {
 
     }
 
-    void orderTest(String mainGroup) {
+    void orderTest(String mainGroup, AtomicReference<Float> voucher5K, AtomicReference<Float> voucher30Percent, AtomicReference<Float> packageVoucher5K) {
 
         AtomicReference<ProductUnit> beer_order1_Thung_10_10 = new AtomicReference<ProductUnit>();
         AtomicReference<ProductUnit> beer_order1_Lon_20_20 = new AtomicReference<ProductUnit>();

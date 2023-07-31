@@ -211,7 +211,6 @@ public class ApplicationTest extends TestConfig {
     @Order(6)
     public void BeerTest2() {
         BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).build().saveBeerTest();
-        System.out.println("BeerTest2");
         UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).build().TestUserPackage();
     }
 
