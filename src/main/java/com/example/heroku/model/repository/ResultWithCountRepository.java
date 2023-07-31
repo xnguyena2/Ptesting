@@ -10,10 +10,10 @@ import reactor.core.publisher.Mono;
 
 public interface ResultWithCountRepository extends ReactiveCrudRepository<ResultWithCount, String> {
 
-    @Query(value = "SELECT COUNT(*) as count FROM ( SELECT * FROM product WHERE product.group_id = :group_id ) product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id WHERE search_token.tokens @@ to_tsquery(:search)")
+    @Query(value = "SELECT COUNT(*) as count FROM ( SELECT * FROM product WHERE product.group_id = :group_id ) product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE search_token.tokens @@ to_tsquery(:search)")
     Mono<ResultWithCount> adminCountSearchBeer(@Param("group_id")String group_id, @Param("search")String search);
 
-    @Query(value = "SELECT COUNT(*) AS COUNT FROM ( SELECT * FROM product WHERE product.group_id = :group_id ) product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id WHERE search_token.tokens @@ to_tsquery(:search) AND product.status IS DISTINCT FROM 'HIDE'")
+    @Query(value = "SELECT COUNT(*) AS COUNT FROM ( SELECT * FROM product WHERE product.group_id = :group_id ) product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE search_token.tokens @@ to_tsquery(:search) AND product.status IS DISTINCT FROM 'HIDE'")
     Mono<ResultWithCount> countSearchBeer(@Param("group_id")String group_id, @Param("search")String search);
 
     @Query(value = "SELECT COUNT(*) as count FROM product WHERE product.group_id = :group_id")

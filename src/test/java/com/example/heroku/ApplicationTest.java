@@ -5,6 +5,9 @@ import com.example.heroku.photo.FlickrLib;
 import com.example.heroku.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,7 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-public class ApplicationTest extends TestConfig{
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class ApplicationTest extends TestConfig {
 
     String[] listImg = new String[]{
             //"C:\\Users\\phong\\Downloads\\phong\\944-900x500.jpg",
@@ -53,9 +57,6 @@ public class ApplicationTest extends TestConfig{
     UserAddress userAddressAPI;
 
     @Autowired
-    Voucher voucherAPI;
-
-    @Autowired
     com.example.heroku.services.ClientDevice clientDeviceAPI;
 
     @Autowired
@@ -67,6 +68,9 @@ public class ApplicationTest extends TestConfig{
     @Autowired
     UserFCMS fcmServices;
 
+    @Autowired
+    Store storeServices;
+
     @Value("${account.admin.username}")
     private String adminName;
 
@@ -74,6 +78,12 @@ public class ApplicationTest extends TestConfig{
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Test
+    @Order(1)
+    public  void storeTest() {
+        StoreTest.builder().storeServices(storeServices).group(mainGroup).build().test();
+    }
 
     @Test
     public  void fcmTest(){
@@ -86,6 +96,7 @@ public class ApplicationTest extends TestConfig{
     }
 
     @Test
+    @Order(3)
     public void BeerTest() {
         BeerTest.builder().beerAPI(beerAPI).group(mainGroup).build().saveBeerTest();
     }
@@ -99,23 +110,6 @@ public class ApplicationTest extends TestConfig{
     @Test
     public void ProductImport(){
         ProductImportTest.builder().productImport(productImport).group(mainGroup).build().Test();
-    }
-
-
-    @Autowired
-    FlickrLib flickrLib;
-    @Test
-    public void FlickrToken(){
-
-    }
-
-    @Test
-    public void DeviceConfigTest() {
-    }
-
-    @Test
-    public void testCurrentUser() {
-
     }
 
     @Test
@@ -134,6 +128,7 @@ public class ApplicationTest extends TestConfig{
     }
 
     @Test
+    @Order(4)
     public void testUserAddBeerToPackage() {
         UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(mainGroup).build().TestUserPackage();
     }
@@ -158,17 +153,8 @@ public class ApplicationTest extends TestConfig{
         UserAddressTest.builder().userAddressAPI(userAddressAPI).group(mainGroup).build().UserAddressTest();
     }
 
-//    @Test
-//    public void testVoucher(){
-//        VoucherTest.builder().voucherAPI(voucherAPI).build().VoucherTest();
-//    }
-
     @Test
-    public void testUploadImageToGoogle() throws IOException, GeneralSecurityException {
-        //PhotoLib.getInstance().RefreshToken();
-    }
-
-    @Test
+    @Order(5)
     public void testBootStrapData() {
 
         BeerTest.builder().beerAPI(beerAPI).group(mainGroup).build().saveBeerTest();
@@ -205,18 +191,34 @@ public class ApplicationTest extends TestConfig{
     final String anotherGroup = Config.otherGroup;
 
     @Test
+    @Order(2)
+    public  void storeTest2() {
+        StoreTest.builder().storeServices(storeServices).group(anotherGroup).build().test();
+    }
+
+    @Test
     public  void fcmTest2(){
         UserFCMTest.builder().userFCMAPI(fcmServices).group(anotherGroup).build().UserFCMTest();
     }
 
     @Test
     public void userTest2() {
-        UserAccountTest.builder().userAccount(userAccount).adminName(adminName).passwordEncoder(passwordEncoder).group(anotherGroup).build().test();
+        //UNIQUE id of user
+        UserAccountTest.builder().userAccount(userAccount).adminName(adminName).passwordEncoder(passwordEncoder).group(anotherGroup).build().test2();
     }
 
     @Test
+    @Order(6)
     public void BeerTest2() {
         BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).build().saveBeerTest();
+        System.out.println("BeerTest2");
+        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).build().TestUserPackage();
+    }
+
+    @Test
+    @Order(7)
+    public void zztestUserAddBeerToPackage2() {
+//        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).build().TestUserPackage();
     }
 
     @Test
@@ -228,20 +230,6 @@ public class ApplicationTest extends TestConfig{
     @Test
     public void ProductImport2(){
         ProductImportTest.builder().productImport(productImport).group(anotherGroup).build().Test();
-    }
-
-    @Test
-    public void FlickrToken2(){
-
-    }
-
-    @Test
-    public void DeviceConfigTest2() {
-    }
-
-    @Test
-    public void testCurrentUser2() {
-
     }
 
     @Test
@@ -257,11 +245,6 @@ public class ApplicationTest extends TestConfig{
     @Test
     public void testUserDevice2() {
         UserDeviceTest.builder().userDeviceAPI(this.userDeviceAPI).group(anotherGroup).build().UserTest();
-    }
-
-    @Test
-    public void testUserAddBeerToPackage2() {
-        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).build().TestUserPackage();
     }
 
     @Test
@@ -284,17 +267,8 @@ public class ApplicationTest extends TestConfig{
         UserAddressTest.builder().userAddressAPI(userAddressAPI).group(anotherGroup).build().UserAddressTest();
     }
 
-//    @Test
-//    public void testVoucher(){
-//        VoucherTest.builder().voucherAPI(voucherAPI).build().VoucherTest();
-//    }
-
     @Test
-    public void testUploadImageToGoogle2() throws IOException, GeneralSecurityException {
-        //PhotoLib.getInstance().RefreshToken();
-    }
-
-    @Test
+    @Order(8)
     public void testBootStrapData2() {
 
         BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).build().saveBeerTest();

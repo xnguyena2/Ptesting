@@ -26,12 +26,16 @@ CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, group_id VA
 
 CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_import_second_id VARCHAR, product_id VARCHAR, product_name VARCHAR, price float8, amount float8, detail TEXT, createat TIMESTAMP);
 
+CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, status VARCHAR, createat TIMESTAMP);
+
+
 CREATE INDEX search_token_index ON search_token(tokens);
 CREATE INDEX product_index ON product(product_second_id);
 CREATE INDEX product_detail_index ON product(detail);
 CREATE INDEX users_name_index ON users(username);
 CREATE INDEX product_import_index ON product_import(product_import_second_id);
 CREATE INDEX user_device_index ON user_device(device_id);
+CREATE INDEX store_index ON store(group_id);
 
 ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
 ALTER TABLE product ADD CONSTRAINT UQ_product_second_id UNIQUE(group_id, product_second_id);
@@ -41,6 +45,7 @@ ALTER TABLE user_fcm ADD CONSTRAINT UQ_user_fcm_device_id UNIQUE(group_id, devic
 ALTER TABLE voucher_relate_user_device ADD CONSTRAINT UQ_voucher_relate_user_device UNIQUE(group_id, voucher_second_id, device_id);
 ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(group_id, product_import_second_id);
 ALTER TABLE user_device ADD CONSTRAINT UQ_user_device UNIQUE(group_id, device_id);
+ALTER TABLE store ADD CONSTRAINT UQ_store UNIQUE(group_id);
 
 create or replace function getRoleIndex(roles VARCHAR)
 returns int
@@ -96,5 +101,30 @@ begin
 	end if;
 
    return creatorRoleIndex < newaccRoleIndex;
+end;
+$$;
+
+create or replace function query_product (
+  product_group_id VARCHAR, where_condiction VARCHAR
+)
+	returns table (id INTEGER, group_id VARCHAR, product_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, meta_search TEXT, status VARCHAR, createat TIMESTAMP)
+	language plpgsql
+as
+$$
+begin
+	RETURN QUERY EXECUTE 'SELECT * FROM product_' || product_group_id || ' ' || where_condiction;
+end;
+$$;
+
+
+create or replace function create_product_view (
+  group_id VARCHAR
+)
+	returns void
+	language plpgsql
+as
+$$
+begin
+	EXECUTE 'CREATE VIEW product_' || group_id || ' AS SELECT * FROM product WHERE product.group_id = ' || quote_literal (group_id);
 end;
 $$;

@@ -1,4 +1,24 @@
 
+
+
+DO
+$$
+DECLARE
+    f record;
+BEGIN
+    FOR f IN SELECT table_name
+			 FROM information_schema.views
+		     WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
+		     AND table_name !~ '^pg_'
+    loop
+    	EXECUTE 'DROP VIEW ' || f.table_name || ' cascade;';
+    end loop;
+end;
+$$;
+
+
+
+
 DROP TABLE IF EXISTS image;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS product;
@@ -21,3 +41,5 @@ DROP TABLE IF EXISTS notification_relate_user_device;
 DROP TABLE IF EXISTS shipping_provider;
 
 DROP TABLE IF EXISTS product_import;
+
+DROP TABLE IF EXISTS store;

@@ -1,8 +1,6 @@
 package com.example.heroku;
 
 import org.junit.Test;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -10,7 +8,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(properties = {
         "JDBC_DATABASE_URL=r2dbc:postgres://dpg-chm71se4dad6k5mpvbp0-a.singapore-postgres.render.com/product_sell_dev",
         "POSTGRESQL_PORT=5432",

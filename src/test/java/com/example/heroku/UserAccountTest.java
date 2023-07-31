@@ -151,4 +151,110 @@ public class UserAccountTest {
                 })
                 .verifyComplete();
     }
+
+    public void test2(){
+
+        this.userAccount.createAccount(adminName, UpdatePassword.builder()
+                .username("phong test2")
+                .newpassword("phong test pass")
+                .group_id(group)
+                .roles(Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
+                .build()).block();
+
+        this.userAccount.getAll(SearchQuery.builder().page(0).size(100).group_id(group).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(resultWithCount -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(Users::getUsername))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(users -> {
+                                assertThat(users.getUsername()).isEqualTo("phong test2");
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+
+        this.userAccount.getUser("phong test2")
+                .as(StepVerifier::create)
+                .consumeNextWith(resultWithCount -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(resultWithCount.getUsername()).isEqualTo("phong test2");
+                    assertThat(passwordEncoder.matches("phong test pass", resultWithCount.getPassword())).isEqualTo(true);
+                })
+                .verifyComplete();
+
+        this.userAccount.updatePassword("phong test2", "phong update pass2").block();
+
+        this.userAccount.getUser("phong test2")
+                .as(StepVerifier::create)
+                .consumeNextWith(resultWithCount -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(resultWithCount.getUsername()).isEqualTo("phong test2");
+                    assertThat(passwordEncoder.matches("phong update pass2", resultWithCount.getPassword())).isEqualTo(true);
+                })
+                .verifyComplete();
+
+        this.userAccount.deleteAccount(Mono.just(Users.builder().username(adminName).build()), UpdatePassword.builder().username("phong test2").build()).block();
+
+        this.userAccount.getUser("phong test2")
+                .as(StepVerifier::create)
+                .verifyComplete();
+
+        this.userAccount.createAccount(adminName, UpdatePassword.builder()
+                .username("phong test 22")
+                .newpassword("phong test pass")
+                .group_id(group)
+                .roles(Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
+                .build()).block();
+
+        this.userAccount.getAll(SearchQuery.builder().page(0).size(100).group_id(group).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(resultWithCount -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    Mono.just(resultWithCount.getResult())
+                            .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(Users::getUsername))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(users -> {
+                                assertThat(users.getUsername()).isEqualTo("phong test 22");
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+
+        this.userAccount.seftDelete("phong test 22").block();
+
+        this.userAccount.getAll(SearchQuery.builder().page(0).size(100).group_id(group).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(resultWithCount -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(resultWithCount.getCount()).isEqualTo(0);
+                    assertThat(resultWithCount.getResult()).isEqualTo(null);
+                })
+                .verifyComplete();
+    }
 }

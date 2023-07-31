@@ -34,6 +34,8 @@ public class UserPackageTest {
                 .block();
 
 
+        System.out.println("done hererere!!: " + group);
+
         AtomicReference<String> beerUnitsold_out1ID = new AtomicReference<String>();
         AtomicReference<String> beerUnitsold_out2ID = new AtomicReference<String>();
         this.beerAPI.GetBeerByID(group, "sold_out")
@@ -63,6 +65,8 @@ public class UserPackageTest {
                             .verifyComplete();
                 })
                 .verifyComplete();
+
+        System.out.println("done hererere!!: " + group);
 
 
         AtomicReference<String> beerUnit1ID = new AtomicReference<String>();
@@ -94,7 +98,6 @@ public class UserPackageTest {
                             .verifyComplete();
                 })
                 .verifyComplete();
-
 
         AtomicReference<String> beerUnit4561ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit4562ID = new AtomicReference<String>();
@@ -232,6 +235,8 @@ public class UserPackageTest {
                     assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .verifyComplete();
+
+        System.out.println("done hererere!!: " + group);
 
         beerPackage = BeerPackage.builder()
                 .group_id(group)
