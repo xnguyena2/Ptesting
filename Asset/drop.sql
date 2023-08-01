@@ -21,9 +21,9 @@ $$;
 
 DROP TABLE IF EXISTS image;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS product;
-DROP TABLE IF EXISTS product_unit;
 DROP TABLE IF EXISTS search_token;
+DROP TABLE IF EXISTS product_unit;
+DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS device_config;
 DROP TABLE IF EXISTS package_order;
 DROP TABLE IF EXISTS product_order;
@@ -43,3 +43,5 @@ DROP TABLE IF EXISTS shipping_provider;
 DROP TABLE IF EXISTS product_import;
 
 DROP TABLE IF EXISTS store;
+
+DROP TABLE IF EXISTS buyer;

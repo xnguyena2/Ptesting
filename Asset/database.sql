@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCH
 
 CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, status VARCHAR, createat TIMESTAMP);
 
+CREATE TABLE IF NOT EXISTS buyer (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, total_price float8, real_price float8, ship_price float8, status VARCHAR, createat TIMESTAMP);
 
 CREATE INDEX search_token_index ON search_token(tokens);
 CREATE INDEX product_index ON product(product_second_id);
@@ -36,6 +37,7 @@ CREATE INDEX users_name_index ON users(username);
 CREATE INDEX product_import_index ON product_import(product_import_second_id);
 CREATE INDEX user_device_index ON user_device(device_id);
 CREATE INDEX store_index ON store(group_id);
+CREATE INDEX buyer_index ON buyer(device_id);
 
 ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
 ALTER TABLE product ADD CONSTRAINT UQ_product_second_id UNIQUE(group_id, product_second_id);
@@ -46,6 +48,10 @@ ALTER TABLE voucher_relate_user_device ADD CONSTRAINT UQ_voucher_relate_user_dev
 ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(group_id, product_import_second_id);
 ALTER TABLE user_device ADD CONSTRAINT UQ_user_device UNIQUE(group_id, device_id);
 ALTER TABLE store ADD CONSTRAINT UQ_store UNIQUE(group_id);
+ALTER TABLE buyer ADD CONSTRAINT UQ_buyer UNIQUE(group_id, device_id);
+
+ALTER TABLE product_unit ADD CONSTRAINT FK_product_unit FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
+ALTER TABLE search_token ADD CONSTRAINT FK_search_token FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
 
 create or replace function getRoleIndex(roles VARCHAR)
 returns int
@@ -128,3 +134,27 @@ begin
 	EXECUTE 'CREATE VIEW product_' || group_id || ' AS SELECT * FROM product WHERE product.group_id = ' || quote_literal (group_id);
 end;
 $$;
+
+CREATE OR REPLACE FUNCTION add_buyer()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+	INSERT INTO
+    	buyer (group_id , device_id, reciver_address, region_id, district_id, ward_id, reciver_fullname, phone_number, phone_number_clean, total_price, real_price, ship_price, status, createat)
+    VALUES(NEW.group_id, NEW.user_device_id, NEW.reciver_address, NEW.region_id, NEW.district_id, NEW.ward_id, NEW.reciver_fullname, NEW.phone_number, NEW.phone_number_clean, NEW.total_price, NEW.real_price, NEW.ship_price, NULL, NOW()) ON CONFLICT (group_id, device_id) DO
+    UPDATE
+    SET
+    	createat = NOW(),
+    	total_price = buyer.total_price + NEW.total_price,
+        real_price = buyer.real_price + NEW.real_price,
+        ship_price = buyer.ship_price + NEW.ship_price;
+
+	RETURN NEW;
+END;
+$$;
+
+
+CREATE OR REPLACE TRIGGER update_buyer AFTER INSERT ON package_order FOR EACH ROW EXECUTE PROCEDURE add_buyer();
