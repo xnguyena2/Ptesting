@@ -159,6 +159,10 @@ public class Util {
         return ch;
     }
 
+    public static String CleanPhoneNumber(String phone_number) {
+        return phone_number.replaceAll("[^0-9+]", "").replace("+84", "0");
+    }
+
     String convert(String str) {
 
         str = str.replaceAll("à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ", "a");

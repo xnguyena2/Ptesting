@@ -54,6 +54,8 @@ public class PackageOrder extends entity.BaseEntity {
 
     protected float ship_price;
 
+    protected float points_discount;
+
     protected Status status;
 
     public enum Status{
@@ -108,7 +110,7 @@ public class PackageOrder extends entity.BaseEntity {
             this.package_order_second_id = Util.getInstance().GenerateID();
         this.createat = new Timestamp(new Date().getTime());
         this.status = isPreOrder ? Status.PRE_ORDER : Status.ORDER;
-        this.phone_number_clean = this.phone_number.replaceAll("[^0-9+]", "").replace("+84", "0");
+        this.phone_number_clean = Util.CleanPhoneNumber(phone_number);
         System.out.println("Phone clean: " + this.phone_number_clean);
         return this;
     }

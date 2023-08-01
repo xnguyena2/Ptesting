@@ -1,5 +1,6 @@
 package com.example.heroku.model;
 
+import com.example.heroku.util.Util;
 import entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -42,5 +43,14 @@ public class Buyer extends BaseEntity {
 
     private float ship_price;
 
+    private float points_discount;
+
     private String status;
+
+    public Buyer AutoFill() {
+        super.AutoFill();
+        id = null;
+        device_id = phone_number_clean = Util.CleanPhoneNumber(phone_number);
+        return this;
+    }
 }
