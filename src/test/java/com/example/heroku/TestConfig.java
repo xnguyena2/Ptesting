@@ -9,12 +9,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource(properties = {
-        "JDBC_DATABASE_URL=r2dbc:postgres://dpg-chm71se4dad6k5mpvbp0-a.singapore-postgres.render.com/product_sell_dev",
+        "JDBC_DATABASE_URL=r2dbc:postgres://dpg-cjt8krdhtt0c73astvqg-a.singapore-postgres.render.com/sale_management",
         "POSTGRESQL_PORT=5432",
-        "POSTGRESQL_DB=product_sell_dev",
-        "POSTGRESQL_HOST=dpg-chm71se4dad6k5mpvbp0-a.singapore-postgres.render.com",
-        "USER_NAME=product_sell_dev",
-        "PASSWORD=TtHQORptY5WrZ8hlTHJCWKhvReqO9PcG",
+        "POSTGRESQL_DB=sale_management",
+        "POSTGRESQL_HOST=dpg-cjt8krdhtt0c73astvqg-a.singapore-postgres.render.com",
+        "USER_NAME=sale_management_user",
+        "PASSWORD=J6nLIQW7VRDPNXG6owJPLjEZb0c0q6kn",
         "POSTGRESQL_POOLSIZE=10",
         "POSTGRESQL_TIMEIDLE=10000",
         "RESET_DB=true",
