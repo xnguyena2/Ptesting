@@ -16,7 +16,7 @@ public class WebConfig {
     @Bean
     CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Arrays.asList("*","localhost", "biomarket.com"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("localhost", "biomarket.com"));
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.addAllowedHeader("*");
 
