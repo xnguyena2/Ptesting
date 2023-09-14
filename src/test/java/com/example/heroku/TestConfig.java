@@ -9,12 +9,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource(properties = {
+        "FIRE_BASE_TOKEN=",
         "JDBC_DATABASE_URL=r2dbc:postgres://dpg-cjt8krdhtt0c73astvqg-a.singapore-postgres.render.com/sale_management",
         "POSTGRESQL_PORT=5432",
         "POSTGRESQL_DB=sale_management",
         "POSTGRESQL_HOST=dpg-cjt8krdhtt0c73astvqg-a.singapore-postgres.render.com",
-        "USER_NAME=sale_management_user",
-        "PASSWORD=J6nLIQW7VRDPNXG6owJPLjEZb0c0q6kn",
+        "DB_USER_NAME=sale_management_user",
+        "DB_PASSWORD=J6nLIQW7VRDPNXG6owJPLjEZb0c0q6kn",
+        "DB_DRIVER=org.postgresql.Driver",
         "POSTGRESQL_POOLSIZE=10",
         "POSTGRESQL_TIMEIDLE=10000",
         "RESET_DB=true",
@@ -27,7 +29,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "INIT_ADMIN_NAME=binhdiepquin",
         "INIT_ADMIN_PASSWORD=binhdiepquin123",
         "INIT_ADMIN_STORE=trumbien_store",
-        "LOGIN=INFO",
+        "LOGS_LEVEL=INFO",
         "THYMELEFT=HTML",
         "RUN_MODE=dev",
         "FLICKR_KEY=d82298e7cabb6de301b1de5bc018b881",
