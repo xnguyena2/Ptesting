@@ -33,8 +33,7 @@ public class UserDevice extends BaseEntity {
     private Status status;
 
     public UserDevice AutoFill() {
-        this.createat = new Timestamp(new Date().getTime());
-        return this;
+        return (UserDevice) (super.AutoFill());
     }
 
 

@@ -9,15 +9,15 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PackgeResponse extends UserPackage {
+public class ProductInPackageResponse extends UserPackage {
 
-    public PackgeResponse(UserPackage s) {
+    public ProductInPackageResponse(UserPackage s) {
         super(s);
     }
 
     private BeerSubmitData beerSubmitData;
 
-    public PackgeResponse SetBeerData(BeerSubmitData b) {
+    public ProductInPackageResponse SetBeerData(BeerSubmitData b) {
         BeerSubmitData.BeerUnit beerUnit = null;
         for (BeerSubmitData.BeerUnit unit :
                 b.getListUnit()) {

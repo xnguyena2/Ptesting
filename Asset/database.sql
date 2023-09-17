@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS product_unit_order (id SERIAL PRIMARY KEY, group_id V
 CREATE TABLE IF NOT EXISTS user_device (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, user_first_name VARCHAR, user_last_name VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS user_fcm (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, fcm_id VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS user_address (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, address_id VARCHAR, device_id VARCHAR, reciver_fullname VARCHAR, phone_number VARCHAR, house_number VARCHAR, region INTEGER, district INTEGER, ward INTEGER, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS user_package_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, package_type VARCHAR, voucher VARCHAR, price float8, discount_amount float8, discount_percent float8, ship_price float8, note VARCHAR, image VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS user_package_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, package_type VARCHAR, voucher VARCHAR, price float8, discount_amount float8, discount_percent float8, ship_price float8, note VARCHAR, image VARCHAR, progress VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS user_package (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, number_unit INTEGER, price float8, discount_amount float8, discount_percent float8, note VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS voucher (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, voucher_second_id VARCHAR, detail VARCHAR, discount float8, amount float8, reuse INTEGER, for_all_product BOOLEAN, for_all_user BOOLEAN, package_voucher BOOLEAN, date_expire TIMESTAMP, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS voucher_relate_user_device (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, voucher_second_id VARCHAR, reuse INTEGER, device_id VARCHAR, createat TIMESTAMP);
@@ -58,8 +58,8 @@ ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(gro
 ALTER TABLE user_device ADD CONSTRAINT UQ_user_device UNIQUE(group_id, device_id);
 ALTER TABLE store ADD CONSTRAINT UQ_store UNIQUE(group_id);
 ALTER TABLE buyer ADD CONSTRAINT UQ_buyer UNIQUE(group_id, device_id);
-ALTER TABLE user_package ADD CONSTRAINT UQ_user_package UNIQUE(group_id, device_id, package_second_id);
 ALTER TABLE user_package_detail ADD CONSTRAINT UQ_user_package_detail UNIQUE(group_id, device_id, package_second_id);
+ALTER TABLE user_package ADD CONSTRAINT UQ_user_package UNIQUE(group_id, device_id, package_second_id, product_second_id, product_unit_second_id);
 
 ALTER TABLE product_unit ADD CONSTRAINT FK_product_unit FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
 ALTER TABLE search_token ADD CONSTRAINT FK_search_token FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;

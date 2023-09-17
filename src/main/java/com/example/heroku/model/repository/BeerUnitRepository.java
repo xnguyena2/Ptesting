@@ -21,11 +21,11 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, 
     @Query(value = "DELETE FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :product_second_id")
     Mono<ProductUnit> deleteByBeerId(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id);
 
-    @Query(value = "SELECT * FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :id")
-    Flux<ProductUnit> findByBeerID(@Param("group_id")String groupID, @Param("id")String id);
+    @Query(value = "SELECT * FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :product_second_id")
+    Flux<ProductUnit> findByBeerID(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id);
 
-    @Query(value = "SELECT * FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_unit_second_id = :id")
-    Mono<ProductUnit> findByBeerUnitID(@Param("group_id")String groupID, @Param("id")String id);
+    @Query(value = "SELECT * FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :product_second_id AND product_unit.product_unit_second_id = :product_unit_second_id")
+    Mono<ProductUnit> findByBeerUnitID(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id, @Param("product_unit_second_id")String product_unit_second_id);
 
     @Query(value = "SELECT * FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_unit_second_id = :id AND ( product_unit.status IS NULL OR ( product_unit.status != 'SOLD_OUT' AND product_unit.status != 'HIDE' ) )")
     Mono<ProductUnit> findByBeerUnitIDCanOrder(@Param("group_id")String groupID, @Param("id")String id);

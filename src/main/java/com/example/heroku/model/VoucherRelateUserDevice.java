@@ -28,6 +28,10 @@ public class VoucherRelateUserDevice extends BaseEntity {
 
     private int reuse;
 
+    public VoucherRelateUserDevice AutoFill(){
+        return (VoucherRelateUserDevice) super.AutoFill();
+    }
+
     public VoucherRelateUserDevice ResetID() {
         this.id = null;
         return this;
@@ -43,8 +47,4 @@ public class VoucherRelateUserDevice extends BaseEntity {
         return this;
     }
 
-    public VoucherRelateUserDevice AutoFill(){
-        this.createat = new Timestamp(new Date().getTime());
-        return this;
-    }
 }

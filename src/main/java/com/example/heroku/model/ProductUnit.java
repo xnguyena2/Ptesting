@@ -101,7 +101,7 @@ public class ProductUnit extends BaseEntity {
     public ProductUnit AutoFill() {
         if (this.product_unit_second_id == null || this.product_unit_second_id.equals(""))
             this.product_unit_second_id = Util.getInstance().GenerateID();
-        this.createat = new Timestamp(new Date().getTime());
+        this.createat = Util.getInstance().Now();
         return this;
     }
 
@@ -113,7 +113,7 @@ public class ProductUnit extends BaseEntity {
     public ProductUnit CheckDiscount() {
         if (date_expire == null)
             return this;
-        Timestamp currentTime = new Timestamp(new Date().getTime());
+        Timestamp currentTime = Util.getInstance().Now();
         int diff = Util.getInstance().DiffirentDays(date_expire, currentTime);
         System.out.println("Check Discount date expire: " + date_expire.toString() + ", current time: " + currentTime + ", diff: " + diff);
         if (diff < 0) {

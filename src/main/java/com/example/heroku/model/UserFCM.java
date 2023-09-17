@@ -29,7 +29,7 @@ public class UserFCM extends BaseEntity {
     private Status status;
 
     public UserFCM AutoFill(){
-        this.createat = new Timestamp(new Date().getTime());
+        super.AutoFill();
         this.status = Status.ACTIVE;
         return this;
     }

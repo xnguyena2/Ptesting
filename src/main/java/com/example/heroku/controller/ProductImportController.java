@@ -1,7 +1,6 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.Users;
-import com.example.heroku.request.Order.OrderSearchResult;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.permission.WrapPermissionAction;
 import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;

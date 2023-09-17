@@ -38,8 +38,8 @@ public class ProductUnitOrder extends entity.BaseEntity{
     protected float total_discount;
 
     public ProductUnitOrder AutoFill(String packageOrderSecondID) {
+        super.AutoFill();
         this.package_order_second_id = packageOrderSecondID;
-        this.createat = new Timestamp(new Date().getTime());
         return this;
     }
 

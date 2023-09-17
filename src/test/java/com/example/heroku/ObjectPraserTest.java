@@ -1,9 +1,8 @@
 package com.example.heroku;
 
-import com.example.heroku.model.Product;
 import com.example.heroku.model.UserPackage;
 import com.example.heroku.request.beer.BeerInfo;
-import com.example.heroku.request.beer.BeerPackage;
+import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.datetime.NgbDateStruct;
 import com.example.heroku.services.ShippingProvider;
@@ -77,20 +76,22 @@ public class ObjectPraserTest {
 
     public void BeerPackageTest() throws JsonProcessingException {
         String json = "{\n" +
-                "    \"deviceID\":\"vuong\",\n" +
-                "    \"beerID\":\"7788900\",\n" +
-                "    \"beerUnits\":[\n" +
+                "    \"device_id\":\"vuong\",\n" +
+                "    \"package_second_id\":\"7788900\",\n" +
+                "    \"product_units\":[\n" +
                 "        {\n" +
-                "            \"beerUnitID\":\"333\",\n" +
-                "            \"numberUnit\":10\n" +
+                "            \"product_unit_id\":\"333\",\n" +
+                "            \"product_id\":\"7788900\",\n" +
+                "            \"number_unit\":10\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"beerUnitID\":\"444\",\n" +
-                "            \"numberUnit\":5\n" +
+                "            \"product_unit_id\":\"444\",\n" +
+                "            \"product_id\":\"7788900\",\n" +
+                "            \"number_unit\":5\n" +
                 "        }\n" +
                 "    ]\n" +
                 "}";
-        UserPackage[] userPackages = new ObjectMapper().readValue(json, BeerPackage.class).getUserPackage();
+        UserPackage[] userPackages = new ObjectMapper().readValue(json, ProductPackage.class).getUserPackage();
 
         assertThat(userPackages.length).isEqualTo(2);
 

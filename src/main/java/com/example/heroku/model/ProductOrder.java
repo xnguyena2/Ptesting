@@ -34,8 +34,8 @@ public class ProductOrder extends BaseEntity {
     protected float ship_price;
 
     public ProductOrder AutoFill(String packageOrderSecondID) {
+        super.AutoFill();
         this.package_order_second_id = packageOrderSecondID;
-        this.createat = new Timestamp(new Date().getTime());
         return this;
     }
 

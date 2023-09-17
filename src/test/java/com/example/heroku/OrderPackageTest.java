@@ -9,6 +9,8 @@ import com.example.heroku.request.client.UserID;
 import com.example.heroku.request.ship.ShippingProviderData;
 import com.example.heroku.request.voucher.VoucherData;
 import com.example.heroku.response.BuyerData;
+import com.example.heroku.response.PackageDataResponse;
+import com.example.heroku.response.ProductInPackageResponse;
 import com.example.heroku.services.*;
 import com.example.heroku.services.ShippingProvider;
 import com.example.heroku.services.UserDevice;
@@ -25,6 +27,7 @@ import reactor.test.StepVerifier;
 import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -1352,7 +1355,7 @@ public class OrderPackageTest extends TestConfig {
                         BeerInfo
                                 .builder()
                                 .productUnit(new ProductUnit[]{
-                                        ProductUnit
+                                        com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order1")
                                                 .price(10)
@@ -1361,7 +1364,7 @@ public class OrderPackageTest extends TestConfig {
                                                 .date_expire(new Timestamp(new Date().getTime()))
                                                 .name("thung")
                                                 .build(),
-                                        ProductUnit
+                                        com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order1")
                                                 .price(20)
@@ -1389,7 +1392,7 @@ public class OrderPackageTest extends TestConfig {
                         BeerInfo
                                 .builder()
                                 .productUnit(new ProductUnit[]{
-                                        ProductUnit
+                                        com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order2")
                                                 .price(50)
@@ -1397,7 +1400,7 @@ public class OrderPackageTest extends TestConfig {
                                                 .date_expire(new Timestamp(new Date().getTime()))
                                                 .name("thung")
                                                 .build(),
-                                        ProductUnit
+                                        com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order2")
                                                 .price(60)
@@ -1424,7 +1427,7 @@ public class OrderPackageTest extends TestConfig {
                         BeerInfo
                                 .builder()
                                 .productUnit(new ProductUnit[]{
-                                        ProductUnit
+                                        com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order3")
                                                 .price(100)
@@ -1432,7 +1435,7 @@ public class OrderPackageTest extends TestConfig {
                                                 .date_expire(new Timestamp(new Date().getTime()))
                                                 .name("thung")
                                                 .build(),
-                                        ProductUnit
+                                        com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order3")
                                                 .price(110)
@@ -1457,7 +1460,7 @@ public class OrderPackageTest extends TestConfig {
                         BeerInfo
                                 .builder()
                                 .productUnit(new ProductUnit[]{
-                                        ProductUnit
+                                        com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order_sold_out1")
                                                 .price(100)
@@ -1465,7 +1468,7 @@ public class OrderPackageTest extends TestConfig {
                                                 .date_expire(new Timestamp(new Date().getTime()))
                                                 .name("thung")
                                                 .build(),
-                                        ProductUnit
+                                        com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order_sold_out1")
                                                 .price(110)
@@ -1491,16 +1494,16 @@ public class OrderPackageTest extends TestConfig {
                         BeerInfo
                                 .builder()
                                 .productUnit(new ProductUnit[]{
-                                        ProductUnit
+                                        com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order_sold_out2")
                                                 .price(100)
                                                 .discount(10)
                                                 .date_expire(new Timestamp(new Date().getTime()))
                                                 .name("thung")
-                                                .status(ProductUnit.Status.SOLD_OUT)
+                                                .status(com.example.heroku.model.ProductUnit.Status.SOLD_OUT)
                                                 .build(),
-                                        ProductUnit
+                                        com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order_sold_out2")
                                                 .price(110)
@@ -1525,7 +1528,7 @@ public class OrderPackageTest extends TestConfig {
                         BeerInfo
                                 .builder()
                                 .productUnit(new ProductUnit[]{
-                                        ProductUnit
+                                        com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order_hide2")
                                                 .price(100)
@@ -1533,7 +1536,7 @@ public class OrderPackageTest extends TestConfig {
                                                 .date_expire(new Timestamp(new Date().getTime()))
                                                 .name("thung")
                                                 .build(),
-                                        ProductUnit
+                                        com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order_hide2")
                                                 .price(110)
@@ -1578,7 +1581,7 @@ public class OrderPackageTest extends TestConfig {
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
-                            .sort(Comparator.comparing(ProductUnit::getName))
+                            .sort(Comparator.comparing(com.example.heroku.model.ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
@@ -1597,22 +1600,23 @@ public class OrderPackageTest extends TestConfig {
                             .verifyComplete();
                 })
                 .verifyComplete();
-        BeerPackage beerPackage = BeerPackage.builder()
+        ProductPackage productPackage = ProductPackage.builder()
                 .group_id(mainGroup)
-                .beerID("beer_order1")
-                .deviceID("order_test")
-                .beerUnits(new BeerPackage.BeerUnit[]{
-                        BeerPackage.BeerUnit.builder()
-                                .beerUnitID(beerUnit4561ID.get())
-                                .numberUnit(100)
+                .device_id("order_test")
+                .product_units(new ProductPackage.ProductUnit[]{
+                        ProductPackage.ProductUnit.builder()
+                                .product_unit_id(beerUnit4561ID.get())
+                                .product_id("beer_order1")
+                                .number_unit(100)
                                 .build(),
-                        BeerPackage.BeerUnit.builder()
-                                .beerUnitID(beerUnit4562ID.get())
-                                .numberUnit(9)
+                        ProductPackage.ProductUnit.builder()
+                                .product_id("beer_order1")
+                                .product_unit_id(beerUnit4562ID.get())
+                                .number_unit(9)
                                 .build()
                 })
                 .build();
-        userPackageAPI.AddBeerToPackage(beerPackage)
+        userPackageAPI.AddProductToPackage(productPackage)
                 .block();
 
 
@@ -1667,7 +1671,7 @@ public class OrderPackageTest extends TestConfig {
                 .verifyComplete();
 
         userPackageAPI.GetMyPackage(UserID.builder().id("order_test").page(0).size(1000).group_id(mainGroup).build())
-                .sort(Comparator.comparingInt(com.example.heroku.model.UserPackage::getNumber_unit).reversed())
+                .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
                     try {
@@ -1676,11 +1680,14 @@ public class OrderPackageTest extends TestConfig {
                         e.printStackTrace();
                     }
                     assertThat(userPackage.getDevice_id()).isEqualTo("order_test");
-                    assertThat(userPackage.getProduct_second_id()).isEqualTo("beer_order1");
-                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit4562ID.get());
-                    assertThat(userPackage.getNumber_unit()).isEqualTo(9);
-                    assertThat(userPackage.getBeerSubmitData().getBeerSecondID()).isEqualTo("beer_order1");
-                    assertThat(userPackage.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(1);
+                    ProductInPackageResponse item = listItem.get(0);
+                    assertThat(item.getProduct_second_id()).isEqualTo("beer_order1");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit4562ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(9);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("beer_order1");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .verifyComplete();
     }

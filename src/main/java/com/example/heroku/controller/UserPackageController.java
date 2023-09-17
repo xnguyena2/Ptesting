@@ -1,11 +1,11 @@
 package com.example.heroku.controller;
 
-import com.example.heroku.request.beer.BeerPackage;
-import com.example.heroku.request.beer.BeerUnitDelete;
+import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.Format;
-import com.example.heroku.response.PackgeResponse;
+import com.example.heroku.response.PackageDataResponse;
+import com.example.heroku.response.ProductInPackageResponse;
 import com.example.heroku.services.UserPackage;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +25,16 @@ public class UserPackageController {
 
     @PostMapping("/add")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<Format>> addBeerToPackage(@RequestBody @Valid BeerPackage beerPackage) {
-        System.out.println("add beer to package: "+beerPackage.getBeerID());
-        return userPackageAPI.AddBeerToPackage(beerPackage);
+    public Mono<ResponseEntity<Format>> addBeerToPackage(@RequestBody @Valid ProductPackage productPackage) {
+        System.out.println("add beer to package: "+ productPackage.getPackage_second_id());
+        return userPackageAPI.AddProductToPackage(productPackage);
+    }
+
+    @PostMapping("/update")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<Format>> addOrUpdatePackage(@RequestBody @Valid ProductPackage productPackage) {
+        System.out.println("save package: "+ productPackage.getPackage_second_id());
+        return userPackageAPI.SavePackage(productPackage);
     }
 
 
@@ -40,7 +47,7 @@ public class UserPackageController {
 
     @PostMapping("/getall")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<PackgeResponse> getAll(@RequestBody @Valid UserID userID){
+    public Flux<PackageDataResponse> getAll(@RequestBody @Valid UserID userID){
         System.out.println("Get all my package: "+userID.getId());
         return userPackageAPI.GetMyPackage(userID);
     }

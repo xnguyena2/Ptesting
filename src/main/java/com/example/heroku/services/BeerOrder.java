@@ -6,7 +6,7 @@ import com.example.heroku.model.ProductUnit;
 import com.example.heroku.model.ProductUnitOrder;
 import com.example.heroku.model.PackageOrder;
 import com.example.heroku.model.repository.*;
-import com.example.heroku.request.Order.OrderSearchResult;
+import com.example.heroku.request.order.OrderSearchResult;
 import com.example.heroku.request.beer.PackageOrderData;
 import com.example.heroku.util.Util;
 import lombok.AllArgsConstructor;
@@ -19,8 +19,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Component
@@ -172,7 +170,7 @@ public class BeerOrder {
         System.out.println("New request from: " + packageOrderData.getPackageOrder().getUser_device_id());
         String groupID = packageOrderData.getPackageOrder().getGroup_id();
         packageOrderData.getPackageOrder().AutoFill(packageOrderData.isPreOrder());
-        Timestamp currentTime = new Timestamp(new Date().getTime());
+        Timestamp currentTime = Util.getInstance().Now();
         Mono<ShippingProvider.GHN> shippingProvider = shippingProviderAPI.GetGHNShippingProvider(groupID);
         return Mono.just(getUserVoucherAndProductName(packageOrderData))
                 .flatMap(vouchers ->

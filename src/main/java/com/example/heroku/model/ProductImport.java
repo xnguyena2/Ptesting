@@ -1,5 +1,6 @@
 package com.example.heroku.model;
 
+import com.example.heroku.util.Util;
 import entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -36,7 +37,6 @@ public class ProductImport extends BaseEntity {
 
 
     public ProductImport AutoFill() {
-        this.createat = new Timestamp(new Date().getTime());
-        return this;
+        return (ProductImport) super.AutoFill();
     }
 }

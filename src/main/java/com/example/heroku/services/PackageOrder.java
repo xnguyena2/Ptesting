@@ -5,7 +5,7 @@ import com.example.heroku.model.repository.BeerOrderRepository;
 import com.example.heroku.model.repository.BeerUnitOrderRepository;
 import com.example.heroku.model.repository.PackageOrderRepository;
 import com.example.heroku.model.repository.ResultWithCountRepository;
-import com.example.heroku.request.Order.OrderSearchResult;
+import com.example.heroku.request.order.OrderSearchResult;
 import com.example.heroku.request.beer.SearchQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

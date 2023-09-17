@@ -94,6 +94,11 @@ public class Beer {
                 .flatMap(this::CoverToSubmitData);
     }
 
+    public Mono<BeerSubmitData> GetBeerByIDWithUnit(String  groupID, String productID, String productUnitID) {
+        return beerRepository.findBySecondID(groupID, productID)
+                .flatMap(product -> CoverToSubmitDataWithUnitID(product, productUnitID));
+    }
+
     public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {
         return this.beerRepository.findByIdNotNull(query.getGroup_id(), query.getPage(), query.getSize())
                 .flatMap(this::CoverToSubmitData);
@@ -179,6 +184,27 @@ public class Beer {
                         Mono.just(new ArrayList<ProductUnit>())
                                 .flatMap(beerUnits ->
                                         beerUnitRepository.findByBeerID(beerSubmitData.getGroup_id(), beerSubmitData.getBeerSecondID())
+                                                .map(ProductUnit::CheckDiscount)
+                                                .map(beerUnits::add)
+                                                .then(
+                                                        Mono.just(beerUnits)
+                                                )
+                                                .map(beerSubmitData::SetBeerUnit)
+                                )
+                )
+                .flatMap(beerSubmitData ->
+                        imageRepository.findByCategory(beerSubmitData.getGroup_id(), beerSubmitData.getBeerSecondID())
+                                .map(beerSubmitData::AddImage)
+                                .then(Mono.just(beerSubmitData))
+                );
+    }
+
+    private Mono<BeerSubmitData> CoverToSubmitDataWithUnitID(Product product, String unitID) {
+        return Mono.just(BeerSubmitData.builder().build().FromBeer(product))
+                .flatMap(beerSubmitData ->
+                        Mono.just(new ArrayList<ProductUnit>())
+                                .flatMap(beerUnits ->
+                                        beerUnitRepository.findByBeerUnitID(beerSubmitData.getGroup_id(), beerSubmitData.getBeerSecondID(), unitID)
                                                 .map(ProductUnit::CheckDiscount)
                                                 .map(beerUnits::add)
                                                 .then(

@@ -21,6 +21,8 @@ public class UserPackage extends BaseEntity {
     @Id
     String id;
 
+    private String package_second_id;
+
     private String device_id;
 
     private String product_second_id;
@@ -29,17 +31,29 @@ public class UserPackage extends BaseEntity {
 
     private int number_unit;
 
+    private float price;
+
+    private float discount_amount;
+
+    private float discount_percent;
+
+    private String note;
+
     private Status status;
 
-    public UserPackage(UserPackage s){
+    public UserPackage(UserPackage s) {
+        super(s);
         this.id = s.id;
-        this.group_id = s.group_id;
+        this.package_second_id = s.package_second_id;
         this.device_id = s.device_id;
         this.product_second_id = s.product_second_id;
         this.product_unit_second_id = s.product_unit_second_id;
         this.number_unit = s.number_unit;
+        this.price = s.price;
+        this.discount_amount = s.discount_amount;
+        this.discount_percent = s.discount_percent;
+        this.note = s.note;
         this.status = s.status;
-        this.createat = s.createat;
     }
 
     public enum Status{

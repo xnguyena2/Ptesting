@@ -26,8 +26,7 @@ public class VoucherRelateProduct extends BaseEntity {
 
     private String product_second_id;
 
-    public VoucherRelateProduct AutoFill(){
-        this.createat = new Timestamp(new Date().getTime());
-        return this;
+    public VoucherRelateProduct AutoFill() {
+        return (VoucherRelateProduct) super.AutoFill();
     }
 }

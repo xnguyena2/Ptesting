@@ -1,4 +1,4 @@
-package com.example.heroku.request.Order;
+package com.example.heroku.request.order;
 
 import lombok.Builder;
 import lombok.Data;

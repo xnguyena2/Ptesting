@@ -1,4 +1,4 @@
-package com.example.heroku.request.Order;
+package com.example.heroku.request.order;
 
 import com.example.heroku.model.PackageOrder;
 import com.example.heroku.model.ProductOrder;
