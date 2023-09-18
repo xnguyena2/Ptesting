@@ -89,32 +89,38 @@ public class UserPackage {
                 userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());
     }
 
-    public Flux<PackageDataResponse> GetMyPackage(UserID userID) {
+    Mono<PackageDataResponse> fillPackageItem(PackageDataResponse packageDataResponse) {
+        return userPackageRepository.GetDevicePackageWithID(packageDataResponse.getGroup_id(), packageDataResponse.getDevice_id(), packageDataResponse.getPackage_second_id())
+                .flatMap(userPackage ->
+                        beerAPI.GetBeerByIDWithUnit(userPackage.getGroup_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id())
+                                .map(beerSubmitData -> new ProductInPackageResponse(userPackage).SetBeerData(beerSubmitData))
+                )
+                .map(packageDataResponse::addItem)
+                .then(Mono.just(packageDataResponse));
+    }
 
+
+    public Flux<PackageDataResponse> GetMyPackage(UserID userID) {
         return userPackageDetailRepository.GetDevicePackageDetail(userID.getGroup_id(), userID.getId(), userID.getPage(), userID.getSize())
                 .map(PackageDataResponse::new)
-                .flatMap(packageDataResponse -> userPackageRepository.GetDevicePackageWithID(userID.getGroup_id(), userID.getId(), packageDataResponse.getPackage_second_id())
-                        .flatMap(userPackage ->
-                                beerAPI.GetBeerByIDWithUnit(userPackage.getGroup_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id())
-                                        .map(beerSubmitData -> new ProductInPackageResponse(userPackage).SetBeerData(beerSubmitData))
-                        )
-                        .map(packageDataResponse::addItem)
-                        .then(Mono.just(packageDataResponse))
-                );
+                .flatMap(this::fillPackageItem);
+    }
+
+    public Flux<PackageDataResponse> GetPackageByGroup(UserID userID) {
+        return userPackageDetailRepository.GetAllPackageDetail(userID.getGroup_id(), userID.getPage(), userID.getSize())
+                .map(PackageDataResponse::new)
+                .map(packageDataResponse -> {
+                    System.out.println("Find package detail: " + packageDataResponse.getPackage_second_id());
+                    return packageDataResponse;
+                })
+                .flatMap(this::fillPackageItem);
     }
 
     public Mono<PackageDataResponse> GetPackage(PackageID packageID) {
 
         return userPackageDetailRepository.GetPackageDetail(packageID.getGroup_id(), packageID.getDevice_id(), packageID.getPackage_id())
                 .map(PackageDataResponse::new)
-                .flatMap(packageDataResponse -> userPackageRepository.GetDevicePackageWithID(packageID.getGroup_id(), packageID.getDevice_id(), packageDataResponse.getPackage_second_id())
-                        .flatMap(userPackage ->
-                                beerAPI.GetBeerByIDWithUnit(userPackage.getGroup_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id())
-                                        .map(beerSubmitData -> new ProductInPackageResponse(userPackage).SetBeerData(beerSubmitData))
-                        )
-                        .map(packageDataResponse::addItem)
-                        .then(Mono.just(packageDataResponse))
-                );
+                .flatMap(this::fillPackageItem);
     }
 
     public Flux<com.example.heroku.model.UserPackage> DeleteByBeerUnit(PackageItemRemove beerUnitDelete) {
