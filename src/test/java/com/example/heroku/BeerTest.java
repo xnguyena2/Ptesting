@@ -50,6 +50,12 @@ public class BeerTest {
                         .build()
         ).blockLast();
 
+        AtomicReference<String> beerUnit1231ID = new AtomicReference<String>();
+        AtomicReference<String> beerUnit1232ID = new AtomicReference<String>();
+
+        AtomicReference<String> beerUnit4561ID = new AtomicReference<String>();
+        AtomicReference<String> beerUnit4562ID = new AtomicReference<String>();
+
         beerAPI.CreateBeer(
                 BeerInfo
                         .builder()
@@ -67,10 +73,26 @@ public class BeerTest {
                                 .AutoFill()
                         )
                         .build()
-        ).blockLast();
+        )
+                .as(StepVerifier::create)
+                .consumeNextWith(beerUnit -> {
+                    if (beerUnit.getName().equals("lon")) {
+                        beerUnit1231ID.set(beerUnit.getProduct_unit_second_id());
+                    } else {
+                        beerUnit1232ID.set(beerUnit.getProduct_unit_second_id());
+                    }
+                    assertThat(beerUnit.getProduct_unit_second_id()).isNotNull();
 
-        AtomicReference<String> beerUnit1ID = new AtomicReference<String>();
-        AtomicReference<String> beerUnit2ID = new AtomicReference<String>();
+                })
+                .consumeNextWith(beerUnit -> {
+                    if (beerUnit.getName().equals("lon")) {
+                        beerUnit1231ID.set(beerUnit.getProduct_unit_second_id());
+                    } else {
+                        beerUnit1232ID.set(beerUnit.getProduct_unit_second_id());
+                    }
+                    assertThat(beerUnit.getProduct_unit_second_id()).isNotNull();
+                })
+                .verifyComplete();
 
         beerAPI.CreateBeer(
                 BeerInfo
@@ -107,18 +129,18 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerUnit -> {
                     if (beerUnit.getName().equals("lon")) {
-                        beerUnit1ID.set(beerUnit.getProduct_unit_second_id());
+                        beerUnit4561ID.set(beerUnit.getProduct_unit_second_id());
                     } else {
-                        beerUnit2ID.set(beerUnit.getProduct_unit_second_id());
+                        beerUnit4562ID.set(beerUnit.getProduct_unit_second_id());
                     }
                     assertThat(beerUnit.getProduct_unit_second_id()).isNotNull();
 
                 })
                 .consumeNextWith(beerUnit -> {
                     if (beerUnit.getName().equals("lon")) {
-                        beerUnit1ID.set(beerUnit.getProduct_unit_second_id());
+                        beerUnit4561ID.set(beerUnit.getProduct_unit_second_id());
                     } else {
-                        beerUnit2ID.set(beerUnit.getProduct_unit_second_id());
+                        beerUnit4562ID.set(beerUnit.getProduct_unit_second_id());
                     }
                     assertThat(beerUnit.getProduct_unit_second_id()).isNotNull();
                 })
@@ -131,7 +153,7 @@ public class BeerTest {
                         .productUnit(new ProductUnit[]{
                                 ProductUnit
                                         .builder()
-                                        .product_unit_second_id(beerUnit1ID.get())
+                                        .product_unit_second_id(beerUnit4561ID.get())
                                         .product_second_id("456")
                                         .price(10)
                                         .weight(0.3f)
@@ -142,7 +164,7 @@ public class BeerTest {
                                         .build(),
                                 ProductUnit
                                         .builder()
-                                        .product_unit_second_id(beerUnit2ID.get())
+                                        .product_unit_second_id(beerUnit4562ID.get())
                                         .product_second_id("456")
                                         .price(10)
                                         .weight(0.3f)
@@ -170,10 +192,10 @@ public class BeerTest {
                 .sort(Comparator.comparing(ProductUnit::getName))
                 .as(StepVerifier::create)
                 .consumeNextWith(beerUnit -> {
-                    assertThat(beerUnit.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(beerUnit.getProduct_unit_second_id()).isEqualTo(beerUnit4562ID.get());
                 })
                 .consumeNextWith(beerUnit -> {
-                    assertThat(beerUnit.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(beerUnit.getProduct_unit_second_id()).isEqualTo(beerUnit4561ID.get());
                 })
                 .verifyComplete();
 
@@ -1213,7 +1235,7 @@ public class BeerTest {
                         .productUnit(new ProductUnit[]{
                                 ProductUnit
                                         .builder()
-                                        .product_unit_second_id(beerUnit1ID.get())
+                                        .product_unit_second_id(beerUnit4561ID.get())
                                         .product_second_id("444")
                                         .price(10)
                                         .weight(0.3f)
@@ -1224,7 +1246,7 @@ public class BeerTest {
                                         .build(),
                                 ProductUnit
                                         .builder()
-                                        .product_unit_second_id(beerUnit2ID.get())
+                                        .product_unit_second_id(beerUnit4562ID.get())
                                         .product_second_id("444")
                                         .price(10)
                                         .weight(0.3f)

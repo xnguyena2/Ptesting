@@ -25,4 +25,11 @@ public class BaseEntity {
         this.createat = new Timestamp(new Date().getTime());
         return this;
     }
+
+    public BaseEntity AutoFillIfNull() {
+        if(this.createat == null) {
+            this.createat = new Timestamp(new Date().getTime());
+        }
+        return this;
+    }
 }

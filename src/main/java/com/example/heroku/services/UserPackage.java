@@ -41,7 +41,11 @@ public class UserPackage {
                         .flatMap(productPackage1 -> {
                             UserPackageDetail detail = productPackage1;
                             if (productPackage1.getPackage_second_id() == null) {
-                                detail = productPackage1.AutoFill().getUserPackageDetail();
+                                detail = null;
+                            }
+                            productPackage1.AutoFill();
+                            if (detail == null) {
+                                detail = productPackage1.getUserPackageDetail();
                             }
                             return savePackageDetail(detail)
                                     .then(Mono.just(productPackage1));
@@ -65,7 +69,11 @@ public class UserPackage {
                         .flatMap(productPackage1 -> {
                             UserPackageDetail detail = productPackage1;
                             if (productPackage1.getPackage_second_id() == null) {
-                                detail = productPackage1.AutoFill().getUserPackageDetail();
+                                detail = null;
+                            }
+                            productPackage1.AutoFill();
+                            if (detail == null) {
+                                detail = productPackage1.getUserPackageDetail();
                             }
                             return savePackageDetail(detail)
                                     .then(Mono.just(productPackage1));
@@ -109,10 +117,6 @@ public class UserPackage {
     public Flux<PackageDataResponse> GetPackageByGroup(UserID userID) {
         return userPackageDetailRepository.GetAllPackageDetail(userID.getGroup_id(), userID.getPage(), userID.getSize())
                 .map(PackageDataResponse::new)
-                .map(packageDataResponse -> {
-                    System.out.println("Find package detail: " + packageDataResponse.getPackage_second_id());
-                    return packageDataResponse;
-                })
                 .flatMap(this::fillPackageItem);
     }
 

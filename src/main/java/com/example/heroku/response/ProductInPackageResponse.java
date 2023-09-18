@@ -18,14 +18,6 @@ public class ProductInPackageResponse extends UserPackage {
     private BeerSubmitData beerSubmitData;
 
     public ProductInPackageResponse SetBeerData(BeerSubmitData b) {
-        BeerSubmitData.BeerUnit beerUnit = null;
-        for (BeerSubmitData.BeerUnit unit :
-                b.getListUnit()) {
-            if (unit.getBeer_unit_second_id().equals(this.getProduct_unit_second_id())) {
-                beerUnit = unit;
-            }
-        }
-        b.setListUnit(new BeerSubmitData.BeerUnit[]{ beerUnit });
         this.beerSubmitData = b;
         return this;
     }
