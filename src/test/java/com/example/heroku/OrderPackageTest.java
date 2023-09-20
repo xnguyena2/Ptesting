@@ -331,13 +331,13 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        buyer.createBuyer(Buyer.builder()
+        buyer.insertOrUpdate(Buyer.builder()
                         .group_id(mainGroup)
                         .phone_number("03030303030")
                         .reciver_fullname("phong nguyen")
                 .build().AutoFill()).block();
 
-        buyer.createBuyer(Buyer.builder()
+        buyer.insertOrUpdate(Buyer.builder()
                 .group_id(mainGroup)
                 .phone_number("04040404040")
                 .reciver_fullname("phong nguyen")
@@ -348,9 +348,15 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getReciver_fullname()).isEqualTo("phong nguyen");
+                    assertThat(buyerData.getRegion()).isEqualTo(null);
+                    assertThat(buyerData.getDistrict()).isEqualTo(null);
+                    assertThat(buyerData.getWard()).isEqualTo(null);
                 })
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getReciver_fullname()).isEqualTo("phong nguyen");
+                    assertThat(buyerData.getRegion()).isEqualTo(null);
+                    assertThat(buyerData.getDistrict()).isEqualTo(null);
+                    assertThat(buyerData.getWard()).isEqualTo(null);
                 })
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
@@ -1603,15 +1609,15 @@ public class OrderPackageTest extends TestConfig {
         ProductPackage productPackage = ProductPackage.builder()
                 .group_id(mainGroup)
                 .device_id("order_test")
-                .product_units(new ProductPackage.ProductUnit[]{
-                        ProductPackage.ProductUnit.builder()
-                                .product_unit_id(beerUnit4561ID.get())
-                                .product_id("beer_order1")
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_unit_second_id(beerUnit4561ID.get())
+                                .product_second_id("beer_order1")
                                 .number_unit(100)
                                 .build(),
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("beer_order1")
-                                .product_unit_id(beerUnit4562ID.get())
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("beer_order1")
+                                .product_unit_second_id(beerUnit4562ID.get())
                                 .number_unit(9)
                                 .build()
                 })

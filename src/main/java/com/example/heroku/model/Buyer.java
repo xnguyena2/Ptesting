@@ -50,7 +50,16 @@ public class Buyer extends BaseEntity {
     public Buyer AutoFill() {
         super.AutoFill();
         id = null;
-        device_id = phone_number_clean = Util.CleanPhoneNumber(phone_number);
+        phone_number_clean = Util.CleanPhoneNumber(phone_number);
+        if(device_id == null) {
+            device_id = phone_number_clean;
+        }
+        return this;
+    }
+
+    public Buyer AutoFill(String groupID) {
+        AutoFill();
+        group_id = groupID;
         return this;
     }
 }

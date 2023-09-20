@@ -80,13 +80,13 @@ public class ObjectPraserTest {
                 "    \"package_second_id\":\"7788900\",\n" +
                 "    \"product_units\":[\n" +
                 "        {\n" +
-                "            \"product_unit_id\":\"333\",\n" +
-                "            \"product_id\":\"7788900\",\n" +
+                "            \"product_unit_second_id\":\"333\",\n" +
+                "            \"product_second_id\":\"7788900\",\n" +
                 "            \"number_unit\":10\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"product_unit_id\":\"444\",\n" +
-                "            \"product_id\":\"7788900\",\n" +
+                "            \"product_unit_second_id\":\"444\",\n" +
+                "            \"product_second_id\":\"7788900\",\n" +
                 "            \"number_unit\":5\n" +
                 "        }\n" +
                 "    ]\n" +

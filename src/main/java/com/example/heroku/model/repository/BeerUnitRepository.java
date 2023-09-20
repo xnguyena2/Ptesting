@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 
 public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, String> {
 
-    @Query(value = "INSERT INTO product_unit( group_id, product_second_id, product_unit_second_id, name, price, discount, date_expire, volumetric, weight, status, createat ) VALUES ( :group_id, :product_second_id, :product_unit_second_id, :name, :price, :discount, :date_expire, :volumetric, :weight, :status, :createat ) ON CONFLICT (product_unit_second_id) DO UPDATE SET group_id = :group_id, product_second_id = :product_second_id, product_unit_second_id = :product_unit_second_id, name = :name, price = :price, discount = :discount, date_expire = :date_expire, volumetric = :volumetric, weight = :weight, status = :status, createat = :createat")
+    @Query(value = "INSERT INTO product_unit( group_id, product_second_id, product_unit_second_id, name, price, discount, date_expire, volumetric, weight, status, createat ) VALUES ( :group_id, :product_second_id, :product_unit_second_id, :name, :price, :discount, :date_expire, :volumetric, :weight, :status, :createat ) ON CONFLICT (group_id, product_second_id, product_unit_second_id) DO UPDATE SET name = :name, price = :price, discount = :discount, date_expire = :date_expire, volumetric = :volumetric, weight = :weight, status = :status, createat = :createat")
     Mono<ProductUnit> saveProductUnit(@Param("group_id") String group_id, @Param("product_second_id") String product_second_id,
                                       @Param("product_unit_second_id") String product_unit_second_id, @Param("name") String name,
                                       @Param("price") float price, @Param("discount") float discount,

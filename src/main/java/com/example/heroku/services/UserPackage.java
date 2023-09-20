@@ -25,6 +25,8 @@ public class UserPackage {
     @Autowired
     com.example.heroku.services.Beer beerAPI;
 
+    @Autowired
+    com.example.heroku.services.Buyer buyer;
 
     @Autowired
     UserPackageRepository userPackageRepository;
@@ -38,18 +40,8 @@ public class UserPackage {
             return Mono.just(badRequest().body(Format.builder().response("user package empty").build()));
         return
                 Mono.just(productPackage)
-                        .flatMap(productPackage1 -> {
-                            UserPackageDetail detail = productPackage1;
-                            if (productPackage1.getPackage_second_id() == null) {
-                                detail = null;
-                            }
-                            productPackage1.AutoFill();
-                            if (detail == null) {
-                                detail = productPackage1.getUserPackageDetail();
-                            }
-                            return savePackageDetail(detail)
-                                    .then(Mono.just(productPackage1));
-                        })
+                        .flatMap(this::saveBuyer)
+                        .flatMap(this::savePackageDetail)
                         .flatMap(productPackage1 -> Flux.just(productPackage1.getUserPackage())
                                 .flatMap(userPackage ->
                                         userPackageRepository.AddPackage(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
@@ -66,23 +58,37 @@ public class UserPackage {
             return Mono.just(badRequest().body(Format.builder().response("user package empty").build()));
         return
                 Mono.just(productPackage)
-                        .flatMap(productPackage1 -> {
-                            UserPackageDetail detail = productPackage1;
-                            if (productPackage1.getPackage_second_id() == null) {
-                                detail = null;
-                            }
-                            productPackage1.AutoFill();
-                            if (detail == null) {
-                                detail = productPackage1.getUserPackageDetail();
-                            }
-                            return savePackageDetail(detail)
-                                    .then(Mono.just(productPackage1));
-                        })
+                        .flatMap(this::saveBuyer)
+                        .flatMap(this::savePackageDetail)
                         .flatMap(productPackage1 -> userPackageRepository.DeleteProductByUserIDAndPackageID(productPackage1.getGroup_id(), productPackage1.getDevice_id(), productPackage1.getPackage_second_id()).then(Mono.just(productPackage1)))
                         .flatMap(productPackage1 -> Flux.just(productPackage1.getUserPackage())
                                 .flatMap(this::savePackageItem)
                                 .then(Mono.just(ok(Format.builder().response("done").build())))
                         );
+    }
+
+    Mono<ProductPackage> savePackageDetail(ProductPackage productPackage) {
+        UserPackageDetail detail = productPackage;
+        if (productPackage.getPackage_second_id() == null) {
+            detail = null;
+        }
+        productPackage.AutoFill();
+        if (detail == null) {
+            detail = productPackage.getUserPackageDetail();
+        }
+        return savePackageDetail(detail)
+                .then(Mono.just(productPackage));
+    }
+
+    Mono<ProductPackage> saveBuyer(ProductPackage productPackage) {
+
+        com.example.heroku.model.Buyer buyerInfo = productPackage.getBuyer();
+        if (buyerInfo != null) {
+            com.example.heroku.model.Buyer buyer1 = buyerInfo.AutoFill(productPackage.getGroup_id());
+            productPackage.setDevice_id(buyer1.getDevice_id());
+            return buyer.insertOrUpdate(buyer1).then(Mono.just(productPackage));
+        }
+        return Mono.just(productPackage);
     }
 
     Mono<UserPackageDetail> savePackageDetail(UserPackageDetail detail) {
@@ -98,13 +104,17 @@ public class UserPackage {
     }
 
     Mono<PackageDataResponse> fillPackageItem(PackageDataResponse packageDataResponse) {
-        return userPackageRepository.GetDevicePackageWithID(packageDataResponse.getGroup_id(), packageDataResponse.getDevice_id(), packageDataResponse.getPackage_second_id())
-                .flatMap(userPackage ->
-                        beerAPI.GetBeerByIDWithUnit(userPackage.getGroup_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id())
-                                .map(beerSubmitData -> new ProductInPackageResponse(userPackage).SetBeerData(beerSubmitData))
-                )
-                .map(packageDataResponse::addItem)
-                .then(Mono.just(packageDataResponse));
+        return
+                userPackageRepository.GetDevicePackageWithID(packageDataResponse.getGroup_id(), packageDataResponse.getDevice_id(), packageDataResponse.getPackage_second_id())
+                        .flatMap(userPackage ->
+                                beerAPI.GetBeerByIDWithUnit(userPackage.getGroup_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id())
+                                        .map(beerSubmitData -> new ProductInPackageResponse(userPackage).SetBeerData(beerSubmitData))
+                        )
+                        .map(packageDataResponse::addItem)
+                        .then(buyer.FindByDeviceID(packageDataResponse.getGroup_id(), packageDataResponse.getDevice_id())
+                                .handle((buyerData, synchronousSink) -> synchronousSink.next(packageDataResponse.setBuyer(buyerData)))
+                        )
+                        .then(Mono.just(packageDataResponse));
     }
 
 

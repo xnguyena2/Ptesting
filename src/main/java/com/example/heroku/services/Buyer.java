@@ -14,9 +14,10 @@ public class Buyer {
     @Autowired
     BuyerRepository buyerRepository;
 
-    public Mono<com.example.heroku.model.Buyer> createBuyer(com.example.heroku.model.Buyer buyerData) {
-        return this.buyerRepository.deleteByPhone(buyerData.getGroup_id(), buyerData.getPhone_number())
-                .then(this.buyerRepository.save(buyerData));
+    public Mono<com.example.heroku.model.Buyer> insertOrUpdate(com.example.heroku.model.Buyer buyerData) {
+        return buyerRepository.insertOrUpdate(buyerData.getGroup_id(), buyerData.getDevice_id(), buyerData.getReciver_address(), buyerData.getRegion_id(),
+                buyerData.getDistrict_id(), buyerData.getWard_id(), buyerData.getReciver_fullname(), buyerData.getPhone_number(), buyerData.getPhone_number_clean(),
+                buyerData.getStatus(), buyerData.getCreateat());
     }
 
     public Flux<BuyerData> GetAll(SearchQuery query) {
@@ -36,6 +37,13 @@ public class Buyer {
         return this.buyerRepository.findByPhoneOrDeviceIDContains(query.getGroup_id(), phone, query.getPage(), query.getSize())
                 .map(BuyerData::new);
     }
+
+
+    public Mono<BuyerData> FindByDeviceID(String groupID, String deviceID) {
+        return this.buyerRepository.findByGroupIDAndDeviceID(groupID, deviceID)
+                .map(BuyerData::new);
+    }
+
 
     public Mono<com.example.heroku.model.Buyer> deleteBuyer(String groupID, String phone) {
         return this.buyerRepository.deleteByPhone(groupID, phone);

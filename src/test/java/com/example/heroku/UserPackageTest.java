@@ -1,11 +1,13 @@
 package com.example.heroku;
 
+import com.example.heroku.model.Buyer;
 import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
+import com.example.heroku.response.BuyerData;
 import com.example.heroku.response.ProductInPackageResponse;
 import com.example.heroku.services.UserPackage;
 import com.example.heroku.util.Util;
@@ -26,6 +28,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserPackageTest {
     @Autowired
     UserPackage userPackageAPI;
+
+    @Autowired
+    com.example.heroku.services.Buyer buyer;
 
     com.example.heroku.services.Beer beerAPI;
 
@@ -144,15 +149,15 @@ public class UserPackageTest {
                 .progress("{}")
                 .status(UserPackageDetail.Status.CREATE)
                 .createat(Util.getInstance().Now())
-                .product_units(new ProductPackage.ProductUnit[]{
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("sold_out")
-                                .product_unit_id(beerUnitsold_out1ID.get())
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("sold_out")
+                                .product_unit_second_id(beerUnitsold_out1ID.get())
                                 .number_unit(100)
                                 .build(),
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("sold_out")
-                                .product_unit_id(beerUnitsold_out2ID.get())
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("sold_out")
+                                .product_unit_second_id(beerUnitsold_out2ID.get())
                                 .number_unit(9)
                                 .build()
                 })
@@ -176,15 +181,15 @@ public class UserPackageTest {
                 .progress("{}")
                 .status(UserPackageDetail.Status.CREATE)
                 .createat(Util.getInstance().Now())
-                .product_units(new ProductPackage.ProductUnit[]{
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit1ID.get())
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(100)
                                 .build(),
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit2ID.get())
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit2ID.get())
                                 .number_unit(9)
                                 .build()
                 })
@@ -207,20 +212,20 @@ public class UserPackageTest {
                 .package_type("deliver")
                 .progress("{}")
                 .status(UserPackageDetail.Status.CREATE)
-                .product_units(new ProductPackage.ProductUnit[]{
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit1ID.get())
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(11)
                                 .build(),
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit1ID.get())
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(-5)
                                 .build(),
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit2ID.get())
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit2ID.get())
                                 .number_unit(3)
                                 .build()
                 })
@@ -233,15 +238,15 @@ public class UserPackageTest {
                 .group_id(group)
                 .price(1)
                 .device_id("222222")
-                .product_units(new ProductPackage.ProductUnit[]{
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit1ID.get())
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(100)
                                 .build(),
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit2ID.get())
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit2ID.get())
                                 .number_unit(9)
                                 .build()
                 })
@@ -253,15 +258,15 @@ public class UserPackageTest {
                 .group_id(group)
                 .price(2)
                 .device_id("222222")
-                .product_units(new ProductPackage.ProductUnit[]{
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("456")
-                                .product_unit_id("3")
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("456")
+                                .product_unit_second_id("3")
                                 .number_unit(100)
                                 .build(),
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("456")
-                                .product_unit_id("3")
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("456")
+                                .product_unit_second_id("3")
                                 .number_unit(9)
                                 .build()
                 })
@@ -269,7 +274,7 @@ public class UserPackageTest {
         userPackageAPI.AddProductToPackage(productPackage)
                 .block();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).group_id(group).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
@@ -321,15 +326,15 @@ public class UserPackageTest {
                 .group_id(group)
                 .price(3)
                 .device_id("222222")
-                .product_units(new ProductPackage.ProductUnit[]{
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("456")
-                                .product_unit_id(beerUnit4561ID.get())
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("456")
+                                .product_unit_second_id(beerUnit4561ID.get())
                                 .number_unit(100)
                                 .build(),
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("456")
-                                .product_unit_id(beerUnit4561ID.get())
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("456")
+                                .product_unit_second_id(beerUnit4561ID.get())
                                 .number_unit(9)
                                 .build()
                 })
@@ -337,7 +342,7 @@ public class UserPackageTest {
         userPackageAPI.AddProductToPackage(productPackage)
                 .block();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).group_id(group).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
@@ -405,7 +410,7 @@ public class UserPackageTest {
 
         userPackageAPI.DeleteByBeerUnit(PackageItemRemove.builder().device_id("222222").unit_id(beerUnit1ID.get()).group_id(group).build()).blockLast();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).group_id(group).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
@@ -452,14 +457,14 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        userPackageAPI.DeleteByUserID(UserID.builder().id("222222").page( 0).size( 1000).group_id(group).build()).blockLast();
+        userPackageAPI.DeleteByUserID(UserID.builder().id("222222").page(0).size(1000).group_id(group).build()).blockLast();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page( 0).size( 1000).group_id(group).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("soldoutttt").page( 0).size( 1000).group_id(group).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("soldoutttt").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
@@ -510,8 +515,6 @@ public class UserPackageTest {
                 .verifyComplete();
 
 
-
-
         productPackage = ProductPackage.builder()
                 .group_id(group)
                 .device_id("save_package")
@@ -525,15 +528,15 @@ public class UserPackageTest {
                 .package_type("deliver")
                 .progress("{}")
                 .status(UserPackageDetail.Status.CREATE)
-                .product_units(new ProductPackage.ProductUnit[]{
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit1ID.get())
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(100)
                                 .build(),
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit2ID.get())
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit2ID.get())
                                 .number_unit(9)
                                 .build()
                 })
@@ -577,7 +580,6 @@ public class UserPackageTest {
                 .verifyComplete();
 
 
-
         productPackage = ProductPackage.builder()
                 .group_id(group)
                 .device_id("save_package")
@@ -591,15 +593,15 @@ public class UserPackageTest {
                 .package_type("deliver")
                 .progress("{}")
                 .status(UserPackageDetail.Status.CREATE)
-                .product_units(new ProductPackage.ProductUnit[]{
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit1ID.get())
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(3)
                                 .build(),
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit2ID.get())
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit2ID.get())
                                 .number_unit(4)
                                 .build()
                 })
@@ -642,9 +644,9 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        userPackageAPI.DeleteByUserID(UserID.builder().id("save_package").page( 0).size( 1000).group_id(group).build()).blockLast();
+        userPackageAPI.DeleteByUserID(UserID.builder().id("save_package").page(0).size(1000).group_id(group).build()).blockLast();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("save_package").page( 0).size( 1000).group_id(group).build())
+        userPackageAPI.GetMyPackage(UserID.builder().id("save_package").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
                 .as(StepVerifier::create)
                 .verifyComplete();
@@ -654,10 +656,8 @@ public class UserPackageTest {
                 .verifyComplete();
 
 
-
         productPackage = ProductPackage.builder()
                 .group_id(group)
-                .device_id("save_package")
                 .package_second_id("save_pack")
                 .note("notettt here!!")
                 .image("img.jpeg")
@@ -668,15 +668,25 @@ public class UserPackageTest {
                 .package_type("deliver")
                 .progress("{}")
                 .status(UserPackageDetail.Status.CREATE)
-                .product_units(new ProductPackage.ProductUnit[]{
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit1ID.get())
+                .buyer(Buyer.builder()
+                        .phone_number(" +84 0 229292 22")
+                        .reciver_fullname("test create package")
+                        .region_id(294)
+                        .district_id(484)
+                        .ward_id(10379)
+                        .build())
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(3)
+                                .discount_amount(19)
+                                .discount_percent(10)
+                                .note("note hhh")
                                 .build(),
-                        ProductPackage.ProductUnit.builder()
-                                .product_id("123")
-                                .product_unit_id(beerUnit2ID.get())
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit2ID.get())
                                 .number_unit(4)
                                 .build()
                 })
@@ -684,7 +694,7 @@ public class UserPackageTest {
         userPackageAPI.SavePackage(productPackage)
                 .block();
 
-        userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())
+        userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("0022929222").package_id("save_pack").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
 
@@ -694,11 +704,15 @@ public class UserPackageTest {
                         e.printStackTrace();
                     }
 
-                    assertThat(userPackage.getDevice_id()).isEqualTo("save_package");
+                    assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
+
+                    BuyerData buyer1 = userPackage.getBuyer();
+                    assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
 
                     listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
@@ -707,6 +721,9 @@ public class UserPackageTest {
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(3);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getDiscount_amount()).isEqualTo(19);
+                    assertThat(item.getDiscount_percent()).isEqualTo(10);
+                    assertThat(item.getNote()).isEqualTo("note hhh");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
 
 
@@ -731,11 +748,15 @@ public class UserPackageTest {
                         e.printStackTrace();
                     }
 
-                    assertThat(userPackage.getDevice_id()).isEqualTo("save_package");
+                    assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
+
+                    BuyerData buyer1 = userPackage.getBuyer();
+                    assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
 
                     listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
@@ -743,6 +764,9 @@ public class UserPackageTest {
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getDiscount_amount()).isEqualTo(19);
+                    assertThat(item.getDiscount_percent()).isEqualTo(10);
+                    assertThat(item.getNote()).isEqualTo("note hhh");
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
 
@@ -800,5 +824,18 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .verifyComplete();
+
+        buyer.FindByDeviceID(group, "0022929222")
+                .as(StepVerifier::create)
+                .consumeNextWith(buyerData -> {
+                    assertThat(buyerData.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(Util.getInstance().RemoveAccent(buyerData.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
+                    assertThat(buyerData.getReciver_fullname()).isEqualTo("test create package");
+                })
+                .verifyComplete();
+
+        buyer.deleteBuyer(group, "0022929222").block();
+
+
     }
 }
