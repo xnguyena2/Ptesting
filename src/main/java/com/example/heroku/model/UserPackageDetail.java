@@ -32,6 +32,14 @@ public class UserPackageDetail  extends BaseEntity {
 
     private String package_type;
 
+    private String table_id;
+
+    private String table_name;
+
+    private String area_id;
+
+    private String area_name;
+
     private String voucher;
 
     private float price;
@@ -60,6 +68,10 @@ public class UserPackageDetail  extends BaseEntity {
         package_second_id = s.package_second_id;
         device_id = s.device_id;
         package_type = s.package_type;
+        area_id = s.area_id;
+        area_name = s.area_name;
+        table_id = s.table_id;
+        table_name = s.table_name;
         voucher = s.voucher;
         price = s.price;
         discount_amount = s.discount_amount;

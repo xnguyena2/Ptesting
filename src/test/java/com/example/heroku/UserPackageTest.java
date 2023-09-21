@@ -668,6 +668,10 @@ public class UserPackageTest {
                 .package_type("deliver")
                 .progress("{}")
                 .status(UserPackageDetail.Status.CREATE)
+                .area_id("area_1")
+                .area_name("tang 1")
+                .table_id("table_1")
+                .table_name("ban 1")
                 .buyer(Buyer.builder()
                         .phone_number(" +84 0 229292 22")
                         .reciver_fullname("test create package")
@@ -707,6 +711,10 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
+                    assertThat(userPackage.getTable_id()).isEqualTo("table_1");
+                    assertThat(userPackage.getTable_name()).isEqualTo("ban 1");
+                    assertThat(userPackage.getArea_id()).isEqualTo("area_1");
+                    assertThat(userPackage.getArea_name()).isEqualTo("tang 1");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 

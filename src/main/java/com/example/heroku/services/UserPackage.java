@@ -93,7 +93,9 @@ public class UserPackage {
 
     Mono<UserPackageDetail> savePackageDetail(UserPackageDetail detail) {
         return userPackageDetailRepository.InsertOrUpdate(detail.getGroup_id(), detail.getDevice_id(), detail.getPackage_second_id(),
-                detail.getPackage_type(), detail.getVoucher(), detail.getPrice(), detail.getDiscount_amount(), detail.getDiscount_percent(), detail.getShip_price(),
+                detail.getPackage_type(), detail.getVoucher(),
+                detail.getArea_id(), detail.getArea_name(), detail.getTable_id(), detail.getTable_name(),
+                detail.getPrice(), detail.getDiscount_amount(), detail.getDiscount_percent(), detail.getShip_price(),
                 detail.getNote(), detail.getImage(), detail.getProgress(), detail.getStatus(), detail.getCreateat());
     }
 
