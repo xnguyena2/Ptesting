@@ -672,6 +672,7 @@ public class UserPackageTest {
                 .area_name("tang 1")
                 .table_id("table_1")
                 .table_name("ban 1")
+                .payment(7868)
                 .buyer(Buyer.builder()
                         .phone_number(" +84 0 229292 22")
                         .reciver_fullname("test create package")
@@ -715,6 +716,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getTable_name()).isEqualTo("ban 1");
                     assertThat(userPackage.getArea_id()).isEqualTo("area_1");
                     assertThat(userPackage.getArea_name()).isEqualTo("tang 1");
+                    assertThat(userPackage.getPayment()).isEqualTo(7868);
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 

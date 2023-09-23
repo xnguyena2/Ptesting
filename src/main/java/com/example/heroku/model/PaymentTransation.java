@@ -16,81 +16,34 @@ import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name="user_package_detail")
+@Table(name="payment_transaction")
 @Data
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPackageDetail  extends BaseEntity {
+public class PaymentTransation extends BaseEntity {
 
     @Id
     String id;
 
-    private String package_second_id;
+    private String transaction_second_id;
 
     private String device_id;
 
-    private String package_type;
+    private String package_second_id;
 
-    private String table_id;
-
-    private String table_name;
-
-    private String area_id;
-
-    private String area_name;
-
-    private String voucher;
-
-    private float price;
-
-    private float payment;
-
-    private float discount_amount;
-
-    private float discount_percent;
-
-    private float ship_price;
+    private float amount;
 
     private String note;
 
-    private String image;
-
-    private String progress;
-
     private Status status;
 
-    public static UserPackageDetail clone(UserPackageDetail s) {
-        return s.toBuilder().build();
-    }
 
-    public void copy(UserPackageDetail s) {
-        group_id = s.group_id;
-        createat = s.createat;
-        package_second_id = s.package_second_id;
-        device_id = s.device_id;
-        package_type = s.package_type;
-        area_id = s.area_id;
-        area_name = s.area_name;
-        table_id = s.table_id;
-        table_name = s.table_name;
-        voucher = s.voucher;
-        price = s.price;
-        payment = s.payment;
-        discount_amount = s.discount_amount;
-        discount_percent = s.discount_percent;
-        ship_price = s.ship_price;
-        note = s.note;
-        image = s.image;
-        progress = s.progress;
-        status = s.status;
-    }
-
-    public UserPackageDetail AutoFill() {
-        if(package_second_id == null) {
-            package_second_id = Util.getInstance().GenerateID();
+    public PaymentTransation AutoFill() {
+        if(transaction_second_id == null) {
+            transaction_second_id = Util.getInstance().GenerateID();
         }
-        return (UserPackageDetail) super.AutoFillIfNull();
+        return (PaymentTransation) super.AutoFillIfNull();
     }
 
 

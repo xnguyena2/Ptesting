@@ -46,3 +46,5 @@ DROP TABLE IF EXISTS product_import;
 DROP TABLE IF EXISTS store;
 
 DROP TABLE IF EXISTS buyer;
+
+DROP TABLE IF EXISTS payment_transaction;
