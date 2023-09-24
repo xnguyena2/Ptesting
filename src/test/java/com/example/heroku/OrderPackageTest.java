@@ -136,6 +136,7 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
                     System.out.println("package voucher: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+                    assertThat(voucher.isFor_all_user()).isEqualTo(true);
                     assertThat(voucher.getReuse()).isEqualTo(45);
                     assertThat(voucher.getListBeer()).isEqualTo(new String[]{});
                     assertThat(voucher.getListUser()).isEqualTo(new String[]{"iphone"});

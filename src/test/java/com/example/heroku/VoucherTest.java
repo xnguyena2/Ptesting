@@ -70,7 +70,7 @@ public class VoucherTest {
                                 .build())
                 .block();
 
-        System.out.println("done hererere!: "+group);
+        System.out.println("done hererere!: " + group);
 
         voucherAPI.getAllVoucher(SearchQuery.builder().page(0).size(100).group_id(group).build())
                 .sort(Comparator.comparing(VoucherData::getVoucher_second_id))
@@ -103,7 +103,7 @@ public class VoucherTest {
                 })
                 .verifyComplete();
 
-        System.out.println("done hererere!: "+group);
+        System.out.println("done hererere!: " + group);
 
         voucherAPI.getVoucher(group, "GIAM_BIA_666")
                 .as(StepVerifier::create)
