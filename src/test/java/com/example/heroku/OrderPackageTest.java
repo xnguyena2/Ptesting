@@ -180,20 +180,20 @@ public class OrderPackageTest extends TestConfig {
         voucherAPI.getAllMyVoucher(mainGroup, "iphone")
                 .as(StepVerifier::create)
                 .consumeNextWith(voucher -> {
-                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+                    System.out.println("Group: " + voucher.getGroup_id() + ", voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
                 })
                 .consumeNextWith(voucher -> {
-                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+                    System.out.println("Group: " + voucher.getGroup_id() + ", voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
                 })
                 .consumeNextWith(voucher -> {
-                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+                    System.out.println("Group: " + voucher.getGroup_id() + ", voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
                 })
                 .consumeNextWith(voucher -> {
-                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+                    System.out.println("Group: " + voucher.getGroup_id() + ", voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
                 })
-                .consumeNextWith(voucher -> {
-                    System.out.println("voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
-                })
+//                .consumeNextWith(voucher -> {
+//                    System.out.println("Group: " + voucher.getGroup_id() + ", voucher of iphone: " + voucher.getVoucher_second_id() + ", reuse: " + voucher.getReuse());
+//                })
                 .verifyComplete();
 
         beerAPI.CountSearchBeer(SearchQuery.builder().query("tigerrrrr").page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).group_id(mainGroup).build())
@@ -1340,6 +1340,14 @@ public class OrderPackageTest extends TestConfig {
                                 .build()
                 )
                 .block();
+
+        voucherAPI.getVoucherByID(mainGroup, "VOUCHER_DELETE")
+                .as(StepVerifier::create)
+                .consumeNextWith(voucher -> {
+                    assertThat(voucher.isFor_all_user()).isEqualTo(true);
+                    assertThat(voucher.getReuse()).isEqualTo(45);
+                })
+                .verifyComplete();
         voucherAPI.deleteByID(
                         VoucherData.builder()
                                 .group_id(mainGroup)
@@ -1354,6 +1362,10 @@ public class OrderPackageTest extends TestConfig {
                                 .build()
                 )
                 .block();
+
+        voucherAPI.getVoucherByID(mainGroup, "VOUCHER_DELETE")
+                .as(StepVerifier::create)
+                .verifyComplete();
     }
 
     void createBeer(String mainGroup) {

@@ -151,6 +151,6 @@ public class UserPackage {
 
     public Flux<com.example.heroku.model.UserPackage> DeleteByUserID(UserID userID) {
         return userPackageDetailRepository.DeleteByUserID(userID.getGroup_id(), userID.getId())
-                .thenMany(userPackageRepository.DeleteProgit ductByUserID(userID.getGroup_id(), userID.getId()));
+                .thenMany(userPackageRepository.DeleteProductByUserID(userID.getGroup_id(), userID.getId()));
     }
 }

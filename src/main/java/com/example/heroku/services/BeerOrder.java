@@ -66,7 +66,7 @@ public class BeerOrder {
                                         packageOrderData.getPackageOrder().getUser_device_id(),
                                         packaBeerOrderData.getProductOrder().getProductOrder().getProduct_second_id()
                                 )
-                                .switchIfEmpty(Mono.just(com.example.heroku.model.Voucher.builder().build()))
+                                .switchIfEmpty(Mono.just(com.example.heroku.model.Voucher.builder().group_id(packageOrderData.getPackageOrder().getGroup_id()).build()))
                                 .map(voucher -> {
                                     packaBeerOrderData.setVoucher(voucher);
                                     return packaBeerOrderData;

@@ -303,5 +303,23 @@ public class VoucherTest {
                 })
                 .verifyComplete();
 
+        voucherAPI.deleteByID(
+                        VoucherData.builder()
+                                .group_id(group)
+                                .voucher_second_id("GIAM_BIA_666")
+                                .build()
+                )
+                .block();
+
+        voucherAPI.getAllMyVoucher(group, "444444")
+                .sort(Comparator.comparing(com.example.heroku.model.Voucher::getVoucher_second_id))
+                .as(StepVerifier::create)
+                .consumeNextWith(voucher -> {
+                    assertThat(voucher.getVoucher_second_id()).isEqualTo("GIAM_5K");
+                    assertThat(voucher.getAmount()).isEqualTo(5000);
+                    assertThat(voucher.getReuse()).isEqualTo(8);
+                })
+                .verifyComplete();
+
     }
 }

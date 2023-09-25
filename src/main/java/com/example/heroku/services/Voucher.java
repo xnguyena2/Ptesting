@@ -39,6 +39,7 @@ public class Voucher {
     public Mono<com.example.heroku.model.Voucher> createVoucher(VoucherData voucherData) {
         com.example.heroku.model.Voucher voucher = voucherData.GetVoucher();
         return voucherRepository.deleteBySecondId(voucher.getGroup_id(), voucher.getVoucher_second_id())
+                .then(voucherRepository.save(voucher.AutoFill()))
                 .then(voucherRelateBeerRepository.deleteByVoucherSecondId(voucher.getGroup_id(), voucher.getVoucher_second_id()))
                 .then(voucherRelateUserDeviceRepository.deleteByVoucherSecondId(voucher.getGroup_id(), voucher.getVoucher_second_id()))
                 .thenMany(Mono.just(voucherData)
@@ -79,7 +80,7 @@ public class Voucher {
                                         .then()
                         )
                 )
-                .then(voucherRepository.save(voucher.AutoFill()));
+                .then(Mono.just(voucher));
     }
 
     private Mono<VoucherData> ConvertVoucherToVoucherData(Mono<com.example.heroku.model.Voucher> v) {
