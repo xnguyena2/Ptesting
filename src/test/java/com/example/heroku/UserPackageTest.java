@@ -722,7 +722,12 @@ public class UserPackageTest {
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(buyer1.getRegion_id()).isEqualTo(294);
+                    assertThat(buyer1.getDistrict_id()).isEqualTo(484);
+                    assertThat(buyer1.getWard_id()).isEqualTo(10379);
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
                     listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
@@ -766,7 +771,12 @@ public class UserPackageTest {
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(buyer1.getRegion_id()).isEqualTo(294);
+                    assertThat(buyer1.getDistrict_id()).isEqualTo(484);
+                    assertThat(buyer1.getWard_id()).isEqualTo(10379);
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
                     listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
@@ -839,7 +849,12 @@ public class UserPackageTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(buyerData.getRegion_id()).isEqualTo(294);
+                    assertThat(buyerData.getDistrict_id()).isEqualTo(484);
+                    assertThat(buyerData.getWard_id()).isEqualTo(10379);
                     assertThat(Util.getInstance().RemoveAccent(buyerData.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
+                    assertThat(Util.getInstance().RemoveAccent(buyerData.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
+                    assertThat(Util.getInstance().RemoveAccent(buyerData.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
                     assertThat(buyerData.getReciver_fullname()).isEqualTo("test create package");
                 })
                 .verifyComplete();

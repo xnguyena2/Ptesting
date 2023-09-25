@@ -300,7 +300,7 @@ public class OrderPackageTest extends TestConfig {
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
                     assertThat(buyerData.getPoints_discount()).isEqualTo(30 - cancelPointDiscount.get() - donePointDiscount.get());
-                    assertThat(buyerData.getTotal_price()).isEqualTo(80361f - donePrice.get() - cancelPrice.get());// 80361 = (106 + 122 + 365.4*3 + 672 * 0.7) * 30 + (122*5 + (122-5)*25) + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
+                    assertThat(buyerData.getReal_price()).isEqualTo(80361f - donePrice.get() - cancelPrice.get());// 80361 = (106 + 122 + 365.4*3 + 672 * 0.7) * 30 + (122*5 + (122-5)*25) + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
                 })
                 .verifyComplete();
 
@@ -310,12 +310,12 @@ public class OrderPackageTest extends TestConfig {
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
                     assertThat(buyerData.getPoints_discount()).isEqualTo(0);
-                    assertThat(buyerData.getTotal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
+                    assertThat(buyerData.getReal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
                 })
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
                     assertThat(buyerData.getPoints_discount()).isEqualTo(30);
-                    assertThat(buyerData.getTotal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
+                    assertThat(buyerData.getReal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
                 })
                 .verifyComplete();
 
@@ -324,7 +324,7 @@ public class OrderPackageTest extends TestConfig {
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
                     assertThat(buyerData.getPoints_discount()).isEqualTo(30);
-                    assertThat(buyerData.getTotal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
+                    assertThat(buyerData.getReal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
                 })
                 .verifyComplete();
 
@@ -362,12 +362,12 @@ public class OrderPackageTest extends TestConfig {
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
                     assertThat(buyerData.getPoints_discount()).isEqualTo(0);
-                    assertThat(buyerData.getTotal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
+                    assertThat(buyerData.getReal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
                 })
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
                     assertThat(buyerData.getPoints_discount()).isEqualTo(30);
-                    assertThat(buyerData.getTotal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
+                    assertThat(buyerData.getReal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
                 })
                 .verifyComplete();
 
@@ -382,12 +382,12 @@ public class OrderPackageTest extends TestConfig {
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
                     assertThat(buyerData.getPoints_discount()).isEqualTo(0);
-                    assertThat(buyerData.getTotal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
+                    assertThat(buyerData.getReal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
                 })
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
                     assertThat(buyerData.getPoints_discount()).isEqualTo(30);
-                    assertThat(buyerData.getTotal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
+                    assertThat(buyerData.getReal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
                 })
                 .verifyComplete();
 
@@ -396,7 +396,7 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getTotal_price()).isEqualTo(donePrice.get());
+                    assertThat(buyerData.getReal_price()).isEqualTo(donePrice.get());
                 })
                 .verifyComplete();
 
@@ -404,7 +404,7 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getTotal_price()).isEqualTo(cancelPrice.get());
+                    assertThat(buyerData.getReal_price()).isEqualTo(cancelPrice.get());
                 })
                 .verifyComplete();
 
