@@ -139,12 +139,18 @@ public class UserPackage {
                 .flatMap(this::fillPackageItem);
     }
 
+    public Mono<PackageDataResponse> DeletePackage(PackageID packageID) {
+
+        return userPackageDetailRepository.DeleteByID(packageID.getGroup_id(), packageID.getDevice_id(), packageID.getPackage_id())
+                .map(PackageDataResponse::new);
+    }
+
     public Flux<com.example.heroku.model.UserPackage> DeleteByBeerUnit(PackageItemRemove beerUnitDelete) {
         return userPackageRepository.DeleteProductByBeerUnit(beerUnitDelete.getGroup_id(), beerUnitDelete.getDevice_id(), beerUnitDelete.getUnit_id());
     }
 
     public Flux<com.example.heroku.model.UserPackage> DeleteByUserID(UserID userID) {
         return userPackageDetailRepository.DeleteByUserID(userID.getGroup_id(), userID.getId())
-                .thenMany(userPackageRepository.DeleteProductByUserID(userID.getGroup_id(), userID.getId()));
+                .thenMany(userPackageRepository.DeleteProgit ductByUserID(userID.getGroup_id(), userID.getId()));
     }
 }

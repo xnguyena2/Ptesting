@@ -656,6 +656,115 @@ public class UserPackageTest {
                 .verifyComplete();
 
 
+
+
+
+        productPackage = ProductPackage.builder()
+                .group_id(group)
+                .device_id("save_package")
+                .package_second_id("save_pack")
+                .note("notettt here!!")
+                .image("img.jpeg")
+                .discount_amount(10000)
+                .discount_percent(10)
+                .ship_price(20000)
+                .voucher("voucher_1d")
+                .package_type("deliver")
+                .progress("{}")
+                .status(UserPackageDetail.Status.CREATE)
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit1ID.get())
+                                .number_unit(3)
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit2ID.get())
+                                .number_unit(4)
+                                .build()
+                })
+                .build();
+        userPackageAPI.SavePackage(productPackage)
+                .block();
+
+        userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("save_package");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(2);
+
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+
+                    ProductInPackageResponse item = listItem.get(0);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(1);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(4);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .verifyComplete();
+
+        userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("save_package");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(2);
+
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+
+                    ProductInPackageResponse item = listItem.get(0);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(1);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(4);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .verifyComplete();
+
+        userPackageAPI.DeletePackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build()).block();
+
+        userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())
+                .as(StepVerifier::create)
+                .verifyComplete();
+
+
         productPackage = ProductPackage.builder()
                 .group_id(group)
                 .package_second_id("save_pack")

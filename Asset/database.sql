@@ -71,6 +71,7 @@ ALTER TABLE payment_transaction ADD CONSTRAINT UQ_payment_transaction UNIQUE(tra
 
 ALTER TABLE product_unit ADD CONSTRAINT FK_product_unit FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
 ALTER TABLE search_token ADD CONSTRAINT FK_search_token FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
+ALTER TABLE user_package ADD CONSTRAINT FK_user_package FOREIGN KEY(group_id, device_id, package_second_id) REFERENCES user_package_detail(group_id, device_id, package_second_id) ON DELETE CASCADE;
 
 create or replace function getRoleIndex(roles VARCHAR)
 returns int
