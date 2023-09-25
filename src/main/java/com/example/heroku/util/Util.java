@@ -122,13 +122,14 @@ public class Util {
             }
         } else {
             counterSession.remove(id);
+            synchronizedHashMap.remove(id);
         }
-        synchronizedHashMap.remove(id);
         return exist;
     }
 
     public int CleanReuse(String id) {
         counterSession.remove(id);
+        synchronizedHashMap.remove(id);
         Integer reuse = concurrentVoucherReuse.remove(id);
         if (reuse == null)
             reuse = 0;
