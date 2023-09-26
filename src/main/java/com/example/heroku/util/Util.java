@@ -114,11 +114,10 @@ public class Util {
     public boolean CleanMap(String id) {
         boolean exist = concurrentVoucherReuse.containsKey(id);
         if (exist) {
-            Integer currentSession = counterSession.get(id);
+            int currentSession = counterSession.compute(id, (k, v) -> (v == null) ? 0 : v - 1);
             System.out.println("id: " + id + ", currentSession: " + currentSession);
-            if (currentSession != null && currentSession > 1) {
+            if (currentSession > 0) {
                 exist = false;
-                counterSession.put(id, currentSession - 1);
             }
         } else {
             System.out.println("id: " + id + ", concurrentVoucherReuse not exist");
