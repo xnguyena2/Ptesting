@@ -7,7 +7,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface UserAddressRepository extends ReactiveCrudRepository<UserAddress, String> {
+public interface UserAddressRepository extends ReactiveCrudRepository<UserAddress, Long> {
 
     @Query(value = "SELECT * FROM user_address WHERE user_address.group_id = :group_id AND user_address.device_id = :deviceid AND user_address.region = :region AND user_address.district = :district AND user_address.ward = :ward")
     Flux<UserAddress> findByDeviceID(@Param("group_id")String groupID, @Param("deviceid")String deviceID, @Param("region")int region, @Param("district")int district, @Param("ward")int ward);

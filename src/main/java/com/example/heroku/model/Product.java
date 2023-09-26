@@ -1,15 +1,12 @@
 package com.example.heroku.model;
 
 import com.example.heroku.util.Util;
-import entity.BaseEntity;
+import com.example.heroku.model.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,9 +18,6 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product extends BaseEntity {
-
-    @Id
-    String id;
 
     private String product_second_id;
 

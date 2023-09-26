@@ -7,7 +7,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface ImageRepository extends ReactiveCrudRepository<Image, String> {
+public interface ImageRepository extends ReactiveCrudRepository<Image, Long> {
 
     @Query(value = "SELECT * FROM image WHERE image.category = :catetory AND image.group_id = :group_id")//, nativeQuery = true)
     Flux<Image> findByCategory(@Param("group_id")String group_id, @Param("catetory")String catetory);

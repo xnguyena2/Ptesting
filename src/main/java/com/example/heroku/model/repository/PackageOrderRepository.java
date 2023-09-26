@@ -7,7 +7,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface PackageOrderRepository extends ReactiveCrudRepository<PackageOrder, String> {
+public interface PackageOrderRepository extends ReactiveCrudRepository<PackageOrder, Long> {
 
     @Query(value = "SELECT * FROM package_order WHERE package_order.group_id = :group_id AND package_order.status = :status AND DATE_PART('day', NOW() - createat) <= :date LIMIT :size OFFSET (:page * :size)")
     Flux<PackageOrder> getAll(@Param("group_id")String group_id, @Param("page")int page, @Param("size")int size, @Param("status") PackageOrder.Status status, @Param("date") int date);

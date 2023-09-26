@@ -2,11 +2,9 @@ package com.example.heroku.model;
 
 
 import com.example.heroku.request.permission.GetGroupID;
-import entity.BaseEntity;
+import com.example.heroku.model.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.security.core.CredentialsContainer;
@@ -14,7 +12,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,9 +21,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Table(value = "users")
 public class Users extends BaseEntity implements UserDetails, CredentialsContainer, GetGroupID {
-
-    @Id
-    String id;
 
     private String username;
 

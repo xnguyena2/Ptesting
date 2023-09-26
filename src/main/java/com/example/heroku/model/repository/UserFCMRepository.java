@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 
-public interface UserFCMRepository  extends ReactiveCrudRepository<UserFCM, String> {
+public interface UserFCMRepository  extends ReactiveCrudRepository<UserFCM, Long> {
     @Query(value = "SELECT * FROM user_fcm WHERE user_fcm.group_id = :group_id AND user_fcm.device_id = :id")
     Mono<UserFCM> findByDeviceId(@Param("group_id")String groupID, @Param("id") String id);
 

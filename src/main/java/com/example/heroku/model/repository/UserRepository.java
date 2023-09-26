@@ -8,7 +8,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface UserRepository extends ReactiveCrudRepository<Users, String> {
+public interface UserRepository extends ReactiveCrudRepository<Users, Long> {
     //search all
     @Query(value = "SELECT * FROM users WHERE users.group_id = :group_id")// ORDER BY createat DESC LIMIT :size OFFSET (:page*:size)")
     Flux<Users> findByIdNotNull(@Param("group_id")String group_id, Pageable pageable);

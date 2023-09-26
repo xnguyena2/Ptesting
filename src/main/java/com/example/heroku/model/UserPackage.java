@@ -1,13 +1,11 @@
 package com.example.heroku.model;
 
-import entity.BaseEntity;
+import com.example.heroku.model.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -17,9 +15,6 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserPackage extends BaseEntity {
-
-    @Id
-    String id;
 
     private String package_second_id;
 
@@ -43,7 +38,7 @@ public class UserPackage extends BaseEntity {
 
     public UserPackage(UserPackage s) {
         super(s);
-        this.id = s.id;
+        this.setId(s.getId());
         this.package_second_id = s.package_second_id;
         this.device_id = s.device_id;
         this.product_second_id = s.product_second_id;

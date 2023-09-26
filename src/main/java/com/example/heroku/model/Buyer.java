@@ -1,10 +1,9 @@
 package com.example.heroku.model;
 
 import com.example.heroku.util.Util;
-import entity.BaseEntity;
+import com.example.heroku.model.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -17,9 +16,6 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Buyer extends BaseEntity {
-
-    @Id
-    String id;
 
     private String device_id;
 
@@ -49,7 +45,6 @@ public class Buyer extends BaseEntity {
 
     public Buyer AutoFill() {
         super.AutoFill();
-        id = null;
         phone_number_clean = Util.CleanPhoneNumber(phone_number);
         if(device_id == null) {
             device_id = phone_number_clean;

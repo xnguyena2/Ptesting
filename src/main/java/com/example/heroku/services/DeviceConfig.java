@@ -2,7 +2,7 @@ package com.example.heroku.services;
 
 import com.example.heroku.model.repository.DeviceConfigRepository;
 import com.example.heroku.response.Format;
-import entity.BaseEntity;
+import com.example.heroku.model.entity.BaseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class DeviceConfig {
                         )
                 )
                 .map(save ->
-                        ok(Format.builder().response(save.getId()).build())
+                        ok(Format.builder().build().setResponse(save.getId()))
                 );
     }
 

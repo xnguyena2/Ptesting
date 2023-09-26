@@ -7,7 +7,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface VoucherRelateUserDeviceRepository extends ReactiveCrudRepository<VoucherRelateUserDevice, String> {
+public interface VoucherRelateUserDeviceRepository extends ReactiveCrudRepository<VoucherRelateUserDevice, Long> {
     @Query(value = "DELETE FROM voucher_relate_user_device WHERE voucher_relate_user_device.group_id = :group_id AND voucher_relate_user_device.voucher_second_id = :id")
     Mono<VoucherRelateUserDevice> deleteByVoucherSecondId(@Param("group_id")String group_id, @Param("id") String id);
 

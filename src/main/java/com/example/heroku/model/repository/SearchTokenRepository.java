@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 
-public interface SearchTokenRepository extends ReactiveCrudRepository<SearchToken, String> {
+public interface SearchTokenRepository extends ReactiveCrudRepository<SearchToken, Long> {
     @Query(value = "DELETE FROM search_token WHERE product_second_id = :id")
     Mono<SearchToken> deleteBySecondId(@Param("id")String id);
 

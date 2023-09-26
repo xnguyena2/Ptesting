@@ -59,7 +59,7 @@ public class Image {
                     flickrLib.DeleteImage(info.getId());
                     return this.imageRepository.deleteImage(img.getGroup_id(), info.getId())
                             .map(deleted ->
-                                    ok(Format.builder().response(deleted.getId()).build())
+                                    ok(Format.builder().build().setResponse(deleted.getId()))
                             );
                 }
         );

@@ -8,5 +8,5 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 
-public interface PaymentTransactionRepository extends ReactiveCrudRepository<PaymentTransation, String> {
+public interface PaymentTransactionRepository extends ReactiveCrudRepository<PaymentTransation, Long> {
 }

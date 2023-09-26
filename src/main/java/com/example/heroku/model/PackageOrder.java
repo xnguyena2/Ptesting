@@ -1,17 +1,15 @@
 package com.example.heroku.model;
 
 import com.example.heroku.util.Util;
+import com.example.heroku.model.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,11 +20,7 @@ import java.util.Map;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PackageOrder extends entity.BaseEntity {
-
-    @Id
-    String id;
-
+public class PackageOrder extends BaseEntity {
 
     protected String package_order_second_id;
 

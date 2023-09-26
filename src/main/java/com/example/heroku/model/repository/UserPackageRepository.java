@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 
-public interface UserPackageRepository extends ReactiveCrudRepository<UserPackage, String> {
+public interface UserPackageRepository extends ReactiveCrudRepository<UserPackage, Long> {
 
     //"SELECT user_package.device_id, user_package.product_second_id, user_package.product_unit_second_id, SUM(user_package.number_unit) as number_unit, MAX(user_package.createat) as createat FROM user_package WHERE user_package.device_id = :id GROUP BY user_package.device_id, user_package.product_second_id, user_package.product_unit_second_id ORDER BY createat DESC LIMIT :size OFFSET (:page*:size)"
     @Query(value = "SELECT * FROM user_package WHERE user_package.group_id = :group_id AND user_package.device_id = :device_id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")

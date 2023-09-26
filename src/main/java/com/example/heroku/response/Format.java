@@ -12,4 +12,8 @@ public class Format {
     public void setResponse(int response) {
         this.response = String.valueOf(response);
     }
+    public Format setResponse(Long response) {
+        this.response = String.valueOf(response);
+        return this;
+    }
 }

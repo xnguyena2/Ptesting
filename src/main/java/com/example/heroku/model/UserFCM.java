@@ -1,14 +1,11 @@
 package com.example.heroku.model;
 
-import entity.BaseEntity;
+import com.example.heroku.model.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
-import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -18,9 +15,6 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserFCM extends BaseEntity {
-
-    @Id
-    private String id;
 
     private String device_id;
 

@@ -1,31 +1,25 @@
 package com.example.heroku.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import com.example.heroku.model.entity.BaseEntity;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name="notification")
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Notification {
-    @Id
-    String id;
+public class Notification extends BaseEntity {
 
     private String notification_second_id;
 
     private String title;
 
     private String detail;
-
-    private Timestamp createat;
 
 }

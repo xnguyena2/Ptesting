@@ -1,13 +1,12 @@
 package com.example.heroku.model;
 
 import com.example.heroku.util.Util;
-import entity.BaseEntity;
+import com.example.heroku.model.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -22,9 +21,6 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentTransation extends BaseEntity {
-
-    @Id
-    String id;
 
     private String transaction_second_id;
 

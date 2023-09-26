@@ -1,10 +1,8 @@
 package com.example.heroku.model;
 
-import entity.BaseEntity;
-import io.r2dbc.postgresql.codec.Json;
+import com.example.heroku.model.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -18,8 +16,6 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeviceConfig extends BaseEntity {
-    @Id
-    String id;
 
     private String color;
 }

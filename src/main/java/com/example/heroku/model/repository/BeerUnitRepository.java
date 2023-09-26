@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 
-public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, String> {
+public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, Long> {
 
     @Query(value = "INSERT INTO product_unit( group_id, product_second_id, product_unit_second_id, name, price, discount, date_expire, volumetric, weight, status, createat ) VALUES ( :group_id, :product_second_id, :product_unit_second_id, :name, :price, :discount, :date_expire, :volumetric, :weight, :status, :createat ) ON CONFLICT (group_id, product_second_id, product_unit_second_id) DO UPDATE SET name = :name, price = :price, discount = :discount, date_expire = :date_expire, volumetric = :volumetric, weight = :weight, status = :status, createat = :createat")
     Mono<ProductUnit> saveProductUnit(@Param("group_id") String group_id, @Param("product_second_id") String product_second_id,

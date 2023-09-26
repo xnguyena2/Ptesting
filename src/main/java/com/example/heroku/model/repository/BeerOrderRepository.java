@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 
-public interface BeerOrderRepository extends ReactiveCrudRepository<ProductOrder, String> {
+public interface BeerOrderRepository extends ReactiveCrudRepository<ProductOrder, Long> {
     @Query(value = "SELECT * FROM product_order WHERE product_order.package_order_second_id = :id AND product_order.group_id = :group_id")
     Flux<ProductOrder> findBySecondID(@Param("group_id")String groupID, @Param("id")String packageID);
 

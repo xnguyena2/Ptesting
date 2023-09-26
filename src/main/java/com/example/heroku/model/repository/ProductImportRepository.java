@@ -7,7 +7,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface ProductImportRepository extends ReactiveCrudRepository<ProductImport, String> {
+public interface ProductImportRepository extends ReactiveCrudRepository<ProductImport, Long> {
 
     @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id AND DATE_PART('day', NOW() - createat) <= :date LIMIT :size OFFSET (:page * :size)")
     Flux<ProductImport> getALL(@Param("group_id")String group_id, @Param("page")int page, @Param("size")int size, @Param("date")int date);

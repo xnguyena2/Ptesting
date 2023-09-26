@@ -1,16 +1,14 @@
 package com.example.heroku.model;
 
 import com.example.heroku.util.Util;
-import entity.BaseEntity;
+import com.example.heroku.model.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,9 +20,6 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserPackageDetail  extends BaseEntity {
-
-    @Id
-    String id;
 
     private String package_second_id;
 
@@ -65,6 +60,7 @@ public class UserPackageDetail  extends BaseEntity {
     }
 
     public void copy(UserPackageDetail s) {
+        setId(s.getId());
         group_id = s.group_id;
         createat = s.createat;
         package_second_id = s.package_second_id;

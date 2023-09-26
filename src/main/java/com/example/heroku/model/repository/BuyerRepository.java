@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 
-public interface BuyerRepository extends ReactiveCrudRepository<Buyer, String> {
+public interface BuyerRepository extends ReactiveCrudRepository<Buyer, Long> {
 
     @Query(value = "SELECT buyer_main_info.*, real_price, points_discount FROM ( SELECT phone_number_clean, phone_number, reciver_address, region_id, district_id, ward_id, reciver_fullname FROM ( SELECT phone_number_clean, phone_number, reciver_address, region_id, district_id, ward_id, reciver_fullname, row_number() over( PARTITION BY phone_number_clean ORDER BY phone_number_clean DESC ) AS roworder FROM package_order WHERE package_order.group_id = :group_id ) TEMP WHERE roworder = 1 ) buyer_main_info INNER JOIN ( SELECT phone_number_clean, SUM(real_price) AS real_price, SUM(points_discount) AS points_discount FROM package_order WHERE package_order.group_id = :group_id AND status = :status GROUP BY phone_number_clean ) buyer_real_price ON buyer_main_info.phone_number_clean = buyer_real_price.phone_number_clean LIMIT :size OFFSET (:page * :size)")
     Flux<Buyer> getAll(@Param("status") PackageOrder.Status status, @Param("group_id") String group_id, @Param("page") int page, @Param("size") int size);
