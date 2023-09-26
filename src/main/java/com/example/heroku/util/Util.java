@@ -89,8 +89,6 @@ public class Util {
         return instance;
     }
 
-    public Map<String, String> synchronizedHashMap = Collections.synchronizedMap(new HashMap<String, String>());//WeakHashMap
-
     public Map<String, Integer> counterSession = Collections.synchronizedMap(new HashMap<String, Integer>());//new ConcurrentHashMap<String, String>();
 
     public Map<String, Integer> concurrentVoucherReuse = Collections.synchronizedMap(new HashMap<String, Integer>());//new ConcurrentHashMap<String, Integer>();
@@ -105,6 +103,7 @@ public class Util {
 
     public Integer obserVoucher(String id) {
         //increase only when have same device and new Voucher ID
+        System.out.println("obserVoucher: " + id);
         return counterSession.compute(id, (k, v) -> (v == null) ? 1 : v + 1);
     }
 
@@ -116,20 +115,20 @@ public class Util {
         boolean exist = concurrentVoucherReuse.containsKey(id);
         if (exist) {
             Integer currentSession = counterSession.get(id);
+            System.out.println("id: " + id + ", currentSession: " + currentSession);
             if (currentSession != null && currentSession > 1) {
                 exist = false;
                 counterSession.put(id, currentSession - 1);
             }
         } else {
+            System.out.println("id: " + id + ", concurrentVoucherReuse not exist");
             counterSession.remove(id);
-            synchronizedHashMap.remove(id);
         }
         return exist;
     }
 
     public int CleanReuse(String id) {
         counterSession.remove(id);
-        synchronizedHashMap.remove(id);
         Integer reuse = concurrentVoucherReuse.remove(id);
         if (reuse == null)
             reuse = 0;
@@ -137,7 +136,8 @@ public class Util {
     }
 
     public String GetMap(String id) {
-        return synchronizedHashMap.compute(id, (k, v) -> (v == null) ? GenerateID() : v);
+        return id.intern();
+//        return synchronizedHashMap.compute(id, (k, v) -> (v == null) ? GenerateID() : v);
     }
 
     public String GenerateID(){
