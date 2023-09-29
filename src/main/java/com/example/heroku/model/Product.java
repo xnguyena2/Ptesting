@@ -32,21 +32,21 @@ public class Product extends BaseEntity {
     private Status status;
 
     public String getTokens() {
-        if(name == null && detail == null)
+        if (name == null && detail == null)
             return "";
-        if(name == null)
+        if (name == null)
             return Util.getInstance().RemoveAccent(detail);
-        if(detail == null)
+        if (detail == null)
             return Util.getInstance().RemoveAccent(name);
         return Util.getInstance().RemoveAccent(name + " " + detail);
     }
 
-    public Product UpdateMetaSearch(){
+    public Product UpdateMetaSearch() {
         this.meta_search = this.getTokens();
         return this;
     }
 
-    public Product AutoFill(){
+    public Product AutoFill() {
         super.AutoFill();
         return this;
     }
@@ -65,10 +65,9 @@ public class Product extends BaseEntity {
         HIDE("HIDE");
 
 
-
         private String name;
 
-        Status(String name){
+        Status(String name) {
             this.name = name;
         }
 
@@ -78,19 +77,16 @@ public class Product extends BaseEntity {
 
         private static final Map<String, Status> lookup = new HashMap<>();
 
-        static
-        {
-            for(Status sts : Status.values())
-            {
+        static {
+            for (Status sts : Status.values()) {
                 lookup.put(sts.getName(), sts);
             }
         }
 
-        public static Status get(String text)
-        {
+        public static Status get(String text) {
             try {
                 Status val = lookup.get(text);
-                if(val == null){
+                if (val == null) {
                     return AVARIABLE;
                 }
                 return val;

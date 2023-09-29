@@ -18,7 +18,7 @@ public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
     Mono<Product> saveProduct(@Param("group_id") String group_id, @Param("product_second_id") String product_second_id,
                               @Param("name") String name, @Param("detail") String detail,
                               @Param("category") String category, @Param("meta_search") String meta_search,
-                              @Param("status") String status, @Param("createat") Timestamp createat);
+                              @Param("status") Product.Status status, @Param("createat") Timestamp createat);
 
 
     @Query(value = "SELECT * FROM product WHERE product.product_second_id = :id AND product.group_id = :group_id")

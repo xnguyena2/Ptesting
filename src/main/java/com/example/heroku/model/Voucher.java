@@ -41,7 +41,7 @@ public class Voucher extends BaseEntity {
     private boolean package_voucher;
 
     public Voucher AutoFill() {
-        this.createat = Util.getInstance().Now();
+        super.AutoFill();
         return this;
     }
 

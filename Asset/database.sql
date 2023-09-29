@@ -33,6 +33,9 @@ CREATE TABLE IF NOT EXISTS buyer (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NU
 
 CREATE TABLE IF NOT EXISTS payment_transaction (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, transaction_second_id VARCHAR NOT NULL, device_id VARCHAR, package_second_id VARCHAR, amount VARCHAR, note VARCHAR, status VARCHAR, createat TIMESTAMP);
 
+CREATE TABLE IF NOT EXISTS table_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, area_id VARCHAR, table_id VARCHAR, table_name VARCHAR, package_second_id VARCHAR, detail VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS area (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, area_id VARCHAR, area_name VARCHAR, detail VARCHAR, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP);
+
 
 CREATE INDEX users_name_index ON users(username);
 CREATE INDEX search_token_index ON search_token(tokens);
@@ -54,6 +57,11 @@ CREATE INDEX notification_relate_user_device_index ON notification_relate_user_d
 CREATE INDEX payment_transaction_index ON payment_transaction(package_second_id);
 CREATE INDEX payment_transaction_createat_index ON payment_transaction(createat);
 CREATE INDEX payment_transaction_group_index ON payment_transaction(group_id);
+CREATE INDEX table_detail_index ON table_detail(table_id);
+CREATE INDEX table_detail_area_index ON table_detail(area_id);
+CREATE INDEX area_group_index ON area(group_id);
+CREATE INDEX area_index ON area(area_name);
+CREATE INDEX area_search_index ON area(meta_search);
 
 ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
 ALTER TABLE product ADD CONSTRAINT UQ_product_second_id UNIQUE(group_id, product_second_id);
@@ -69,12 +77,15 @@ ALTER TABLE buyer ADD CONSTRAINT UQ_buyer UNIQUE(group_id, device_id);
 ALTER TABLE user_package_detail ADD CONSTRAINT UQ_user_package_detail UNIQUE(group_id, device_id, package_second_id);
 ALTER TABLE user_package ADD CONSTRAINT UQ_user_package UNIQUE(group_id, device_id, package_second_id, product_second_id, product_unit_second_id);
 ALTER TABLE payment_transaction ADD CONSTRAINT UQ_payment_transaction UNIQUE(transaction_second_id);
+ALTER TABLE table_detail ADD CONSTRAINT UQ_table_detail UNIQUE(group_id, area_id, table_id);
+ALTER TABLE area ADD CONSTRAINT UQ_area UNIQUE(group_id, area_id);
 
 ALTER TABLE product_unit ADD CONSTRAINT FK_product_unit FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
 ALTER TABLE search_token ADD CONSTRAINT FK_search_token FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
 ALTER TABLE user_package ADD CONSTRAINT FK_user_package FOREIGN KEY(group_id, device_id, package_second_id) REFERENCES user_package_detail(group_id, device_id, package_second_id) ON DELETE CASCADE;
 ALTER TABLE voucher_relate_user_device ADD CONSTRAINT FK_voucher_relate_user_device FOREIGN KEY(group_id, voucher_second_id) REFERENCES voucher(group_id, voucher_second_id) ON DELETE CASCADE;
 ALTER TABLE voucher_relate_product ADD CONSTRAINT FK_voucher_relate_product FOREIGN KEY(group_id, voucher_second_id) REFERENCES voucher(group_id, voucher_second_id) ON DELETE CASCADE;
+ALTER TABLE table_detail ADD CONSTRAINT FK_table_detail FOREIGN KEY(group_id, area_id) REFERENCES area(group_id, area_id) ON DELETE CASCADE;
 
 create or replace function getRoleIndex(roles VARCHAR)
 returns int

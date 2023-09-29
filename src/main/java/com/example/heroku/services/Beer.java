@@ -47,7 +47,7 @@ public class Beer {
                         this.beerRepository.saveProduct(product.getGroup_id(), product.getProduct_second_id(),
                                 product.getName(), product.getDetail(),
                                 product.getCategory(), product.getMeta_search(),
-                                product.getStatus() == null ? null : product.getStatus().getName(), product.getCreateat()
+                                product.getStatus(), product.getCreateat()
                         ).then(Mono.just(product))
                 )
                 .flatMap(product -> this.searchBeer.saveToken(product.getGroup_id(), product.getProduct_second_id(),

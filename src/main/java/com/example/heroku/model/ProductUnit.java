@@ -94,9 +94,9 @@ public class ProductUnit extends BaseEntity {
 
 
     public ProductUnit AutoFill() {
+        super.AutoFill();
         if (this.product_unit_second_id == null || this.product_unit_second_id.equals(""))
             this.product_unit_second_id = Util.getInstance().GenerateID();
-        this.createat = Util.getInstance().Now();
         return this;
     }
 

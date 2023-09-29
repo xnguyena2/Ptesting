@@ -1,5 +1,6 @@
 package com.example.heroku.model;
 
+import com.example.heroku.status.ActiveStatus;
 import com.example.heroku.util.Util;
 import com.example.heroku.model.entity.BaseEntity;
 import lombok.*;
@@ -41,7 +42,7 @@ public class Buyer extends BaseEntity {
 
     private float points_discount;
 
-    private String status;
+    private ActiveStatus status;
 
     public Buyer AutoFill() {
         super.AutoFill();

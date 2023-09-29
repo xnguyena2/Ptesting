@@ -1,5 +1,6 @@
 package com.example.heroku.model.entity;
 
+import com.example.heroku.util.Util;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,13 +32,13 @@ public class BaseEntity {
     }
 
     public BaseEntity AutoFill() {
-        this.createat = new Timestamp(new Date().getTime());
+        this.createat = Util.getInstance().Now();
         return this;
     }
 
     public BaseEntity AutoFillIfNull() {
         if(this.createat == null) {
-            this.createat = new Timestamp(new Date().getTime());
+            this.createat = Util.getInstance().Now();
         }
         return this;
     }
