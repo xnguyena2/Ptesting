@@ -60,7 +60,7 @@ public class UserPackageDetail  extends BaseEntity {
     }
 
     public void copy(UserPackageDetail s) {
-        setId(s.getId());
+        id = s.id;
         group_id = s.group_id;
         createat = s.createat;
         package_second_id = s.package_second_id;

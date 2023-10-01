@@ -31,6 +31,17 @@ public class Area extends BaseEntity {
 
     private ActiveStatus status;
 
+    public void copy(Area a) {
+        id = a.id;
+        group_id = a.group_id;
+        createat = a.createat;
+        area_id = a.area_id;
+        area_name = a.area_name;
+        detail = a.detail;
+        meta_search = a.meta_search;
+        status = a.status;
+    }
+
     public String getTokens() {
         if (area_name == null && detail == null)
             return "";
@@ -50,7 +61,7 @@ public class Area extends BaseEntity {
         super.AutoFill();
         if (this.area_id == null || this.area_id.isEmpty())
             this.area_id = Util.getInstance().GenerateID();
-        return this;
+        return this.UpdateMetaSearch();
     }
 
     public Area AutoFill(String groupID) {

@@ -139,6 +139,13 @@ public class UserPackage {
                 .flatMap(this::fillPackageItem);
     }
 
+    public Mono<PackageDataResponse> GetJustByPackageId(PackageID packageID) {
+
+        return userPackageDetailRepository.GetPackageDetailById(packageID.getGroup_id(), packageID.getPackage_id())
+                .map(PackageDataResponse::new)
+                .flatMap(this::fillPackageItem);
+    }
+
     public Mono<PackageDataResponse> DeletePackage(PackageID packageID) {
 
         return userPackageDetailRepository.DeleteByID(packageID.getGroup_id(), packageID.getDevice_id(), packageID.getPackage_id())

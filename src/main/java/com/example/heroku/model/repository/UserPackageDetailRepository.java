@@ -28,6 +28,9 @@ public interface UserPackageDetailRepository extends ReactiveCrudRepository<User
     @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.device_id = :device_id AND user_package_detail.package_second_id = :package_second_id")
     Mono<UserPackageDetail> GetPackageDetail(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("package_second_id") String package_id);
 
+    @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.package_second_id = :package_second_id")
+    Mono<UserPackageDetail> GetPackageDetailById(@Param("group_id") String group_id, @Param("package_second_id") String package_id);
+
     @Query(value = "DELETE FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.device_id = :device_id")
     Flux<UserPackageDetail> DeleteByUserID(@Param("group_id") String group_id, @Param("device_id") String device_id);
 

@@ -82,6 +82,19 @@ public class ApplicationTest extends TestConfig {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    Area area;
+
+    @Test
+    public void areaAndTableTest1() {
+        AreaAndTabletTest.builder().area(area).build().Test(mainGroup);
+    }
+
+    @Test
+    public void areaAndTableTest2() {
+        AreaAndTabletTest.builder().area(area).build().Test(anotherGroup);
+    }
+
     @Test
     @Order(1)
     public  void storeTest() {

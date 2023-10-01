@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PackageID extends BaseID {
-    private String device_id;
-    private String package_id;
+public class AreaID extends BaseID {
+    private String area_id;
 }

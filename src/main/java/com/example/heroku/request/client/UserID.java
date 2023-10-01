@@ -1,17 +1,14 @@
 package com.example.heroku.request.client;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.heroku.request.client.base.BaseID;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserID {
-    private String group_id;
+public class UserID extends BaseID {
     private String id;
-    private int page;
-    private int size;
 }

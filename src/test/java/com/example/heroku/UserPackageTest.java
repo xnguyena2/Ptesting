@@ -764,6 +764,10 @@ public class UserPackageTest {
                 .as(StepVerifier::create)
                 .verifyComplete();
 
+        userPackageAPI.GetJustByPackageId(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())
+                .as(StepVerifier::create)
+                .verifyComplete();
+
 
         productPackage = ProductPackage.builder()
                 .group_id(group)
@@ -809,6 +813,58 @@ public class UserPackageTest {
                 .block();
 
         userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("0022929222").package_id("save_pack").build())
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
+                    assertThat(userPackage.getTable_id()).isEqualTo("table_1");
+                    assertThat(userPackage.getTable_name()).isEqualTo("ban 1");
+                    assertThat(userPackage.getArea_id()).isEqualTo("area_1");
+                    assertThat(userPackage.getArea_name()).isEqualTo("tang 1");
+                    assertThat(userPackage.getPayment()).isEqualTo(7868);
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(2);
+
+                    BuyerData buyer1 = userPackage.getBuyer();
+                    assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(buyer1.getRegion_id()).isEqualTo(294);
+                    assertThat(buyer1.getDistrict_id()).isEqualTo(484);
+                    assertThat(buyer1.getWard_id()).isEqualTo(10379);
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
+
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+
+                    ProductInPackageResponse item = listItem.get(0);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getDiscount_amount()).isEqualTo(19);
+                    assertThat(item.getDiscount_percent()).isEqualTo(10);
+                    assertThat(item.getNote()).isEqualTo("note hhh");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(1);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(4);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .verifyComplete();
+
+        userPackageAPI.GetJustByPackageId(PackageID.builder().group_id(group).device_id("0022929222").package_id("save_pack").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
 
