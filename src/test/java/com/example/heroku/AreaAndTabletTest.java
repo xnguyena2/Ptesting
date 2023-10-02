@@ -399,6 +399,8 @@ public class AreaAndTabletTest {
                     assertThat(listTable.get(2).getTable_name()).isEqualTo("table 3 of area 2");
                     assertThat(listTable.get(3).getTable_name()).isEqualTo("table 4 of area 2");
                     assertThat(listTable.get(4).getTable_name()).isEqualTo("table 5 of area 2");
+                    assertThat(listTable.get(3).getPrice()).isEqualTo(-1);
+                    assertThat(listTable.get(4).getPrice()).isEqualTo(-1);
                     table5OfArea2.set(listTable.get(4).getTable_id());
                 })
                 .verifyComplete();
@@ -474,6 +476,7 @@ public class AreaAndTabletTest {
                     assertThat(listTable.get(2).getTable_name()).isEqualTo("table 3 of area 2");
                     assertThat(listTable.get(3).getTable_name()).isEqualTo("table 4 of area 2");
                     assertThat(listTable.get(4).getTable_name()).isEqualTo("table 5 of area 2");
+                    assertThat(listTable.get(3).getPrice()).isEqualTo(-1);
                     assertThat(listTable.get(4).getPrice()).isEqualTo(5544);
                 })
                 .verifyComplete();
