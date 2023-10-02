@@ -1,15 +1,18 @@
 package com.example.heroku;
 
+import com.example.heroku.model.Buyer;
+import com.example.heroku.model.UserPackageDetail;
+import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.AreaID;
+import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
-import com.example.heroku.request.voucher.VoucherData;
 import com.example.heroku.response.AreaData;
 import com.example.heroku.response.TableDetailData;
 import com.example.heroku.services.Area;
+import com.example.heroku.services.UserPackage;
 import com.example.heroku.util.Util;
 import lombok.Builder;
-import org.assertj.core.api.Assert;
 import reactor.test.StepVerifier;
 
 import java.util.Arrays;
@@ -21,7 +24,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Builder
 public class AreaAndTabletTest {
+
+    UserPackage userPackageAPI;
+
     Area area;
+
+    com.example.heroku.services.Buyer buyer;
 
     public void Test(String group) {
         area.createTableDetail(
@@ -327,7 +335,7 @@ public class AreaAndTabletTest {
                         .group_id(group)
                         .area_id(are2ID.get())
                         .table_name("table 5 of area 2")
-                .build())
+                        .build())
                 .block();
 
         area.getAll(UserID.builder()
@@ -353,6 +361,8 @@ public class AreaAndTabletTest {
                 })
                 .verifyComplete();
 
+        AtomicReference<String> table5OfArea2 = new AtomicReference<>(null);
+
         area.getAreaById(AreaID.builder()
                         .group_id(group)
                         .area_id(are2ID.get())
@@ -371,7 +381,92 @@ public class AreaAndTabletTest {
                     assertThat(listTable.get(2).getTable_name()).isEqualTo("table 3 of area 2");
                     assertThat(listTable.get(3).getTable_name()).isEqualTo("table 4 of area 2");
                     assertThat(listTable.get(4).getTable_name()).isEqualTo("table 5 of area 2");
+                    table5OfArea2.set(listTable.get(4).getTable_id());
                 })
                 .verifyComplete();
+
+
+        ProductPackage productPackage = ProductPackage.builder()
+                .group_id(group)
+                .package_second_id("save_pack_of_table5_area2")
+                .note("notettt here!!")
+                .image("img.jpeg")
+                .discount_amount(10000)
+                .discount_percent(10)
+                .ship_price(20000)
+                .voucher("voucher_1d")
+                .package_type("deliver")
+                .progress("{}")
+                .status(UserPackageDetail.Status.CREATE)
+                .area_id("area_1")
+                .area_name("tang 1")
+                .table_id("table_1")
+                .table_name("ban 1")
+                .payment(7868)
+                .price(5544)
+                .buyer(Buyer.builder()
+                        .phone_number("555555")
+                        .reciver_fullname("test create package")
+                        .region_id(294)
+                        .district_id(484)
+                        .ward_id(10379)
+                        .build())
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("noooooo")
+                                .product_unit_second_id("noooooo")
+                                .number_unit(3)
+                                .discount_amount(19)
+                                .discount_percent(10)
+                                .note("note hhh")
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("noooooo")
+                                .product_unit_second_id("noooooo")
+                                .number_unit(4)
+                                .build()
+                })
+                .build();
+        userPackageAPI.SavePackage(productPackage)
+                .block();
+
+        area.setPackageID(TableDetailData.builder()
+                        .group_id(group)
+                        .area_id(are2ID.get())
+                        .table_id(table5OfArea2.get())
+                        .package_second_id("save_pack_of_table5_area2")
+                        .build())
+                .block();
+
+        area.getAreaById(AreaID.builder()
+                        .group_id(group)
+                        .area_id(are2ID.get())
+                        .build())
+                .as(StepVerifier::create)
+                .consumeNextWith(areaData -> {
+                    assertThat(Util.getInstance().RemoveAccent(areaData.getArea_name())).isEqualTo("tang 2");
+                    assertThat(areaData.getMeta_search()).isEqualTo("tang 2");
+
+                    List<TableDetailData> listTable = areaData.getListTable();
+                    listTable.sort(Comparator.comparing(TableDetailData::getTable_name));
+                    assertThat(listTable.size()).isEqualTo(5);
+
+                    assertThat(listTable.get(0).getTable_name()).isEqualTo("table 1 of area 2");
+                    assertThat(listTable.get(1).getTable_name()).isEqualTo("table 2 of area 2");
+                    assertThat(listTable.get(2).getTable_name()).isEqualTo("table 3 of area 2");
+                    assertThat(listTable.get(3).getTable_name()).isEqualTo("table 4 of area 2");
+                    assertThat(listTable.get(4).getTable_name()).isEqualTo("table 5 of area 2");
+                    assertThat(listTable.get(4).getPrice()).isEqualTo(5544);
+                })
+                .verifyComplete();
+
+        userPackageAPI.DeletePackage(PackageID.builder()
+                        .group_id(group)
+                        .device_id("555555")
+                        .package_id("save_pack_of_table5_area2")
+                        .build())
+                .block();
+
+        buyer.deleteBuyer(group, "555555").block();
     }
 }

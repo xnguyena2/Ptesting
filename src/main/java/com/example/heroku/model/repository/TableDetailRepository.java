@@ -31,6 +31,9 @@ public interface TableDetailRepository extends ReactiveCrudRepository<TableDetai
     @Query(value = "SELECT * FROM table_detail WHERE table_detail.group_id = :group_id AND table_detail.table_id = :table_id")
     Mono<TableDetail> getById(@Param("group_id")String group_id, @Param("table_id") String table_id);
 
+    @Query(value = "UPDATE table_detail SET package_second_id = :package_second_id WHERE table_detail.group_id = :group_id AND table_detail.table_id = :table_id")
+    Mono<TableDetail> setPackageID(@Param("group_id")String group_id, @Param("table_id") String table_id, @Param("package_second_id") String package_second_id);
+
     @Query(value = "SELECT * FROM table_detail WHERE table_detail.group_id = :group_id AND table_detail.area_id = :area_id")
     Flux<TableDetail> findByAreaId(@Param("group_id") String group_id, @Param("area_id") String area_id);
 

@@ -60,11 +60,13 @@ public class UserPackage {
                 Mono.just(productPackage)
                         .flatMap(this::saveBuyer)
                         .flatMap(this::savePackageDetail)
-                        .flatMap(productPackage1 -> userPackageRepository.DeleteProductByUserIDAndPackageID(productPackage1.getGroup_id(), productPackage1.getDevice_id(), productPackage1.getPackage_second_id()).then(Mono.just(productPackage1)))
-                        .flatMap(productPackage1 -> Flux.just(productPackage1.getUserPackage())
-                                .flatMap(this::savePackageItem)
-                                .then(Mono.just(ok(Format.builder().response("done").build())))
-                        );
+                        .flatMap(productPackage1 -> userPackageRepository.DeleteProductByUserIDAndPackageID(productPackage1.getGroup_id(), productPackage1.getDevice_id(), productPackage1.getPackage_second_id())
+                                .then(Mono.just(productPackage1))
+                        )
+                        .filter(productPackage1 -> productPackage1.getUserPackage() != null)
+                        .flatMapMany(productPackage1 -> Flux.just(productPackage1.getUserPackage()))
+                        .flatMap(this::savePackageItem)
+                        .then(Mono.just(ok(Format.builder().response("done").build())));
     }
 
     Mono<ProductPackage> savePackageDetail(ProductPackage productPackage) {

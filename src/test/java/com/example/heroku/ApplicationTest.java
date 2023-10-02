@@ -87,12 +87,12 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void areaAndTableTest1() {
-        AreaAndTabletTest.builder().area(area).build().Test(mainGroup);
+        AreaAndTabletTest.builder().area(area).userPackageAPI(userPackageAPI).buyer(buyer).build().Test(mainGroup);
     }
 
     @Test
     public void areaAndTableTest2() {
-        AreaAndTabletTest.builder().area(area).build().Test(anotherGroup);
+        AreaAndTabletTest.builder().area(area).userPackageAPI(userPackageAPI).buyer(buyer).build().Test(anotherGroup);
     }
 
     @Test
