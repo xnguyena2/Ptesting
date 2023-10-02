@@ -57,4 +57,11 @@ public class TableDetail extends BaseEntity {
         group_id = groupID;
         return this;
     }
+
+    public TableDetail AutoFill(String groupID, String areaID) {
+        AutoFill();
+        area_id = areaID;
+        group_id = groupID;
+        return this;
+    }
 }

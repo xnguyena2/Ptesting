@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Component
 public class Area {
 
@@ -32,13 +34,10 @@ public class Area {
 
     Mono<AreaData> fillData(com.example.heroku.model.Area area) {
         return Mono.just(new AreaData(area))
-                .map(areaData -> {
-                    System.out.println("found are: " + areaData.getArea_id());
-                    return areaData;
-                })
                 .flatMap(areaData ->
-                        tableDetailRepository.findByAreaId(areaData.getGroup_id(), area.getArea_id())
+                        tableDetailRepository.findByAreaId(areaData.getGroup_id(), areaData.getArea_id())
                                 .map(TableDetailData::new)
+                                .map(areaData::AddTable)
                                 .filter(tableDetailData -> tableDetailData.getPackage_second_id() != null)
                                 .flatMap(tableDetailData -> userPackageDetailRepository.GetPackageDetailById(tableDetailData.getGroup_id(), tableDetailData.getPackage_second_id())
                                         .map(userPackageDetail -> tableDetailData.setPrice(userPackageDetail.getPrice()))
@@ -55,6 +54,12 @@ public class Area {
 
     Mono<com.example.heroku.model.Area> insertOrUpdate(com.example.heroku.model.Area area) {
         return areaRepository.insertOrUpdate(area.getGroup_id(), area.getArea_id(), area.getArea_name(), area.getDetail(), area.getMeta_search(), area.getStatus(), area.getCreateat());
+    }
+
+    Flux<TableDetail> saveAllTableDetail(List<TableDetailData> tableDetailList) {
+        return Flux.fromIterable(tableDetailList).flatMap(
+                this::insertOrUpdateTableDetail
+        );
     }
 
     public Flux<AreaData> getAll(UserID userID) {
@@ -77,7 +82,8 @@ public class Area {
 
     public Mono<AreaData> getAreaById(AreaID areaID) {
         return areaRepository.getById(areaID.getGroup_id(), areaID.getArea_id())
-                .map(AreaData::new);
+                .map(AreaData::new)
+                .flatMap(this::fillData);
     }
 
     public Mono<AreaData> deleteArea(AreaData areaData) {
@@ -90,7 +96,7 @@ public class Area {
         return Mono.just(areaData)
                 .map(AreaData::AutoFill)
                 .filter(areaData1 -> areaData1.getListTable() != null)
-                .map(areaData1 -> tableDetailRepository.saveAll(areaData1.getListTable()))
+                .flatMapMany(areaData1 -> saveAllTableDetail(areaData1.getListTable()))
                 .then(Mono.just(areaData));
     }
 

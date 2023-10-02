@@ -25,7 +25,7 @@ public class AreaData extends Area {
         }
         for (TableDetailData tableDetailData:
              listTable) {
-            tableDetailData.AutoFill(getGroup_id());
+            tableDetailData.AutoFill(getGroup_id(), getArea_id());
         }
         return this;
     }
@@ -35,11 +35,11 @@ public class AreaData extends Area {
         this.listTable = new ArrayList<>();
     }
 
-    public AreaData AddTable(TableDetailData tableDetail) {
+    public TableDetailData AddTable(TableDetailData tableDetail) {
         if (this.listTable == null) {
             this.listTable = new ArrayList<>();
         }
         this.listTable.add(tableDetail);
-        return this;
+        return tableDetail;
     }
 }
