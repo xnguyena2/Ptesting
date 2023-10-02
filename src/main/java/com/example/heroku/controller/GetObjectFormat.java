@@ -3,7 +3,9 @@ package com.example.heroku.controller;
 import com.example.heroku.model.Buyer;
 import com.example.heroku.model.UserPackage;
 import com.example.heroku.request.beer.ProductPackage;
+import com.example.heroku.response.AreaData;
 import com.example.heroku.response.Format;
+import com.example.heroku.response.TableDetailData;
 import com.example.heroku.util.Util;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
+
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -19,7 +23,7 @@ import static org.springframework.http.ResponseEntity.ok;
 public class GetObjectFormat {
     @GetMapping("/productpackage")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ProductPackage> getObj() {
+    public Mono<ProductPackage> getPackageObj() {
         return Mono.just(ProductPackage.builder()
                 .buyer(Buyer.builder()
                         .build())
@@ -27,5 +31,19 @@ public class GetObjectFormat {
                         new UserPackage[]{UserPackage.builder().build()}
                 )
                 .build());
+    }
+
+    @GetMapping("/area")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<AreaData> getAreaObj() {
+        return Mono.just(
+                AreaData.builder()
+                        .listTable(Arrays.asList(new TableDetailData[]{
+                                TableDetailData.builder()
+                                        .area_id("not exist")
+                                        .table_name("table 1 of area 1")
+                                        .build()
+                        }))
+                        .build());
     }
 }
