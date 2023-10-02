@@ -338,6 +338,20 @@ public class AreaAndTabletTest {
                         .build())
                 .block();
 
+        area.justCreateOrUpdateArea(
+                        AreaData.builder()
+                                .group_id(group)
+                                .area_name("Tầng 3")
+                                .listTable(Arrays.asList(new TableDetailData[]{
+                                        TableDetailData.builder()
+                                                .area_id("not exist")
+                                                .table_name("table 1 of area 2")
+                                                .build()
+                                }))
+                                .build()
+                )
+                .block();
+
         area.getAll(UserID.builder()
                         .group_id(group)
                         .page(0)
@@ -358,6 +372,10 @@ public class AreaAndTabletTest {
                     assertThat(listTable.get(2).getTable_name()).isEqualTo("table 3 of area 2");
                     assertThat(listTable.get(3).getTable_name()).isEqualTo("table 4 of area 2");
                     assertThat(listTable.get(4).getTable_name()).isEqualTo("table 5 of area 2");
+                })
+                .consumeNextWith(areaData -> {
+                    assertThat(Util.getInstance().RemoveAccent(areaData.getArea_name())).isEqualTo("tang 3");
+                    assertThat(areaData.getMeta_search()).isEqualTo("tang 3");
                 })
                 .verifyComplete();
 
