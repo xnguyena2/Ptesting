@@ -379,6 +379,7 @@ public class AreaAndTabletTest {
                 })
                 .verifyComplete();
 
+        AtomicReference<String> table4OfArea2 = new AtomicReference<>(null);
         AtomicReference<String> table5OfArea2 = new AtomicReference<>(null);
 
         area.getAreaById(AreaID.builder()
@@ -401,6 +402,7 @@ public class AreaAndTabletTest {
                     assertThat(listTable.get(4).getTable_name()).isEqualTo("table 5 of area 2");
                     assertThat(listTable.get(3).getPrice()).isEqualTo(-1);
                     assertThat(listTable.get(4).getPrice()).isEqualTo(-1);
+                    table4OfArea2.set(listTable.get(3).getTable_id());
                     table5OfArea2.set(listTable.get(4).getTable_id());
                 })
                 .verifyComplete();
@@ -478,6 +480,37 @@ public class AreaAndTabletTest {
                     assertThat(listTable.get(4).getTable_name()).isEqualTo("table 5 of area 2");
                     assertThat(listTable.get(3).getPrice()).isEqualTo(-1);
                     assertThat(listTable.get(4).getPrice()).isEqualTo(5544);
+                })
+                .verifyComplete();
+
+        area.setPackageID(TableDetailData.builder()
+                        .group_id(group)
+                        .area_id(are2ID.get())
+                        .table_id(table4OfArea2.get())
+                        .package_second_id("save_pack_of_table5_area2")
+                        .build())
+                .block();
+
+        area.getAreaById(AreaID.builder()
+                        .group_id(group)
+                        .area_id(are2ID.get())
+                        .build())
+                .as(StepVerifier::create)
+                .consumeNextWith(areaData -> {
+                    assertThat(Util.getInstance().RemoveAccent(areaData.getArea_name())).isEqualTo("tang 2");
+                    assertThat(areaData.getMeta_search()).isEqualTo("tang 2");
+
+                    List<TableDetailData> listTable = areaData.getListTable();
+                    listTable.sort(Comparator.comparing(TableDetailData::getTable_name));
+                    assertThat(listTable.size()).isEqualTo(5);
+
+                    assertThat(listTable.get(0).getTable_name()).isEqualTo("table 1 of area 2");
+                    assertThat(listTable.get(1).getTable_name()).isEqualTo("table 2 of area 2");
+                    assertThat(listTable.get(2).getTable_name()).isEqualTo("table 3 of area 2");
+                    assertThat(listTable.get(3).getTable_name()).isEqualTo("table 4 of area 2");
+                    assertThat(listTable.get(4).getTable_name()).isEqualTo("table 5 of area 2");
+                    assertThat(listTable.get(3).getPrice()).isEqualTo(5544);
+                    assertThat(listTable.get(4).getPrice()).isEqualTo(-1);
                 })
                 .verifyComplete();
 

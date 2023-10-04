@@ -106,8 +106,11 @@ public class Area {
     }
 
     public Mono<TableDetailData> setPackageID(TableDetailData tableDetailData) {
-        return tableDetailRepository.setPackageID(tableDetailData.getGroup_id(), tableDetailData.getTable_id(), tableDetailData.getPackage_second_id())
-                .map(TableDetailData::new);
+        return tableDetailRepository.cleanPackageID(tableDetailData.getGroup_id(), tableDetailData.getPackage_second_id())
+                .then(
+                        tableDetailRepository.setPackageID(tableDetailData.getGroup_id(), tableDetailData.getTable_id(), tableDetailData.getPackage_second_id())
+                )
+                .then(Mono.just(new TableDetailData(tableDetailData)));
     }
 
     public Mono<TableDetailData> deleteTableDetail(TableDetailData tableDetailData) {
