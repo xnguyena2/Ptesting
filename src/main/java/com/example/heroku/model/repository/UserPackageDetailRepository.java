@@ -31,7 +31,7 @@ public interface UserPackageDetailRepository extends ReactiveCrudRepository<User
     @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.package_second_id = :package_second_id")
     Mono<UserPackageDetail> GetPackageDetailById(@Param("group_id") String group_id, @Param("package_second_id") String package_id);
 
-    @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.package_second_id = :package_second_id AND user_package_detail.status IS DISTINCT FROM :status")
+    @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.package_second_id = :package_second_id AND user_package_detail.status IS DISTINCT FROM :status ORDER BY createat DESC LIMIT 1")
     Mono<UserPackageDetail> GetPackageDetailByIdNotStatus(@Param("group_id") String group_id, @Param("package_second_id") String package_id, @Param("status") UserPackageDetail.Status status);
 
     @Query(value = "DELETE FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.device_id = :device_id")
