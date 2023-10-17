@@ -39,7 +39,7 @@ public class Area {
                                 .map(TableDetailData::new)
                                 .map(areaData::AddTable)
                                 .filter(tableDetailData -> tableDetailData.getPackage_second_id() != null)
-                                .flatMap(tableDetailData -> userPackageDetailRepository.GetPackageDetailByIdNotStatus(tableDetailData.getGroup_id(), tableDetailData.getPackage_second_id(), UserPackageDetail.Status.DONE)
+                                .flatMap(tableDetailData -> userPackageDetailRepository.GetPackageDetailByIdNotStatus(tableDetailData.getGroup_id(), tableDetailData.getPackage_second_id(), tableDetailData.getTable_id(), UserPackageDetail.Status.DONE)
                                         .map(userPackageDetail -> tableDetailData.setPrice(userPackageDetail.getPrice()))
                                 )
                                 .then(Mono.just(areaData))

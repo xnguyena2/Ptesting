@@ -460,6 +460,10 @@ public class AreaAndTabletTest {
                         .build())
                 .block();
 
+        productPackage.setTable_id(table5OfArea2.get());
+        userPackageAPI.SavePackage(productPackage)
+                .block();
+
         area.getAreaById(AreaID.builder()
                         .group_id(group)
                         .area_id(are2ID.get())
@@ -482,6 +486,10 @@ public class AreaAndTabletTest {
                     assertThat(listTable.get(4).getPrice()).isEqualTo(5544);
                 })
                 .verifyComplete();
+
+        productPackage.setTable_id(table4OfArea2.get());
+        userPackageAPI.SavePackage(productPackage)
+                .block();
 
         area.setPackageID(TableDetailData.builder()
                         .group_id(group)
