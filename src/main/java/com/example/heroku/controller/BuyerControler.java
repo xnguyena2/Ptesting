@@ -31,4 +31,10 @@ public class BuyerControler {
                 .toFlux();
     }
 
+    @PostMapping("/search")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<BuyerData> searchByPhone(@RequestBody @Valid SearchQuery searchQuery) {
+        return buyer.FindByPhone(searchQuery);
+    }
+
 }
