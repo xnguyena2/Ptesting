@@ -1,8 +1,11 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.Buyer;
+import com.example.heroku.model.Image;
 import com.example.heroku.model.UserPackage;
+import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.ProductPackage;
+import com.example.heroku.request.beer.SearchResult;
 import com.example.heroku.response.AreaData;
 import com.example.heroku.response.Format;
 import com.example.heroku.response.TableDetailData;
@@ -45,5 +48,22 @@ public class GetObjectFormat {
                                         .build()
                         }))
                         .build());
+    }
+
+    @GetMapping("/product")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<SearchResult<BeerSubmitData>> getProductObj() {
+        SearchResult<BeerSubmitData> result = new SearchResult<>();
+        result.Add(BeerSubmitData.builder()
+                        .listUnit(new BeerSubmitData.BeerUnit[]{
+                                BeerSubmitData.BeerUnit.builder().build()
+                        })
+                        .images(
+                                Arrays.asList(new Image[]{
+                                        Image.builder().build()
+                                })
+                        )
+                .build());
+        return Mono.just(result);
     }
 }
