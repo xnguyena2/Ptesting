@@ -18,4 +18,8 @@ import javax.persistence.Table;
 public class DeviceConfig extends BaseEntity {
 
     private String color;
+
+    private String categorys;
+
+    private String config;
 }

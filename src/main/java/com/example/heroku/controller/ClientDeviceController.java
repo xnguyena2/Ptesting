@@ -27,9 +27,16 @@ public class ClientDeviceController {
 
     @GetMapping("/bootstrap/{groupid}")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<BootStrapData> bootStrapData(@PathVariable("groupid") String groupID){
+    public Mono<BootStrapData> bootStrapData(@PathVariable("groupid") String groupID) {
         System.out.println("Get bootstrap!");
         return clientDeviceAPI.bootStrapData(groupID);
+    }
+
+    @GetMapping("/bootstrapfull/{groupid}")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<BootStrapData> fullBootStrapData(@PathVariable("groupid") String groupID) {
+        System.out.println("Get full bootstrap!");
+        return clientDeviceAPI.adminBootStrapWithoutCarouselData(groupID);
     }
 
     @PostMapping("/admin/register")

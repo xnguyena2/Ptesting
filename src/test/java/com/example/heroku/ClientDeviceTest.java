@@ -18,12 +18,12 @@ public class ClientDeviceTest {
 
     String group;
 
-    public void BootStrapData(){
+    public void BootStrapData() {
         clientDeviceAPI.bootStrapData(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {
-                        System.out.println( new ObjectMapper().writeValueAsString(bootStrapData));
+                        System.out.println(new ObjectMapper().writeValueAsString(bootStrapData));
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
@@ -47,12 +47,12 @@ public class ClientDeviceTest {
                 .verifyComplete();
     }
 
-    public void BootStrapDataWithoutImage(){
+    public void BootStrapDataWithoutImage() {
         clientDeviceAPI.bootStrapData(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {
-                        System.out.println( new ObjectMapper().writeValueAsString(bootStrapData));
+                        System.out.println(new ObjectMapper().writeValueAsString(bootStrapData));
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
@@ -74,12 +74,68 @@ public class ClientDeviceTest {
                 .verifyComplete();
     }
 
-    public void BootStrapDataLarge(){
+    public void BootStrapDataNew() {
+        clientDeviceAPI.adminBootStrapWithoutCarouselData(group)
+                .as(StepVerifier::create)
+                .consumeNextWith(bootStrapData -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(bootStrapData));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat((long) bootStrapData.getCarousel().size()).isEqualTo(0);
+                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(3);
+                    Flux.just(bootStrapData.getProducts().toArray(new BeerSubmitData[0]))
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                                assertThat(beerSubmitData.getImages().size()).isEqualTo(4);
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+    }
+
+    public void BootStrapDataWithoutImageNew() {
+        clientDeviceAPI.adminBootStrapWithoutCarouselData(group)
+                .as(StepVerifier::create)
+                .consumeNextWith(bootStrapData -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(bootStrapData));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(3);
+                    Flux.just(bootStrapData.getProducts().toArray(new BeerSubmitData[0]))
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+    }
+
+    public void BootStrapDataLarge() {
         clientDeviceAPI.bootStrapData(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {
-                        System.out.println( new ObjectMapper().writeValueAsString(bootStrapData));
+                        System.out.println(new ObjectMapper().writeValueAsString(bootStrapData));
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }

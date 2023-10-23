@@ -178,12 +178,14 @@ public class ApplicationTest extends TestConfig {
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).build().DeviceConfigTestWithoutImage();
 
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).build().BootStrapDataWithoutImage();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).build().BootStrapDataWithoutImageNew();
 
         ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).group(mainGroup).build().Run(listImg);
 
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).build().DeviceConfigTest();
 
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).build().BootStrapData();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).build().BootStrapDataNew();
     }
 
     /*
@@ -291,12 +293,14 @@ public class ApplicationTest extends TestConfig {
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(anotherGroup).build().DeviceConfigTestWithoutImage();
 
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapDataWithoutImage();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapDataWithoutImageNew();
 
         ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).group(anotherGroup).build().Run(listImg);
 
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(anotherGroup).build().DeviceConfigTest();
 
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapData();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapDataNew();
     }
 
 }

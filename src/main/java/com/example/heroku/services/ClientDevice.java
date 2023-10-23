@@ -51,4 +51,26 @@ public class ClientDevice {
                                 .map(bootStrapData::setDeviceConfig)
                 );
     }
+
+    public Mono<BootStrapData> adminBootStrapWithoutCarouselData(String groupID) {
+
+        return Mono.just(
+                        BootStrapData.builder()
+                                .carousel(new ArrayList<>())
+                                .products(new ArrayList<>())
+                                .build())
+                .flatMap(bootStrapData ->
+                        beerAPI.GetAllBeer(SearchQuery.builder().group_id(groupID).page(0).size(10000).build())
+                                .map(beerSubmitData ->
+                                        bootStrapData.getProducts().add(beerSubmitData)
+                                ).then(
+                                        Mono.just(bootStrapData)
+                                )
+                )
+                .flatMap(bootStrapData ->
+                        this.deviceConfigAPI.GetConfig(groupID)
+                                .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().color("#333333").build()))
+                                .map(bootStrapData::setDeviceConfig)
+                );
+    }
 }

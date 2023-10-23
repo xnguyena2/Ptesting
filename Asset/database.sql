@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR
 CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, meta_search TEXT, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, buy_price float8, price float8, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, imgid VARCHAR, tag VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, categorys VARCHAR, config TEXT, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS package_order (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_order_second_id VARCHAR, user_device_id VARCHAR, voucher_second_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, total_price float8, real_price float8, ship_price float8, points_discount float8, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_order (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, package_order_second_id VARCHAR, product_second_id VARCHAR, voucher_second_id VARCHAR, total_price float8, ship_price float8, createat TIMESTAMP);
@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS table_detail (id SERIAL PRIMARY KEY, group_id VARCHAR
 CREATE TABLE IF NOT EXISTS area (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, area_id VARCHAR, area_name VARCHAR, detail VARCHAR, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 
+CREATE INDEX device_config_index ON device_config(group_id);
 CREATE INDEX users_name_index ON users(username);
 CREATE INDEX search_token_index ON search_token(tokens);
 CREATE INDEX product_index ON product(product_second_id);
@@ -63,6 +64,7 @@ CREATE INDEX area_group_index ON area(group_id);
 CREATE INDEX area_index ON area(area_name);
 CREATE INDEX area_search_index ON area(meta_search);
 
+ALTER TABLE device_config ADD CONSTRAINT UQ_device_config UNIQUE(group_id);
 ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
 ALTER TABLE product ADD CONSTRAINT UQ_product_second_id UNIQUE(group_id, product_second_id);
 ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_second_id UNIQUE(group_id, product_second_id, product_unit_second_id);
