@@ -255,6 +255,7 @@ public class BeerTest {
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
+                    assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
@@ -277,6 +278,10 @@ public class BeerTest {
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("456");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
+                    assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger day la beer tiger co non do con cao nen chu y khi su dung:\n" +
+                            "- bia thom ngon\n" +
+                            "- bia nhap ngoai\n" +
+                            "- bia san xuat tu ha lan");
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))

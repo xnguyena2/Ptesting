@@ -23,6 +23,7 @@ public class BeerSubmitData {
     private String beerSecondID;
     private String name;
     private String detail;
+    private String meta_search;
     private String category;
     private String status;
     private List<Image> images;
@@ -57,6 +58,7 @@ public class BeerSubmitData {
                                 .detail(this.detail)
                                 .category(this.category)
                                 .status(Product.Status.get(this.status))
+                                .meta_search(this.meta_search)
                                 .build()
                 )
                 .build()
@@ -79,6 +81,7 @@ public class BeerSubmitData {
                 .detail(product.getDetail())
                 .category(product.getCategory())
                 .status(product.GetStatusNuable().getName())
+                .meta_search(product.getMeta_search())
                 .build();
     }
 
