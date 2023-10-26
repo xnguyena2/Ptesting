@@ -25,20 +25,36 @@ public class Product extends BaseEntity {
 
     private String detail;
 
+    private String sku;
+
+    private String upc;
+
     private String meta_search;
 
     private String category;
 
     private Status status;
 
+    private String appendToken(String token, String appendTxt) {
+        if (appendTxt != null && !appendTxt.isEmpty()) {
+            if (!token.isEmpty()) {
+                token += " ";
+            }
+            token += appendTxt;
+        }
+        return token;
+    }
+
     public String getTokens() {
-        if (name == null && detail == null)
-            return "";
-        if (name == null)
-            return Util.getInstance().RemoveAccent(detail);
-        if (detail == null)
-            return Util.getInstance().RemoveAccent(name);
-        return Util.getInstance().RemoveAccent(name + " " + detail);
+        String token = "";
+        token = appendToken(token, name);
+        token = appendToken(token, detail);
+        token = appendToken(token, sku);
+        token = appendToken(token, upc);
+        if (token.isEmpty()) {
+            return token;
+        }
+        return Util.getInstance().RemoveAccent(token);
     }
 
     public Product UpdateMetaSearch() {

@@ -67,6 +67,8 @@ public class BeerTest {
                                 .builder()
                                 .category(Category.CRAB.getName())
                                 .name("beer tiger")
+                                .upc("343434")
+                                .sku("76767676")
                                 .product_second_id("123")
                                 .group_id(group)
                                 .build()
@@ -254,8 +256,10 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
+                    assertThat(beerInfo.getProduct().getUpc()).isEqualTo("343434");
+                    assertThat(beerInfo.getProduct().getSku()).isEqualTo("76767676");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
-                    assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
+                    assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger 76767676 343434");
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
@@ -277,6 +281,8 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("456");
+                    assertThat(beerInfo.getProduct().getUpc()).isEqualTo(null);
+                    assertThat(beerInfo.getProduct().getSku()).isEqualTo(null);
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger day la beer tiger co non do con cao nen chu y khi su dung:\n" +
                             "- bia thom ngon\n" +
@@ -918,14 +924,14 @@ public class BeerTest {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
                                 assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                             })
-//                            .consumeNextWith(beerInfo -> {
-//                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("hide");
-//                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
-//                            })
                             .consumeNextWith(beerInfo -> {
-                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
+                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("hide");
                                 assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                             })
+//                            .consumeNextWith(beerInfo -> {
+//                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
+//                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+//                            })
                             .verifyComplete();
                 })
                 .verifyComplete();

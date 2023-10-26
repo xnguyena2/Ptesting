@@ -14,9 +14,10 @@ import java.sql.Timestamp;
 
 public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
 
-    @Query(value = "INSERT INTO product( group_id, product_second_id, name, detail, category, meta_search, status, createat ) VALUES ( :group_id, :product_second_id, :name, :detail, :category, :meta_search, :status, :createat ) ON CONFLICT (group_id, product_second_id) DO UPDATE SET name = :name, detail = :detail, category = :category, meta_search = :meta_search, status = :status, createat = :createat")
+    @Query(value = "INSERT INTO product( group_id, product_second_id, name, detail, sku, upc, category, meta_search, status, createat ) VALUES ( :group_id, :product_second_id, :name, :detail, :sku, :upc, :category, :meta_search, :status, :createat ) ON CONFLICT (group_id, product_second_id) DO UPDATE SET name = :name, detail = :detail, sku = :sku, upc = :upc, category = :category, meta_search = :meta_search, status = :status, createat = :createat")
     Mono<Product> saveProduct(@Param("group_id") String group_id, @Param("product_second_id") String product_second_id,
                               @Param("name") String name, @Param("detail") String detail,
+                              @Param("sku") String sku, @Param("upc") String upc,
                               @Param("category") String category, @Param("meta_search") String meta_search,
                               @Param("status") Product.Status status, @Param("createat") Timestamp createat);
 
