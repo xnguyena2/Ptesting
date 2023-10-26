@@ -28,6 +28,8 @@ public class ProductUnit extends BaseEntity {
 
     private float price;
 
+    private float buy_price;
+
     private float discount;
 
     private Timestamp date_expire;
@@ -95,7 +97,7 @@ public class ProductUnit extends BaseEntity {
 
     public ProductUnit AutoFill() {
         super.AutoFill();
-        if (this.product_unit_second_id == null || this.product_unit_second_id.equals(""))
+        if (this.product_unit_second_id == null || this.product_unit_second_id.isEmpty())
             this.product_unit_second_id = Util.getInstance().GenerateID();
         return this;
     }

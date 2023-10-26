@@ -38,6 +38,7 @@ public class BeerSubmitData {
                     .group_id(this.group_id)
                     .product_second_id(this.beerSecondID)
                     .price(beerUnit.price)
+                    .buy_price(beerUnit.buy_price)
                     .discount(beerUnit.discount)
                     .volumetric(beerUnit.volumetric)
                     .weight(beerUnit.weight)
@@ -93,6 +94,7 @@ public class BeerSubmitData {
                     .beer(productUnitList.get(i).getProduct_second_id())
                     .name(productUnitList.get(i).getName())
                     .price(productUnitList.get(i).getPrice())
+                    .buy_price(productUnitList.get(i).getBuy_price())
                     .discount(productUnitList.get(i).getDiscount())
                     .dateExpir(NgbDateStruct.FromTimestamp(productUnitList.get(i).getDate_expire()))
                     .volumetric(productUnitList.get(i).getVolumetric())
@@ -113,6 +115,7 @@ public class BeerSubmitData {
         private String beer;
         private String name;
         private float price;
+        private float buy_price;
         private float discount;
         private NgbDateStruct dateExpir;
         private float volumetric;

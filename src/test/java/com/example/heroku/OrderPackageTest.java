@@ -1377,6 +1377,7 @@ public class OrderPackageTest extends TestConfig {
                                         com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order1")
+                                                .buy_price(7)
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
@@ -1386,6 +1387,7 @@ public class OrderPackageTest extends TestConfig {
                                         com.example.heroku.model.ProductUnit
                                                 .builder()
                                                 .product_second_id("beer_order1")
+                                                .buy_price(12)
                                                 .price(20)
                                                 .weight(1)
                                                 .discount(20)
@@ -1605,15 +1607,19 @@ public class OrderPackageTest extends TestConfig {
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
                                     beerUnit4561ID.set(beerUnit.getProduct_unit_second_id());
+                                    assertThat(beerUnit.getBuy_price()).isEqualTo(12);
                                 } else {
                                     beerUnit4562ID.set(beerUnit.getProduct_unit_second_id());
+                                    assertThat(beerUnit.getBuy_price()).isEqualTo(7);
                                 }
                             })
                             .consumeNextWith(beerUnit -> {
                                 if (beerUnit.getName().equals("lon")) {
                                     beerUnit4561ID.set(beerUnit.getProduct_unit_second_id());
+                                    assertThat(beerUnit.getBuy_price()).isEqualTo(12);
                                 } else {
                                     beerUnit4562ID.set(beerUnit.getProduct_unit_second_id());
+                                    assertThat(beerUnit.getBuy_price()).isEqualTo(7);
                                 }
                             })
                             .verifyComplete();
