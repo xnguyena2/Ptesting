@@ -15,9 +15,12 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,7 +51,7 @@ public class BeerTest {
                                 .AutoFill()
                         )
                         .build()
-        ).blockLast();
+        ).block();
 
         AtomicReference<String> beerUnit1231ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit1232ID = new AtomicReference<String>();
@@ -77,22 +80,21 @@ public class BeerTest {
                         .build()
         )
                 .as(StepVerifier::create)
-                .consumeNextWith(beerUnit -> {
-                    if (beerUnit.getName().equals("lon")) {
-                        beerUnit1231ID.set(beerUnit.getProduct_unit_second_id());
-                    } else {
-                        beerUnit1232ID.set(beerUnit.getProduct_unit_second_id());
-                    }
-                    assertThat(beerUnit.getProduct_unit_second_id()).isNotNull();
+                .consumeNextWith(beerSubmitData -> {
+                    BeerSubmitData.BeerUnit[] productUnitList = beerSubmitData.getListUnit();
+                    BeerSubmitData.BeerUnit f = productUnitList[0];
+                    BeerSubmitData.BeerUnit s = productUnitList[1];
 
-                })
-                .consumeNextWith(beerUnit -> {
-                    if (beerUnit.getName().equals("lon")) {
-                        beerUnit1231ID.set(beerUnit.getProduct_unit_second_id());
+                    if (f.getName().equals("lon")) {
+                        beerUnit1231ID.set(f.getBeer_unit_second_id());
+                        beerUnit1232ID.set(s.getBeer_unit_second_id());
                     } else {
-                        beerUnit1232ID.set(beerUnit.getProduct_unit_second_id());
+                        beerUnit1232ID.set(f.getBeer_unit_second_id());
+                        beerUnit1231ID.set(s.getBeer_unit_second_id());
                     }
-                    assertThat(beerUnit.getProduct_unit_second_id()).isNotNull();
+                    assertThat(f.getBeer_unit_second_id()).isNotNull();
+                    assertThat(s.getBeer_unit_second_id()).isNotNull();
+
                 })
                 .verifyComplete();
 
@@ -129,22 +131,21 @@ public class BeerTest {
                         .build()
         )
                 .as(StepVerifier::create)
-                .consumeNextWith(beerUnit -> {
-                    if (beerUnit.getName().equals("lon")) {
-                        beerUnit4561ID.set(beerUnit.getProduct_unit_second_id());
-                    } else {
-                        beerUnit4562ID.set(beerUnit.getProduct_unit_second_id());
-                    }
-                    assertThat(beerUnit.getProduct_unit_second_id()).isNotNull();
+                .consumeNextWith(beerSubmitData -> {
+                    BeerSubmitData.BeerUnit[] productUnitList = beerSubmitData.getListUnit();
+                    BeerSubmitData.BeerUnit f = productUnitList[0];
+                    BeerSubmitData.BeerUnit s = productUnitList[1];
 
-                })
-                .consumeNextWith(beerUnit -> {
-                    if (beerUnit.getName().equals("lon")) {
-                        beerUnit4561ID.set(beerUnit.getProduct_unit_second_id());
+                    if (f.getName().equals("lon")) {
+                        beerUnit4561ID.set(f.getBeer_unit_second_id());
+                        beerUnit4562ID.set(s.getBeer_unit_second_id());
                     } else {
-                        beerUnit4562ID.set(beerUnit.getProduct_unit_second_id());
+                        beerUnit4562ID.set(f.getBeer_unit_second_id());
+                        beerUnit4561ID.set(s.getBeer_unit_second_id());
                     }
-                    assertThat(beerUnit.getProduct_unit_second_id()).isNotNull();
+                    assertThat(f.getBeer_unit_second_id()).isNotNull();
+                    assertThat(s.getBeer_unit_second_id()).isNotNull();
+
                 })
                 .verifyComplete();
 
@@ -191,13 +192,18 @@ public class BeerTest {
                         )
                         .build()
         )
-                .sort(Comparator.comparing(ProductUnit::getName))
                 .as(StepVerifier::create)
-                .consumeNextWith(beerUnit -> {
-                    assertThat(beerUnit.getProduct_unit_second_id()).isEqualTo(beerUnit4562ID.get());
-                })
-                .consumeNextWith(beerUnit -> {
-                    assertThat(beerUnit.getProduct_unit_second_id()).isEqualTo(beerUnit4561ID.get());
+                .consumeNextWith(beerSubmitData -> {
+                    BeerSubmitData.BeerUnit[] productUnitList = beerSubmitData.getListUnit();
+                    BeerSubmitData.BeerUnit f = productUnitList[0];
+                    BeerSubmitData.BeerUnit s = productUnitList[1];
+                    if(f.getName().equals("lon")){
+                        assertThat(f.getBeer_unit_second_id()).isEqualTo(beerUnit4562ID.get());
+                        assertThat(s.getBeer_unit_second_id()).isEqualTo(beerUnit4561ID.get());
+                    } else {
+                        assertThat(f.getBeer_unit_second_id()).isEqualTo(beerUnit4561ID.get());
+                        assertThat(s.getBeer_unit_second_id()).isEqualTo(beerUnit4562ID.get());
+                    }
                 })
                 .verifyComplete();
 
@@ -243,11 +249,9 @@ public class BeerTest {
                                 )
                                 .build()
                 )
-                .sort(Comparator.comparing(ProductUnit::getName))
                 .as(StepVerifier::create)
-                .consumeNextWith(beerUnit -> {
-                })
-                .consumeNextWith(beerUnit -> {
+                .consumeNextWith(beerSubmitData -> {
+                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
                 })
                 .verifyComplete();
 
@@ -1324,7 +1328,7 @@ public class BeerTest {
                                         .AutoFill()
                                 )
                                 .build()
-                ).blockLast();
+                ).block();
 
         this.beerAPI.GetBeerByID(group, "444")
                 .map(BeerSubmitData::GetBeerInfo)
@@ -1400,7 +1404,7 @@ public class BeerTest {
             threads[i] = new Thread(() -> {
                 System.out.println("Thread Running: " + (i1 + 1));
                 BeerInfo template = createTestBeer(i1, i1 * 1000 + 5000);
-                beerAPI.CreateBeer(template).blockLast();
+                beerAPI.CreateBeer(template).block();
             });
             //Thread.sleep(5000);
             threads[i].start();

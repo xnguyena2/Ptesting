@@ -1407,7 +1407,7 @@ public class OrderPackageTest extends TestConfig {
                                 )
                                 .build()
                 )
-                .blockLast();
+                .block();
 
         beerAPI.CreateBeer(
                         BeerInfo
@@ -1442,7 +1442,7 @@ public class OrderPackageTest extends TestConfig {
                                 )
                                 .build()
                 )
-                .blockLast();
+                .block();
 
         beerAPI.CreateBeer(
                         BeerInfo
@@ -1475,7 +1475,7 @@ public class OrderPackageTest extends TestConfig {
                                 )
                                 .build()
                 )
-                .blockLast();
+                .block();
 
         beerAPI.CreateBeer(
                         BeerInfo
@@ -1509,7 +1509,7 @@ public class OrderPackageTest extends TestConfig {
                                 )
                                 .build()
                 )
-                .blockLast();
+                .block();
 
         beerAPI.CreateBeer(
                         BeerInfo
@@ -1543,7 +1543,7 @@ public class OrderPackageTest extends TestConfig {
                                 )
                                 .build()
                 )
-                .blockLast();
+                .block();
 
         beerAPI.CreateBeer(
                         BeerInfo
@@ -1577,7 +1577,7 @@ public class OrderPackageTest extends TestConfig {
                                 )
                                 .build()
                 )
-                .blockLast();
+                .block();
     }
 
     void createDevice(String mainGroup) {

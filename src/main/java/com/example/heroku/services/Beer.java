@@ -40,9 +40,9 @@ public class Beer {
     @Autowired
     BeerUnitRepository beerUnitRepository;
 
-    public Flux<ProductUnit> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
-        return Mono.just(info)
-                .map(beerInfo -> beerInfo.CorrectData().getProduct().UpdateMetaSearch().AutoFill())
+    public Mono<BeerSubmitData> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
+        info.CorrectData();
+        return Mono.just(info.getProduct())
                 .flatMap(product ->
                         this.beerRepository.saveProduct(product.getGroup_id(), product.getProduct_second_id(),
                                 product.getName(), product.getDetail(),
@@ -52,13 +52,11 @@ public class Beer {
                         ).then(Mono.just(product))
                 )
                 .flatMap(product -> this.searchBeer.saveToken(product.getGroup_id(), product.getProduct_second_id(),
-                        product.getTokens(), product.getCreateat())
+                                product.getTokens(), product.getCreateat())
+                        .then(Mono.just(product))
                 )
-                .then(Mono.just(info.getProduct())
-                        .flatMap(product -> this.beerUnitRepository.deleteByBeerId(product.getGroup_id(), product.getProduct_second_id()))
-                )
+                .flatMap(product -> this.beerUnitRepository.deleteByBeerId(product.getGroup_id(), product.getProduct_second_id()))
                 .thenMany(Flux.just(info.getProductUnit())
-                                .map(ProductUnit::AutoFill)
                                 .flatMap(beerUnit -> this.beerUnitRepository.save(beerUnit)
 //                                this.beerUnitRepository.saveProductUnit(beerUnit.getGroup_id(), beerUnit.getProduct_second_id(), beerUnit.getProduct_unit_second_id(),
 //                                                beerUnit.getName(), beerUnit.getPrice(),
@@ -68,7 +66,8 @@ public class Beer {
 //                                        )
 //                                        .then(Mono.just(beerUnit))
                                 )
-                );
+                )
+                .then(Mono.just(BeerSubmitData.FromProductInfo(info)));
     }
 
     public Mono<Product> DeleteBeerByID(String groupID, String id) {
@@ -180,7 +179,7 @@ public class Beer {
     }
 
     private Mono<BeerSubmitData> CoverToSubmitData(Product product) {
-        return Mono.just(BeerSubmitData.builder().build().FromBeer(product))
+        return Mono.just(BeerSubmitData.FromBeer(product))
                 .flatMap(beerSubmitData ->
                         Mono.just(new ArrayList<ProductUnit>())
                                 .flatMap(beerUnits ->
@@ -201,7 +200,7 @@ public class Beer {
     }
 
     private Mono<BeerSubmitData> CoverToSubmitDataWithUnitID(Product product, String unitID) {
-        return Mono.just(BeerSubmitData.builder().build().FromBeer(product))
+        return Mono.just(BeerSubmitData.FromBeer(product))
                 .flatMap(beerSubmitData ->
                         Mono.just(new ArrayList<ProductUnit>())
                                 .flatMap(beerUnits ->

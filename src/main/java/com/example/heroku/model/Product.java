@@ -63,6 +63,8 @@ public class Product extends BaseEntity {
     }
 
     public Product AutoFill() {
+        if (this.product_second_id == null || this.product_second_id.isEmpty())
+            this.product_second_id = Util.getInstance().GenerateID();
         super.AutoFill();
         return this;
     }

@@ -75,14 +75,14 @@ public class BeerController {
 
     @PostMapping("/admin/create")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<ProductUnit> addBeerInfo(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid BeerSubmitData beerInfo) {
+    public Mono<BeerSubmitData> addBeerInfo(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid BeerSubmitData beerInfo) {
         BeerInfo beerInf = beerInfo.GetBeerInfo();
         System.out.println("add or update beer: " + beerInf.getProduct().getName());
-        return WrapPermissionGroupWithPrincipalAction.<ProductUnit>builder()
+        return WrapPermissionGroupWithPrincipalAction.<BeerSubmitData>builder()
                 .principal(principal)
                 .subject(beerInfo::getGroup_id)
-                .fluxAction(() -> beerAPI.CreateBeer(beerInf))
-                .build().toFlux();
+                .monoAction(() -> beerAPI.CreateBeer(beerInf))
+                .build().toMono();
     }
 
     @DeleteMapping("/admin/delete/{groupid}/{id}")

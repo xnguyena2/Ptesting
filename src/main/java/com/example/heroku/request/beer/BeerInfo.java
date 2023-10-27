@@ -25,11 +25,13 @@ public class BeerInfo {
     }
 
     public BeerInfo CorrectData() {
+        product.UpdateMetaSearch().AutoFill();
+        final String productID = product.getProduct_second_id();
         for (ProductUnit unit :
                 productUnit) {
-            if (unit.getGroup_id() == null) {
-                unit.setGroup_id(this.getProduct().getGroup_id());
-            }
+            unit.setGroup_id(this.getProduct().getGroup_id());
+            unit.setProduct_second_id(productID);
+            unit.AutoFill();
         }
         return this;
     }

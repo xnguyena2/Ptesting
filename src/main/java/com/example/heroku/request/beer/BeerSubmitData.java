@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -78,7 +79,13 @@ public class BeerSubmitData {
         return this;
     }
 
-    public BeerSubmitData FromBeer(Product product) {
+    public static BeerSubmitData FromProductInfo(BeerInfo info) {
+        BeerSubmitData beerSubmitData = FromBeer(info.getProduct());
+        beerSubmitData.SetBeerUnit(Arrays.asList(info.getProductUnit()));
+        return beerSubmitData;
+    }
+
+    public static BeerSubmitData FromBeer(Product product) {
         return BeerSubmitData.builder()
                 .group_id(product.getGroup_id())
                 .beerSecondID(product.getProduct_second_id())
