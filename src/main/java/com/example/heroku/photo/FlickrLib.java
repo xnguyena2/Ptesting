@@ -228,28 +228,29 @@ public class FlickrLib {
         return false;
     }
 
-    public void DeleteAll(){
+    public void DeleteAll() {
         try {
             RequestContext rc = RequestContext.getRequestContext();
             rc.setAuth(this.auth);
-            System.out.println("Delete all img");
             PhotosInterface photos = flickr.getPhotosInterface();
             SearchParameters params = new SearchParameters();
             params.setText("test");
+            params.setUserId(this.auth.getUser().getId());
             PhotoList<Photo> results = photos.search(params, 0, 0);
+            System.out.println("Delete all img: " + results.size());
 
             results.forEach(p ->
             {
                 try {
-                    if(p.getOwner().getId().equals(this.auth.getUser().getId())){
-                        System.out.println("Delete: "+p.getId());
+                    if (p.getOwner().getId().equals(this.auth.getUser().getId())) {
+                        System.out.println("Delete: " + p.getId());
                         photos.delete(p.getId());
                     }
                 } catch (FlickrException e) {
                     e.printStackTrace();
                 }
             });
-        }catch (Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
     }
