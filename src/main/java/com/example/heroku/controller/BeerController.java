@@ -48,9 +48,9 @@ public class BeerController {
                 .build().toMono();
     }
 
-    @PostMapping("/admin/{id}/img/delete")
+    @PostMapping("/admin/img/delete")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<Format>> deleteIMG(@AuthenticationPrincipal Mono<Users> principal, @Valid @ModelAttribute IDContainer img) {
+    public Mono<ResponseEntity<Format>> deleteIMG(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer img) {
         System.out.println("delete imgae: " + img.getId());
         return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<Format>>builder()
                 .principal(principal)
