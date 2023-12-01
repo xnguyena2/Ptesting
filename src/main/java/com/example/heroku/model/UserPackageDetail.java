@@ -47,6 +47,10 @@ public class UserPackageDetail  extends BaseEntity {
 
     private float ship_price;
 
+    private float cost;
+
+    private float profit;
+
     private String note;
 
     private String image;
@@ -76,6 +80,8 @@ public class UserPackageDetail  extends BaseEntity {
         discount_amount = s.discount_amount;
         discount_percent = s.discount_percent;
         ship_price = s.ship_price;
+        cost = s.cost;
+        profit = s.profit;
         note = s.note;
         image = s.image;
         progress = s.progress;

@@ -1,9 +1,12 @@
 package com.example.heroku.services;
 
 import com.example.heroku.model.repository.BeerOrderRepository;
+import com.example.heroku.model.repository.StatisticBenifitRepository;
 import com.example.heroku.model.repository.StatisticsRepository;
+import com.example.heroku.model.statistics.BenifitByDate;
 import com.example.heroku.model.statistics.StatisticsTotalOrder;
 import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.request.client.PackageID;
 import com.example.heroku.response.ProductOrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,6 +21,9 @@ public class StatisticServices {
     @Autowired
     StatisticsRepository statisticsRepository;
 
+    @Autowired
+    StatisticBenifitRepository statisticBenifitRepository;
+
     public Flux<ProductOrderStatus> getByProductID(SearchQuery query) {
         String dateTxt = query.GetFilterTxt();
         int date = Integer.parseInt(dateTxt);
@@ -30,11 +36,15 @@ public class StatisticServices {
         return beerOrderRepository.getALL(query.getGroup_id(), query.getPage(), query.getSize(), date);
     }
 
-    public Mono<StatisticsTotalOrder> getTotal(SearchQuery query){
+    public Mono<StatisticsTotalOrder> getTotal(SearchQuery query) {
         String dateTxt = query.GetFilterTxt();
         int date = Integer.parseInt(dateTxt);
         final com.example.heroku.model.PackageOrder.Status status = com.example.heroku.model.PackageOrder.Status.get(query.getQuery());
         return statisticsRepository.getTotal(query.getGroup_id(), date, status);
 
+    }
+
+    public Flux<BenifitByDate> getPackageStatictis(PackageID query) {
+        return statisticBenifitRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
     }
 }

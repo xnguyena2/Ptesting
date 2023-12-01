@@ -9,6 +9,7 @@ import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.BuyerData;
 import com.example.heroku.response.ProductInPackageResponse;
+import com.example.heroku.services.StatisticServices;
 import com.example.heroku.services.UserPackage;
 import com.example.heroku.util.Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,6 +32,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserPackageTest {
     @Autowired
     UserPackage userPackageAPI;
+
+    @Autowired
+    StatisticServices statisticServices;
 
     @Autowired
     com.example.heroku.services.Buyer buyer;
@@ -786,6 +793,8 @@ public class UserPackageTest {
                 .table_id("table_1")
                 .table_name("ban 1")
                 .payment(7868)
+                .cost(444)
+                .profit(7878)
                 .buyer(Buyer.builder()
                         .phone_number(" +84 0 229292 22")
                         .reciver_fullname("test create package")
@@ -830,6 +839,8 @@ public class UserPackageTest {
                     assertThat(userPackage.getArea_id()).isEqualTo("area_1");
                     assertThat(userPackage.getArea_name()).isEqualTo("tang 1");
                     assertThat(userPackage.getPayment()).isEqualTo(7868);
+                    assertThat(userPackage.getCost()).isEqualTo(444);
+                    assertThat(userPackage.getProfit()).isEqualTo(7878);
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
@@ -882,6 +893,8 @@ public class UserPackageTest {
                     assertThat(userPackage.getArea_id()).isEqualTo("area_1");
                     assertThat(userPackage.getArea_name()).isEqualTo("tang 1");
                     assertThat(userPackage.getPayment()).isEqualTo(7868);
+                    assertThat(userPackage.getCost()).isEqualTo(444);
+                    assertThat(userPackage.getProfit()).isEqualTo(7878);
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
@@ -1025,6 +1038,15 @@ public class UserPackageTest {
                 .verifyComplete();
 
         buyer.deleteBuyer(group, "0022929222").block();
+
+        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2030-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(data -> {
+                    assertThat(data.getCost()).isEqualTo(444);
+                    assertThat(data.getProfit()).isEqualTo(7878);
+                    assertThat(data.getRevenue()).isEqualTo(7868);
+                })
+                .verifyComplete();
 
 
     }

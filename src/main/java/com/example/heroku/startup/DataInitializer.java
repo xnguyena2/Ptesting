@@ -87,26 +87,16 @@ public class DataInitializer {
             }
 
             String pass = this.passwordEncoder.encode(Util.getInstance().HashPassword(adminPass));
-            //System.out.println(pass);
 
-            var initPosts = this.userRepository.deleteAll()
-                    .thenMany(
-                            Mono.just(adminName)
-                                    .flatMap(username -> {
-                                        Users users = Users.builder()
-                                                .group_id(adminStore)
-                                                .username(username)
-                                                .password(pass)
-                                                .roles(Collections.singletonList(Util.ROLE.ROLE_ROOT.getName()))
-                                                .createat(new Timestamp(new Date().getTime()))
-                                                .active(true)
-                                                .build();
-                                        return this.userRepository.save(users);
-                                    })
-                    );
-
-
-            initPosts.doOnSubscribe(data -> log.info("data:" + data))
+            this.userRepository.save(Users.builder()
+                            .group_id(adminStore)
+                            .username(adminName)
+                            .password(pass)
+                            .roles(Collections.singletonList(Util.ROLE.ROLE_ROOT.getName()))
+                            .createat(new Timestamp(new Date().getTime()))
+                            .active(true)
+                            .build())
+                    .doOnSubscribe(data -> log.info("data:" + data))
                     .subscribe(
                             data -> log.info("data:" + data), err -> log.error("error:" + err),
                             () -> log.info("done initialization...")

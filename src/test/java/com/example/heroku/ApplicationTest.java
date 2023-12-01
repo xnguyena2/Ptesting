@@ -30,6 +30,9 @@ public class ApplicationTest extends TestConfig {
 
 
     @Autowired
+    StatisticServices statisticServices;
+
+    @Autowired
     com.example.heroku.services.Buyer buyer;
 
     @Autowired
@@ -146,7 +149,7 @@ public class ApplicationTest extends TestConfig {
     @Test
     @Order(4)
     public void testUserAddBeerToPackage() {
-        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(mainGroup).buyer(buyer).build().TestUserPackage();
+        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(mainGroup).buyer(buyer).statisticServices(statisticServices).build().TestUserPackage();
     }
 
     @Test
@@ -229,7 +232,7 @@ public class ApplicationTest extends TestConfig {
     @Order(6)
     public void BeerTest2() {
         BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).build().saveBeerTest();
-        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).buyer(buyer).build().TestUserPackage();
+        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).buyer(buyer).statisticServices(statisticServices).build().TestUserPackage();
     }
 
     @Test
