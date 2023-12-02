@@ -82,7 +82,11 @@ public class DataInitializer {
                         .fetch()
                         .rowsUpdated()
                         .subscribe();
-            } catch (IOException e) {
+
+                //wait sometime for database initial
+                Thread.sleep(3000);
+
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
 
