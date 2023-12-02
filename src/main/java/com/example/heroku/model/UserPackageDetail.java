@@ -89,7 +89,7 @@ public class UserPackageDetail  extends BaseEntity {
     }
 
     public UserPackageDetail AutoFill() {
-        if(package_second_id == null) {
+        if(package_second_id == null || package_second_id.isEmpty()) {
             package_second_id = Util.getInstance().GenerateID();
         }
         return (UserPackageDetail) super.AutoFillIfNull();
