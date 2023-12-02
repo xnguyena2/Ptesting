@@ -148,10 +148,10 @@ public class UserPackage {
                 .flatMap(this::fillPackageItem);
     }
 
-    public Mono<PackageDataResponse> DeletePackage(PackageID packageID) {
+    public Mono<ResponseEntity<Format>> DeletePackage(PackageID packageID) {
 
         return userPackageDetailRepository.DeleteByID(packageID.getGroup_id(), packageID.getDevice_id(), packageID.getPackage_id())
-                .map(PackageDataResponse::new);
+                .then(Mono.just(ok(Format.builder().response("done").build())));
     }
 
     public Flux<com.example.heroku.model.UserPackage> DeleteByBeerUnit(PackageItemRemove beerUnitDelete) {

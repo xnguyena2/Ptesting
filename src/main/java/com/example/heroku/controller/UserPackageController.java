@@ -40,7 +40,7 @@ public class UserPackageController {
 
     @PostMapping("/delete")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<PackageDataResponse> deletePackage(@RequestBody @Valid PackageID packageID) {
+    public Mono<ResponseEntity<Format>> deletePackage(@RequestBody @Valid PackageID packageID) {
         System.out.println("delete package: " + packageID.getPackage_id());
         return userPackageAPI.DeletePackage(packageID);
     }
