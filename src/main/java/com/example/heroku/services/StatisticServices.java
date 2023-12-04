@@ -2,8 +2,10 @@ package com.example.heroku.services;
 
 import com.example.heroku.model.repository.BeerOrderRepository;
 import com.example.heroku.model.repository.StatisticBenifitRepository;
+import com.example.heroku.model.repository.StatisticTotalBenifitRepository;
 import com.example.heroku.model.repository.StatisticsRepository;
 import com.example.heroku.model.statistics.BenifitByDate;
+import com.example.heroku.model.statistics.BenifitByMonth;
 import com.example.heroku.model.statistics.StatisticsTotalOrder;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.PackageID;
@@ -23,6 +25,9 @@ public class StatisticServices {
 
     @Autowired
     StatisticBenifitRepository statisticBenifitRepository;
+
+    @Autowired
+    StatisticTotalBenifitRepository statisticTotalBenifitRepository;
 
     public Flux<ProductOrderStatus> getByProductID(SearchQuery query) {
         String dateTxt = query.GetFilterTxt();
@@ -46,5 +51,9 @@ public class StatisticServices {
 
     public Flux<BenifitByDate> getPackageStatictis(PackageID query) {
         return statisticBenifitRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
+    }
+
+    public Mono<BenifitByMonth> getPackageTotalStatictis(PackageID query) {
+        return statisticTotalBenifitRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
     }
 }

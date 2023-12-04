@@ -85,6 +85,7 @@ public class ClientDeviceTest {
                     }
                     assertThat((long) bootStrapData.getCarousel().size()).isEqualTo(0);
                     assertThat((long) bootStrapData.getProducts().size()).isEqualTo(3);
+                    assertThat(bootStrapData.getBenifit().getRevenue()).isEqualTo(0);
                     Flux.just(bootStrapData.getProducts().toArray(new BeerSubmitData[0]))
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
@@ -113,6 +114,7 @@ public class ClientDeviceTest {
                         e.printStackTrace();
                     }
                     assertThat((long) bootStrapData.getProducts().size()).isEqualTo(3);
+                    assertThat(bootStrapData.getBenifit().getRevenue()).isEqualTo(0);
                     Flux.just(bootStrapData.getProducts().toArray(new BeerSubmitData[0]))
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)

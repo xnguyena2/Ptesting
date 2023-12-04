@@ -1,11 +1,18 @@
 package com.example.heroku.services;
 
+import com.example.heroku.model.UserPackageDetail;
+import com.example.heroku.model.repository.StatisticTotalBenifitRepository;
+import com.example.heroku.model.statistics.BenifitByMonth;
 import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.request.client.PackageID;
 import com.example.heroku.response.BootStrapData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 
 @Component
@@ -18,6 +25,9 @@ public class ClientDevice {
 
     @Autowired
     DeviceConfig deviceConfigAPI;
+
+    @Autowired
+    StatisticServices statisticServices;
 
     public Mono<BootStrapData> bootStrapData(String groupID) {
 
@@ -49,6 +59,11 @@ public class ClientDevice {
                         this.deviceConfigAPI.GetConfig(groupID)
                                 .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().color("#333333").build()))
                                 .map(bootStrapData::setDeviceConfig)
+                )
+                .flatMap(bootStrapData ->
+                        this.statisticServices.getPackageTotalStatictis(PackageID.builder().group_id(groupID).from(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).atZone(ZoneId.of("UTC")).toLocalDateTime())).to(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")))).status(UserPackageDetail.Status.CREATE).build())
+                                .switchIfEmpty(Mono.just(BenifitByMonth.builder().build()))
+                                .map(bootStrapData::setBenifit)
                 );
     }
 
@@ -71,6 +86,11 @@ public class ClientDevice {
                         this.deviceConfigAPI.GetConfig(groupID)
                                 .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().color("#333333").build()))
                                 .map(bootStrapData::setDeviceConfig)
+                )
+                .flatMap(bootStrapData ->
+                        this.statisticServices.getPackageTotalStatictis(PackageID.builder().group_id(groupID).from(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).atZone(ZoneId.of("UTC")).toLocalDateTime())).to(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")))).status(UserPackageDetail.Status.CREATE).build())
+                                .switchIfEmpty(Mono.just(BenifitByMonth.builder().build()))
+                                .map(bootStrapData::setBenifit)
                 );
     }
 }

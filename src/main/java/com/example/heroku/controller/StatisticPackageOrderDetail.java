@@ -2,6 +2,7 @@ package com.example.heroku.controller;
 
 import com.example.heroku.model.Users;
 import com.example.heroku.model.statistics.BenifitByDate;
+import com.example.heroku.model.statistics.BenifitByMonth;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.permission.WrapPermissionAction;
@@ -32,5 +33,17 @@ public class StatisticPackageOrderDetail {
                 .fluxAction(q -> statisticServices.getPackageStatictis(query))
                 .build()
                 .toFlux();
+    }
+
+    @PostMapping("/admin/totalinmonth")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<BenifitByMonth> getTotalbyproductid(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
+        System.out.println("getTotalbyproductid: " + query.getGroup_id());
+        return WrapPermissionAction.<BenifitByMonth>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .monoAction(q -> statisticServices.getPackageTotalStatictis(query))
+                .build()
+                .toMono();
     }
 }

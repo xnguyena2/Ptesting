@@ -89,6 +89,7 @@ public class DeviceConfigTest {
                             assertThat(config.getDeviceConfig().getColor()).isEqualTo("#333333");
                             assertThat(config.getDeviceConfig().getCategorys()).isEqualTo(finalListCategorysString);
                             assertThat(config.getDeviceConfig().getConfig()).isEqualTo("config");
+                            assertThat(config.getBenifit().getRevenue()).isEqualTo(0);
                             try {
                                 List<String> listCategory = objectMapper.readValue(config.getDeviceConfig().getCategorys(), new TypeReference<List<String>>() {
                                 });
@@ -169,6 +170,7 @@ public class DeviceConfigTest {
                             assertThat(config.getDeviceConfig().getCategorys()).isEqualTo(finalListCategorysString);
                             assertThat(config.getDeviceConfig().getConfig()).isEqualTo("config");
                             assertThat((long) config.getCarousel().size()).isEqualTo(0);
+                            assertThat(config.getBenifit().getRevenue()).isEqualTo(0);
                             try {
                                 List<String> listCategory = objectMapper.readValue(config.getDeviceConfig().getCategorys(), new TypeReference<List<String>>() {
                                 });
