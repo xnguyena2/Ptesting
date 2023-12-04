@@ -61,7 +61,11 @@ public class ClientDevice {
                                 .map(bootStrapData::setDeviceConfig)
                 )
                 .flatMap(bootStrapData ->
-                        this.statisticServices.getPackageTotalStatictis(PackageID.builder().group_id(groupID).from(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).atZone(ZoneId.of("UTC")).toLocalDateTime())).to(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")))).status(UserPackageDetail.Status.CREATE).build())
+                        this.statisticServices.getPackageTotalStatictis(PackageID.builder()
+                                        .group_id(groupID)
+                                        .from(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).atZone(ZoneId.of("UTC")).toLocalDateTime()))
+                                        .to(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))))
+                                        .status(UserPackageDetail.Status.DONE).build())
                                 .switchIfEmpty(Mono.just(BenifitByMonth.builder().build()))
                                 .map(bootStrapData::setBenifit)
                 );
@@ -88,7 +92,11 @@ public class ClientDevice {
                                 .map(bootStrapData::setDeviceConfig)
                 )
                 .flatMap(bootStrapData ->
-                        this.statisticServices.getPackageTotalStatictis(PackageID.builder().group_id(groupID).from(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).atZone(ZoneId.of("UTC")).toLocalDateTime())).to(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")))).status(UserPackageDetail.Status.CREATE).build())
+                        this.statisticServices.getPackageTotalStatictis(PackageID.builder()
+                                        .group_id(groupID)
+                                        .from(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).atZone(ZoneId.of("UTC")).toLocalDateTime()))
+                                        .to(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))))
+                                        .status(UserPackageDetail.Status.DONE).build())
                                 .switchIfEmpty(Mono.just(BenifitByMonth.builder().build()))
                                 .map(bootStrapData::setBenifit)
                 );
