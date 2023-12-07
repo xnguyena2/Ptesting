@@ -38,14 +38,16 @@ public class UserAccount {
 
     public Mono<Users> createAccount(String createBy, UpdatePassword newAccount) {
         return this.userRepository.save(Users.builder()
-                .group_id(newAccount.getGroup_id())
-                .username(newAccount.getUsername())
-                .password(this.passwordEncoder.encode(newAccount.getNewpassword()))
-                .roles(Collections.singletonList(Util.ROLE.get(newAccount.getRoles().get(0)).getName()))
-                .createat(new Timestamp(new Date().getTime()))
-                .active(true)
-                .createby(createBy)
-                .build());
+                        .group_id(newAccount.getGroup_id())
+                        .username(newAccount.getUsername())
+                        .password(this.passwordEncoder.encode(newAccount.getNewpassword()))
+                        .roles(Collections.singletonList(Util.ROLE.get(newAccount.getRoles().get(0)).getName()))
+                        .createat(new Timestamp(new Date().getTime()))
+                        .active(true)
+                        .createby(createBy)
+                        .phone_number(newAccount.getPhone_number())
+                        .build().AutoFill())
+                .map(Users::Clean);
     }
 
     public Mono<SearchResult<Users>> getAll(SearchQuery query) {

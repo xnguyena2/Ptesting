@@ -111,17 +111,10 @@ public class AuthenticationController {
     @GetMapping("/me")
     public Mono<Map<String, Object>> current(@AuthenticationPrincipal Mono<Users> principal) {
         return principal
-                .map(user -> new HashMap<String, Object>() {
-                            {
-                                put("name", user.getUsername());
-                                put("roles", AuthorityUtils.authorityListToSet(user.getAuthorities()));
-                                put("group_id", user.getGroup_id());
-                            }
-                        }
-                );
+                .map(Users::getJsonObject);
     }
 
-    @PostMapping("/account/update")
+    @PostMapping("/account/updatepassword")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity> update(@AuthenticationPrincipal Mono<UserDetails> principal, @Valid @RequestBody UpdatePassword update) {
 

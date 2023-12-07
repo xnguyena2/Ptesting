@@ -144,7 +144,7 @@ public class AuthenticationTest extends TestConfig {
     StatusAssertions updateAcc(String username, String oldPass, String newPass, String token) throws NoSuchAlgorithmException {
 
         return
-                client.post().uri("/auth/account/update").cookies(cookies -> cookies.add(accessTokenCookieName, token))
+                client.post().uri("/auth/account/updatepassword").cookies(cookies -> cookies.add(accessTokenCookieName, token))
                         .body(BodyInserters.fromValue(
                                 UpdatePassword
                                         .builder()
@@ -173,7 +173,7 @@ public class AuthenticationTest extends TestConfig {
                 .expectStatus()
                 .isOk()
                 .expectBody()
-                .jsonPath("name").isEqualTo(adminName)
+                .jsonPath("username").isEqualTo(adminName)
                 .jsonPath("group_id").isEqualTo(group_id);
 
         client.get().uri("/auth/me").cookies(cookies -> cookies.add(accessTokenCookieName, "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2dW9uZyIsInJvbGVzIjoiUk9MRV9BRE1JTixST0xFX1VTRVIiLCJpYXQiOjE2MzM1MjU5NDksImV4cCI6MTYzMzUyOTU0OX0.DCcMxsHsXjyKxIKfX_Smbi-0zQGHz-sB-W7zYuQw9bo"))
@@ -315,7 +315,7 @@ public class AuthenticationTest extends TestConfig {
                 .expectStatus()
                 .isOk()
                 .expectBody()
-                .jsonPath("name").isEqualTo("nhanvien2")
+                .jsonPath("username").isEqualTo("nhanvien2")
                 .jsonPath("group_id").isEqualTo(group_id);
 
 
@@ -347,7 +347,7 @@ public class AuthenticationTest extends TestConfig {
                 .expectStatus()
                 .isOk()
                 .expectBody()
-                .jsonPath("name").isEqualTo("nhanvien2")
+                .jsonPath("username").isEqualTo("nhanvien2")
                 .jsonPath("group_id").isEqualTo(group_id);
     }
 
