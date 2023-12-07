@@ -88,7 +88,7 @@ public class ClientDevice {
                 )
                 .flatMap(bootStrapData ->
                         this.deviceConfigAPI.GetConfig(groupID)
-                                .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().color("#333333").build()))
+                                .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().group_id(groupID).build()))
                                 .map(bootStrapData::setDeviceConfig)
                 )
                 .flatMap(bootStrapData ->
