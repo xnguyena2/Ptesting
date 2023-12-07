@@ -24,7 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.List;
 
-/*
+
 @AutoConfigureWebTestClient(timeout = "36000")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AuthenticationTest extends TestConfig {
@@ -89,6 +89,22 @@ public class AuthenticationTest extends TestConfig {
                                 .builder()
                                 .username(username)
                                 .oldpassword(Util.getInstance().HashPassword(password))
+                                .build())
+                )
+                .exchange()
+                .expectStatus();
+    }
+
+    StatusAssertions selfCreateAcc(String username, String password, List<String> roles, String group_id) throws NoSuchAlgorithmException {
+
+        return client.post().uri("/auth/account/create")
+                .body(BodyInserters.fromValue(
+                        UpdatePassword
+                                .builder()
+                                .username(username)
+                                .newpassword(Util.getInstance().HashPassword(password))
+                                .roles(roles)
+                                .group_id(group_id)
                                 .build())
                 )
                 .exchange()
@@ -177,6 +193,9 @@ public class AuthenticationTest extends TestConfig {
                 .expectBody()
                 .jsonPath("token").exists();
 
+        selfCreateAcc("quin69", "quin123", Collections.singletonList(Util.ROLE.ROLE_ROOT.getName()), group_id)
+                .isOk();
+
         createAcc("quin", "quin123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()), group_id)
                 .isOk();
 
@@ -208,8 +227,18 @@ public class AuthenticationTest extends TestConfig {
         signinAcc("binh", "binh123")
                 .isUnauthorized();
 
+
+        signinAcc("quin69", "quin12")
+                .isUnauthorized();
+
+        String finalAuthToken69 = getToken("quin69", "quin123");
+
         String finalAuthToken2 = getToken("quin", "quin123");
 
+
+
+        updateAcc("quin69", "quin123", "qqqqq123", finalAuthToken69)
+                .isOk();
 
         updateAcc("quin", "quin123", "qqqqq123", finalAuthToken2)
                 .isOk();
@@ -242,6 +271,14 @@ public class AuthenticationTest extends TestConfig {
                 .isForbidden();
 
 
+        createAcc("nhanvien69", "nhanvien111", finalAuthToken69, Collections.singletonList(Util.ROLE.ROLE_ROOT.getName()), group_id)
+                .isForbidden();
+
+
+        createAcc("nhanvien69", "nhanvien111", finalAuthToken69, Collections.singletonList(Util.ROLE.ROLE_USER.getName()), group_id)
+                .isOk();
+
+
 
         createAcc("nhanvien1", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()), group_id)
                 .isOk();
@@ -253,7 +290,12 @@ public class AuthenticationTest extends TestConfig {
         createAcc("nhanvien3", "nhanvien123", finalAuthToken, Collections.singletonList(Util.ROLE.ROLE_USER.getName()), group_id)
                 .isOk();
 
+        String finalAuthTokennhanvien69 = getToken("nhanvien69", "nhanvien111");
+
         String finalAuthToken4 = getToken("nhanvien2", "nhanvien123");
+
+        deleteAcc("nhanvien69", "nhanvien111", finalAuthToken4, false)
+                .isUnauthorized();
 
         deleteAcc("nhanvien3", "nhanvien123", finalAuthToken4, false)
                 .isForbidden();
@@ -263,6 +305,9 @@ public class AuthenticationTest extends TestConfig {
 
         deleteAcc("quin", "qqqqq123", finalAuthToken4, false)
                 .isUnauthorized();
+
+        deleteAcc("quin69", "qqqqq123", finalAuthToken69, false)
+                .isOk();
 
 
         client.get().uri("/auth/me").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken4))
@@ -291,6 +336,9 @@ public class AuthenticationTest extends TestConfig {
                 .isUnauthorized();
 
         deleteAcc("nhanvien", adminPass, finalAuthToken, true)
+                .isOk();
+
+        deleteAcc("nhanvien69", "nhanvien111", finalAuthTokennhanvien69, false)
                 .isOk();
 
 
@@ -323,6 +371,6 @@ public class AuthenticationTest extends TestConfig {
                 .isOk();
     }
 }
-*/
 
-public class AuthenticationTest{}
+
+//public class AuthenticationTest{}

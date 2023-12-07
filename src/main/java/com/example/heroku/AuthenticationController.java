@@ -84,6 +84,18 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("/account/create")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<Users> signup(@Valid @RequestBody UpdatePassword newAccount) {
+
+        System.out.println("create newAccount: " + newAccount.getUsername());
+
+        newAccount.getRoles().clear();
+        newAccount.getRoles().add(Util.ROLE.ROLE_ADMIN.getName());
+
+        return userServices.createAccount(newAccount.getUsername(), newAccount);
+    }
+
     @PostMapping("/refresh")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity> refreshToken(@AuthenticationPrincipal Mono<UserDetails> principal) {
