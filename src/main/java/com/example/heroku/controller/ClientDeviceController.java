@@ -39,8 +39,8 @@ public class ClientDeviceController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<BootStrapData> fullBootStrapData(@PathVariable("groupid") String groupID) {
         System.out.println("Get full bootstrap!: " + groupID);
-        System.out.println(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).atZone(ZoneId.of("UTC")).toLocalDateTime()));
-        System.out.println(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
+        System.out.println(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0)));
+        System.out.println(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"))));
         return clientDeviceAPI.adminBootStrapWithoutCarouselData(groupID);
     }
 
