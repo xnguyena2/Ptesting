@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @RestController
 @RequestMapping("/clientdevice")
@@ -35,7 +38,9 @@ public class ClientDeviceController {
     @GetMapping("/bootstrapfull/{groupid}")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<BootStrapData> fullBootStrapData(@PathVariable("groupid") String groupID) {
-        System.out.println("Get full bootstrap!");
+        System.out.println("Get full bootstrap!: " + groupID);
+        System.out.println(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).atZone(ZoneId.of("UTC")).toLocalDateTime()));
+        System.out.println(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
         return clientDeviceAPI.adminBootStrapWithoutCarouselData(groupID);
     }
 
