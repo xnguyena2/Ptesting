@@ -94,8 +94,8 @@ public class ClientDevice {
                 .flatMap(bootStrapData ->
                         this.statisticServices.getPackageTotalStatictis(PackageID.builder()
                                         .group_id(groupID)
-                                        .from(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).atZone(ZoneId.of("UTC")).toLocalDateTime()))
-                                        .to(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))))
+                                        .from(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0)))
+                                        .to(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"))))
                                         .status(UserPackageDetail.Status.DONE).build())
                                 .switchIfEmpty(Mono.just(BenifitByMonth.builder().build()))
                                 .map(bootStrapData::setBenifit)
