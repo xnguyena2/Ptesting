@@ -159,6 +159,23 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("/account/markdelete")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity> selfMarkDelete(@AuthenticationPrincipal Mono<UserDetails> principal) {
+
+        try {
+            return principal
+                    .flatMap(login -> userServices.seftMarkDelete(
+                                    login.getUsername()
+                            )
+                    )
+                    .then(Mono.just(""))
+                    .map(this::createAuthBearToken);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid username/password supplied");
+        }
+    }
+
     private Util.ROLE getRole(UserDetails principal) {
         if (principal.getAuthorities().size() > 1)
             return null;

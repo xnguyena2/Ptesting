@@ -35,6 +35,9 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
 
     protected String phone_number_clean;
 
+    private Status status;
+
+
     @Transient
     private UserDetails user;
 
@@ -63,6 +66,8 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
     }
 
     public Users parseauthorities() {
+        correctField();
+        this.active = status == Status.ACTIVE;
         this.user = User
                 .withUsername(username)
                 .password(password)
@@ -73,6 +78,13 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
                 .accountLocked(!isActive())
                 .build();
         return  this;
+    }
+
+    public Users correctField() {
+        if(this.status == null) {
+            this.status = Status.ACTIVE;
+        }
+        return this;
     }
 
     public Users AutoFill() {
@@ -163,5 +175,48 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
                 put("phone_number", getPhone_number());
             }
         };
+    }
+
+    public enum Status {
+        ACTIVE("ACTIVE"),
+        DELETE("DELETE"),
+        DISABLE("DISABLE");
+
+
+        private String name;
+
+        Status(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        private static final Map<String, Status> lookup = new HashMap<>();
+
+        static {
+            for (Status sts : Status.values()) {
+                lookup.put(sts.getName(), sts);
+            }
+        }
+
+        public static Status get(String text) {
+            try {
+                Status val = lookup.get(text);
+                if (val == null) {
+                    return ACTIVE;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return ACTIVE;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
     }
 }

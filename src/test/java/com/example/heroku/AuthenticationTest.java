@@ -47,6 +47,20 @@ public class AuthenticationTest extends TestConfig {
     @Autowired
     private WebTestClient client;
 
+    StatusAssertions getTokenStatus(String username, String password) throws NoSuchAlgorithmException {
+
+        return client.post().uri("/auth/signin")
+                .body(BodyInserters.fromValue(
+                        AuthenticationRequest
+                                .builder()
+                                .username(username)
+                                .password(Util.getInstance().HashPassword(password))
+                                .build())
+                )
+                .exchange()
+                .expectStatus();
+    }
+
     String getToken(String username, String password) throws NoSuchAlgorithmException {
 
         byte[] token = client.post().uri("/auth/signin")
@@ -91,6 +105,15 @@ public class AuthenticationTest extends TestConfig {
                                 .oldpassword(Util.getInstance().HashPassword(password))
                                 .build())
                 )
+                .exchange()
+                .expectStatus();
+    }
+
+    StatusAssertions selfMarkDeleteAcc(String token) throws NoSuchAlgorithmException {
+
+        String path = "/auth/account/markdelete";
+
+        return client.post().uri(path).cookies(cookies -> cookies.add(accessTokenCookieName, token))
                 .exchange()
                 .expectStatus();
     }
@@ -338,7 +361,14 @@ public class AuthenticationTest extends TestConfig {
         deleteAcc("nhanvien", adminPass, finalAuthToken, true)
                 .isOk();
 
+        selfMarkDeleteAcc(finalAuthTokennhanvien69).isOk();
+
         deleteAcc("nhanvien69", "nhanvien111", finalAuthTokennhanvien69, false)
+                .is5xxServerError();
+
+        getTokenStatus("nhanvien69", "nhanvien111").is5xxServerError();
+
+        deleteAcc("nhanvien69", adminPass, finalAuthToken, true)
                 .isOk();
 
 

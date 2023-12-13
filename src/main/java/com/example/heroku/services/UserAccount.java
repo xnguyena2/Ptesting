@@ -43,6 +43,7 @@ public class UserAccount {
                         .password(this.passwordEncoder.encode(newAccount.getNewpassword()))
                         .roles(Collections.singletonList(Util.ROLE.get(newAccount.getRoles().get(0)).getName()))
                         .createat(new Timestamp(new Date().getTime()))
+                        .status(Users.Status.ACTIVE)
                         .active(true)
                         .createby(createBy)
                         .phone_number(newAccount.getPhone_number())
@@ -95,6 +96,12 @@ public class UserAccount {
     public Mono<Users> seftDelete(String username) {
         return userRepository.deleteByUserName(
                 username
+        );
+    }
+
+    public Mono<Users> seftMarkDelete(String username) {
+        return userRepository.updateStatusByUserName(
+                username, Users.Status.DELETE
         );
     }
 }

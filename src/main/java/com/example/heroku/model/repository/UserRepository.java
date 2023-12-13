@@ -23,6 +23,9 @@ public interface UserRepository extends ReactiveCrudRepository<Users, Long> {
     @Query(value = "DELETE FROM users WHERE users.username = :username")
     Mono<Users> deleteByUserName(@Param("username") String username);
 
+    @Query(value = "UPDATE users SET status=:status WHERE username = :username")
+    Mono<Users> updateStatusByUserName(@Param("username") String username, @Param("status") Users.Status status);
+
     @Query(value = "select checkRole(:useradmin, :userstaff)")
     Mono<Boolean> isPermissionAllow(@Param("useradmin") String useradmin, @Param("userstaff") String userstaff);
 
