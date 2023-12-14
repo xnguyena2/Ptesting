@@ -31,6 +31,9 @@ public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
     @Query(value = "DELETE FROM product WHERE product.product_second_id = :id AND product.group_id = :group_id")
     Mono<Product> deleteBySecondId(@Param("group_id")String groupID, @Param("id")String id);
 
+    @Query(value = "DELETE FROM product WHERE product.group_id = :group_id")
+    Mono<Product> deleteByGroupId(@Param("group_id")String groupID);
+
 
     //search all
     @Query(value = "SELECT * FROM product WHERE product.group_id = :group_id AND product.status IS DISTINCT FROM 'HIDE' ORDER BY :property DESC LIMIT :size OFFSET (:page * :size)")

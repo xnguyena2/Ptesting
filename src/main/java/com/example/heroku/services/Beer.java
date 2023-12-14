@@ -70,6 +70,13 @@ public class Beer {
                 .then(Mono.just(BeerSubmitData.FromProductInfo(info)));
     }
 
+    public Mono<Product> DeleteBeerByGroupID(String groupID) {
+        return imageRepository.findByGroupID(groupID)
+                .flatMap(image -> imageAPI.Delete(IDContainer.builder().group_id(groupID).id(image.getImgid()).build()))
+                .then(this.beerUnitRepository.deleteByBeerByGroupId(groupID))
+                .then(beerRepository.deleteByGroupId(groupID));
+    }
+
     public Mono<Product> DeleteBeerByID(String groupID, String id) {
         return imageRepository.findByCategory(groupID, id)
                 .flatMap(image -> imageAPI.Delete(IDContainer.builder().group_id(groupID).id(image.getImgid()).build()))

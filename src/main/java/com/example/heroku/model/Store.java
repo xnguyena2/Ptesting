@@ -9,6 +9,8 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.HashMap;
+import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -20,12 +22,56 @@ import javax.persistence.Table;
 public class Store extends BaseEntity {
 
     private String name;
+    private String time_open;
+    private String address;
+    private String phone;
 
     private Status status;
 
+    public Store AutoFill() {
+        super.AutoFill();
+        return this;
+    }
 
     public enum Status {
-        OPEN,
-        CLOSE
+        ACTIVE("ACTIVE"),
+        CLOSE("CLOSE");
+
+
+        private final String name;
+
+        Status(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        private static final Map<String, Status> lookup = new HashMap<>();
+
+        static {
+            for (Status sts : Status.values()) {
+                lookup.put(sts.getName(), sts);
+            }
+        }
+
+        public static Status get(String text) {
+            try {
+                Status val = lookup.get(text);
+                if (val == null) {
+                    return ACTIVE;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return ACTIVE;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
     }
 }

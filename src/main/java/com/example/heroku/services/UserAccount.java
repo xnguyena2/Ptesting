@@ -5,6 +5,7 @@ import com.example.heroku.model.repository.ResultWithCountRepository;
 import com.example.heroku.model.repository.UserRepository;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.beer.SearchResult;
+import com.example.heroku.request.client.UserID;
 import com.example.heroku.request.data.UpdatePassword;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,9 +100,15 @@ public class UserAccount {
         );
     }
 
+    @Autowired
+    com.example.heroku.services.Beer beerAPI;
+    @Autowired
+    com.example.heroku.services.Area area;
     public Mono<Users> seftMarkDelete(String username) {
-        return userRepository.updateStatusByUserName(
-                username, Users.Status.DELETE
+        return userRepository.findByUsername(username).flatMap(users ->
+                beerAPI.DeleteBeerByGroupID(users.getGroup_id())
+                        .then(area.getAll(UserID.builder().page(0).size(10000).group_id(users.getGroup_id()).build()).flatMap(areaData -> area.deleteArea(areaData)).then(Mono.empty()))
+                        .then(userRepository.deleteByUserName(username))
         );
     }
 }
