@@ -109,6 +109,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/me")
+    @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Map<String, Object>> current(@AuthenticationPrincipal Mono<Users> principal) {
         return principal
                 .map(Users::getJsonObject);
@@ -200,6 +201,12 @@ public class AuthenticationController {
                                 .monoAction(() -> userServices.deleteAccount(principal, update))
                                 .build().toMono()
                 );
+    }
+
+    @GetMapping("/account/info")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<Users> getAccountInfo(@AuthenticationPrincipal Mono<Users> principal) {
+        return principal.flatMap(users -> userServices.getUser(users.getUsername()));
     }
 
     @PostMapping("/admin/account/create")

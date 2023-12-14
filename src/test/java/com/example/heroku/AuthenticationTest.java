@@ -144,6 +144,7 @@ public class AuthenticationTest extends TestConfig {
                                 .newpassword(Util.getInstance().HashPassword(password))
                                 .roles(roles)
                                 .group_id(group_id)
+                                .phone_number("12355555")
                                 .build())
                 )
                 .exchange()
@@ -342,6 +343,15 @@ public class AuthenticationTest extends TestConfig {
                 .jsonPath("group_id").isEqualTo(group_id);
 
 
+        client.get().uri("/auth/account/info").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken4))
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("username").isEqualTo("nhanvien2")
+                .jsonPath("phone_number").isEqualTo("12355555")
+                .jsonPath("group_id").isEqualTo(group_id);
+
         deleteAcc("nhanvien2", "nhanvien123", finalAuthToken4, false)
                 .isOk();
 
@@ -379,6 +389,14 @@ public class AuthenticationTest extends TestConfig {
                 .expectBody()
                 .jsonPath("username").isEqualTo("nhanvien2")
                 .jsonPath("group_id").isEqualTo(group_id);
+
+
+        client.get().uri("/auth/account/info").cookies(cookies -> cookies.add(accessTokenCookieName, finalAuthToken4))
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .isEmpty();
     }
 
     @Test

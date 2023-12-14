@@ -84,7 +84,7 @@ public class DataInitializer {
                         .subscribe();
 
                 //wait sometime for database initial
-                Thread.sleep(3000);
+                Thread.sleep(10000);
 
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();

@@ -46,7 +46,7 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
     }
 
     public Users(String username, String password, String group_id, boolean enabled, Collection<? extends GrantedAuthority> authorities) {
-        if (username != null && !"".equals(username) && password != null) {
+        if (username != null && !username.isEmpty() && password != null) {
             this.username = username;
             this.password = password;
             this.active = enabled;
