@@ -92,6 +92,7 @@ public class OrderPackageTest extends TestConfig {
 
         makeOrder(mainGroup, voucher5K, voucher30Percent, packageVoucher5K);
 
+        System.out.println("Delete all data of user: " + adminName);
         deleteAllData.seftMarkDelete(adminName).block();
     }
 
@@ -110,7 +111,7 @@ public class OrderPackageTest extends TestConfig {
 
         makeOrder(otherGroup, voucher5K, voucher30Percent, packageVoucher5K);
 
-        deleteAllData.deleteByGroupID(otherGroup).block();
+//        deleteAllData.deleteByGroupID(otherGroup).block();
     }
 
     void makeOrder(String group, AtomicReference<Float> voucher5K, AtomicReference<Float> voucher30Percent, AtomicReference<Float> packageVoucher5K)  throws Exception {
