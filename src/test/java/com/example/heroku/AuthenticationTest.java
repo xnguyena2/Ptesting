@@ -371,12 +371,12 @@ public class AuthenticationTest extends TestConfig {
         deleteAcc("nhanvien", adminPass, finalAuthToken, true)
                 .isOk();
 
-        selfMarkDeleteAcc(finalAuthTokennhanvien69).isOk();
+        selfMarkDeleteAcc(finalAuthTokennhanvien69).isForbidden();
 
         deleteAcc("nhanvien69", "nhanvien111", finalAuthTokennhanvien69, false)
-                .is5xxServerError();
+                .isOk();
 
-        getTokenStatus("nhanvien69", "nhanvien111").is5xxServerError();
+        getTokenStatus("nhanvien69", "nhanvien111").isUnauthorized();
 
         deleteAcc("nhanvien69", adminPass, finalAuthToken, true)
                 .isOk();

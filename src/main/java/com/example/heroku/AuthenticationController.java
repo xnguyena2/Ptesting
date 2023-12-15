@@ -6,6 +6,7 @@ import com.example.heroku.model.Users;
 import com.example.heroku.request.data.AuthenticationRequest;
 import com.example.heroku.request.data.UpdatePassword;
 import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
+import com.example.heroku.services.DeleteAllData;
 import com.example.heroku.services.UserAccount;
 import com.example.heroku.util.Util;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,9 @@ public class AuthenticationController {
 
     @Autowired
     private UserAccount userServices;
+
+    @Autowired
+    private DeleteAllData deleteAllData;
 
     private ResponseEntity createAuthBearToken(String jwt) {
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -143,8 +147,7 @@ public class AuthenticationController {
                     .flatMap(login -> this.authenticationManager
                             .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), update.getOldpassword()))
                             .filter(authentication ->
-                                    authentication.getName().equals(update.getUsername()) &&
-                                            getRole(login) != Util.ROLE.ROLE_ROOT
+                                    authentication.getName().equals(update.getUsername())
                             )
                             .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned1")))
                             .flatMap(authentication ->
@@ -166,7 +169,9 @@ public class AuthenticationController {
 
         try {
             return principal
-                    .flatMap(login -> userServices.seftMarkDelete(
+                    .filter(userDetails -> getRole(userDetails) == Util.ROLE.ROLE_ADMIN)
+                    .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned1")))
+                    .flatMap(login -> deleteAllData.seftMarkDelete(
                                     login.getUsername()
                             )
                     )

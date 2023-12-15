@@ -171,6 +171,53 @@ begin
 end;
 $$;
 
+
+create or replace function delete_all_data_belong_user (
+  by_group_id VARCHAR
+)
+	returns boolean
+	language plpgsql
+as
+$$
+begin
+
+    DELETE FROM image WHERE group_id = by_group_id;
+    DELETE FROM users WHERE group_id = by_group_id;
+    DELETE FROM search_token WHERE group_id = by_group_id;
+    DELETE FROM device_config WHERE group_id = by_group_id;
+    DELETE FROM package_order WHERE group_id = by_group_id;
+    DELETE FROM product_order WHERE group_id = by_group_id;
+    DELETE FROM product_unit_order WHERE group_id = by_group_id;
+    DELETE FROM user_device WHERE group_id = by_group_id;
+    DELETE FROM user_fcm WHERE group_id = by_group_id;
+    DELETE FROM user_address WHERE group_id = by_group_id;
+    DELETE FROM user_package WHERE group_id = by_group_id;
+    DELETE FROM user_package_detail WHERE group_id = by_group_id;
+    DELETE FROM voucher_relate_user_device WHERE group_id = by_group_id;
+    DELETE FROM voucher_relate_product WHERE group_id = by_group_id;
+    DELETE FROM voucher WHERE group_id = by_group_id;
+    DELETE FROM product_view_count WHERE group_id = by_group_id;
+    DELETE FROM notification WHERE group_id = by_group_id;
+    DELETE FROM notification_relate_user_device WHERE group_id = by_group_id;
+    DELETE FROM shipping_provider WHERE group_id = by_group_id;
+
+    DELETE FROM product_unit WHERE group_id = by_group_id;
+    DELETE FROM product WHERE group_id = by_group_id;
+    DELETE FROM product_import WHERE group_id = by_group_id;
+
+    DELETE FROM store WHERE group_id = by_group_id;
+
+    DELETE FROM buyer WHERE group_id = by_group_id;
+
+    DELETE FROM payment_transaction WHERE group_id = by_group_id;
+
+    DELETE FROM table_detail WHERE group_id = by_group_id;
+    DELETE FROM area WHERE group_id = by_group_id;
+
+    RETURN TRUE;
+end;
+$$;
+
 CREATE OR REPLACE FUNCTION add_buyer()
   RETURNS TRIGGER
   LANGUAGE PLPGSQL

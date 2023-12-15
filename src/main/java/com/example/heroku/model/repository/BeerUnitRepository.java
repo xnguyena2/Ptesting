@@ -21,9 +21,6 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, 
     @Query(value = "DELETE FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :product_second_id")
     Mono<ProductUnit> deleteByBeerId(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id);
 
-    @Query(value = "DELETE FROM product_unit WHERE product_unit.group_id = :group_id")
-    Mono<ProductUnit> deleteByBeerByGroupId(@Param("group_id")String groupID);
-
     @Query(value = "SELECT * FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :product_second_id")
     Flux<ProductUnit> findByBeerID(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id);
 

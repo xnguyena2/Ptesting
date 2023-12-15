@@ -1,5 +1,6 @@
 package com.example.heroku.services;
 
+import com.example.heroku.model.Product;
 import com.example.heroku.model.repository.ImageRepository;
 import com.example.heroku.photo.FlickrLib;
 import com.example.heroku.request.carousel.IDContainer;
@@ -80,5 +81,10 @@ public class Image {
 //                            System.out.println("Error while processing {" + o + "}. Cause: {" + throwable.getMessage() + "}");
 //                        })
                 );
+    }
+
+    public Flux<Boolean> JustDeleteImageFromFlickByGroupID(String groupID) {
+        return imageRepository.findByGroupID(groupID)
+                .map(image -> flickrLib.DeleteImage(image.getImgid()));
     }
 }
