@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -66,6 +67,13 @@ public class OrderPackageTest extends TestConfig {
     @Autowired
     StatisticServices statisticServices;
 
+    @Autowired
+    DeleteAllData deleteAllData;
+
+
+    @Value("${account.admin.username}")
+    private String adminName;
+
     String mainGroup = Config.mainGroup;
 
     String otherGroup = Config.otherGroup;
@@ -83,6 +91,8 @@ public class OrderPackageTest extends TestConfig {
         AtomicReference<Float> packageVoucher5K = new AtomicReference<>((float) 0);
 
         makeOrder(mainGroup, voucher5K, voucher30Percent, packageVoucher5K);
+
+        deleteAllData.seftMarkDelete(adminName).block();
     }
 
     @Test
@@ -99,6 +109,8 @@ public class OrderPackageTest extends TestConfig {
         AtomicReference<Float> packageVoucher5K = new AtomicReference<>((float) 0);
 
         makeOrder(otherGroup, voucher5K, voucher30Percent, packageVoucher5K);
+
+        deleteAllData.deleteByGroupID(otherGroup).block();
     }
 
     void makeOrder(String group, AtomicReference<Float> voucher5K, AtomicReference<Float> voucher30Percent, AtomicReference<Float> packageVoucher5K)  throws Exception {

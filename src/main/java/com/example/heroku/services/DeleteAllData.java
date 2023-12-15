@@ -22,10 +22,13 @@ public class DeleteAllData {
     private DeleteRepository deleteRepository;
 
     public Mono<Users> seftMarkDelete(String username) {
-        return userRepository.findByUsername(username).flatMap(users ->
-                imageAPI.JustDeleteImageFromFlickByGroupID(users.getGroup_id())
-                        .then(deleteRepository.deleteByGroupId(users.getGroup_id()))
-                        .then(Mono.just(users))
+        return userRepository.findByUsername(username).flatMap(users -> deleteByGroupID(users.getGroup_id())
+                .then(Mono.just(users))
         );
+    }
+
+    public Mono<Boolean> deleteByGroupID(String groupID) {
+        return imageAPI.JustDeleteImageFromFlickByGroupID(groupID)
+                .then(deleteRepository.deleteByGroupId(groupID));
     }
 }
