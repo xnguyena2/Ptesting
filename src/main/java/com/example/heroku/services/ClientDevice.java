@@ -29,6 +29,9 @@ public class ClientDevice {
     @Autowired
     StatisticServices statisticServices;
 
+    @Autowired
+    Store storeServices;
+
     public Mono<BootStrapData> bootStrapData(String groupID) {
 
         return Mono.just(
@@ -61,6 +64,11 @@ public class ClientDevice {
                                 .map(bootStrapData::setDeviceConfig)
                 )
                 .flatMap(bootStrapData ->
+                        this.storeServices.getStore(groupID)
+                                .switchIfEmpty(Mono.just(com.example.heroku.model.Store.builder().build()))
+                                .map(bootStrapData::setStore)
+                )
+                .flatMap(bootStrapData ->
                         this.statisticServices.getPackageTotalStatictis(PackageID.builder()
                                         .group_id(groupID)
                                         .from(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).atZone(ZoneId.of("UTC")).toLocalDateTime()))
@@ -90,6 +98,11 @@ public class ClientDevice {
                         this.deviceConfigAPI.GetConfig(groupID)
                                 .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().group_id(groupID).build()))
                                 .map(bootStrapData::setDeviceConfig)
+                )
+                .flatMap(bootStrapData ->
+                        this.storeServices.getStore(groupID)
+                                .switchIfEmpty(Mono.just(com.example.heroku.model.Store.builder().build()))
+                                .map(bootStrapData::setStore)
                 )
                 .flatMap(bootStrapData ->
                         this.statisticServices.getPackageTotalStatictis(PackageID.builder()

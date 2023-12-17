@@ -28,8 +28,12 @@ public class Store extends BaseEntity {
 
     private Status status;
 
-    public Store AutoFill() {
+    public Store AutoFill(String groupID) {
         super.AutoFill();
+        this.group_id = groupID;
+        if (status == null) {
+            status = Status.ACTIVE;
+        }
         return this;
     }
 

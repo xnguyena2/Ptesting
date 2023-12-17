@@ -5,6 +5,7 @@ import com.example.heroku.model.repository.ImageRepository;
 import com.example.heroku.photo.FlickrLib;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.response.Format;
+import com.example.heroku.util.Util;
 import com.flickr4java.flickr.FlickrException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -47,7 +48,7 @@ public class Image {
                             .medium(info[2])
                             .large(info[3])
                             .category(category)
-                            .createat(new Timestamp(new Date().getTime()))
+                            .createat(Util.getInstance().Now())
                             .group_id(groupID)
                             .build());
                 })

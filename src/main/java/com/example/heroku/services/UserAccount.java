@@ -38,7 +38,7 @@ public class UserAccount {
                         .username(newAccount.getUsername())
                         .password(this.passwordEncoder.encode(newAccount.getNewpassword()))
                         .roles(Collections.singletonList(Util.ROLE.get(newAccount.getRoles().get(0)).getName()))
-                        .createat(new Timestamp(new Date().getTime()))
+                        .createat(Util.getInstance().Now())
                         .status(Users.Status.ACTIVE)
                         .active(true)
                         .createby(createBy)

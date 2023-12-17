@@ -1,5 +1,6 @@
 package com.example.heroku;
 
+import com.example.heroku.model.Store;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.services.ClientDevice;
 import com.example.heroku.services.DeviceConfig;
@@ -19,6 +20,8 @@ public class DeviceConfigTest {
     private DeviceConfig deviceConfig;
 
     private ClientDevice clientDevice;
+
+    boolean testWithMainGroup;
 
     String group;
 
@@ -71,6 +74,13 @@ public class DeviceConfigTest {
                             assertThat(config.getDeviceConfig().getColor()).isEqualTo("#333333");
                             assertThat(config.getDeviceConfig().getCategorys()).isEqualTo(finalListCategorysString);
                             assertThat(config.getDeviceConfig().getConfig()).isEqualTo("config");
+                            if (testWithMainGroup) {
+                                Store store = config.getStore();
+                                assertThat(store.getName()).isEqualTo("shop ban chuoi");
+                                assertThat(store.getPhone()).isEqualTo("121212");
+                                assertThat(store.getAddress()).isEqualTo("123 abc");
+                                assertThat(store.getTime_open()).isEqualTo("all time");
+                            }
                             try {
                                 List<String> listCategory = objectMapper.readValue(config.getDeviceConfig().getCategorys(), new TypeReference<List<String>>() {
                                 });
@@ -90,6 +100,13 @@ public class DeviceConfigTest {
                             assertThat(config.getDeviceConfig().getCategorys()).isEqualTo(finalListCategorysString);
                             assertThat(config.getDeviceConfig().getConfig()).isEqualTo("config");
                             assertThat(config.getBenifit().getRevenue()).isEqualTo(0);
+                            if(testWithMainGroup) {
+                                Store store = config.getStore();
+                                assertThat(store.getName()).isEqualTo("shop ban chuoi");
+                                assertThat(store.getPhone()).isEqualTo("121212");
+                                assertThat(store.getAddress()).isEqualTo("123 abc");
+                                assertThat(store.getTime_open()).isEqualTo("all time");
+                            }
                             try {
                                 List<String> listCategory = objectMapper.readValue(config.getDeviceConfig().getCategorys(), new TypeReference<List<String>>() {
                                 });
@@ -149,9 +166,16 @@ public class DeviceConfigTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(config -> {
                             assertThat(config.getDeviceConfig().getColor()).isEqualTo("#333333");
-                    assertThat(config.getDeviceConfig().getCategorys()).isEqualTo(finalListCategorysString);
-                    assertThat(config.getDeviceConfig().getConfig()).isEqualTo("config");
+                            assertThat(config.getDeviceConfig().getCategorys()).isEqualTo(finalListCategorysString);
+                            assertThat(config.getDeviceConfig().getConfig()).isEqualTo("config");
                             assertThat((long) config.getCarousel().size()).isEqualTo(4);
+                            if(testWithMainGroup) {
+                                Store store = config.getStore();
+                                assertThat(store.getName()).isEqualTo("shop ban chuoi");
+                                assertThat(store.getPhone()).isEqualTo("121212");
+                                assertThat(store.getAddress()).isEqualTo("123 abc");
+                                assertThat(store.getTime_open()).isEqualTo("all time");
+                            }
                             try {
                                 List<String> listCategory = objectMapper.readValue(config.getDeviceConfig().getCategorys(), new TypeReference<List<String>>() {
                                 });
@@ -171,6 +195,13 @@ public class DeviceConfigTest {
                             assertThat(config.getDeviceConfig().getConfig()).isEqualTo("config");
                             assertThat((long) config.getCarousel().size()).isEqualTo(0);
                             assertThat(config.getBenifit().getRevenue()).isEqualTo(0);
+                            if(testWithMainGroup) {
+                                Store store = config.getStore();
+                                assertThat(store.getName()).isEqualTo("shop ban chuoi");
+                                assertThat(store.getPhone()).isEqualTo("121212");
+                                assertThat(store.getAddress()).isEqualTo("123 abc");
+                                assertThat(store.getTime_open()).isEqualTo("all time");
+                            }
                             try {
                                 List<String> listCategory = objectMapper.readValue(config.getDeviceConfig().getCategorys(), new TypeReference<List<String>>() {
                                 });

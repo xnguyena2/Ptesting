@@ -251,7 +251,7 @@ public class Util {
         return (int)((t1.getTime() - current.getTime()) / (1000 * 60 * 60 * 24));
     }
 
-    public Timestamp Now(){
+    public Timestamp Now() {
         return new Timestamp(new Date().getTime());
     }
 }

@@ -1,28 +1,43 @@
 package com.example.heroku.controller;
 
-import com.example.heroku.model.Users;
-import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
-import com.example.heroku.response.Format;
+import com.example.heroku.services.DeleteAllData;
+import com.example.heroku.services.UserAccount;
 import com.example.heroku.util.Util;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/delete")
 public class DeleteController {
 
-//    @PostMapping("/admin/changecolor")
-//    @CrossOrigin(origins = Util.HOST_URL)
-//    public Mono<ResponseEntity<Format>> deleteAll(@AuthenticationPrincipal Mono<Users> principal) {
-//        System.out.println("update color: " + config.getColor());
-//        return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<Format>>builder()
-//                .principal(principal)
-//                .subject(config::getGroup_id)
-//                .monoAction(() -> deviceConfigAPI.UpdateConfig(config))
-//                .build().toMono();
-//    }
+    @Autowired
+    private UserAccount userServices;
+
+    @Autowired
+    private DeleteAllData deleteAllData;
+
+    @PostMapping("/admin/account/delete")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity> selfMarkDelete(@AuthenticationPrincipal Mono<UserDetails> principal) {
+
+        try {
+            return principal
+                    .flatMap(login -> deleteAllData.seftMarkDelete(
+                                    login.getUsername()
+                            )
+                    )
+                    .map(ResponseEntity::ok);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid username/password supplied");
+        }
+    }
 }

@@ -178,17 +178,17 @@ public class ApplicationTest extends TestConfig {
 
         BeerTest.builder().beerAPI(beerAPI).group(mainGroup).build().saveBeerTest();
 
-        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).build().DeviceConfigTestWithoutImage();
+        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).testWithMainGroup(true).build().DeviceConfigTestWithoutImage();
 
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).build().BootStrapDataWithoutImage();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).testWithMainGroup(true).build().BootStrapDataWithoutImage();
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).build().BootStrapDataWithoutImageNew();
 
         ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).group(mainGroup).build().Run(listImg);
 
-        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).build().DeviceConfigTest();
+        DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).testWithMainGroup(true).build().DeviceConfigTest();
 
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).build().BootStrapData();
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).build().BootStrapDataNew();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).testWithMainGroup(true).build().BootStrapData();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).testWithMainGroup(true).build().BootStrapDataNew();
     }
 
     /*

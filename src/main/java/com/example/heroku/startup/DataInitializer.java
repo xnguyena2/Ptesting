@@ -3,6 +3,9 @@ package com.example.heroku.startup;
 import com.example.heroku.model.Users;
 import com.example.heroku.model.repository.UserRepository;
 import com.example.heroku.photo.FlickrLib;
+import com.example.heroku.request.data.UpdatePassword;
+import com.example.heroku.request.store.StoreInitData;
+import com.example.heroku.services.Store;
 import com.example.heroku.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +51,7 @@ public class DataInitializer {
     DatabaseClient databaseClient;
 
     @Autowired
-    private UserRepository userRepository;
+    private Store storeServices;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -90,15 +93,19 @@ public class DataInitializer {
                 e.printStackTrace();
             }
 
-            String pass = this.passwordEncoder.encode(Util.getInstance().HashPassword(adminPass));
-
-            this.userRepository.save(Users.builder()
-                            .group_id(adminStore)
-                            .username(adminName)
-                            .password(pass)
-                            .roles(Collections.singletonList(Util.ROLE.ROLE_ROOT.getName()))
-                            .createat(new Timestamp(new Date().getTime()))
-                            .active(true)
+            this.storeServices.initialStoreWithoutCheckRole(StoreInitData.builder()
+                            .newAccount(UpdatePassword.builder()
+                                    .roles(Collections.singletonList(Util.ROLE.ROLE_ROOT.getName()))
+                                    .group_id(adminStore)
+                                    .username(adminName)
+                                    .newpassword(Util.getInstance().HashPassword(adminPass))
+                                    .build())
+                            .store(com.example.heroku.model.Store.builder()
+                                    .phone("121212")
+                                    .address("123 abc")
+                                    .name("shop ban chuoi")
+                                    .time_open("all time")
+                                    .build())
                             .build())
                     .doOnSubscribe(data -> log.info("data:" + data))
                     .subscribe(
