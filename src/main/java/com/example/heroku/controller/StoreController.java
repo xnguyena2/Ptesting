@@ -21,4 +21,10 @@ public class StoreController {
     public Mono<Store> initialStore(@RequestBody @Valid StoreInitData storeInitData) {
         return storeServices.initialStore(storeInitData);
     }
+
+    @PostMapping("/update")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<Store> initialStore(@RequestBody @Valid Store store) {
+        return storeServices.update(store);
+    }
 }

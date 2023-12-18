@@ -29,7 +29,11 @@ public class Store {
     }
 
     public Mono<com.example.heroku.model.Store> createOrUpdateStore(com.example.heroku.model.Store store) {
-        return storeManagementRepository.updateStore(store.getGroup_id(), store.getName(), store.getTime_open(), store.getAddress(), store.getPhone(), store.getStatus(), store.getCreateat());
+        return storeManagementRepository.insertOrUpdate(store.getGroup_id(), store.getName(), store.getTime_open(), store.getAddress(), store.getPhone(), store.getStatus(), store.getCreateat());
+    }
+
+    public Mono<com.example.heroku.model.Store> update(com.example.heroku.model.Store store) {
+        return storeManagementRepository.update(store.getGroup_id(), store.getName(), store.getTime_open(), store.getAddress(), store.getPhone(), store.getStatus());
     }
 
     public Mono<com.example.heroku.model.Store> initialStore(StoreInitData storeInitData) {

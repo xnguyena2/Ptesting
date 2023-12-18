@@ -211,7 +211,7 @@ public class AuthenticationController {
     @GetMapping("/account/info")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Users> getAccountInfo(@AuthenticationPrincipal Mono<Users> principal) {
-        return principal.flatMap(users -> userServices.getUser(users.getUsername()));
+        return principal.flatMap(users -> userServices.getUserClean(users.getUsername()));
     }
 
     @PostMapping("/admin/account/create")

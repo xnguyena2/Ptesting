@@ -20,6 +20,10 @@ public interface StoreManagementRepository extends ReactiveCrudRepository<Store,
     Mono<Store> deleteStore(@Param("group_id")String groupID);
 
     @Query(value = "INSERT INTO store(group_id, name, time_open, address, phone, status, createat) VALUES (:group_id, :name, :time_open, :address, :phone, :status, :createat) ON CONFLICT (group_id) DO UPDATE SET name = :name, time_open = :time_open, address = :address, phone = :phone, status = :status")
-    Mono<Store> updateStore(@Param("group_id")String groupID, @Param("name")String name, @Param("time_open")String time_open, @Param("address")String address, @Param("phone")String phone, @Param("status")Store.Status status, @Param("createat")Timestamp createat);
+    Mono<Store> insertOrUpdate(@Param("group_id")String groupID, @Param("name")String name, @Param("time_open")String time_open, @Param("address")String address, @Param("phone")String phone, @Param("status")Store.Status status, @Param("createat")Timestamp createat);
+
+    @Query(value = "UPDATE store SET name = :name, time_open = :time_open, address = :address, phone = :phone, status = :status WHERE group_id = :group_id")
+    Mono<Store> update(@Param("group_id")String groupID, @Param("name")String name, @Param("time_open")String time_open, @Param("address")String address, @Param("phone")String phone, @Param("status")Store.Status status);
+
 
 }

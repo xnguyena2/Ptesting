@@ -75,6 +75,10 @@ public class UserAccount {
         return userRepository.findByUsername(username);
     }
 
+    public Mono<Users> getUserClean(String username) {
+        return getUser(username).map(Users::Clean);
+    }
+
     public Mono<ResponseEntity> deleteAccount(Mono<Users> principal, UpdatePassword update) {
 
         return principal
