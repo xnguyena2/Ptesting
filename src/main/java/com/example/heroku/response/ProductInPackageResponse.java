@@ -18,7 +18,9 @@ public class ProductInPackageResponse extends UserPackage {
     private BeerSubmitData beerSubmitData;
 
     public ProductInPackageResponse SetBeerData(BeerSubmitData b) {
-        this.beerSubmitData = b;
+        if (b.getBeerSecondID() != null && !b.getBeerSecondID().isEmpty()) {
+            this.beerSubmitData = b;
+        }
         return this;
     }
 }
