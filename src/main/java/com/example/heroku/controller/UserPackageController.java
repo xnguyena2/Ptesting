@@ -38,6 +38,13 @@ public class UserPackageController {
         return userPackageAPI.SavePackage(productPackage);
     }
 
+    @PostMapping("/updatenotcheck")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<Format>> addOrUpdatePackageWithoutCheck(@RequestBody @Valid ProductPackage productPackage) {
+        System.out.println("save package without check: " + productPackage.getPackage_second_id());
+        return userPackageAPI.SavePackageWithoutCheck(productPackage);
+    }
+
     @PostMapping("/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> deletePackage(@RequestBody @Valid PackageID packageID) {

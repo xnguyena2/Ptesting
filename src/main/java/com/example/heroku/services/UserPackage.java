@@ -70,6 +70,23 @@ public class UserPackage {
                         .then(Mono.just(ok(Format.builder().response("done").build())));
     }
 
+    public Mono<ResponseEntity<Format>> SavePackageWithoutCheck(ProductPackage productPackage) {
+
+        if (productPackage.isEmpty())
+            return Mono.just(badRequest().body(Format.builder().response("user package empty").build()));
+        return
+                Mono.just(productPackage)
+                        .flatMap(this::saveBuyer)
+                        .flatMap(this::savePackageDetail)
+                        .flatMap(productPackage1 -> userPackageRepository.DeleteProductByUserIDAndPackageID(productPackage1.getGroup_id(), productPackage1.getDevice_id(), productPackage1.getPackage_second_id())
+                                .then(Mono.just(productPackage1))
+                        )
+                        .filter(productPackage1 -> productPackage1.getUserPackage() != null)
+                        .flatMapMany(productPackage1 -> Flux.just(productPackage1.getUserPackage()))
+                        .flatMap(this::savePackageItemWithoutCheck)
+                        .then(Mono.just(ok(Format.builder().response("done").build())));
+    }
+
     Mono<ProductPackage> savePackageDetail(ProductPackage productPackage) {
         UserPackageDetail detail = productPackage;
         if (productPackage.getPackage_second_id() == null) {
@@ -104,6 +121,12 @@ public class UserPackage {
 
     Mono<com.example.heroku.model.UserPackage> savePackageItem(com.example.heroku.model.UserPackage userPackage) {
         return userPackageRepository.InsertOrUpdatePackage(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
+                userPackage.getNumber_unit(), userPackage.getPrice(), userPackage.getDiscount_amount(), userPackage.getDiscount_percent(),
+                userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());
+    }
+
+    Mono<com.example.heroku.model.UserPackage> savePackageItemWithoutCheck(com.example.heroku.model.UserPackage userPackage) {
+        return userPackageRepository.InsertOrUpdatePackageWithoutCheck(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
                 userPackage.getNumber_unit(), userPackage.getPrice(), userPackage.getDiscount_amount(), userPackage.getDiscount_percent(),
                 userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());
     }

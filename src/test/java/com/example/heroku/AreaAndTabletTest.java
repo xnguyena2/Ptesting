@@ -449,7 +449,7 @@ public class AreaAndTabletTest {
                                 .build()
                 })
                 .build();
-        userPackageAPI.SavePackage(productPackage)
+        userPackageAPI.SavePackageWithoutCheck(productPackage)
                 .block();
 
         area.setPackageID(TableDetailData.builder()

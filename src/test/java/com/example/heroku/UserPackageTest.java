@@ -548,7 +548,7 @@ public class UserPackageTest {
                                 .build()
                 })
                 .build();
-        userPackageAPI.SavePackage(productPackage)
+        userPackageAPI.SavePackageWithoutCheck(productPackage)
                 .block();
 
         userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())
@@ -613,7 +613,7 @@ public class UserPackageTest {
                                 .build()
                 })
                 .build();
-        userPackageAPI.SavePackage(productPackage)
+        userPackageAPI.SavePackageWithoutCheck(productPackage)
                 .block();
 
         userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())
