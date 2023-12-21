@@ -3,6 +3,7 @@ package com.example.heroku.services;
 import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.repository.UserPackageDetailRepository;
 import com.example.heroku.model.repository.UserPackageRepository;
+import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.client.PackageID;
@@ -112,6 +113,7 @@ public class UserPackage {
                 userPackageRepository.GetDevicePackageWithID(packageDataResponse.getGroup_id(), packageDataResponse.getDevice_id(), packageDataResponse.getPackage_second_id())
                         .flatMap(userPackage ->
                                 beerAPI.GetBeerByIDWithUnit(userPackage.getGroup_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id())
+                                        .switchIfEmpty(Mono.just(BeerSubmitData.builder().build()))
                                         .map(beerSubmitData -> new ProductInPackageResponse(userPackage).SetBeerData(beerSubmitData))
                         )
                         .map(packageDataResponse::addItem)
