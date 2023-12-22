@@ -77,6 +77,9 @@ public class ApplicationTest extends TestConfig {
     @Autowired
     Store storeServices;
 
+    @Autowired
+    PaymentTransation paymentTransation;
+
     @Value("${account.admin.username}")
     private String adminName;
 
@@ -189,6 +192,11 @@ public class ApplicationTest extends TestConfig {
 
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).testWithMainGroup(true).build().BootStrapData();
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).testWithMainGroup(true).build().BootStrapDataNew();
+    }
+
+    @Test
+    public void testPaymentTransaction(){
+        PaymentTransactionTest.builder().paymentTransation(paymentTransation).group(mainGroup).build().Test();
     }
 
     /*
@@ -304,6 +312,11 @@ public class ApplicationTest extends TestConfig {
 
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapData();
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapDataNew();
+    }
+
+    @Test
+    public void testPaymentTransaction2(){
+        PaymentTransactionTest.builder().paymentTransation(paymentTransation).group(anotherGroup).build().Test();
     }
 
 }

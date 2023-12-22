@@ -32,14 +32,70 @@ public class PaymentTransation extends BaseEntity {
 
     private String note;
 
+    private String category;
+
+    private String money_source;
+
+    private TType transaction_type;
+
     private Status status;
 
 
     public PaymentTransation AutoFill() {
-        if(transaction_second_id == null) {
+        if (transaction_second_id == null) {
             transaction_second_id = Util.getInstance().GenerateID();
         }
+        if (status == null) {
+            status = Status.CREATE;
+        }
         return (PaymentTransation) super.AutoFillIfNull();
+    }
+
+
+    public enum TType {
+        INCOME("INCOME"),
+        OUTCOME("OUTCOME");
+
+
+
+        private String name;
+
+        TType(String name){
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        private static final Map<String, TType> lookup = new HashMap<>();
+
+        static
+        {
+            for(TType sts : TType.values())
+            {
+                lookup.put(sts.getName(), sts);
+            }
+        }
+
+        public static TType get(String text)
+        {
+            try {
+                TType val = lookup.get(text);
+                if(val == null){
+                    return OUTCOME;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return OUTCOME;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
     }
 
 
