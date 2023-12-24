@@ -70,9 +70,17 @@ public class UserPackageController {
 
     @PostMapping("/getbyid")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<PackageDataResponse> getAll(@RequestBody @Valid PackageID packageID) {
+    public Mono<PackageDataResponse> getByID(@RequestBody @Valid PackageID packageID) {
         System.out.println("Get package: " + packageID.getPackage_id());
         return userPackageAPI.GetPackage(packageID);
+    }
+
+
+    @PostMapping("/getbyjustid")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<PackageDataResponse> getJustByID(@RequestBody @Valid PackageID packageID) {
+        System.out.println("Get package: " + packageID.getPackage_id());
+        return userPackageAPI.GetJustByPackageId(packageID);
     }
 
 
