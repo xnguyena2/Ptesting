@@ -25,7 +25,6 @@ public class PaymentTransactionController {
     @PostMapping("/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<com.example.heroku.model.PaymentTransation> addTransactionInfo(@RequestBody @Valid com.example.heroku.model.PaymentTransation transation) {
-        System.out.println("add or update transaction: " + transation.getTransaction_second_id());
         return paymentTransation.insertOrUpdate(transation);
     }
 
