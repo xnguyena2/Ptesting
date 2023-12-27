@@ -42,7 +42,7 @@ public class PaymentTransactionController {
         return paymentTransation.getAllTransactionByPackageID(idContainer);
     }
 
-    @GetMapping("/getbytime")
+    @PostMapping("/getbytime")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<com.example.heroku.model.PaymentTransation> getBettwenTime(@RequestBody @Valid PackageID packageID) {
         System.out.println("get transaction of group id: " + packageID.getGroup_id());
