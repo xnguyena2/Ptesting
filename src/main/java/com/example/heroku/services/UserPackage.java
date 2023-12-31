@@ -106,7 +106,11 @@ public class UserPackage {
         if (buyerInfo != null) {
             com.example.heroku.model.Buyer buyer1 = buyerInfo.AutoFill(productPackage.getGroup_id());
             productPackage.setDevice_id(buyer1.getDevice_id());
-            return buyer.insertOrUpdate(buyer1).then(Mono.just(productPackage));
+            float totalPrice = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPrice() : 0;
+            float realPrice = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPayment() : 0;
+            float discount = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getDiscount_amount() + productPackage.getDiscount_percent() * productPackage.getPrice() : 0;
+            float ship = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getShip_price() : 0;
+            return buyer.insertOrUpdate(buyer1, totalPrice, realPrice, ship, discount).then(Mono.just(productPackage));
         }
         return Mono.just(productPackage);
     }

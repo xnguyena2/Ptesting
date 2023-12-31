@@ -47,7 +47,7 @@ public class Buyer extends BaseEntity {
     public Buyer AutoFill() {
         super.AutoFill();
         phone_number_clean = Util.CleanPhoneNumber(phone_number);
-        if(device_id == null) {
+        if(device_id == null || device_id.isEmpty()) {
             device_id = phone_number_clean;
         }
         return this;

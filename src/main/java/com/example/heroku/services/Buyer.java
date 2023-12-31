@@ -14,8 +14,8 @@ public class Buyer {
     @Autowired
     BuyerRepository buyerRepository;
 
-    public Mono<com.example.heroku.model.Buyer> insertOrUpdate(com.example.heroku.model.Buyer buyerData) {
-        return buyerRepository.insertOrUpdate(buyerData.getGroup_id(), buyerData.getDevice_id(), buyerData.getReciver_address(), buyerData.getRegion_id(),
+    public Mono<com.example.heroku.model.Buyer> insertOrUpdate(com.example.heroku.model.Buyer buyerData, float totalPrice, float realPrice, float shipPrice, float discount) {
+        return buyerRepository.insertOrUpdate(buyerData.getGroup_id(), buyerData.getDevice_id(), totalPrice, realPrice, shipPrice, discount, buyerData.getReciver_address(), buyerData.getRegion_id(),
                 buyerData.getDistrict_id(), buyerData.getWard_id(), buyerData.getReciver_fullname(), buyerData.getPhone_number(), buyerData.getPhone_number_clean(),
                 buyerData.getStatus(), buyerData.getCreateat());
     }
