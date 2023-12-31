@@ -103,7 +103,7 @@ public class UserPackage {
     Mono<ProductPackage> saveBuyer(ProductPackage productPackage) {
 
         com.example.heroku.model.Buyer buyerInfo = productPackage.getBuyer();
-        if (buyerInfo != null) {
+        if (buyerInfo != null && buyerInfo.getPhone_number() != null && !buyerInfo.getPhone_number().isEmpty()) {
             com.example.heroku.model.Buyer buyer1 = buyerInfo.AutoFill(productPackage.getGroup_id());
             productPackage.setDevice_id(buyer1.getDevice_id());
             float totalPrice = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPrice() : 0;
