@@ -1,10 +1,12 @@
 package com.example.heroku;
 
 import com.example.heroku.model.Buyer;
+import com.example.heroku.model.PaymentTransation;
 import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.PackageItemRemove;
+import com.example.heroku.request.beer.ProductPackgeWithTransaction;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.BuyerData;
@@ -613,7 +615,16 @@ public class UserPackageTest {
                                 .build()
                 })
                 .build();
-        userPackageAPI.SavePackageWithoutCheck(productPackage)
+        userPackageAPI.SavePackageWithoutCheckWithTransaction(ProductPackgeWithTransaction.builder()
+                        .productPackage(productPackage)
+                        .transation(PaymentTransation.builder()
+                                .group_id(productPackage.getGroup_id())
+                                .package_second_id(productPackage.getPackage_second_id())
+                                .amount(productPackage.getPayment())
+                                .money_source("tien mat")
+                                .transaction_type(PaymentTransation.TType.INCOME)
+                                .build())
+                        .build())
                 .block();
 
         userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())

@@ -26,6 +26,10 @@ public class PaymentTransation {
         return paymentTransactionRepository.deleteTransaction(idContainer.getGroup_id(), idContainer.getId());
     }
 
+    public Mono<com.example.heroku.model.PaymentTransation> deleteOfPackgeID(IDContainer idContainer){
+        return paymentTransactionRepository.deleteTransactionOfPackge(idContainer.getGroup_id(), idContainer.getId());
+    }
+
     public Flux<com.example.heroku.model.PaymentTransation> getAllTransactionByPackageID(IDContainer idContainer) {
         return paymentTransactionRepository.getTransactionByPackageID(idContainer.getGroup_id(), idContainer.getId());
     }

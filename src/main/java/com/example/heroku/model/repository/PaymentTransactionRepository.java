@@ -21,6 +21,9 @@ public interface PaymentTransactionRepository extends ReactiveCrudRepository<Pay
     @Query(value = "DELETE FROM payment_transaction WHERE payment_transaction.group_id = :group_id AND payment_transaction.transaction_second_id = :transaction_second_id")
     Mono<PaymentTransation> deleteTransaction(@Param("group_id") String group_id, @Param("transaction_second_id") String transaction_second_id);
 
+    @Query(value = "DELETE FROM payment_transaction WHERE payment_transaction.group_id = :group_id AND payment_transaction.package_second_id = :package_second_id AND payment_transaction.package_second_id IS NOT NULL")
+    Mono<PaymentTransation> deleteTransactionOfPackge(@Param("group_id") String group_id, @Param("package_second_id") String package_second_id);
+
     @Query(value = "SELECT * FROM payment_transaction WHERE payment_transaction.group_id = :group_id AND payment_transaction.package_second_id = :package_second_id")
     Flux<PaymentTransation> getTransactionByPackageID(@Param("group_id") String group_id, @Param("package_second_id") String package_second_id);
 

@@ -6,6 +6,8 @@ import com.example.heroku.model.repository.UserPackageRepository;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.PackageItemRemove;
+import com.example.heroku.request.beer.ProductPackgeWithTransaction;
+import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.Format;
@@ -34,6 +36,9 @@ public class UserPackage {
 
     @Autowired
     UserPackageDetailRepository userPackageDetailRepository;
+
+    @Autowired
+    PaymentTransation paymentTransation;
 
     public Mono<ResponseEntity<Format>> AddProductToPackage(ProductPackage productPackage) {
 
@@ -68,6 +73,11 @@ public class UserPackage {
                         .flatMapMany(productPackage1 -> Flux.just(productPackage1.getUserPackage()))
                         .flatMap(this::savePackageItem)
                         .then(Mono.just(ok(Format.builder().response("done").build())));
+    }
+
+    public Mono<ResponseEntity<Format>> SavePackageWithoutCheckWithTransaction(ProductPackgeWithTransaction productPackgeWithTransaction) {
+        return paymentTransation.insertOrUpdate(productPackgeWithTransaction.getTransation())
+                .then(SavePackageWithoutCheck(productPackgeWithTransaction.getProductPackage()));
     }
 
     public Mono<ResponseEntity<Format>> SavePackageWithoutCheck(ProductPackage productPackage) {
@@ -179,7 +189,10 @@ public class UserPackage {
 
     public Mono<ResponseEntity<Format>> DeletePackage(PackageID packageID) {
 
-        return userPackageDetailRepository.DeleteByID(packageID.getGroup_id(), packageID.getDevice_id(), packageID.getPackage_id())
+        return paymentTransation.deleteOfPackgeID(IDContainer.builder().group_id(packageID.getGroup_id()).id(packageID.getPackage_id()).build())
+                .then(
+                        userPackageDetailRepository.DeleteByID(packageID.getGroup_id(), packageID.getDevice_id(), packageID.getPackage_id())
+                )
                 .then(Mono.just(ok(Format.builder().response("done").build())));
     }
 

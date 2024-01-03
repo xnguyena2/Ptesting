@@ -108,6 +108,8 @@ public class PaymentTransactionTest {
 
         paymentTransation.delete(IDContainer.builder().group_id(group).id(group+"123").build()).block();
 
+        paymentTransation.deleteOfPackgeID(IDContainer.builder().group_id(group).build()).block();
+
         paymentTransation.getAllTransactionBettwen(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).build())
                 .sort(Comparator.comparing(PaymentTransation::getTransaction_second_id))
                 .as(StepVerifier::create)

@@ -2,6 +2,7 @@ package com.example.heroku.controller;
 
 import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.PackageItemRemove;
+import com.example.heroku.request.beer.ProductPackgeWithTransaction;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.Format;
@@ -36,6 +37,13 @@ public class UserPackageController {
     public Mono<ResponseEntity<Format>> addOrUpdatePackage(@RequestBody @Valid ProductPackage productPackage) {
         System.out.println("save package: " + productPackage.getPackage_second_id());
         return userPackageAPI.SavePackage(productPackage);
+    }
+
+    @PostMapping("/updatenotcheckwithtransacction")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<Format>> addOrUpdatePackageWithoutCheckWithTransaction(@RequestBody @Valid ProductPackgeWithTransaction productPackgeWithTransaction) {
+        System.out.println("save package without check with transaction : " + productPackgeWithTransaction.getProductPackage().getPackage_second_id());
+        return userPackageAPI.SavePackageWithoutCheckWithTransaction(productPackgeWithTransaction);
     }
 
     @PostMapping("/updatenotcheck")
