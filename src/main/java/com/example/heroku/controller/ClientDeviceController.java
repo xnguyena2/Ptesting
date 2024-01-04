@@ -42,6 +42,13 @@ public class ClientDeviceController {
         return clientDeviceAPI.adminBootStrapWithoutCarouselData(groupID);
     }
 
+    @GetMapping("/bootstrapfullbenifitcurrentdate/{groupid}")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<BootStrapData> fullBootStrapDataBenifitCurrentDate(@PathVariable("groupid") String groupID) {
+        System.out.println("Get full bootstrap and benifit of current date!: " + groupID);
+        return clientDeviceAPI.adminBootStrapWithoutCarouselDataBenifitOfCurrentDate(groupID);
+    }
+
     @PostMapping("/admin/register")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> register(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid Register userInfo) {

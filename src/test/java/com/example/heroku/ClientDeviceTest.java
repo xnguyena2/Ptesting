@@ -129,7 +129,7 @@ public class ClientDeviceTest {
     }
 
     public void BootStrapDataWithoutImageNew() {
-        clientDeviceAPI.adminBootStrapWithoutCarouselData(group)
+        clientDeviceAPI.adminBootStrapWithoutCarouselDataBenifitOfCurrentDate(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {

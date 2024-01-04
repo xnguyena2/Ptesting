@@ -187,7 +187,7 @@ public class DeviceConfigTest {
                 )
                 .verifyComplete();
 
-        this.clientDevice.adminBootStrapWithoutCarouselData(group)
+        this.clientDevice.adminBootStrapWithoutCarouselDataBenifitOfCurrentDate(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(config -> {
                             assertThat(config.getDeviceConfig().getColor()).isEqualTo("#333333");
