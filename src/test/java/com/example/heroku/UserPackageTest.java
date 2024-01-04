@@ -1056,6 +1056,7 @@ public class UserPackageTest {
                     assertThat(data.getCost()).isEqualTo(444);
                     assertThat(data.getProfit()).isEqualTo(7878);
                     assertThat(data.getRevenue()).isEqualTo(7868);
+                    assertThat(data.getCount()).isEqualTo(3);
                 })
                 .verifyComplete();
 

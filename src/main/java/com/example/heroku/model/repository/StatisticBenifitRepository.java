@@ -11,6 +11,6 @@ import java.sql.Timestamp;
 
 public interface StatisticBenifitRepository  extends ReactiveCrudRepository<BenifitByDate, Long> {
 
-    @Query(value = "SELECT SUM(user_package_detail.cost) AS cost, SUM(user_package_detail.payment) AS revenue, SUM(user_package_detail.profit) AS profit, (user_package_detail.createat AT TIME ZONE '+07')::date AS local_time FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.status = :status AND (user_package_detail.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime) GROUP BY local_time")
+    @Query(value = "SELECT SUM(user_package_detail.cost) AS cost, COUNT(*) AS count, SUM(user_package_detail.payment) AS revenue, SUM(user_package_detail.profit) AS profit, (user_package_detail.createat AT TIME ZONE '+07')::date AS local_time FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.status = :status AND (user_package_detail.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime) GROUP BY local_time")
     Flux<BenifitByDate> getStatictis(@Param("group_id") String groupID, @Param("fromtime") Timestamp from, @Param("totime") Timestamp to, @Param("status") UserPackageDetail.Status status);
 }
