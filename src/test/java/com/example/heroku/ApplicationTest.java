@@ -78,6 +78,9 @@ public class ApplicationTest extends TestConfig {
     Store storeServices;
 
     @Autowired
+    Tokens tokensServices;
+
+    @Autowired
     PaymentTransation paymentTransation;
 
     @Value("${account.admin.username}")
@@ -105,6 +108,12 @@ public class ApplicationTest extends TestConfig {
     @Order(1)
     public  void storeTest() {
         StoreTest.builder().storeServices(storeServices).group(mainGroup).build().test();
+    }
+
+    @Test
+    @Order(2)
+    public  void tokenTest() {
+        TokenTest.builder().tokens(tokensServices).group(mainGroup).build().test();
     }
 
     @Test
@@ -223,6 +232,12 @@ public class ApplicationTest extends TestConfig {
     @Order(2)
     public  void storeTest2() {
         StoreTest.builder().storeServices(storeServices).group(anotherGroup).build().test();
+    }
+
+    @Test
+    @Order(2)
+    public  void tokenTest2() {
+        TokenTest.builder().tokens(tokensServices).group(anotherGroup).build().test();
     }
 
     @Test

@@ -23,6 +23,7 @@ public class StoreTest {
                 .time_open("time open")
                 .address("address")
                 .status(com.example.heroku.model.Store.Status.ACTIVE)
+                .store_type(com.example.heroku.model.Store.StoreType.DONTHAVETABLE)
                 .build()).block();
         storeServices.getStore(group)
                 .as(StepVerifier::create)
@@ -33,6 +34,7 @@ public class StoreTest {
                     assertThat(store.getTime_open()).isEqualTo("time open");
                     assertThat(store.getAddress()).isEqualTo("address");
                     assertThat(store.getStatus()).isEqualTo(com.example.heroku.model.Store.Status.ACTIVE);
+                    assertThat(store.getStore_type()).isEqualTo(com.example.heroku.model.Store.StoreType.DONTHAVETABLE);
 
                 })
                 .verifyComplete();
@@ -43,6 +45,7 @@ public class StoreTest {
                 .time_open("time open")
                 .address("address")
                 .status(com.example.heroku.model.Store.Status.ACTIVE)
+                .store_type(com.example.heroku.model.Store.StoreType.HAVETABLE)
                 .build()).block();
         storeServices.getStore(group)
                 .as(StepVerifier::create)
@@ -53,6 +56,7 @@ public class StoreTest {
                     assertThat(store.getTime_open()).isEqualTo("time open");
                     assertThat(store.getAddress()).isEqualTo("address");
                     assertThat(store.getStatus()).isEqualTo(com.example.heroku.model.Store.Status.ACTIVE);
+                    assertThat(store.getStore_type()).isEqualTo(com.example.heroku.model.Store.StoreType.HAVETABLE);
 
                 })
                 .verifyComplete();
@@ -63,6 +67,7 @@ public class StoreTest {
                 .time_open("time open4")
                 .address("address4")
                 .status(com.example.heroku.model.Store.Status.CLOSE)
+                .store_type(com.example.heroku.model.Store.StoreType.DONTHAVETABLE)
                 .build()).block();
         storeServices.getStore(group)
                 .as(StepVerifier::create)
@@ -73,6 +78,7 @@ public class StoreTest {
                     assertThat(store.getTime_open()).isEqualTo("time open4");
                     assertThat(store.getAddress()).isEqualTo("address4");
                     assertThat(store.getStatus()).isEqualTo(com.example.heroku.model.Store.Status.CLOSE);
+                    assertThat(store.getStore_type()).isEqualTo(com.example.heroku.model.Store.StoreType.DONTHAVETABLE);
 
                 })
                 .verifyComplete();

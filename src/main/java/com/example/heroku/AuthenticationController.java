@@ -2,6 +2,7 @@ package com.example.heroku;
 
 
 import com.example.heroku.jwt.JwtTokenProvider;
+import com.example.heroku.model.Tokens;
 import com.example.heroku.model.Users;
 import com.example.heroku.request.data.AuthenticationRequest;
 import com.example.heroku.request.data.UpdatePassword;
@@ -60,8 +61,7 @@ public class AuthenticationController {
     private ResponseEntity createAuthBearToken(String jwt) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
-        Map<Object, Object> model = new HashMap<>();
-        model.put("token", jwt);
+        Tokens tokens = Tokens.builder().token(jwt).build();
         ResponseCookie cookie = ResponseCookie.from(accessTokenCookieName, jwt)
                 .path("/")
                 .httpOnly(httponlysecure)
@@ -69,7 +69,7 @@ public class AuthenticationController {
                 .maxAge(validityInMs)
                 .build();
         httpHeaders.add(HttpHeaders.SET_COOKIE, cookie.toString());
-        return new ResponseEntity<>(model, httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(tokens, httpHeaders, HttpStatus.OK);
     }
 
     @PostMapping("/signin")

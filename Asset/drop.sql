@@ -51,3 +51,4 @@ DROP TABLE IF EXISTS payment_transaction;
 
 DROP TABLE IF EXISTS table_detail;
 DROP TABLE IF EXISTS area;
+DROP TABLE IF EXISTS tokens;

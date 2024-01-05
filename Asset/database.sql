@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, group_id VA
 
 CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_import_second_id VARCHAR, product_id VARCHAR, product_name VARCHAR, price float8, amount float8, detail TEXT, createat TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, status VARCHAR, store_type VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS buyer (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, total_price float8, real_price float8, ship_price float8, points_discount float8, status VARCHAR, createat TIMESTAMP);
 
@@ -35,6 +35,8 @@ CREATE TABLE IF NOT EXISTS payment_transaction (id SERIAL PRIMARY KEY, group_id 
 
 CREATE TABLE IF NOT EXISTS table_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, area_id VARCHAR, table_id VARCHAR, table_name VARCHAR, package_second_id VARCHAR, detail VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS area (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, area_id VARCHAR, area_name VARCHAR, detail VARCHAR, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP);
+
+CREATE TABLE IF NOT EXISTS tokens (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, token_second_id VARCHAR, token VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 
 CREATE INDEX device_config_index ON device_config(group_id);
@@ -63,6 +65,8 @@ CREATE INDEX table_detail_area_index ON table_detail(area_id);
 CREATE INDEX area_group_index ON area(group_id);
 CREATE INDEX area_index ON area(area_name);
 CREATE INDEX area_search_index ON area(meta_search);
+CREATE INDEX tokens_group_index ON tokens(group_id);
+CREATE INDEX tokens_second_id_index ON tokens(token_second_id);
 
 ALTER TABLE device_config ADD CONSTRAINT UQ_device_config UNIQUE(group_id);
 ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
@@ -82,6 +86,7 @@ ALTER TABLE payment_transaction ADD CONSTRAINT UQ_payment_transaction UNIQUE(tra
 ALTER TABLE payment_transaction ADD CONSTRAINT UQ_group_payment_transaction UNIQUE(group_id, transaction_second_id);
 ALTER TABLE table_detail ADD CONSTRAINT UQ_table_detail UNIQUE(group_id, area_id, table_id);
 ALTER TABLE area ADD CONSTRAINT UQ_area UNIQUE(group_id, area_id);
+ALTER TABLE tokens ADD CONSTRAINT UQ_tokens UNIQUE(token_second_id);
 
 ALTER TABLE product_unit ADD CONSTRAINT FK_product_unit FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
 ALTER TABLE search_token ADD CONSTRAINT FK_search_token FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
@@ -214,6 +219,7 @@ begin
 
     DELETE FROM table_detail WHERE group_id = by_group_id;
     DELETE FROM area WHERE group_id = by_group_id;
+    DELETE FROM tokens WHERE group_id = by_group_id;
 
     RETURN TRUE;
 end;

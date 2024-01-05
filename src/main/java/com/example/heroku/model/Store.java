@@ -28,6 +28,8 @@ public class Store extends BaseEntity {
 
     private Status status;
 
+    private StoreType store_type;
+
     public Store AutoFill(String groupID) {
         super.AutoFill();
         this.group_id = groupID;
@@ -70,6 +72,48 @@ public class Store extends BaseEntity {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return ACTIVE;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
+    }
+
+    public enum StoreType {
+        HAVETABLE("HAVETABLE"),
+        DONTHAVETABLE("DONTHAVETABLE");
+
+
+        private final String name;
+
+        StoreType(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        private static final Map<String, StoreType> lookup = new HashMap<>();
+
+        static {
+            for (StoreType sts : StoreType.values()) {
+                lookup.put(sts.getName(), sts);
+            }
+        }
+
+        public static StoreType get(String text) {
+            try {
+                StoreType val = lookup.get(text);
+                if (val == null) {
+                    return HAVETABLE;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return HAVETABLE;
             }
         }
 
