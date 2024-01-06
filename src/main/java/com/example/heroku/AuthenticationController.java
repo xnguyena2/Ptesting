@@ -61,7 +61,10 @@ public class AuthenticationController {
     private ResponseEntity createAuthBearToken(String jwt) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
-        Tokens tokens = Tokens.builder().token(jwt).build();
+        Tokens tokens = Tokens.builder()
+                .group_id("_not_set_")
+                .token(jwt)
+                .build();
         ResponseCookie cookie = ResponseCookie.from(accessTokenCookieName, jwt)
                 .path("/")
                 .httpOnly(httponlysecure)
