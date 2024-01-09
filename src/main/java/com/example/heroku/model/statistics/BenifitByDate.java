@@ -11,4 +11,5 @@ public class BenifitByDate {
     private float profit;
     private float cost;
     private int count;
+    private int buyer;
 }

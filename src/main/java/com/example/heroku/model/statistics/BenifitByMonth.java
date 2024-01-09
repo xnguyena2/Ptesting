@@ -10,4 +10,8 @@ public class BenifitByMonth {
     private double revenue;
     private double profit;
     private double cost;
+    private double price;
+    private double ship_price;
+    private double discount;
+    private int buyer;
 }
