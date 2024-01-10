@@ -1,6 +1,7 @@
 package com.example.heroku.model.repository;
 
 import com.example.heroku.model.UserPackage;
+import com.example.heroku.model.UserPackageDetail;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -28,19 +29,19 @@ public interface UserPackageRepository extends ReactiveCrudRepository<UserPackag
     Flux<UserPackage> DeleteProductByUserIDAndPackageID(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("package_second_id") String package_second_id);
 
     @Query(value = "INSERT INTO user_package(group_id, device_id, package_second_id, product_second_id, product_unit_second_id, number_unit, status, createat) (SELECT :group_id, :device_id, :package_id, :product_second_id, :product_unit_second_id, :number_unit, :status, NOW() WHERE EXISTS (SELECT * FROM product WHERE product.product_second_id = :product_second_id AND product.status IS DISTINCT FROM 'SOLD_OUT' AND product.status IS DISTINCT FROM 'HIDE' ) AND EXISTS (SELECT * FROM product_unit WHERE product_unit.product_second_id = :product_second_id AND product_unit.product_unit_second_id = :product_unit_second_id AND product_unit.status IS DISTINCT FROM 'SOLD_OUT' AND product_unit.status IS DISTINCT FROM 'HIDE' ) ) ON CONFLICT (group_id, device_id, package_second_id, product_second_id, product_unit_second_id) DO UPDATE SET number_unit = user_package.number_unit + :number_unit")
-    Mono<UserPackage> AddPackage(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("package_id") String package_id, @Param("product_second_id") String product_second_id, @Param("product_unit_second_id") String product_unit_second_id, @Param("number_unit") int number_unit, @Param("status") UserPackage.Status status);
+    Mono<UserPackage> AddPackage(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("package_id") String package_id, @Param("product_second_id") String product_second_id, @Param("product_unit_second_id") String product_unit_second_id, @Param("number_unit") int number_unit, @Param("status") UserPackageDetail.Status status);
 
     @Query(value = "INSERT INTO user_package(group_id, device_id, package_second_id, product_second_id, product_unit_second_id, number_unit, price, discount_amount, discount_percent, note, status, createat) (SELECT :group_id, :device_id, :package_second_id, :product_second_id, :product_unit_second_id, :number_unit, :price, :discount_amount, :discount_percent, :note, :status, :createat WHERE EXISTS (SELECT * FROM product WHERE product.product_second_id = :product_second_id AND product.status IS DISTINCT FROM 'SOLD_OUT' AND product.status IS DISTINCT FROM 'HIDE' ) AND EXISTS (SELECT * FROM product_unit WHERE product_unit.product_second_id = :product_second_id AND product_unit.product_unit_second_id = :product_unit_second_id AND product_unit.status IS DISTINCT FROM 'SOLD_OUT' AND product_unit.status IS DISTINCT FROM 'HIDE' ) ) ON CONFLICT (group_id, device_id, package_second_id, product_second_id, product_unit_second_id) DO UPDATE SET number_unit = user_package.number_unit + :number_unit, price = :price, discount_amount = :discount_amount, discount_percent = :discount_percent, note = :note, status = :status")
     Mono<UserPackage> InsertOrUpdatePackage(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("package_second_id") String package_second_id,
                                             @Param("product_second_id") String product_second_id, @Param("product_unit_second_id") String product_unit_second_id,
                                             @Param("number_unit") int number_unit,
                                             @Param("price") float price, @Param("discount_amount") float discount_amount, @Param("discount_percent") float discount_percent,
-                                            @Param("note") String note, @Param("status") UserPackage.Status status, @Param("createat") Timestamp createat);
+                                            @Param("note") String note, @Param("status") UserPackageDetail.Status status, @Param("createat") Timestamp createat);
 
     @Query(value = "INSERT INTO user_package(group_id, device_id, package_second_id, product_second_id, product_unit_second_id, number_unit, price, discount_amount, discount_percent, note, status, createat) VALUES (:group_id, :device_id, :package_second_id, :product_second_id, :product_unit_second_id, :number_unit, :price, :discount_amount, :discount_percent, :note, :status, :createat) ON CONFLICT (group_id, device_id, package_second_id, product_second_id, product_unit_second_id) DO UPDATE SET number_unit = user_package.number_unit + :number_unit, price = :price, discount_amount = :discount_amount, discount_percent = :discount_percent, note = :note, status = :status")
     Mono<UserPackage> InsertOrUpdatePackageWithoutCheck(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("package_second_id") String package_second_id,
                                             @Param("product_second_id") String product_second_id, @Param("product_unit_second_id") String product_unit_second_id,
                                             @Param("number_unit") int number_unit,
                                             @Param("price") float price, @Param("discount_amount") float discount_amount, @Param("discount_percent") float discount_percent,
-                                            @Param("note") String note, @Param("status") UserPackage.Status status, @Param("createat") Timestamp createat);
+                                            @Param("note") String note, @Param("status") UserPackageDetail.Status status, @Param("createat") Timestamp createat);
 }

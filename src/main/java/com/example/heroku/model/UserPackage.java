@@ -1,6 +1,7 @@
 package com.example.heroku.model;
 
 import com.example.heroku.model.entity.BaseEntity;
+import com.example.heroku.util.Util;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -34,7 +35,7 @@ public class UserPackage extends BaseEntity {
 
     private String note;
 
-    private Status status;
+    private UserPackageDetail.Status status;
 
     public UserPackage(UserPackage s) {
         super(s);
@@ -51,8 +52,12 @@ public class UserPackage extends BaseEntity {
         this.status = s.status;
     }
 
-    public enum Status{
-
+    public UserPackage AutoFill() {
+        if (status == null) {
+            status = UserPackageDetail.Status.CREATE;
+        }
+        super.AutoFillIfNull();
+        return this;
     }
 
 }

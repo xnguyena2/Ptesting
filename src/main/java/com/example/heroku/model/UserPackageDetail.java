@@ -98,6 +98,8 @@ public class UserPackageDetail  extends BaseEntity {
 
     public enum Status {
         CREATE("CREATE"),
+        CANCEL("CANCEL"),
+        RETURN("RETURN"),
         DONE("DONE");
 
 

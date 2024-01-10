@@ -3,6 +3,7 @@ package com.example.heroku;
 import com.example.heroku.model.Buyer;
 import com.example.heroku.model.PaymentTransation;
 import com.example.heroku.model.UserPackageDetail;
+import com.example.heroku.model.statistics.BenifitByProduct;
 import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.PackageItemRemove;
@@ -819,6 +820,7 @@ public class UserPackageTest {
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(3)
+                                .price(7)
                                 .discount_amount(19)
                                 .discount_percent(10)
                                 .note("note hhh")
@@ -826,6 +828,7 @@ public class UserPackageTest {
                         com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit2ID.get())
+                                .price(5)
                                 .number_unit(4)
                                 .build()
                 })
@@ -1073,6 +1076,23 @@ public class UserPackageTest {
                     assertThat(data.getPrice()).isEqualTo(4);
                     assertThat(data.getShip_price()).isEqualTo(60000);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("30000.4");
+                })
+                .verifyComplete();
+
+        statisticServices.getProductBenifitStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+                .sort(Comparator.comparing(BenifitByProduct::getRevenue))
+                .as(StepVerifier::create)
+                .consumeNextWith(data -> {
+                    assertThat(data.getProduct_second_id()).isEqualTo("123");
+                    assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(data.getNumber_unit()).isEqualTo(109);
+                    assertThat(data.getRevenue()).isEqualTo(-0.1f);// 7*3*(1-0.1) - 19
+                })
+                .consumeNextWith(data -> {
+                    assertThat(data.getProduct_second_id()).isEqualTo("123");
+                    assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(data.getNumber_unit()).isEqualTo(16);
+                    assertThat(data.getRevenue()).isEqualTo(20);
                 })
                 .verifyComplete();
 
