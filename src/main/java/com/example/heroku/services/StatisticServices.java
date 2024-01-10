@@ -59,6 +59,6 @@ public class StatisticServices {
     }
 
     public Flux<BenifitByProduct> getProductBenifitStatictis(PackageID query) {
-        return statisticBenifitOfProductRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
+        return statisticBenifitOfProductRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus(), query.getPage(), query.getSize());
     }
 }

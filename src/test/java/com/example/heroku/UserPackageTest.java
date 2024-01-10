@@ -1079,7 +1079,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getProductBenifitStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getProductBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByProduct::getRevenue))
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
