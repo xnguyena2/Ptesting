@@ -1,10 +1,7 @@
 package com.example.heroku.services;
 
 import com.example.heroku.model.repository.*;
-import com.example.heroku.model.statistics.BenifitByDate;
-import com.example.heroku.model.statistics.BenifitByMonth;
-import com.example.heroku.model.statistics.BenifitByProduct;
-import com.example.heroku.model.statistics.StatisticsTotalOrder;
+import com.example.heroku.model.statistics.*;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.response.ProductOrderStatus;
@@ -29,6 +26,12 @@ public class StatisticServices {
 
     @Autowired
     StatisticBenifitOfProductRepository statisticBenifitOfProductRepository;
+
+    @Autowired
+    StatisticBenifitOfBuyerRepository statisticBenifitOfBuyerRepository;
+
+    @Autowired
+    StatisticBenifitOfStaffRepository statisticBenifitOfStaffRepository;
 
     public Flux<ProductOrderStatus> getByProductID(SearchQuery query) {
         String dateTxt = query.GetFilterTxt();
@@ -60,5 +63,13 @@ public class StatisticServices {
 
     public Flux<BenifitByProduct> getProductBenifitStatictis(PackageID query) {
         return statisticBenifitOfProductRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus(), query.getPage(), query.getSize());
+    }
+
+    public Flux<BenifitByBuyer> getBuyerBenifitStatictis(PackageID query) {
+        return statisticBenifitOfBuyerRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus(), query.getPage(), query.getSize());
+    }
+
+    public Flux<BenifitByBuyer> getStaffBenifitStatictis(PackageID query) {
+        return statisticBenifitOfStaffRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus(), query.getPage(), query.getSize());
     }
 }

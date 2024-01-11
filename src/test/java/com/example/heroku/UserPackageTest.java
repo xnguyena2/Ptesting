@@ -3,6 +3,7 @@ package com.example.heroku;
 import com.example.heroku.model.Buyer;
 import com.example.heroku.model.PaymentTransation;
 import com.example.heroku.model.UserPackageDetail;
+import com.example.heroku.model.statistics.BenifitByBuyer;
 import com.example.heroku.model.statistics.BenifitByProduct;
 import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.BeerSubmitData;
@@ -808,6 +809,7 @@ public class UserPackageTest {
                 .payment(7868)
                 .cost(444)
                 .profit(7878)
+                .staff_id("nguyen_phong")
                 .buyer(Buyer.builder()
                         .phone_number(" +84 0 229292 22")
                         .reciver_fullname("test create package")
@@ -1093,6 +1095,40 @@ public class UserPackageTest {
                     assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(data.getNumber_unit()).isEqualTo(16);
                     assertThat(data.getRevenue()).isEqualTo(20);
+                })
+                .verifyComplete();
+
+        statisticServices.getBuyerBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+                .sort(Comparator.comparing(BenifitByBuyer::getRevenue))
+                .as(StepVerifier::create)
+                .consumeNextWith(data -> {
+                    assertThat(data.getName()).isEqualTo(null);
+                    assertThat(data.getId()).isEqualTo("soldoutttt");
+                    assertThat(data.getCount()).isEqualTo(2);
+                    assertThat(data.getRevenue()).isEqualTo(0.0f);
+                })
+                .consumeNextWith(data -> {
+                    assertThat(data.getName()).isEqualTo(null);
+                    assertThat(data.getId()).isEqualTo("0022929222");
+                    assertThat(data.getCount()).isEqualTo(1);
+                    assertThat(data.getRevenue()).isEqualTo(7868.0f);
+                })
+                .verifyComplete();
+
+        statisticServices.getStaffBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+                .sort(Comparator.comparing(BenifitByBuyer::getRevenue))
+                .as(StepVerifier::create)
+                .consumeNextWith(data -> {
+                    assertThat(data.getName()).isEqualTo(null);
+                    assertThat(data.getId()).isEqualTo(null);
+                    assertThat(data.getCount()).isEqualTo(2);
+                    assertThat(data.getRevenue()).isEqualTo(0.0f);// 7*3*(1-0.1) - 19
+                })
+                .consumeNextWith(data -> {
+                    assertThat(data.getName()).isEqualTo(null);
+                    assertThat(data.getId()).isEqualTo("nguyen_phong");
+                    assertThat(data.getCount()).isEqualTo(1);
+                    assertThat(data.getRevenue()).isEqualTo(7868.0f);// 7*3*(1-0.1) - 19
                 })
                 .verifyComplete();
 

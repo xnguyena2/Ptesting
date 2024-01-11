@@ -25,6 +25,8 @@ public class UserPackageDetail  extends BaseEntity {
 
     private String device_id;
 
+    private String staff_id;
+
     private String package_type;
 
     private String table_id;

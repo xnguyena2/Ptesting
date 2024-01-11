@@ -1,8 +1,10 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.Users;
+import com.example.heroku.model.statistics.BenifitByBuyer;
 import com.example.heroku.model.statistics.BenifitByDate;
 import com.example.heroku.model.statistics.BenifitByMonth;
+import com.example.heroku.model.statistics.BenifitByProduct;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.permission.WrapPermissionAction;
@@ -45,5 +47,41 @@ public class StatisticPackageOrderDetail {
                 .monoAction(q -> statisticServices.getPackageTotalStatictis(query))
                 .build()
                 .toMono();
+    }
+
+    @PostMapping("/admin/product")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<BenifitByProduct> getProductBenifitStatictis(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
+        System.out.println("get by product: " + query.getGroup_id());
+        return WrapPermissionAction.<BenifitByProduct>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> statisticServices.getProductBenifitStatictis(query))
+                .build()
+                .toFlux();
+    }
+
+    @PostMapping("/admin/buyer")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<BenifitByBuyer> getBuyerBenifitStatictis(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
+        System.out.println("get by buyer: " + query.getGroup_id());
+        return WrapPermissionAction.<BenifitByBuyer>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> statisticServices.getBuyerBenifitStatictis(query))
+                .build()
+                .toFlux();
+    }
+
+    @PostMapping("/admin/staff")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<BenifitByBuyer> getStaffBenifitStatictis(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
+        System.out.println("get by staff: " + query.getGroup_id());
+        return WrapPermissionAction.<BenifitByBuyer>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> statisticServices.getStaffBenifitStatictis(query))
+                .build()
+                .toFlux();
     }
 }

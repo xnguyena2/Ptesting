@@ -3,7 +3,7 @@ package com.example.heroku.model.statistics;
 import lombok.Data;
 
 @Data
-public class BenifitByUser {
+public class BenifitByBuyer {
     private String id;
     private String name;
     private float revenue;
