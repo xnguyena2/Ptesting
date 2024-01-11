@@ -22,6 +22,9 @@ public class StatisticServices {
     StatisticBenifitRepository statisticBenifitRepository;
 
     @Autowired
+    StatisticBenifitByHourRepository statisticBenifitByHourRepository;
+
+    @Autowired
     StatisticTotalBenifitRepository statisticTotalBenifitRepository;
 
     @Autowired
@@ -55,6 +58,10 @@ public class StatisticServices {
 
     public Flux<BenifitByDate> getPackageStatictis(PackageID query) {
         return statisticBenifitRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
+    }
+
+    public Flux<BenifitByDateHour> getPackageStatictisByHour(PackageID query) {
+        return statisticBenifitByHourRepository.getStatictisByHour(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
     }
 
     public Mono<BenifitByMonth> getPackageTotalStatictis(PackageID query) {

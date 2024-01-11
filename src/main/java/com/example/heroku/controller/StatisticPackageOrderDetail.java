@@ -1,10 +1,7 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.Users;
-import com.example.heroku.model.statistics.BenifitByBuyer;
-import com.example.heroku.model.statistics.BenifitByDate;
-import com.example.heroku.model.statistics.BenifitByMonth;
-import com.example.heroku.model.statistics.BenifitByProduct;
+import com.example.heroku.model.statistics.*;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.permission.WrapPermissionAction;
@@ -33,6 +30,18 @@ public class StatisticPackageOrderDetail {
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
                 .fluxAction(q -> statisticServices.getPackageStatictis(query))
+                .build()
+                .toFlux();
+    }
+
+    @PostMapping("/admin/getbyhour")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<BenifitByDateHour> getbyproductidofhours(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
+        System.out.println("getbyproductid of hours: " + query.getGroup_id());
+        return WrapPermissionAction.<BenifitByDateHour>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> statisticServices.getPackageStatictisByHour(query))
                 .build()
                 .toFlux();
     }
