@@ -7,6 +7,7 @@ import java.sql.Date;
 @Data
 public class BenifitByDate {
     private Date local_time;
+    private float price;
     private float revenue;
     private float profit;
     private float cost;

@@ -1064,6 +1064,7 @@ public class UserPackageTest {
                     assertThat(data.getCost()).isEqualTo(444);
                     assertThat(data.getProfit()).isEqualTo(7878);
                     assertThat(data.getRevenue()).isEqualTo(7868);
+                    assertThat(data.getPrice()).isEqualTo(4);
                     assertThat(data.getCount()).isEqualTo(3);
                     assertThat(data.getBuyer()).isEqualTo(2);
                 })
