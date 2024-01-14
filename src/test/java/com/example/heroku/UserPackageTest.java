@@ -1106,12 +1106,16 @@ public class UserPackageTest {
                     assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(data.getNumber_unit()).isEqualTo(109);
                     assertThat(data.getRevenue()).isEqualTo(-0.1f);// 7*3*(1-0.1) - 19
+                    assertThat(data.getProduct_name()).isEqualTo("beer tiger");
+                    assertThat(data.getProduct_unit_name()).isEqualTo("lon");
                 })
                 .consumeNextWith(data -> {
                     assertThat(data.getProduct_second_id()).isEqualTo("123");
                     assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(data.getNumber_unit()).isEqualTo(16);
                     assertThat(data.getRevenue()).isEqualTo(20);
+                    assertThat(data.getProduct_name()).isEqualTo("beer tiger");
+                    assertThat(data.getProduct_unit_name()).isEqualTo("thung");
                 })
                 .verifyComplete();
 
