@@ -3,10 +3,7 @@ package com.example.heroku;
 import com.example.heroku.model.Buyer;
 import com.example.heroku.model.PaymentTransation;
 import com.example.heroku.model.UserPackageDetail;
-import com.example.heroku.model.statistics.BenifitByBuyer;
-import com.example.heroku.model.statistics.BenifitByDate;
-import com.example.heroku.model.statistics.BenifitByDateHour;
-import com.example.heroku.model.statistics.BenifitByProduct;
+import com.example.heroku.model.statistics.*;
 import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.PackageItemRemove;
@@ -1149,6 +1146,29 @@ public class UserPackageTest {
                     assertThat(data.getName()).isEqualTo(null);
                     assertThat(data.getId()).isEqualTo("nguyen_phong");
                     assertThat(data.getCount()).isEqualTo(1);
+                    assertThat(data.getRevenue()).isEqualTo(7868.0f);// 7*3*(1-0.1) - 19
+                })
+                .verifyComplete();
+
+        statisticServices.getOrderBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+                .sort(Comparator.comparing(BenifitByOrder::getRevenue))
+                .as(StepVerifier::create)
+                .consumeNextWith(data -> {
+                    assertThat(data.getPackage_second_id()).isEqualTo("package_iddddd");
+                    assertThat(data.getPrice()).isEqualTo(1);
+                    assertThat(data.getShip_price()).isEqualTo(20000);
+                    assertThat(data.getRevenue()).isEqualTo(0.0f);// 7*3*(1-0.1) - 19
+                })
+                .consumeNextWith(data -> {
+                    assertThat(data.getPackage_second_id()).isEqualTo("package_idddddtttt");
+                    assertThat(data.getPrice()).isEqualTo(3);
+                    assertThat(data.getShip_price()).isEqualTo(20000);
+                    assertThat(data.getRevenue()).isEqualTo(0.0f);// 7*3*(1-0.1) - 19
+                })
+                .consumeNextWith(data -> {
+                    assertThat(data.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(data.getPrice()).isEqualTo(0);
+                    assertThat(data.getShip_price()).isEqualTo(20000);
                     assertThat(data.getRevenue()).isEqualTo(7868.0f);// 7*3*(1-0.1) - 19
                 })
                 .verifyComplete();

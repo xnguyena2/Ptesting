@@ -93,4 +93,16 @@ public class StatisticPackageOrderDetail {
                 .build()
                 .toFlux();
     }
+
+    @PostMapping("/admin/order")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<BenifitByOrder> getOrderBenifitStatictis(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
+        System.out.println("get by order: " + query.getGroup_id());
+        return WrapPermissionAction.<BenifitByOrder>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> statisticServices.getOrderBenifitStatictis(query))
+                .build()
+                .toFlux();
+    }
 }

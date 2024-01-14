@@ -36,6 +36,9 @@ public class StatisticServices {
     @Autowired
     StatisticBenifitOfStaffRepository statisticBenifitOfStaffRepository;
 
+    @Autowired
+    StatisticBenifitOfOrderRepository statisticBenifitOfOrderRepository;
+
     public Flux<ProductOrderStatus> getByProductID(SearchQuery query) {
         String dateTxt = query.GetFilterTxt();
         int date = Integer.parseInt(dateTxt);
@@ -78,5 +81,9 @@ public class StatisticServices {
 
     public Flux<BenifitByBuyer> getStaffBenifitStatictis(PackageID query) {
         return statisticBenifitOfStaffRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus(), query.getPage(), query.getSize());
+    }
+
+    public Flux<BenifitByOrder> getOrderBenifitStatictis(PackageID query) {
+        return statisticBenifitOfOrderRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus(), query.getPage(), query.getSize());
     }
 }
