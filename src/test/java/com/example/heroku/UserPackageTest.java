@@ -1078,6 +1078,9 @@ public class UserPackageTest {
                     assertThat(data.getRevenue()).isEqualTo(7868);
                     assertThat(data.getCount()).isEqualTo(3);
                     assertThat(data.getBuyer()).isEqualTo(2);
+                    assertThat(data.getShip_price()).isEqualTo(60000);
+                    assertThat(data.getPrice()).isEqualTo(4);
+                    assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("30000.4");
                 })
                 .verifyComplete();
 
