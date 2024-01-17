@@ -81,6 +81,9 @@ public class ApplicationTest extends TestConfig {
     Tokens tokensServices;
 
     @Autowired
+    DeleteRequest deleteRequest;
+
+    @Autowired
     PaymentTransation paymentTransation;
 
     @Value("${account.admin.username}")
@@ -114,6 +117,10 @@ public class ApplicationTest extends TestConfig {
     @Order(2)
     public  void tokenTest() {
         TokenTest.builder().tokens(tokensServices).group(mainGroup).build().test();
+    }
+
+    public  void deleteRequestTest() {
+        DeleteRequestTest.builder().deleteRequest(deleteRequest).build().test();
     }
 
     @Test

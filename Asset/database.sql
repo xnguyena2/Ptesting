@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS area (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NUL
 
 CREATE TABLE IF NOT EXISTS tokens (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, token_second_id VARCHAR, token VARCHAR, status VARCHAR, createat TIMESTAMP);
 
+CREATE TABLE IF NOT EXISTS delete_request (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, delete_request_id VARCHAR, user_id VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE INDEX device_config_index ON device_config(group_id);
 CREATE INDEX users_name_index ON users(username);
@@ -67,6 +68,7 @@ CREATE INDEX area_index ON area(area_name);
 CREATE INDEX area_search_index ON area(meta_search);
 CREATE INDEX tokens_group_index ON tokens(group_id);
 CREATE INDEX tokens_second_id_index ON tokens(token_second_id);
+CREATE INDEX delete_request_user_id_index ON delete_request(user_id);
 
 ALTER TABLE device_config ADD CONSTRAINT UQ_device_config UNIQUE(group_id);
 ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
@@ -87,6 +89,7 @@ ALTER TABLE payment_transaction ADD CONSTRAINT UQ_group_payment_transaction UNIQ
 ALTER TABLE table_detail ADD CONSTRAINT UQ_table_detail UNIQUE(group_id, area_id, table_id);
 ALTER TABLE area ADD CONSTRAINT UQ_area UNIQUE(group_id, area_id);
 ALTER TABLE tokens ADD CONSTRAINT UQ_tokens UNIQUE(token_second_id);
+ALTER TABLE delete_request ADD CONSTRAINT UQ_delete_request UNIQUE(user_id);
 
 ALTER TABLE product_unit ADD CONSTRAINT FK_product_unit FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
 ALTER TABLE search_token ADD CONSTRAINT FK_search_token FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
