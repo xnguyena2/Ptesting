@@ -69,6 +69,9 @@ public class ApplicationTest extends TestConfig {
     com.example.heroku.services.UserAccount userAccount;
 
     @Autowired
+    UsersInfo usersInfo;
+
+    @Autowired
     ProductImport productImport;
 
     @Autowired
@@ -130,7 +133,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void userTest() {
-        UserAccountTest.builder().userAccount(userAccount).adminName(adminName).passwordEncoder(passwordEncoder).group(mainGroup).build().test();
+        UserAccountTest.builder().userAccount(userAccount).usersInfo(usersInfo).adminName(adminName).passwordEncoder(passwordEncoder).group(mainGroup).build().test();
     }
 
     @Test
@@ -255,7 +258,7 @@ public class ApplicationTest extends TestConfig {
     @Test
     public void userTest2() {
         //UNIQUE id of user
-        UserAccountTest.builder().userAccount(userAccount).adminName(adminName).passwordEncoder(passwordEncoder).group(anotherGroup).build().test2();
+        UserAccountTest.builder().userAccount(userAccount).usersInfo(usersInfo).adminName(adminName).passwordEncoder(passwordEncoder).group(anotherGroup).build().test2();
     }
 
     @Test

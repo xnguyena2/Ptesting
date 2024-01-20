@@ -41,6 +41,8 @@ public class BeerSubmitData {
                     .group_id(this.group_id)
                     .product_second_id(this.beerSecondID)
                     .price(beerUnit.price)
+                    .wholesale_price(beerUnit.wholesale_price)
+                    .wholesale_number(beerUnit.wholesale_number)
                     .buy_price(beerUnit.buy_price)
                     .discount(beerUnit.discount)
                     .volumetric(beerUnit.volumetric)
@@ -102,18 +104,21 @@ public class BeerSubmitData {
     public BeerSubmitData SetBeerUnit(List<ProductUnit> productUnitList) {
         listUnit = new BeerUnit[productUnitList.size()];
         for (int i = 0; i < listUnit.length; i++) {
+            ProductUnit item = productUnitList.get(i);
             listUnit[i] = BeerUnit.builder()
-                    .group_id(productUnitList.get(i).getGroup_id())
-                    .beer(productUnitList.get(i).getProduct_second_id())
-                    .name(productUnitList.get(i).getName())
-                    .price(productUnitList.get(i).getPrice())
-                    .buy_price(productUnitList.get(i).getBuy_price())
-                    .discount(productUnitList.get(i).getDiscount())
-                    .dateExpir(NgbDateStruct.FromTimestamp(productUnitList.get(i).getDate_expire()))
-                    .volumetric(productUnitList.get(i).getVolumetric())
-                    .weight(productUnitList.get(i).getWeight())
-                    .beer_unit_second_id(productUnitList.get(i).getProduct_unit_second_id())
-                    .status(productUnitList.get(i).GetStatusNuable().toString())
+                    .group_id(item.getGroup_id())
+                    .beer(item.getProduct_second_id())
+                    .name(item.getName())
+                    .price(item.getPrice())
+                    .wholesale_price(item.getWholesale_price())
+                    .wholesale_number(item.getWholesale_number())
+                    .buy_price(item.getBuy_price())
+                    .discount(item.getDiscount())
+                    .dateExpir(NgbDateStruct.FromTimestamp(item.getDate_expire()))
+                    .volumetric(item.getVolumetric())
+                    .weight(item.getWeight())
+                    .beer_unit_second_id(item.getProduct_unit_second_id())
+                    .status(item.GetStatusNuable().toString())
                     .build();
         }
         return this;
@@ -128,6 +133,8 @@ public class BeerSubmitData {
         private String beer;
         private String name;
         private float price;
+        private float wholesale_price;
+        private int wholesale_number;
         private float buy_price;
         private float discount;
         private NgbDateStruct dateExpir;

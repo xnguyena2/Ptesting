@@ -30,6 +30,9 @@ public class UserAccount {
     private UserRepository userRepository;
 
     @Autowired
+    private UsersInfo usersInfo;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     public Mono<Users> createAccount(String createBy, UpdatePassword newAccount) {
@@ -44,6 +47,17 @@ public class UserAccount {
                         .createby(createBy)
                         .phone_number(newAccount.getPhone_number())
                         .build().AutoFill())
+                .flatMap(users ->
+                        usersInfo.createUserInfo(com.example.heroku.model.UsersInfo.builder()
+                                        .username(users.getUsername())
+                                        .phone(users.getPhone_number_clean())
+                                        .group_id(users.getGroup_id())
+                                        .title(newAccount.getTitle())
+                                        .roles(newAccount.getRoles_in_group())
+                                        .user_fullname(newAccount.getFull_name())
+                                        .build())
+                                .then(Mono.just(users))
+                )
                 .map(Users::Clean);
     }
 
@@ -94,8 +108,9 @@ public class UserAccount {
     }
 
     public Mono<Users> seftDelete(String username) {
-        return userRepository.deleteByUserName(
-                username
-        );
+        return usersInfo.deleteByUsername(username)
+                .then(userRepository.deleteByUserName(
+                        username
+                ));
     }
 }

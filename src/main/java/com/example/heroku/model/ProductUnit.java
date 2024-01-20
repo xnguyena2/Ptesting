@@ -28,6 +28,10 @@ public class ProductUnit extends BaseEntity {
 
     private float price;
 
+    private float wholesale_price;
+
+    private int wholesale_number;
+
     private float buy_price;
 
     private float discount;

@@ -1,10 +1,12 @@
 
 CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, username VARCHAR, password VARCHAR, active BOOL, roles VARCHAR, createby VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, status VARCHAR, createat TIMESTAMP);
 
+CREATE TABLE IF NOT EXISTS users_info (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, username VARCHAR, user_fullname VARCHAR, phone VARCHAR, title VARCHAR, roles VARCHAR, createat TIMESTAMP);
+
 
 CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, tokens TSVECTOR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, name VARCHAR, detail TEXT, sku VARCHAR, upc VARCHAR, category VARCHAR, meta_search TEXT, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, buy_price float8, price float8, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, buy_price float8, price float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, imgid VARCHAR, tag VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, categorys VARCHAR, config TEXT, createat TIMESTAMP);
 
@@ -42,6 +44,7 @@ CREATE TABLE IF NOT EXISTS delete_request (id SERIAL PRIMARY KEY, group_id VARCH
 
 CREATE INDEX device_config_index ON device_config(group_id);
 CREATE INDEX users_name_index ON users(username);
+CREATE INDEX users_info_name_index ON users_info(username);
 CREATE INDEX search_token_index ON search_token(tokens);
 CREATE INDEX product_index ON product(product_second_id);
 CREATE INDEX product_detail_index ON product(detail);
@@ -72,6 +75,7 @@ CREATE INDEX delete_request_user_id_index ON delete_request(user_id);
 
 ALTER TABLE device_config ADD CONSTRAINT UQ_device_config UNIQUE(group_id);
 ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
+ALTER TABLE users_info ADD CONSTRAINT UQ_users_info_name UNIQUE(username);
 ALTER TABLE product ADD CONSTRAINT UQ_product_second_id UNIQUE(group_id, product_second_id);
 ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_second_id UNIQUE(group_id, product_second_id, product_unit_second_id);
 ALTER TABLE search_token ADD CONSTRAINT UQ_search_token_product_second_id UNIQUE(group_id, product_second_id);
@@ -97,6 +101,7 @@ ALTER TABLE user_package ADD CONSTRAINT FK_user_package FOREIGN KEY(group_id, de
 ALTER TABLE voucher_relate_user_device ADD CONSTRAINT FK_voucher_relate_user_device FOREIGN KEY(group_id, voucher_second_id) REFERENCES voucher(group_id, voucher_second_id) ON DELETE CASCADE;
 ALTER TABLE voucher_relate_product ADD CONSTRAINT FK_voucher_relate_product FOREIGN KEY(group_id, voucher_second_id) REFERENCES voucher(group_id, voucher_second_id) ON DELETE CASCADE;
 ALTER TABLE table_detail ADD CONSTRAINT FK_table_detail FOREIGN KEY(group_id, area_id) REFERENCES area(group_id, area_id) ON DELETE CASCADE;
+ALTER TABLE users_info ADD CONSTRAINT FK_users_info FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE;
 
 create or replace function getRoleIndex(roles VARCHAR)
 returns int
@@ -191,6 +196,7 @@ $$
 begin
 
     DELETE FROM image WHERE group_id = by_group_id;
+    DELETE FROM users_info WHERE group_id = by_group_id;
     DELETE FROM users WHERE group_id = by_group_id;
     DELETE FROM search_token WHERE group_id = by_group_id;
     DELETE FROM device_config WHERE group_id = by_group_id;

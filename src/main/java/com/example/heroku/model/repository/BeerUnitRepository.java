@@ -14,7 +14,8 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, 
     @Query(value = "INSERT INTO product_unit( group_id, product_second_id, product_unit_second_id, name, price, buy_price, discount, date_expire, volumetric, weight, status, createat ) VALUES ( :group_id, :product_second_id, :product_unit_second_id, :name, :price, :buy_price, :discount, :date_expire, :volumetric, :weight, :status, :createat ) ON CONFLICT (group_id, product_second_id, product_unit_second_id) DO UPDATE SET name = :name, price = :price, buy_price = :buy_price, discount = :discount, date_expire = :date_expire, volumetric = :volumetric, weight = :weight, status = :status, createat = :createat")
     Mono<ProductUnit> saveProductUnit(@Param("group_id") String group_id, @Param("product_second_id") String product_second_id,
                                       @Param("product_unit_second_id") String product_unit_second_id, @Param("name") String name,
-                                      @Param("price") float price, @Param("buy_price") float buy_price, @Param("discount") float discount,
+                                      @Param("price") float price, @Param("wholesale_price") float wholesale_price, @Param("wholesale_number") int wholesale_number,
+                                      @Param("buy_price") float buy_price, @Param("discount") float discount,
                                       @Param("date_expire") Timestamp date_expire, @Param("volumetric") float volumetric,
                                       @Param("weight") float weight, @Param("status") ProductUnit.Status status,
                                       @Param("createat") Timestamp createat);

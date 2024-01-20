@@ -20,6 +20,7 @@ $$;
 
 
 DROP TABLE IF EXISTS image;
+DROP TABLE IF EXISTS users_info;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS search_token;
 DROP TABLE IF EXISTS device_config;

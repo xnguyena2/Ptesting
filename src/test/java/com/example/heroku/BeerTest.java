@@ -63,8 +63,8 @@ public class BeerTest {
                 BeerInfo
                         .builder()
                         .productUnit(new ProductUnit[]{
-                                ProductUnit.builder().product_second_id("123").name("thung").group_id(group).build(),
-                                ProductUnit.builder().product_second_id("123").name("lon").group_id(group).build()
+                                ProductUnit.builder().product_second_id("123").name("thung").group_id(group).wholesale_number(34).wholesale_price(1233).build(),
+                                ProductUnit.builder().product_second_id("123").name("lon").group_id(group).wholesale_number(43).wholesale_price(3321).build()
                         })
                         .product(Product
                                 .builder()
@@ -270,10 +270,14 @@ public class BeerTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("lon");
+                                assertThat(beerUnit.getWholesale_number()).isEqualTo(43);
+                                assertThat(beerUnit.getWholesale_price()).isEqualTo(3321);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
+                                assertThat(beerUnit.getWholesale_number()).isEqualTo(34);
+                                assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .verifyComplete();
