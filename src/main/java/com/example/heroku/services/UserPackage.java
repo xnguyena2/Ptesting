@@ -167,6 +167,13 @@ public class UserPackage {
                 .flatMap(this::fillPackageItem);
     }
 
+
+    public Flux<PackageDataResponse> GetMyPackageOfStatus(UserID userID, UserPackageDetail.Status status) {
+        return userPackageDetailRepository.GetDevicePackageDetailByStatus(userID.getGroup_id(), userID.getId(), status, userID.getPage(), userID.getSize())
+                .map(PackageDataResponse::new)
+                .flatMap(this::fillPackageItem);
+    }
+
     public Flux<PackageDataResponse> GetPackageByGroup(UserID userID) {
         return userPackageDetailRepository.GetAllPackageDetail(userID.getGroup_id(), userID.getPage(), userID.getSize())
                 .map(PackageDataResponse::new)

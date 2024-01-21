@@ -41,6 +41,7 @@ public class ProductPackage extends UserPackageDetail {
             userPackage.setPackage_second_id(this.getPackage_second_id());
             userPackage.setGroup_id(this.getGroup_id());
             userPackage.setDevice_id(this.getDevice_id());
+            userPackage.setStatus(this.getStatus());
             userPackage.AutoFill();
         }
         return product_units;

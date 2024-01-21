@@ -11,6 +11,7 @@ import com.example.heroku.request.beer.ProductPackgeWithTransaction;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.BuyerData;
+import com.example.heroku.response.PackageDataResponse;
 import com.example.heroku.response.ProductInPackageResponse;
 import com.example.heroku.services.StatisticServices;
 import com.example.heroku.services.UserPackage;
@@ -249,6 +250,7 @@ public class UserPackageTest {
                 .group_id(group)
                 .price(1)
                 .device_id("222222")
+                .status(UserPackageDetail.Status.CREATE)
                 .product_units(new com.example.heroku.model.UserPackage[]{
                         com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("123")
@@ -269,6 +271,7 @@ public class UserPackageTest {
                 .group_id(group)
                 .price(2)
                 .device_id("222222")
+                .status(UserPackageDetail.Status.CREATE)
                 .product_units(new com.example.heroku.model.UserPackage[]{
                         com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("456")
@@ -285,7 +288,7 @@ public class UserPackageTest {
         userPackageAPI.AddProductToPackage(productPackage)
                 .block();
 
-        userPackageAPI.GetMyPackage(UserID.builder().id("222222").page(0).size(1000).group_id(group).build())
+        userPackageAPI.GetMyPackageOfStatus(UserID.builder().id("222222").page(0).size(1000).group_id(group).build(), UserPackageDetail.Status.CREATE)
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
@@ -1050,6 +1053,40 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyerData.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyerData.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
                     assertThat(buyerData.getReciver_fullname()).isEqualTo("test create package");
+                })
+                .verifyComplete();
+
+        buyer.getBuyerStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).device_id("0022929222").page(0).size(3).page(0).status(UserPackageDetail.Status.CREATE).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(buyerStatictisData -> {
+                    System.out.println("getBuyerStatictis: ");
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(buyerStatictisData));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    BenifitByMonth benifitByMonth = buyerStatictisData.getBenifitByMonth();
+                    assertThat(benifitByMonth.getRevenue()).isEqualTo(7868);
+                    assertThat(benifitByMonth.getDiscount()).isEqualTo(10000);
+                    assertThat(benifitByMonth.getCount()).isEqualTo(1);
+
+                    List<PackageDataResponse> packageDataResponses = buyerStatictisData.getPackageDataResponses();
+                    assertThat(packageDataResponses.size()).isEqualTo(1);
+                    PackageDataResponse userPackage = packageDataResponses.get(0);
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(2);
+
+                    List<BenifitByProduct> benifitByProducts = buyerStatictisData.getBenifitByProducts();
+                    assertThat(benifitByProducts.size()).isEqualTo(2);
+                    BenifitByProduct thung = benifitByProducts.get(0);
+                    if (thung.getProduct_unit_name().equals("lon")) {
+                        thung = benifitByProducts.get(1);
+                    }
+                    assertThat(thung.getProduct_name()).isEqualTo("beer tiger");
+                    assertThat(thung.getRevenue()).isEqualTo(20);
+                    assertThat(thung.getNumber_unit()).isEqualTo(4);
                 })
                 .verifyComplete();
 

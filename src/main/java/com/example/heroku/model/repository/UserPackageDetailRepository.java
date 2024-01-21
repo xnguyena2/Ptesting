@@ -24,6 +24,9 @@ public interface UserPackageDetailRepository extends ReactiveCrudRepository<User
     @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.device_id = :device_id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<UserPackageDetail> GetDevicePackageDetail(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("page") int page, @Param("size") int size);
 
+    @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.device_id = :device_id AND user_package_detail.status = :status ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
+    Flux<UserPackageDetail> GetDevicePackageDetailByStatus(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("status") UserPackageDetail.Status status, @Param("page") int page, @Param("size") int size);
+
     @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<UserPackageDetail> GetAllPackageDetail(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size);
 
