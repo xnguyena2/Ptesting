@@ -35,7 +35,8 @@ public class BuyerData extends Buyer {
         setReal_price(b.getReal_price());
         setTotal_price(b.getTotal_price());
         setShip_price(b.getShip_price());
-        setPoints_discount(b.getPoints_discount());
+        setPoint(b.getPoint());
+        setDiscount(b.getDiscount());
         setStatus(b.getStatus());
 
         try {

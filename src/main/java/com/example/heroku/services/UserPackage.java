@@ -63,8 +63,10 @@ public class UserPackage {
         if (productPackage.isEmpty())
             return Mono.just(badRequest().body(Format.builder().response("user package empty").build()));
         return
-                Mono.just(productPackage)
-                        .flatMap(this::saveBuyer)
+                userPackageDetailRepository.GetPackageDetailByID(productPackage.getGroup_id(), productPackage.getPackage_second_id())
+                        .switchIfEmpty(Mono.just(UserPackageDetail.builder().status(UserPackageDetail.Status.CREATE).build()))
+                        .filter(userPackageDetail -> userPackageDetail.getStatus() != UserPackageDetail.Status.DONE)
+                        .flatMap(userPackageDetail -> saveBuyer(productPackage))
                         .flatMap(this::savePackageDetail)
                         .flatMap(productPackage1 -> userPackageRepository.DeleteProductByUserIDAndPackageID(productPackage1.getGroup_id(), productPackage1.getDevice_id(), productPackage1.getPackage_second_id())
                                 .then(Mono.just(productPackage1))
@@ -125,6 +127,19 @@ public class UserPackage {
         return Mono.just(productPackage);
     }
 
+    Mono<UserPackageDetail> removePackgeOfBuyer(UserPackageDetail productPackage) {
+
+        String device_id = productPackage.getDevice_id();
+        if (device_id != null && productPackage.getStatus() == UserPackageDetail.Status.DONE) {
+            float totalPrice = -productPackage.getPrice();
+            float realPrice = -productPackage.getPayment();
+            float discount = -(productPackage.getDiscount_amount() + productPackage.getDiscount_percent() * productPackage.getPrice());
+            float ship = -productPackage.getShip_price();
+            return buyer.updatePrice(productPackage.getGroup_id(), device_id, totalPrice, realPrice, ship, discount).then(Mono.just(productPackage));
+        }
+        return Mono.just(productPackage);
+    }
+
     Mono<UserPackageDetail> savePackageDetail(UserPackageDetail detail) {
         return userPackageDetailRepository.InsertOrUpdate(detail.getGroup_id(), detail.getDevice_id(), detail.getStaff_id(), detail.getPackage_second_id(),
                 detail.getPackage_type(), detail.getVoucher(),
@@ -180,6 +195,22 @@ public class UserPackage {
                 .flatMap(this::fillPackageItem);
     }
 
+    public Flux<PackageDataResponse> GetWorkingPackageByGroup(UserID userID) {
+        return GetPackageByGrouAndStatus(userID, UserPackageDetail.Status.CREATE, UserPackageDetail.Status.DONE);
+    }
+
+    public Flux<PackageDataResponse> GetPackageByGrouAndStatus(UserID userID, UserPackageDetail.Status status) {
+        return userPackageDetailRepository.GetAllPackageDetailByStatus(userID.getGroup_id(), status, userID.getPage(), userID.getSize())
+                .map(PackageDataResponse::new)
+                .flatMap(this::fillPackageItem);
+    }
+
+    public Flux<PackageDataResponse> GetPackageByGrouAndStatus(UserID userID, UserPackageDetail.Status status, UserPackageDetail.Status or_status) {
+        return userPackageDetailRepository.GetAllPackageDetailByStatus(userID.getGroup_id(), status, or_status, userID.getPage(), userID.getSize())
+                .map(PackageDataResponse::new)
+                .flatMap(this::fillPackageItem);
+    }
+
     public Mono<PackageDataResponse> GetPackage(PackageID packageID) {
 
         return userPackageDetailRepository.GetPackageDetail(packageID.getGroup_id(), packageID.getDevice_id(), packageID.getPackage_id())
@@ -192,6 +223,31 @@ public class UserPackage {
         return userPackageDetailRepository.GetPackageDetailById(packageID.getGroup_id(), packageID.getPackage_id())
                 .map(PackageDataResponse::new)
                 .flatMap(this::fillPackageItem);
+    }
+
+    private Mono<ResponseEntity<Format>> ReturnOrCalcelPackage(PackageID packageID, UserPackageDetail.Status status) {
+
+        return userPackageDetailRepository.GetPackageDetailByID(packageID.getGroup_id(), packageID.getPackage_id())
+                .filter(sd -> sd.getStatus() == UserPackageDetail.Status.CREATE && status == UserPackageDetail.Status.CANCEL ||
+                        sd.getStatus() == UserPackageDetail.Status.DONE && status == UserPackageDetail.Status.RETURN)
+                .flatMap(userPackageDetail -> paymentTransation.deleteOfPackgeID(IDContainer.builder().group_id(packageID.getGroup_id()).id(packageID.getPackage_id()).build())
+                        .thenMany(userPackageRepository.UpdateStatusByPackgeID(packageID.getGroup_id(), packageID.getPackage_id(), status))
+                        .then(
+                                userPackageDetailRepository.UpdateStatusByID(packageID.getGroup_id(), packageID.getPackage_id(), status)
+                        )
+                        .thenMany(removePackgeOfBuyer(userPackageDetail))
+                        .then(Mono.just(ok(Format.builder().response("done").build())))
+                );
+    }
+
+    public Mono<ResponseEntity<Format>> ReturnPackage(PackageID packageID) {
+
+        return ReturnOrCalcelPackage(packageID, UserPackageDetail.Status.RETURN);
+    }
+
+    public Mono<ResponseEntity<Format>> CancelPackage(PackageID packageID) {
+
+        return ReturnOrCalcelPackage(packageID, UserPackageDetail.Status.CANCEL);
     }
 
     public Mono<ResponseEntity<Format>> DeletePackage(PackageID packageID) {

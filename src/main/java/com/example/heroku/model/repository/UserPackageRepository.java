@@ -44,4 +44,7 @@ public interface UserPackageRepository extends ReactiveCrudRepository<UserPackag
                                             @Param("number_unit") int number_unit,
                                             @Param("price") float price, @Param("discount_amount") float discount_amount, @Param("discount_percent") float discount_percent,
                                             @Param("note") String note, @Param("status") UserPackageDetail.Status status, @Param("createat") Timestamp createat);
+
+    @Query(value = "UPDATE user_package SET status = :status WHERE group_id = :group_id AND package_second_id = :package_second_id")
+    Flux<UserPackage> UpdateStatusByPackgeID(@Param("group_id") String groupID, @Param("package_second_id") String package_second_id, @Param("status") UserPackageDetail.Status status);
 }

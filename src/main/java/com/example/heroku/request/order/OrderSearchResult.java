@@ -88,7 +88,7 @@ public class OrderSearchResult extends ResultWithCount {
             setTotal_price(source.getTotal_price());
             setReal_price(source.getReal_price());
             setShip_price(source.getShip_price());
-            setPoints_discount(source.getPoints_discount());
+            setDiscount(source.getDiscount());
             setStatus(source.getStatus());
             setCreateat(source.getCreateat());
         }

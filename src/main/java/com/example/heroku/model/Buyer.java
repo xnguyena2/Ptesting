@@ -40,7 +40,9 @@ public class Buyer extends BaseEntity {
 
     private float ship_price;
 
-    private float points_discount;
+    private float discount;
+
+    private int point;
 
     private ActiveStatus status;
 

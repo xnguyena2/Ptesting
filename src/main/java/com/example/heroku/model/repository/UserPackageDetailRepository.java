@@ -30,8 +30,17 @@ public interface UserPackageDetailRepository extends ReactiveCrudRepository<User
     @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<UserPackageDetail> GetAllPackageDetail(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size);
 
+    @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND status = :status ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
+    Flux<UserPackageDetail> GetAllPackageDetailByStatus(@Param("group_id") String group_id, @Param("status") UserPackageDetail.Status status, @Param("page") int page, @Param("size") int size);
+
+    @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND (status = :status OR status = :or_status ) ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
+    Flux<UserPackageDetail> GetAllPackageDetailByStatus(@Param("group_id") String group_id, @Param("status") UserPackageDetail.Status status, @Param("or_status") UserPackageDetail.Status or_status, @Param("page") int page, @Param("size") int size);
+
     @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.device_id = :device_id AND user_package_detail.package_second_id = :package_second_id")
     Mono<UserPackageDetail> GetPackageDetail(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("package_second_id") String package_id);
+
+    @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.package_second_id = :package_second_id")
+    Mono<UserPackageDetail> GetPackageDetailByID(@Param("group_id") String group_id, @Param("package_second_id") String package_id);
 
     @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.package_second_id = :package_second_id")
     Mono<UserPackageDetail> GetPackageDetailById(@Param("group_id") String group_id, @Param("package_second_id") String package_id);
@@ -44,4 +53,7 @@ public interface UserPackageDetailRepository extends ReactiveCrudRepository<User
 
     @Query(value = "DELETE FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.device_id = :device_id AND user_package_detail.package_second_id = :package_second_id")
     Mono<UserPackageDetail> DeleteByID(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("package_second_id") String package_id);
+
+    @Query(value = "UPDATE user_package_detail SET status = :status WHERE user_package_detail.group_id = :group_id AND user_package_detail.package_second_id = :package_second_id")
+    Mono<UserPackageDetail> UpdateStatusByID(@Param("group_id") String group_id, @Param("package_second_id") String package_id, @Param("status") UserPackageDetail.Status status);
 }

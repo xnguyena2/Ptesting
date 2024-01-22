@@ -99,6 +99,38 @@ public class UserPackageController {
         return userPackageAPI.GetPackageByGroup(userID);
     }
 
+
+    @PostMapping("/getwokingbygroup")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<PackageDataResponse> getWorkingByGroup(@RequestBody @Valid UserID userID) {
+        System.out.println("Get all working package by group: " + userID.getGroup_id());
+        return userPackageAPI.GetWorkingPackageByGroup(userID);
+    }
+
+
+    @PostMapping("/getbygroupstatus")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<PackageDataResponse> getByGroupAnsStatus(@RequestBody @Valid PackageID packageID) {
+        System.out.println("Get all status package by group: " + packageID.getGroup_id());
+        return userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(packageID.getGroup_id()).page(packageID.getPage()).size(packageID.getSize()).build(), packageID.getStatus());
+    }
+
+
+    @PostMapping("/return")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<Format>> returnPackage(@RequestBody @Valid PackageID packageID) {
+        System.out.println("return package: " + packageID.getPackage_id());
+        return userPackageAPI.ReturnPackage(packageID);
+    }
+
+
+    @PostMapping("/cancel")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<Format>> cancelPackage(@RequestBody @Valid PackageID packageID) {
+        System.out.println("cancel package: " + packageID.getPackage_id());
+        return userPackageAPI.CancelPackage(packageID);
+    }
+
     @PostMapping("/clean")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<com.example.heroku.model.UserPackage> clean(@RequestBody @Valid UserID userID) {

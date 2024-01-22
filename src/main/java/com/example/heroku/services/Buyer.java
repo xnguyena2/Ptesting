@@ -29,9 +29,13 @@ public class Buyer {
     StatisticBenifitOfProductRepository statisticBenifitOfProductRepository;
 
     public Mono<com.example.heroku.model.Buyer> insertOrUpdate(com.example.heroku.model.Buyer buyerData, float totalPrice, float realPrice, float shipPrice, float discount) {
-        return buyerRepository.insertOrUpdate(buyerData.getGroup_id(), buyerData.getDevice_id(), totalPrice, realPrice, shipPrice, discount, buyerData.getReciver_address(), buyerData.getRegion_id(),
+        return buyerRepository.insertOrUpdate(buyerData.getGroup_id(), buyerData.getDevice_id(), totalPrice, realPrice, shipPrice, discount, buyerData.getPoint(), buyerData.getReciver_address(), buyerData.getRegion_id(),
                 buyerData.getDistrict_id(), buyerData.getWard_id(), buyerData.getReciver_fullname(), buyerData.getPhone_number(), buyerData.getPhone_number_clean(),
                 buyerData.getStatus(), buyerData.getCreateat());
+    }
+
+    public Mono<com.example.heroku.model.Buyer> updatePrice(String groupID, String deviceID, float totalPrice, float realPrice, float shipPrice, float discount){
+        return buyerRepository.updateMoney(groupID, deviceID, totalPrice, realPrice, shipPrice, discount);
     }
 
     public Flux<BuyerData> GetAll(SearchQuery query) {

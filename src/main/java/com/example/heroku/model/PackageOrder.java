@@ -48,7 +48,7 @@ public class PackageOrder extends BaseEntity {
 
     protected float ship_price;
 
-    protected float points_discount;
+    protected float discount;
 
     protected Status status;
 

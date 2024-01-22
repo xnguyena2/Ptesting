@@ -271,8 +271,8 @@ public class OrderPackageTest extends TestConfig {
                     orderCancelID.set(orderSearchResult.getResult().get(1).getPackage_order_second_id());
                     donePrice.updateAndGet(v -> v + orderSearchResult.getResult().get(0).getReal_price());
                     cancelPrice.updateAndGet(v -> v + orderSearchResult.getResult().get(1).getReal_price());
-                    donePointDiscount.updateAndGet(v -> v + orderSearchResult.getResult().get(0).getPoints_discount());
-                    cancelPointDiscount.updateAndGet(v -> v + orderSearchResult.getResult().get(1).getPoints_discount());
+                    donePointDiscount.updateAndGet(v -> v + orderSearchResult.getResult().get(0).getDiscount());
+                    cancelPointDiscount.updateAndGet(v -> v + orderSearchResult.getResult().get(1).getDiscount());
                     System.out.println("Done order value: " + orderSearchResult.getResult().get(0).getReal_price());
                     System.out.println("Cancel order value: " + orderSearchResult.getResult().get(1).getReal_price());
                     System.out.println("Done point_discount value: " + donePointDiscount.get());
@@ -312,22 +312,22 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getPoints_discount()).isEqualTo(30 - cancelPointDiscount.get() - donePointDiscount.get());
+                    assertThat(buyerData.getDiscount()).isEqualTo(30 - cancelPointDiscount.get() - donePointDiscount.get());
                     assertThat(buyerData.getReal_price()).isEqualTo(80361f - donePrice.get() - cancelPrice.get());// 80361 = (106 + 122 + 365.4*3 + 672 * 0.7) * 30 + (122*5 + (122-5)*25) + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
                 })
                 .verifyComplete();
 
         buyer.GetAllDirect(SearchQuery.builder().group_id(mainGroup).page(0).size(500).build())
-                .sort(Comparator.comparing(BuyerData::getPoints_discount))
+                .sort(Comparator.comparing(BuyerData::getDiscount))
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getPoints_discount()).isEqualTo(0);
+                    assertThat(buyerData.getDiscount()).isEqualTo(0);
                     assertThat(buyerData.getReal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
                 })
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getPoints_discount()).isEqualTo(30);
+                    assertThat(buyerData.getDiscount()).isEqualTo(30);
                     assertThat(buyerData.getReal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
                 })
                 .verifyComplete();
@@ -336,7 +336,7 @@ public class OrderPackageTest extends TestConfig {
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getPoints_discount()).isEqualTo(30);
+                    assertThat(buyerData.getDiscount()).isEqualTo(30);
                     assertThat(buyerData.getReal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
                 })
                 .verifyComplete();
@@ -374,12 +374,12 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getPoints_discount()).isEqualTo(0);
+                    assertThat(buyerData.getDiscount()).isEqualTo(0);
                     assertThat(buyerData.getReal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
                 })
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getPoints_discount()).isEqualTo(30);
+                    assertThat(buyerData.getDiscount()).isEqualTo(30);
                     assertThat(buyerData.getReal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
                 })
                 .verifyComplete();
@@ -394,12 +394,12 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getPoints_discount()).isEqualTo(0);
+                    assertThat(buyerData.getDiscount()).isEqualTo(0);
                     assertThat(buyerData.getReal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
                 })
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
-                    assertThat(buyerData.getPoints_discount()).isEqualTo(30);
+                    assertThat(buyerData.getDiscount()).isEqualTo(30);
                     assertThat(buyerData.getReal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
                 })
                 .verifyComplete();
@@ -1140,7 +1140,7 @@ public class OrderPackageTest extends TestConfig {
                                 .reciver_address("232 bau cat, tan binh")
                                 .user_device_id("iphone")
                                 .voucher_second_id("PACKAGE_VOUCHER_30%")
-                                .points_discount(0.5f)
+                                .discount(0.5f)
                                 .build()
                 )
                 .preOrder(false)
@@ -1226,7 +1226,7 @@ public class OrderPackageTest extends TestConfig {
                                 .reciver_address("232 bau cat, tan binh")
                                 .user_device_id("iphone")
                                 .voucher_second_id("ORDER_GIAM_30%")
-                                .points_discount(0.5f)
+                                .discount(0.5f)
                                 .build()
                 )
                 .preOrder(false)
