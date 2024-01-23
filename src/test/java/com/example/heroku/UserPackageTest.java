@@ -1918,7 +1918,14 @@ public class UserPackageTest {
                     assertThat(benifitByMonth.getDiscount()).isEqualTo(0);
                     assertThat(benifitByMonth.getCount()).isEqualTo(0);
 
-                    assertThat(buyerStatictisData.getPackageDataResponses()).isEqualTo(null);
+                    List<PackageDataResponse> packageDataResponses = buyerStatictisData.getPackageDataResponses();
+                    assertThat(packageDataResponses.size()).isEqualTo(1);
+                    PackageDataResponse userPackage = packageDataResponses.get(0);
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(2);
+
                 })
                 .verifyComplete();
 

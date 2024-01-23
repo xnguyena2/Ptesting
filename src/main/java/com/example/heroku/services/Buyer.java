@@ -70,7 +70,7 @@ public class Buyer {
                     buyerStatictisData.setBenifitByMonth(benifitByMonth);
                     return buyerStatictisData;
                 }).thenMany(
-                        userPackageAPI.GetMyPackageOfStatus(UserID.builder().group_id(query.getGroup_id()).id(query.getDevice_id()).page(query.getPage()).size(query.getSize()).build(), query.getStatus())
+                        userPackageAPI.GetMyPackage(UserID.builder().group_id(query.getGroup_id()).id(query.getDevice_id()).page(query.getPage()).size(query.getSize()).build())
                                 .map(buyerStatictisData::addPackge)
                 )
                 .thenMany(statisticBenifitOfProductRepository.getTotalStatictisOfBuyer(query.getGroup_id(), query.getDevice_id(), query.getFrom(), query.getTo(), query.getStatus(), query.getPage(), query.getSize())
