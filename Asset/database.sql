@@ -86,8 +86,8 @@ ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(gro
 ALTER TABLE user_device ADD CONSTRAINT UQ_user_device UNIQUE(group_id, device_id);
 ALTER TABLE store ADD CONSTRAINT UQ_store UNIQUE(group_id);
 ALTER TABLE buyer ADD CONSTRAINT UQ_buyer UNIQUE(group_id, device_id);
-ALTER TABLE user_package_detail ADD CONSTRAINT UQ_user_package_detail UNIQUE(group_id, device_id, package_second_id);
-ALTER TABLE user_package ADD CONSTRAINT UQ_user_package UNIQUE(group_id, device_id, package_second_id, product_second_id, product_unit_second_id);
+ALTER TABLE user_package_detail ADD CONSTRAINT UQ_user_package_detail UNIQUE(group_id, package_second_id);
+ALTER TABLE user_package ADD CONSTRAINT UQ_user_package UNIQUE(group_id, package_second_id, product_second_id, product_unit_second_id);
 ALTER TABLE payment_transaction ADD CONSTRAINT UQ_payment_transaction UNIQUE(transaction_second_id);
 ALTER TABLE payment_transaction ADD CONSTRAINT UQ_group_payment_transaction UNIQUE(group_id, transaction_second_id);
 ALTER TABLE table_detail ADD CONSTRAINT UQ_table_detail UNIQUE(group_id, area_id, table_id);
@@ -97,7 +97,7 @@ ALTER TABLE delete_request ADD CONSTRAINT UQ_delete_request UNIQUE(user_id);
 
 ALTER TABLE product_unit ADD CONSTRAINT FK_product_unit FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
 ALTER TABLE search_token ADD CONSTRAINT FK_search_token FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
-ALTER TABLE user_package ADD CONSTRAINT FK_user_package FOREIGN KEY(group_id, device_id, package_second_id) REFERENCES user_package_detail(group_id, device_id, package_second_id) ON DELETE CASCADE;
+ALTER TABLE user_package ADD CONSTRAINT FK_user_package FOREIGN KEY(group_id, package_second_id) REFERENCES user_package_detail(group_id, package_second_id) ON DELETE CASCADE;
 ALTER TABLE voucher_relate_user_device ADD CONSTRAINT FK_voucher_relate_user_device FOREIGN KEY(group_id, voucher_second_id) REFERENCES voucher(group_id, voucher_second_id) ON DELETE CASCADE;
 ALTER TABLE voucher_relate_product ADD CONSTRAINT FK_voucher_relate_product FOREIGN KEY(group_id, voucher_second_id) REFERENCES voucher(group_id, voucher_second_id) ON DELETE CASCADE;
 ALTER TABLE table_detail ADD CONSTRAINT FK_table_detail FOREIGN KEY(group_id, area_id) REFERENCES area(group_id, area_id) ON DELETE CASCADE;
