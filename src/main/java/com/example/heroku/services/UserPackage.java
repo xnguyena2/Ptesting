@@ -122,7 +122,8 @@ public class UserPackage {
             float realPrice = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPayment() : 0;
             float discount = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getDiscount_amount() + productPackage.getDiscount_percent() * productPackage.getPrice() : 0;
             float ship = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getShip_price() : 0;
-            return buyer.insertOrUpdate(buyer1, totalPrice, realPrice, ship, discount).then(Mono.just(productPackage));
+            int point = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPoint() : 0;
+            return buyer.insertOrUpdate(buyer1, totalPrice, realPrice, ship, discount, point).then(Mono.just(productPackage));
         }
         return Mono.just(productPackage);
     }
@@ -135,7 +136,8 @@ public class UserPackage {
             float realPrice = -productPackage.getPayment();
             float discount = -(productPackage.getDiscount_amount() + productPackage.getDiscount_percent() * productPackage.getPrice());
             float ship = -productPackage.getShip_price();
-            return buyer.updatePrice(productPackage.getGroup_id(), device_id, totalPrice, realPrice, ship, discount).then(Mono.just(productPackage));
+            int point = -productPackage.getPoint();
+            return buyer.updatePrice(productPackage.getGroup_id(), device_id, totalPrice, realPrice, ship, discount, point).then(Mono.just(productPackage));
         }
         return Mono.just(productPackage);
     }
@@ -145,7 +147,7 @@ public class UserPackage {
                 detail.getPackage_type(), detail.getVoucher(),
                 detail.getArea_id(), detail.getArea_name(), detail.getTable_id(), detail.getTable_name(),
                 detail.getPrice(), detail.getPayment(), detail.getDiscount_amount(), detail.getDiscount_percent(), detail.getShip_price(), detail.getCost(), detail.getProfit(),
-                detail.getNote(), detail.getImage(), detail.getProgress(), detail.getStatus(), detail.getCreateat());
+                detail.getPoint(), detail.getNote(), detail.getImage(), detail.getProgress(), detail.getStatus(), detail.getCreateat());
     }
 
     Mono<com.example.heroku.model.UserPackage> savePackageItem(com.example.heroku.model.UserPackage userPackage) {

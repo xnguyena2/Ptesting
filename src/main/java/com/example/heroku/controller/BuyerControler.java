@@ -62,7 +62,7 @@ public class BuyerControler {
     @PostMapping("/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Buyer> create(@RequestBody @Valid Buyer buyer) {
-        return buyerServices.insertOrUpdate(buyer.AutoFill(),0,0,0,0);
+        return buyerServices.insertOrUpdate(buyer.AutoFill(),0,0,0,0, 0);
     }
 
     @PostMapping("/admin/delete")

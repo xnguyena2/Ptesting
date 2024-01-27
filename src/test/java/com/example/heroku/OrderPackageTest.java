@@ -349,13 +349,13 @@ public class OrderPackageTest extends TestConfig {
                         .group_id(mainGroup)
                         .phone_number("03030303030")
                         .reciver_fullname("phong nguyen")
-                .build().AutoFill(), 0,0,0,0).block();
+                .build().AutoFill(), 0,0,0,0, 0).block();
 
         buyer.insertOrUpdate(Buyer.builder()
                 .group_id(mainGroup)
                 .phone_number("04040404040")
                 .reciver_fullname("phong nguyen")
-                .build().AutoFill(), 0,0,0,0).block();
+                .build().AutoFill(), 0,0,0,0, 0).block();
 
         buyer.GetAllDirect(SearchQuery.builder().group_id(mainGroup).page(0).size(500).build())
                 .sort(Comparator.comparing(BuyerData::getDevice_id))

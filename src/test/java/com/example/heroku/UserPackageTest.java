@@ -1425,6 +1425,7 @@ public class UserPackageTest {
                 .cost(444)
                 .profit(7878)
                 .staff_id("nguyen_phong")
+                .point(-77)
                 .buyer(Buyer.builder()
                         .phone_number(" +84 0 229292 22")
                         .reciver_fullname("test create package")
@@ -1468,6 +1469,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
+                    assertThat(userPackage.getPoint()).isEqualTo(-77);
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
@@ -1476,6 +1478,7 @@ public class UserPackageTest {
                     assertThat(buyer1.getRegion_id()).isEqualTo(294);
                     assertThat(buyer1.getDistrict_id()).isEqualTo(484);
                     assertThat(buyer1.getWard_id()).isEqualTo(10379);
+                    assertThat(buyer1.getPoint()).isEqualTo(-77);
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
@@ -1608,7 +1611,7 @@ public class UserPackageTest {
                     assertThat(buyerData.getReal_price()).isEqualTo(7868);
                     assertThat(buyerData.getTotal_price()).isEqualTo(0);
                     assertThat(buyerData.getShip_price()).isEqualTo(20000);
-                    assertThat(buyerData.getPoint()).isEqualTo(0);
+                    assertThat(buyerData.getPoint()).isEqualTo(-77);
                     assertThat(buyerData.getDevice_id()).isEqualTo("0022929222");
                     assertThat(buyerData.getRegion_id()).isEqualTo(294);
                     assertThat(buyerData.getDistrict_id()).isEqualTo(484);
