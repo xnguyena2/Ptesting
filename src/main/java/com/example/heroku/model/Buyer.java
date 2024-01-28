@@ -46,6 +46,16 @@ public class Buyer extends BaseEntity {
 
     private ActiveStatus status;
 
+    public static Buyer CreateUnknowBuyer() {
+        return Buyer.builder()
+                .device_id("")
+                .phone_number("Khách ngẫu nhiên")
+                .phone_number_clean("Khách ngẫu nhiên")
+                .status(ActiveStatus.ACTIVE)
+                .reciver_fullname("Khách lẻ")
+                .build();
+    }
+
     public Buyer AutoFill() {
         super.AutoFill();
         phone_number_clean = Util.CleanPhoneNumber(phone_number);

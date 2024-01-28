@@ -115,17 +115,20 @@ public class UserPackage {
     Mono<ProductPackage> saveBuyer(ProductPackage productPackage) {
 
         com.example.heroku.model.Buyer buyerInfo = productPackage.getBuyer();
-        if (buyerInfo != null && buyerInfo.getPhone_number() != null && !buyerInfo.getPhone_number().isEmpty()) {
-            com.example.heroku.model.Buyer buyer1 = buyerInfo.AutoFill(productPackage.getGroup_id());
-            productPackage.setDevice_id(buyer1.getDevice_id());
-            float totalPrice = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPrice() : 0;
-            float realPrice = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPayment() : 0;
-            float discount = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getDiscount_amount() + productPackage.getDiscount_percent() * productPackage.getPrice() : 0;
-            float ship = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getShip_price() : 0;
-            int point = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPoint() : 0;
-            return buyer.insertOrUpdate(buyer1, totalPrice, realPrice, ship, discount, point).then(Mono.just(productPackage));
+        if (buyerInfo == null && productPackage.getStatus() == UserPackageDetail.Status.DONE) {
+            buyerInfo = com.example.heroku.model.Buyer.CreateUnknowBuyer();
         }
-        return Mono.just(productPackage);
+        if (buyerInfo == null) {
+            return Mono.just(productPackage);
+        }
+        buyerInfo.AutoFill(productPackage.getGroup_id());
+        productPackage.setDevice_id(buyerInfo.getDevice_id());
+        float totalPrice = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPrice() : 0;
+        float realPrice = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPayment() : 0;
+        float discount = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getDiscount_amount() + productPackage.getDiscount_percent() * productPackage.getPrice() : 0;
+        float ship = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getShip_price() : 0;
+        int point = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPoint() : 0;
+        return buyer.insertOrUpdate(buyerInfo, totalPrice, realPrice, ship, discount, point).then(Mono.just(productPackage));
     }
 
     Mono<UserPackageDetail> removePackgeOfBuyer(UserPackageDetail productPackage) {
