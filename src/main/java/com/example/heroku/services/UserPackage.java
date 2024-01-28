@@ -68,7 +68,7 @@ public class UserPackage {
                         .filter(userPackageDetail -> userPackageDetail.getStatus() != UserPackageDetail.Status.DONE)
                         .flatMap(userPackageDetail -> saveBuyer(productPackage))
                         .flatMap(this::savePackageDetail)
-                        .flatMap(productPackage1 -> userPackageRepository.DeleteProductByUserIDAndPackageID(productPackage1.getGroup_id(), productPackage1.getDevice_id(), productPackage1.getPackage_second_id())
+                        .flatMap(productPackage1 -> userPackageRepository.DeleteProductByPackageID(productPackage1.getGroup_id(), productPackage1.getPackage_second_id())
                                 .then(Mono.just(productPackage1))
                         )
                         .filter(productPackage1 -> productPackage1.getUserPackage() != null)
@@ -90,7 +90,7 @@ public class UserPackage {
                 Mono.just(productPackage)
                         .flatMap(this::saveBuyer)
                         .flatMap(this::savePackageDetail)
-                        .flatMap(productPackage1 -> userPackageRepository.DeleteProductByUserIDAndPackageID(productPackage1.getGroup_id(), productPackage1.getDevice_id(), productPackage1.getPackage_second_id())
+                        .flatMap(productPackage1 -> userPackageRepository.DeleteProductByPackageID(productPackage1.getGroup_id(), productPackage1.getPackage_second_id())
                                 .then(Mono.just(productPackage1))
                         )
                         .filter(productPackage1 -> productPackage1.getUserPackage() != null)
@@ -167,7 +167,7 @@ public class UserPackage {
 
     Mono<PackageDataResponse> fillPackageItem(PackageDataResponse packageDataResponse) {
         return
-                userPackageRepository.GetDevicePackageWithID(packageDataResponse.getGroup_id(), packageDataResponse.getDevice_id(), packageDataResponse.getPackage_second_id())
+                userPackageRepository.GetDevicePackageWithID(packageDataResponse.getGroup_id(), packageDataResponse.getPackage_second_id())
                         .flatMap(userPackage ->
                                 beerAPI.GetBeerByIDWithUnit(userPackage.getGroup_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id())
                                         .switchIfEmpty(Mono.just(BeerSubmitData.builder().build()))

@@ -16,8 +16,8 @@ public interface UserPackageRepository extends ReactiveCrudRepository<UserPackag
     @Query(value = "SELECT * FROM user_package WHERE user_package.group_id = :group_id AND user_package.device_id = :device_id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<UserPackage> GetDevicePackage(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("page") int page, @Param("size") int size);
 
-    @Query(value = "SELECT * FROM user_package WHERE user_package.group_id = :group_id AND user_package.device_id = :device_id AND user_package.package_second_id = :package_second_id")
-    Flux<UserPackage> GetDevicePackageWithID(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("package_second_id") String package_second_id);
+    @Query(value = "SELECT * FROM user_package WHERE user_package.group_id = :group_id AND user_package.package_second_id = :package_second_id")
+    Flux<UserPackage> GetDevicePackageWithID(@Param("group_id") String group_id, @Param("package_second_id") String package_second_id);
 
     @Query(value = "DELETE FROM user_package WHERE group_id = :group_id AND device_id = :device_id AND product_unit_second_id = :product_unit_second_id")
     Flux<UserPackage> DeleteProductByBeerUnit(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("product_unit_second_id") String product_unit_second_id);
@@ -25,8 +25,8 @@ public interface UserPackageRepository extends ReactiveCrudRepository<UserPackag
     @Query(value = "DELETE FROM user_package WHERE group_id = :group_id AND device_id = :id")
     Flux<UserPackage> DeleteProductByUserID(@Param("group_id") String groupID, @Param("id") String id);
 
-    @Query(value = "DELETE FROM user_package WHERE group_id = :group_id AND device_id = :device_id AND package_second_id = :package_second_id")
-    Flux<UserPackage> DeleteProductByUserIDAndPackageID(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("package_second_id") String package_second_id);
+    @Query(value = "DELETE FROM user_package WHERE group_id = :group_id AND package_second_id = :package_second_id")
+    Flux<UserPackage> DeleteProductByPackageID(@Param("group_id") String groupID, @Param("package_second_id") String package_second_id);
 
     @Query(value = "INSERT INTO user_package(group_id, device_id, package_second_id, product_second_id, product_unit_second_id, number_unit, status, createat) (SELECT :group_id, :device_id, :package_id, :product_second_id, :product_unit_second_id, :number_unit, :status, NOW() WHERE EXISTS (SELECT * FROM product WHERE product.product_second_id = :product_second_id AND product.status IS DISTINCT FROM 'SOLD_OUT' AND product.status IS DISTINCT FROM 'HIDE' ) AND EXISTS (SELECT * FROM product_unit WHERE product_unit.product_second_id = :product_second_id AND product_unit.product_unit_second_id = :product_unit_second_id AND product_unit.status IS DISTINCT FROM 'SOLD_OUT' AND product_unit.status IS DISTINCT FROM 'HIDE' ) ) ON CONFLICT (group_id, package_second_id, product_second_id, product_unit_second_id) DO UPDATE SET number_unit = user_package.number_unit + :number_unit")
     Mono<UserPackage> AddPackage(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("package_id") String package_id, @Param("product_second_id") String product_second_id, @Param("product_unit_second_id") String product_unit_second_id, @Param("number_unit") int number_unit, @Param("status") UserPackageDetail.Status status);
