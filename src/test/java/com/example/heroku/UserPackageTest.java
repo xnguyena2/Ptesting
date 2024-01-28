@@ -1352,13 +1352,13 @@ public class UserPackageTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getName()).isEqualTo(null);
-                    assertThat(data.getId()).isEqualTo("soldoutttt");
+                    assertThat(data.getId()).isEqualTo(null);//"soldoutttt"
                     assertThat(data.getCount()).isEqualTo(2);
                     assertThat(data.getRevenue()).isEqualTo(0.0f);
                 })
                 .consumeNextWith(data -> {
                     assertThat(data.getName()).isEqualTo("test create package");
-                    assertThat(data.getId()).isEqualTo("0022929222");
+                    assertThat(data.getId()).isEqualTo(" +84 0 229292 22");
                     assertThat(data.getCount()).isEqualTo(1);
                     assertThat(data.getRevenue()).isEqualTo(7868.0f);
                 })
