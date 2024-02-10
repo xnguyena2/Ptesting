@@ -1,5 +1,6 @@
 package com.example.heroku.services;
 
+import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.repository.*;
 import com.example.heroku.model.statistics.*;
 import com.example.heroku.request.beer.SearchQuery;
@@ -29,6 +30,9 @@ public class StatisticServices {
 
     @Autowired
     StatisticBenifitOfProductRepository statisticBenifitOfProductRepository;
+
+    @Autowired
+    StatisticCountOrdersRepository statisticCountOrdersRepository;
 
     @Autowired
     StatisticBenifitOfBuyerRepository statisticBenifitOfBuyerRepository;
@@ -73,6 +77,10 @@ public class StatisticServices {
 
     public Flux<BenifitByProduct> getProductBenifitStatictis(PackageID query) {
         return statisticBenifitOfProductRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus(), query.getPage(), query.getSize());
+    }
+
+    public Mono<CountOrderByDate> getCountCancelReturnStatictis(PackageID query) {
+        return statisticCountOrdersRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), UserPackageDetail.Status.CANCEL, UserPackageDetail.Status.RETURN);
     }
 
     public Flux<BenifitByBuyer> getBuyerBenifitStatictis(PackageID query) {

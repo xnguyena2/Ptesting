@@ -155,13 +155,13 @@ public class UserPackage {
 
     Mono<com.example.heroku.model.UserPackage> savePackageItem(com.example.heroku.model.UserPackage userPackage) {
         return userPackageRepository.InsertOrUpdatePackage(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
-                userPackage.getNumber_unit(), userPackage.getPrice(), userPackage.getDiscount_amount(), userPackage.getDiscount_percent(),
+                userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(), userPackage.getDiscount_amount(), userPackage.getDiscount_percent(),
                 userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());
     }
 
     Mono<com.example.heroku.model.UserPackage> savePackageItemWithoutCheck(com.example.heroku.model.UserPackage userPackage) {
         return userPackageRepository.InsertOrUpdatePackageWithoutCheck(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
-                userPackage.getNumber_unit(), userPackage.getPrice(), userPackage.getDiscount_amount(), userPackage.getDiscount_percent(),
+                userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(), userPackage.getDiscount_amount(), userPackage.getDiscount_percent(),
                 userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());
     }
 

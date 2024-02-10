@@ -12,6 +12,7 @@ public class BenifitByProduct {
     private String product_second_id;
     private String product_unit_second_id;
     private float revenue;
+    private float profit;
     private int number_unit;
     protected Timestamp createat;
 }

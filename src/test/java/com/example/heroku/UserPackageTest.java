@@ -824,6 +824,7 @@ public class UserPackageTest {
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(3)
+                                .buy_price(3)
                                 .price(7)
                                 .discount_amount(19)
                                 .discount_percent(10)
@@ -832,6 +833,7 @@ public class UserPackageTest {
                         com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit2ID.get())
+                                .buy_price(3)
                                 .price(5)
                                 .number_unit(4)
                                 .build()
@@ -1278,6 +1280,7 @@ public class UserPackageTest {
                     }
                     assertThat(thung.getProduct_name()).isEqualTo("beer tiger");
                     assertThat(thung.getRevenue()).isEqualTo(20);
+                    assertThat(thung.getProfit()).isEqualTo(8);
                     assertThat(thung.getNumber_unit()).isEqualTo(4);
                 })
                 .verifyComplete();
@@ -1333,6 +1336,7 @@ public class UserPackageTest {
                     assertThat(data.getProduct_second_id()).isEqualTo("123");
                     assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(data.getNumber_unit()).isEqualTo(109);
+                    assertThat(data.getProfit()).isEqualTo(-8.2f);// (7-3)*3*(1-0.1) - 19
                     assertThat(data.getRevenue()).isEqualTo(-0.1f);// 7*3*(1-0.1) - 19
                     assertThat(data.getProduct_name()).isEqualTo("beer tiger");
                     assertThat(data.getProduct_unit_name()).isEqualTo("lon");
@@ -1342,6 +1346,7 @@ public class UserPackageTest {
                     assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(data.getNumber_unit()).isEqualTo(16);
                     assertThat(data.getRevenue()).isEqualTo(20);
+                    assertThat(data.getProfit()).isEqualTo(8);
                     assertThat(data.getProduct_name()).isEqualTo("beer tiger");
                     assertThat(data.getProduct_unit_name()).isEqualTo("thung");
                 })
@@ -1438,6 +1443,7 @@ public class UserPackageTest {
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(3)
+                                .buy_price(3)
                                 .price(7)
                                 .discount_amount(19)
                                 .discount_percent(10)
@@ -1446,6 +1452,7 @@ public class UserPackageTest {
                         com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit2ID.get())
+                                .buy_price(3)
                                 .price(5)
                                 .number_unit(4)
                                 .build()
@@ -1656,6 +1663,7 @@ public class UserPackageTest {
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(3)
+                                .buy_price(3)
                                 .price(7)
                                 .discount_amount(19)
                                 .discount_percent(10)
@@ -1664,6 +1672,7 @@ public class UserPackageTest {
                         com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit2ID.get())
+                                .buy_price(3)
                                 .price(5)
                                 .number_unit(4)
                                 .build()
@@ -1980,6 +1989,14 @@ public class UserPackageTest {
         statisticServices.getProductBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByProduct::getRevenue))
                 .as(StepVerifier::create)
+                .verifyComplete();
+
+        statisticServices.getCountCancelReturnStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(data -> {
+                    assertThat(data.getCount_cancel()).isEqualTo(1);
+                    assertThat(data.getCount_return()).isEqualTo(1);
+                })
                 .verifyComplete();
 
     }

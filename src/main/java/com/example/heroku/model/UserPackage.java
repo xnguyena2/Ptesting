@@ -29,6 +29,8 @@ public class UserPackage extends BaseEntity {
 
     private float price;
 
+    private float buy_price;
+
     private float discount_amount;
 
     private float discount_percent;
@@ -46,6 +48,7 @@ public class UserPackage extends BaseEntity {
         this.product_unit_second_id = s.product_unit_second_id;
         this.number_unit = s.number_unit;
         this.price = s.price;
+        this.buy_price = s.buy_price;
         this.discount_amount = s.discount_amount;
         this.discount_percent = s.discount_percent;
         this.note = s.note;
