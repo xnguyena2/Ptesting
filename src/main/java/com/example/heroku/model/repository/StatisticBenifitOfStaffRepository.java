@@ -10,6 +10,6 @@ import reactor.core.publisher.Flux;
 import java.sql.Timestamp;
 
 public interface StatisticBenifitOfStaffRepository extends ReactiveCrudRepository<BenifitByBuyer, Long> {
-    @Query(value = "SELECT ss.*, users.username as name FROM (SELECT COUNT(*) AS count, COALESCE(SUM(payment), 0) AS revenue, staff_id AS id FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.status = :status AND (user_package_detail.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime) GROUP BY staff_id LIMIT :size OFFSET (:page * :size)) AS ss LEFT JOIN users ON ss.id = users.username")
+    @Query(value = "SELECT ss.*, users.username AS name FROM (SELECT COUNT(*) AS COUNT, COALESCE(SUM(payment), 0) AS revenue, COALESCE(SUM(profit), 0) AS profit, staff_id AS id FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.status = :status AND (user_package_detail.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime) GROUP BY staff_id LIMIT :size OFFSET (:page * :size)) AS ss LEFT JOIN users ON ss.id = users.username")
     Flux<BenifitByBuyer> getTotalStatictis(@Param("group_id") String groupID, @Param("fromtime") Timestamp from, @Param("totime") Timestamp to, @Param("status") UserPackageDetail.Status status, @Param("page")int page, @Param("size")int size);
 }

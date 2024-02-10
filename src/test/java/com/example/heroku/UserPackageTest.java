@@ -1360,12 +1360,14 @@ public class UserPackageTest {
                     assertThat(data.getId()).isEqualTo(null);//"soldoutttt"
                     assertThat(data.getCount()).isEqualTo(2);
                     assertThat(data.getRevenue()).isEqualTo(0.0f);
+                    assertThat(data.getProfit()).isEqualTo(0.0f);
                 })
                 .consumeNextWith(data -> {
                     assertThat(data.getName()).isEqualTo("test create package");
                     assertThat(data.getId()).isEqualTo(" +84 0 229292 22");
                     assertThat(data.getCount()).isEqualTo(1);
                     assertThat(data.getRevenue()).isEqualTo(7868.0f);
+                    assertThat(data.getProfit()).isEqualTo(7878.0f);
                 })
                 .verifyComplete();
 
@@ -1377,12 +1379,14 @@ public class UserPackageTest {
                     assertThat(data.getId()).isEqualTo(null);
                     assertThat(data.getCount()).isEqualTo(2);
                     assertThat(data.getRevenue()).isEqualTo(0.0f);// 7*3*(1-0.1) - 19
+                    assertThat(data.getProfit()).isEqualTo(0.0f);// 7*3*(1-0.1) - 19
                 })
                 .consumeNextWith(data -> {
                     assertThat(data.getName()).isEqualTo(null);
                     assertThat(data.getId()).isEqualTo("nguyen_phong");
                     assertThat(data.getCount()).isEqualTo(1);
                     assertThat(data.getRevenue()).isEqualTo(7868.0f);// 7*3*(1-0.1) - 19
+                    assertThat(data.getProfit()).isEqualTo(7878.0f);// 7*3*(1-0.1) - 19
                 })
                 .verifyComplete();
 
@@ -1394,18 +1398,21 @@ public class UserPackageTest {
                     assertThat(data.getPrice()).isEqualTo(1);
                     assertThat(data.getShip_price()).isEqualTo(20000);
                     assertThat(data.getRevenue()).isEqualTo(0.0f);// 7*3*(1-0.1) - 19
+                    assertThat(data.getProfit()).isEqualTo(0.0f);// 7*3*(1-0.1) - 19
                 })
                 .consumeNextWith(data -> {
                     assertThat(data.getPackage_second_id()).isEqualTo("package_idddddtttt");
                     assertThat(data.getPrice()).isEqualTo(3);
                     assertThat(data.getShip_price()).isEqualTo(20000);
                     assertThat(data.getRevenue()).isEqualTo(0.0f);// 7*3*(1-0.1) - 19
+                    assertThat(data.getProfit()).isEqualTo(0.0f);// 7*3*(1-0.1) - 19
                 })
                 .consumeNextWith(data -> {
                     assertThat(data.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(data.getPrice()).isEqualTo(0);
                     assertThat(data.getShip_price()).isEqualTo(20000);
                     assertThat(data.getRevenue()).isEqualTo(7868.0f);// 7*3*(1-0.1) - 19
+                    assertThat(data.getProfit()).isEqualTo(7878.0f);// 7*3*(1-0.1) - 19
                 })
                 .verifyComplete();
 

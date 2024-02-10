@@ -7,5 +7,6 @@ public class BenifitByBuyer {
     private String id;
     private String name;
     private float revenue;
+    private float profit;
     private int count;
 }

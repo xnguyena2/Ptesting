@@ -10,6 +10,7 @@ public class BenifitByOrder {
     private Timestamp createat;
     private String package_second_id;
     private float revenue;
+    private float profit;
     private float price;
     private float ship_price;
 }
