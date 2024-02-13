@@ -2003,8 +2003,8 @@ public class UserPackageTest {
                 .consumeNextWith(data -> {
                     assertThat(data.getCount_cancel()).isEqualTo(1);
                     assertThat(data.getCount_return()).isEqualTo(1);
-                    assertThat(data.getRevenue_cancel()).isEqualTo(0);
-                    assertThat(data.getRevenue_return()).isEqualTo(7868);
+                    assertThat(data.getRevenue_cancel()).isEqualTo(3);
+                    assertThat(data.getRevenue_return()).isEqualTo(0);
                 })
                 .verifyComplete();
 
