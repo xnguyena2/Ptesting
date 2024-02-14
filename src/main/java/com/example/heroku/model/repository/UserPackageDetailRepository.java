@@ -34,8 +34,14 @@ public interface UserPackageDetailRepository extends ReactiveCrudRepository<User
     @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND status = :status ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<UserPackageDetail> GetAllPackageDetailByStatus(@Param("group_id") String group_id, @Param("status") UserPackageDetail.Status status, @Param("page") int page, @Param("size") int size);
 
+    @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND status = :status AND id < :id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
+    Flux<UserPackageDetail> GetAllPackageDetailByStatusAfterID(@Param("group_id") String group_id, @Param("status") UserPackageDetail.Status status, @Param("id") int id, @Param("page") int page, @Param("size") int size);
+
     @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND (status = :status OR status = :or_status ) ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<UserPackageDetail> GetAllPackageDetailByStatus(@Param("group_id") String group_id, @Param("status") UserPackageDetail.Status status, @Param("or_status") UserPackageDetail.Status or_status, @Param("page") int page, @Param("size") int size);
+
+    @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND (status = :status OR status = :or_status) AND id < :id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
+    Flux<UserPackageDetail> GetAllPackageDetailByStatusAfterID(@Param("group_id") String group_id, @Param("status") UserPackageDetail.Status status, @Param("or_status") UserPackageDetail.Status or_status, @Param("id") int id, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.device_id = :device_id AND user_package_detail.package_second_id = :package_second_id")
     Mono<UserPackageDetail> GetPackageDetail(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("package_second_id") String package_id);

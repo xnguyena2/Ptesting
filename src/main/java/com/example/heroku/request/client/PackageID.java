@@ -18,6 +18,4 @@ public class PackageID extends BaseID {
     private Timestamp from;
     private Timestamp to;
     private UserPackageDetail.Status status;
-    private int page;
-    private int size;
 }

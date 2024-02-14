@@ -201,7 +201,19 @@ public class UserPackage {
     }
 
     public Flux<PackageDataResponse> GetWorkingPackageByGroup(UserID userID) {
-        return GetPackageByGrouAndStatus(userID, UserPackageDetail.Status.CREATE, UserPackageDetail.Status.DONE);
+        if (userID.getId() == null || userID.getId().isEmpty())
+            return GetPackageByGrouAndStatus(userID, UserPackageDetail.Status.CREATE, UserPackageDetail.Status.DONE);
+        return GetWorkingPackageByGroupAfterID(userID);
+    }
+
+    public Flux<PackageDataResponse> GetWorkingPackageByGroupAfterID(UserID userID) {
+        return GetPackageByGrouAndStatusAfterID(userID, UserPackageDetail.Status.CREATE, UserPackageDetail.Status.DONE);
+    }
+
+    public Flux<PackageDataResponse> GetPackageByGroupAndStatus(UserID userID, UserPackageDetail.Status status) {
+        if (userID.getId() == null || userID.getId().isEmpty())
+            return GetPackageByGrouAndStatus(userID, status);
+        return GetPackageByGrouAndStatusAfterID(userID, status);
     }
 
     public Flux<PackageDataResponse> GetPackageByGrouAndStatus(UserID userID, UserPackageDetail.Status status) {
@@ -210,8 +222,22 @@ public class UserPackage {
                 .flatMap(this::fillPackageItem);
     }
 
+    public Flux<PackageDataResponse> GetPackageByGrouAndStatusAfterID(UserID userID, UserPackageDetail.Status status) {
+        int id = Integer.parseInt(userID.getId());
+        return userPackageDetailRepository.GetAllPackageDetailByStatusAfterID(userID.getGroup_id(), status, id, userID.getPage(), userID.getSize())
+                .map(PackageDataResponse::new)
+                .flatMap(this::fillPackageItem);
+    }
+
     public Flux<PackageDataResponse> GetPackageByGrouAndStatus(UserID userID, UserPackageDetail.Status status, UserPackageDetail.Status or_status) {
         return userPackageDetailRepository.GetAllPackageDetailByStatus(userID.getGroup_id(), status, or_status, userID.getPage(), userID.getSize())
+                .map(PackageDataResponse::new)
+                .flatMap(this::fillPackageItem);
+    }
+
+    public Flux<PackageDataResponse> GetPackageByGrouAndStatusAfterID(UserID userID, UserPackageDetail.Status status, UserPackageDetail.Status or_status) {
+        int id = Integer.parseInt(userID.getId());
+        return userPackageDetailRepository.GetAllPackageDetailByStatusAfterID(userID.getGroup_id(), status, or_status, id, userID.getPage(), userID.getSize())
                 .map(PackageDataResponse::new)
                 .flatMap(this::fillPackageItem);
     }

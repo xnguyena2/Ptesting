@@ -112,7 +112,7 @@ public class UserPackageController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<PackageDataResponse> getByGroupAnsStatus(@RequestBody @Valid PackageID packageID) {
         System.out.println("Get all status package by group: " + packageID.getGroup_id());
-        return userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(packageID.getGroup_id()).page(packageID.getPage()).size(packageID.getSize()).build(), packageID.getStatus());
+        return userPackageAPI.GetPackageByGroupAndStatus(UserID.builder().id(packageID.getPackage_id()).group_id(packageID.getGroup_id()).page(packageID.getPage()).size(packageID.getSize()).build(), packageID.getStatus());
     }
 
 

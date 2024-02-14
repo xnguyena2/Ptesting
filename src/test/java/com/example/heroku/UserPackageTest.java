@@ -1748,7 +1748,7 @@ public class UserPackageTest {
                 .verifyComplete();
 
 
-        userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(group).page(0).size(10000).build(), UserPackageDetail.Status.RETURN)
+        userPackageAPI.GetPackageByGrouAndStatusAfterID(UserID.builder().group_id(group).id("1000").page(0).size(10000).build(), UserPackageDetail.Status.RETURN)
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
@@ -1904,7 +1904,7 @@ public class UserPackageTest {
                 .block();
 
 
-        userPackageAPI.GetWorkingPackageByGroup(UserID.builder().group_id(group).page(0).size(10000).build())
+        userPackageAPI.GetWorkingPackageByGroupAfterID(UserID.builder().group_id(group).id("1000").page(0).size(10000).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
