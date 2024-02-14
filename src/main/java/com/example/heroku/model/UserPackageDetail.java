@@ -93,6 +93,10 @@ public class UserPackageDetail  extends BaseEntity {
         status = s.status;
     }
 
+    public float GetDiscountValue() {
+        return discount_amount + (discount_percent / 100) * price;
+    }
+
     public UserPackageDetail AutoFill() {
         if(package_second_id == null || package_second_id.isEmpty()) {
             package_second_id = Util.getInstance().GenerateID();

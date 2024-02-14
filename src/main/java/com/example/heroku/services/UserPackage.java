@@ -125,7 +125,7 @@ public class UserPackage {
         productPackage.setDevice_id(buyerInfo.getDevice_id());
         float totalPrice = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPrice() : 0;
         float realPrice = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPayment() : 0;
-        float discount = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getDiscount_amount() + productPackage.getDiscount_percent() * productPackage.getPrice() : 0;
+        float discount = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.GetDiscountValue() : 0;
         float ship = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getShip_price() : 0;
         int point = productPackage.getStatus() == UserPackageDetail.Status.DONE ? productPackage.getPoint() : 0;
         return buyer.insertOrUpdate(buyerInfo, totalPrice, realPrice, ship, discount, point).then(Mono.just(productPackage));
@@ -137,7 +137,7 @@ public class UserPackage {
         if (device_id != null && productPackage.getStatus() == UserPackageDetail.Status.DONE) {
             float totalPrice = -productPackage.getPrice();
             float realPrice = -productPackage.getPayment();
-            float discount = -(productPackage.getDiscount_amount() + productPackage.getDiscount_percent() * productPackage.getPrice());
+            float discount = -productPackage.GetDiscountValue();
             float ship = -productPackage.getShip_price();
             int point = -productPackage.getPoint();
             return buyer.updatePrice(productPackage.getGroup_id(), device_id, totalPrice, realPrice, ship, discount, point).then(Mono.just(productPackage));
