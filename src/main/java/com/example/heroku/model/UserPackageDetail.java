@@ -73,6 +73,7 @@ public class UserPackageDetail  extends BaseEntity {
         createat = s.createat;
         package_second_id = s.package_second_id;
         device_id = s.device_id;
+        staff_id = s.staff_id;
         package_type = s.package_type;
         area_id = s.area_id;
         area_name = s.area_name;
