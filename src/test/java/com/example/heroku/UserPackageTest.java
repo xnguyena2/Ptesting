@@ -1336,8 +1336,8 @@ public class UserPackageTest {
                     assertThat(data.getProduct_second_id()).isEqualTo("123");
                     assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(data.getNumber_unit()).isEqualTo(109);
-                    assertThat(data.getProfit()).isEqualTo(-8.2f);// (7-3)*3*(1-0.1) - 19
-                    assertThat(data.getRevenue()).isEqualTo(-0.1f);// 7*3*(1-0.1) - 19
+                    assertThat(data.getProfit()).isEqualTo(-47.1f);// (7*(1 - 0.1) - 19 - 3)*3
+                    assertThat(data.getRevenue()).isEqualTo(-38.1f);// (7*(1 - 0.1) - 19)*3
                     assertThat(data.getProduct_name()).isEqualTo("beer tiger");
                     assertThat(data.getProduct_unit_name()).isEqualTo("lon");
                 })
