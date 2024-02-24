@@ -8,6 +8,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Set;
 
 public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, Long> {
 
@@ -30,4 +32,7 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, 
 
     @Query(value = "SELECT * FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_unit_second_id = :id AND ( product_unit.status IS NULL OR ( product_unit.status != 'SOLD_OUT' AND product_unit.status != 'HIDE' ) )")
     Mono<ProductUnit> findByBeerUnitIDCanOrder(@Param("group_id")String groupID, @Param("id")String id);
+
+    @Query(value = "SELECT * FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_second_id IN (:product_second_ids) AND product_unit.product_unit_second_id IN (:product_unit_second_ids) AND ( product_unit.status IS NULL OR ( product_unit.status != 'SOLD_OUT' AND product_unit.status != 'HIDE' ) )")
+    Flux<ProductUnit> getListUnitByListIDs(@Param("group_id")String groupID, @Param("product_second_ids") List<String> product_second_ids, @Param("product_unit_second_ids") List<String> product_unit_second_ids);
 }

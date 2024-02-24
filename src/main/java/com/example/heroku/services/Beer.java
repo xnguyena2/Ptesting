@@ -19,6 +19,8 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 @Component
 public class Beer {
@@ -102,6 +104,10 @@ public class Beer {
     public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {
         return this.beerRepository.findByIdNotNull(query.getGroup_id(), query.getPage(), query.getSize())
                 .flatMap(this::CoverToSubmitData);
+    }
+
+    public Flux<ProductUnit> getAllProductUnitOfIDs(String groupID, List<String> productIDs, List<String> productUinitIDs) {
+        return beerUnitRepository.getListUnitByListIDs(groupID, productIDs, productUinitIDs);
     }
 
     public Mono<SearchResult<BeerSubmitData>> AdminCountGetAllBeer(SearchQuery query) {

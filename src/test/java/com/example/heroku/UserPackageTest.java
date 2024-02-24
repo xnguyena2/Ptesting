@@ -2,6 +2,7 @@ package com.example.heroku;
 
 import com.example.heroku.model.Buyer;
 import com.example.heroku.model.PaymentTransation;
+import com.example.heroku.model.ProductUnit;
 import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.statistics.*;
 import com.example.heroku.request.beer.ProductPackage;
@@ -19,6 +20,7 @@ import com.example.heroku.util.Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
+import org.assertj.core.api.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -27,6 +29,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -2005,6 +2008,17 @@ public class UserPackageTest {
                     assertThat(data.getCount_return()).isEqualTo(1);
                     assertThat(data.getRevenue_cancel()).isEqualTo(3);
                     assertThat(data.getRevenue_return()).isEqualTo(0);
+                })
+                .verifyComplete();
+
+        beerAPI.getAllProductUnitOfIDs(group, Arrays.asList("sold_out", "123", "hide", "456"), Arrays.asList("", beerUnitsold_out2ID.get(), beerUnit2ID.get(), beerUnit4561ID.get(), "5555"))
+                .sort(Comparator.comparing(ProductUnit::getProduct_second_id))
+                .as(StepVerifier::create)
+                .consumeNextWith(data -> {
+                    assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                })
+                .consumeNextWith(data -> {
+                    assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit4561ID.get());
                 })
                 .verifyComplete();
 
