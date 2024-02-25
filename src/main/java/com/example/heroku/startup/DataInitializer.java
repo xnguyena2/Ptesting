@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.data.r2dbc.core.DatabaseClient;
+import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -75,13 +75,13 @@ public class DataInitializer {
 
             try {
                 String dropSQL = new String(Files.readAllBytes(Paths.get("Asset/drop.sql")));
-                databaseClient.execute(dropSQL)
+                databaseClient.sql(dropSQL)
                         .fetch()
                         .rowsUpdated()
                         .subscribe();
 
                 dropSQL = new String(Files.readAllBytes(Paths.get("Asset/database.sql")));
-                databaseClient.execute(dropSQL)
+                databaseClient.sql(dropSQL)
                         .fetch()
                         .rowsUpdated()
                         .subscribe();

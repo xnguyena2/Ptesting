@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.3.12.RELEASE' //'2.3.0.RELEASE'
+		springBootVersion = '2.4.0' //'2.3.0.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -20,6 +20,14 @@ sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+}
+
+allprojects {
+	tasks.withType(JavaCompile).tap {
+		configureEach {
+			options.compilerArgs << "-Xlint:deprecation"
+		}
+	}
 }
 
 dependencies {
@@ -63,5 +71,8 @@ dependencies {
 	testImplementation "io.projectreactor:reactor-test"
 	testImplementation "org.springframework.security:spring-security-test"
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
+	testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+
+	runtimeOnly group: 'org.springframework.boot', name: 'spring-boot-properties-migrator', version: '2.4.0'
 
 }
