@@ -33,6 +33,8 @@ public class Product extends BaseEntity {
 
     private String category;
 
+    private String unit_category_config;
+
     private Status status;
 
     private String appendToken(String token, String appendTxt) {

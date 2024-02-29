@@ -28,6 +28,7 @@ public class BeerSubmitData {
     private String upc;
     private String meta_search;
     private String category;
+    private String unit_category_config;
     private String status;
     private List<Image> images;
     private BeerUnit[] listUnit;
@@ -65,26 +66,13 @@ public class BeerSubmitData {
                                 .sku(this.sku)
                                 .upc(this.upc)
                                 .category(this.category)
+                                .unit_category_config(this.unit_category_config)
                                 .status(Product.Status.get(this.status))
                                 .meta_search(this.meta_search)
                                 .build()
                 )
                 .build()
                 .SetBeerUnit(listMapedUnit);
-    }
-
-    public BeerSubmitData AddImage(Image image) {
-        if (this.images == null) {
-            this.images = new ArrayList<>();
-        }
-        this.images.add(image);
-        return this;
-    }
-
-    public static BeerSubmitData FromProductInfo(BeerInfo info) {
-        BeerSubmitData beerSubmitData = FromBeer(info.getProduct());
-        beerSubmitData.SetBeerUnit(Arrays.asList(info.getProductUnit()));
-        return beerSubmitData;
     }
 
     public static BeerSubmitData FromBeer(Product product) {
@@ -96,6 +84,7 @@ public class BeerSubmitData {
                 .sku(product.getSku())
                 .upc(product.getUpc())
                 .category(product.getCategory())
+                .unit_category_config(product.getUnit_category_config())
                 .status(product.GetStatusNuable().getName())
                 .meta_search(product.getMeta_search())
                 .build();
@@ -122,6 +111,20 @@ public class BeerSubmitData {
                     .build();
         }
         return this;
+    }
+
+    public BeerSubmitData AddImage(Image image) {
+        if (this.images == null) {
+            this.images = new ArrayList<>();
+        }
+        this.images.add(image);
+        return this;
+    }
+
+    public static BeerSubmitData FromProductInfo(BeerInfo info) {
+        BeerSubmitData beerSubmitData = FromBeer(info.getProduct());
+        beerSubmitData.SetBeerUnit(Arrays.asList(info.getProductUnit()));
+        return beerSubmitData;
     }
 
     @Data

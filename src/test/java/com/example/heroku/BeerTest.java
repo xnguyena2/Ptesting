@@ -125,6 +125,7 @@ public class BeerTest {
                                 .name("beer tiger")
                                 .product_second_id("456")
                                 .group_id(group)
+                                .unit_category_config("hello i am config")
                                 .build()
                                 .AutoFill()
                         )
@@ -186,6 +187,7 @@ public class BeerTest {
                                         "- bia sản xuất từ hà lan")
                                 .name("beer tiger")
                                 .product_second_id("456")
+                                .unit_category_config("hello i am config")
                                 .group_id(group)
                                 .build()
                                 .AutoFill()
@@ -292,6 +294,7 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getUpc()).isEqualTo(null);
                     assertThat(beerInfo.getProduct().getSku()).isEqualTo(null);
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
+                    assertThat(beerInfo.getProduct().getUnit_category_config()).isEqualTo("hello i am config");
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger day la beer tiger co non do con cao nen chu y khi su dung:\n" +
                             "- bia thom ngon\n" +
                             "- bia nhap ngoai\n" +
