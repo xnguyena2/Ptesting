@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS users_info (id SERIAL PRIMARY KEY, group_id VARCHAR N
 
 
 CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, tokens TSVECTOR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, name VARCHAR, detail TEXT, sku VARCHAR, upc VARCHAR, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, buy_price float8, price float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, imgid VARCHAR, tag VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, categorys VARCHAR, config TEXT, createat TIMESTAMP);
 
@@ -49,6 +49,8 @@ CREATE INDEX search_token_index ON search_token(tokens);
 CREATE INDEX product_index ON product(product_second_id);
 CREATE INDEX product_detail_index ON product(detail);
 CREATE INDEX product_unit_index ON product_unit(product_unit_second_id);
+CREATE INDEX product_unit_sku_index ON product_unit(sku);
+CREATE INDEX product_unit_upc_index ON product_unit(upc);
 CREATE INDEX product_import_index ON product_import(product_import_second_id);
 CREATE INDEX user_device_index ON user_device(device_id);
 CREATE INDEX user_package_detail_index ON user_package_detail(package_second_id);
@@ -78,6 +80,8 @@ ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
 ALTER TABLE users_info ADD CONSTRAINT UQ_users_info_name UNIQUE(username);
 ALTER TABLE product ADD CONSTRAINT UQ_product_second_id UNIQUE(group_id, product_second_id);
 ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_second_id UNIQUE(group_id, product_second_id, product_unit_second_id);
+ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_sku UNIQUE(group_id, sku);
+ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_upc UNIQUE(group_id, upc);
 ALTER TABLE search_token ADD CONSTRAINT UQ_search_token_product_second_id UNIQUE(group_id, product_second_id);
 ALTER TABLE user_fcm ADD CONSTRAINT UQ_user_fcm_device_id UNIQUE(group_id, device_id);
 ALTER TABLE voucher ADD CONSTRAINT UQ_voucher UNIQUE(group_id, voucher_second_id);

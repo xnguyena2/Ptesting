@@ -63,15 +63,19 @@ public class BeerTest {
                 BeerInfo
                         .builder()
                         .productUnit(new ProductUnit[]{
-                                ProductUnit.builder().product_second_id("123").name("thung").group_id(group).wholesale_number(34).wholesale_price(1233).build(),
-                                ProductUnit.builder().product_second_id("123").name("lon").group_id(group).wholesale_number(43).wholesale_price(3321).build()
+                                ProductUnit.builder().product_second_id("123").name("thung").group_id(group)
+                                        .upc("343434")
+                                        .sku("76767676")
+                                        .wholesale_number(34).wholesale_price(1233).build(),
+                                ProductUnit.builder().product_second_id("123").name("lon").group_id(group)
+                                        .upc("3434345")
+                                        .sku("767676767")
+                                        .wholesale_number(43).wholesale_price(3321).build()
                         })
                         .product(Product
                                 .builder()
                                 .category(Category.CRAB.getName())
                                 .name("beer tiger")
-                                .upc("343434")
-                                .sku("76767676")
                                 .product_second_id("123")
                                 .group_id(group)
                                 .build()
@@ -262,22 +266,24 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
-                    assertThat(beerInfo.getProduct().getUpc()).isEqualTo("343434");
-                    assertThat(beerInfo.getProduct().getSku()).isEqualTo("76767676");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
-                    assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger 76767676 343434");
+                    assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("lon");
+                                assertThat(beerUnit.getUpc()).isEqualTo("3434345");
+                                assertThat(beerUnit.getSku()).isEqualTo("767676767");
                                 assertThat(beerUnit.getWholesale_number()).isEqualTo(43);
                                 assertThat(beerUnit.getWholesale_price()).isEqualTo(3321);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
+                                assertThat(beerUnit.getUpc()).isEqualTo("343434");
+                                assertThat(beerUnit.getSku()).isEqualTo("76767676");
                                 assertThat(beerUnit.getWholesale_number()).isEqualTo(34);
                                 assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
@@ -291,8 +297,6 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("456");
-                    assertThat(beerInfo.getProduct().getUpc()).isEqualTo(null);
-                    assertThat(beerInfo.getProduct().getSku()).isEqualTo(null);
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProduct().getUnit_category_config()).isEqualTo("hello i am config");
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger day la beer tiger co non do con cao nen chu y khi su dung:\n" +
@@ -305,10 +309,14 @@ public class BeerTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("lon");
+                                assertThat(beerUnit.getSku()).isEqualTo(null);
+                                assertThat(beerUnit.getUpc()).isEqualTo(null);
                                 assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(new Timestamp(new Date().getTime())));
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
+                                assertThat(beerUnit.getSku()).isEqualTo(null);
+                                assertThat(beerUnit.getUpc()).isEqualTo(null);
                                 assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(Timestamp.valueOf("2021-03-31 20:45:00")));
                                 assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), new Timestamp(new Date().getTime())) >= 0).isEqualTo(false);
                             })

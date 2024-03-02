@@ -48,7 +48,6 @@ public class Beer {
                 .flatMap(product ->
                         this.beerRepository.saveProduct(product.getGroup_id(), product.getProduct_second_id(),
                                 product.getName(), product.getDetail(),
-                                product.getSku(), product.getUpc(),
                                 product.getCategory(), product.getUnit_category_config(),
                                 product.getMeta_search(),
                                 product.getStatus(), product.getCreateat()

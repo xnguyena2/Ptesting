@@ -25,10 +25,6 @@ public class Product extends BaseEntity {
 
     private String detail;
 
-    private String sku;
-
-    private String upc;
-
     private String meta_search;
 
     private String category;
@@ -51,8 +47,6 @@ public class Product extends BaseEntity {
         String token = "";
         token = appendToken(token, name);
         token = appendToken(token, detail);
-        token = appendToken(token, sku);
-        token = appendToken(token, upc);
         if (token.isEmpty()) {
             return token;
         }

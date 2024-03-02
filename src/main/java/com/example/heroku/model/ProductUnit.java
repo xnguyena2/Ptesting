@@ -26,6 +26,10 @@ public class ProductUnit extends BaseEntity {
 
     private String name;
 
+    private String sku;
+
+    private String upc;
+
     private float price;
 
     private float wholesale_price;

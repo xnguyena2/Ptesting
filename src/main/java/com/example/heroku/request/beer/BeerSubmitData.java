@@ -24,8 +24,6 @@ public class BeerSubmitData {
     private String beerSecondID;
     private String name;
     private String detail;
-    private String sku;
-    private String upc;
     private String meta_search;
     private String category;
     private String unit_category_config;
@@ -41,6 +39,8 @@ public class BeerSubmitData {
                     .name(beerUnit.name)
                     .group_id(this.group_id)
                     .product_second_id(this.beerSecondID)
+                    .sku(beerUnit.sku)
+                    .upc(beerUnit.upc)
                     .price(beerUnit.price)
                     .wholesale_price(beerUnit.wholesale_price)
                     .wholesale_number(beerUnit.wholesale_number)
@@ -63,8 +63,6 @@ public class BeerSubmitData {
                                 .product_second_id(this.beerSecondID)
                                 .name(this.name)
                                 .detail(this.detail)
-                                .sku(this.sku)
-                                .upc(this.upc)
                                 .category(this.category)
                                 .unit_category_config(this.unit_category_config)
                                 .status(Product.Status.get(this.status))
@@ -81,8 +79,6 @@ public class BeerSubmitData {
                 .beerSecondID(product.getProduct_second_id())
                 .name(product.getName())
                 .detail(product.getDetail())
-                .sku(product.getSku())
-                .upc(product.getUpc())
                 .category(product.getCategory())
                 .unit_category_config(product.getUnit_category_config())
                 .status(product.GetStatusNuable().getName())
@@ -98,6 +94,8 @@ public class BeerSubmitData {
                     .group_id(item.getGroup_id())
                     .beer(item.getProduct_second_id())
                     .name(item.getName())
+                    .sku(item.getSku())
+                    .upc(item.getUpc())
                     .price(item.getPrice())
                     .wholesale_price(item.getWholesale_price())
                     .wholesale_number(item.getWholesale_number())
@@ -135,6 +133,8 @@ public class BeerSubmitData {
         private String group_id;
         private String beer;
         private String name;
+        private String sku;
+        private String upc;
         private float price;
         private float wholesale_price;
         private int wholesale_number;
