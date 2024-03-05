@@ -51,7 +51,7 @@ public class BeerSubmitData {
                     .volumetric(beerUnit.volumetric)
                     .weight(beerUnit.weight)
                     .product_unit_second_id(beerUnit.beer_unit_second_id)
-                    .is_show(beerUnit.is_show)
+                    .visible(beerUnit.visible)
                     .status(ProductUnit.Status.get(beerUnit.status))
                     .date_expire(beerUnit.GetExpirDateTime())
                     .build());
@@ -110,7 +110,7 @@ public class BeerSubmitData {
                     .volumetric(item.getVolumetric())
                     .weight(item.getWeight())
                     .beer_unit_second_id(item.getProduct_unit_second_id())
-                    .is_show(item.getIs_show())
+                    .visible(item.isVisible())
                     .status(item.GetStatusNuable().toString())
                     .build();
         }
@@ -152,7 +152,7 @@ public class BeerSubmitData {
         private float volumetric;
         private float weight;
         private String beer_unit_second_id;
-        private boolean is_show;
+        private boolean visible;
         private String status;
 
         public Timestamp GetExpirDateTime() {

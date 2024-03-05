@@ -70,7 +70,7 @@ public class BeerTest {
                                         .wholesale_price(1233)
                                         .promotional_price(234)
                                         .inventory_number(345)
-                                        .is_show(true)
+                                        .visible(true)
                                         .build(),
                                 ProductUnit.builder().product_second_id("123").name("lon").group_id(group)
                                         .upc("3434345")
@@ -79,7 +79,7 @@ public class BeerTest {
                                         .wholesale_price(3321)
                                         .promotional_price(432)
                                         .inventory_number(543)
-                                        .is_show(false)
+                                        .visible(false)
                                         .build()
                         })
                         .product(Product
@@ -290,7 +290,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getWholesale_price()).isEqualTo(3321);
                                 assertThat(beerUnit.getPromotional_price()).isEqualTo(432);
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(543);
-                                assertThat(beerUnit.getIs_show()).isEqualTo(false);
+                                assertThat(beerUnit.isVisible()).isEqualTo(false);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .consumeNextWith(beerUnit -> {
@@ -301,7 +301,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
                                 assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(345);
-                                assertThat(beerUnit.getIs_show()).isEqualTo(true);
+                                assertThat(beerUnit.isVisible()).isEqualTo(true);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .verifyComplete();

@@ -53,19 +53,9 @@ public class ProductUnit extends BaseEntity {
 
     private float weight;
 
-    private boolean is_show;
+    private boolean visible;
 
     private Status status;
-
-    //geter of is_show
-    public boolean getIs_show() {
-        return is_show;
-    }
-
-    //setter of is_show
-    public void setIs_show(boolean isValid) {
-        this.is_show = isValid;
-    }
 
     public enum Status{
         AVARIABLE("AVARIABLE"),
