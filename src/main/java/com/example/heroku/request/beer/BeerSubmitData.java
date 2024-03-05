@@ -110,7 +110,7 @@ public class BeerSubmitData {
                     .volumetric(item.getVolumetric())
                     .weight(item.getWeight())
                     .beer_unit_second_id(item.getProduct_unit_second_id())
-                    .is_show(item.is_show())
+                    .is_show(item.getIs_show())
                     .status(item.GetStatusNuable().toString())
                     .build();
         }

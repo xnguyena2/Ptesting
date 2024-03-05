@@ -1,8 +1,11 @@
 package com.example.heroku.model;
 
-import com.example.heroku.util.Util;
 import com.example.heroku.model.entity.BaseEntity;
-import lombok.*;
+import com.example.heroku.util.Util;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
@@ -53,6 +56,16 @@ public class ProductUnit extends BaseEntity {
     private boolean is_show;
 
     private Status status;
+
+    //geter of is_show
+    public boolean getIs_show() {
+        return is_show;
+    }
+
+    //setter of is_show
+    public void setIs_show(boolean isValid) {
+        this.is_show = isValid;
+    }
 
     public enum Status{
         AVARIABLE("AVARIABLE"),

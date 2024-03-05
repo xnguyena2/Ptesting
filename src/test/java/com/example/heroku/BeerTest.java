@@ -290,7 +290,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getWholesale_price()).isEqualTo(3321);
                                 assertThat(beerUnit.getPromotional_price()).isEqualTo(432);
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(543);
-                                assertThat(beerUnit.is_show()).isEqualTo(false);
+                                assertThat(beerUnit.getIs_show()).isEqualTo(false);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .consumeNextWith(beerUnit -> {
@@ -301,7 +301,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
                                 assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(345);
-                                assertThat(beerUnit.is_show()).isEqualTo(true);
+                                assertThat(beerUnit.getIs_show()).isEqualTo(true);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .verifyComplete();
