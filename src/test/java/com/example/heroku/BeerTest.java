@@ -66,11 +66,21 @@ public class BeerTest {
                                 ProductUnit.builder().product_second_id("123").name("thung").group_id(group)
                                         .upc("343434")
                                         .sku("76767676")
-                                        .wholesale_number(34).wholesale_price(1233).build(),
+                                        .wholesale_number(34)
+                                        .wholesale_price(1233)
+                                        .promotional_price(234)
+                                        .inventory_number(345)
+                                        .is_show(true)
+                                        .build(),
                                 ProductUnit.builder().product_second_id("123").name("lon").group_id(group)
                                         .upc("3434345")
                                         .sku("767676767")
-                                        .wholesale_number(43).wholesale_price(3321).build()
+                                        .wholesale_number(43)
+                                        .wholesale_price(3321)
+                                        .promotional_price(432)
+                                        .inventory_number(543)
+                                        .is_show(false)
+                                        .build()
                         })
                         .product(Product
                                 .builder()
@@ -278,6 +288,9 @@ public class BeerTest {
                                 assertThat(beerUnit.getSku()).isEqualTo("767676767");
                                 assertThat(beerUnit.getWholesale_number()).isEqualTo(43);
                                 assertThat(beerUnit.getWholesale_price()).isEqualTo(3321);
+                                assertThat(beerUnit.getPromotional_price()).isEqualTo(432);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(543);
+                                assertThat(beerUnit.is_show()).isEqualTo(false);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .consumeNextWith(beerUnit -> {
@@ -286,6 +299,9 @@ public class BeerTest {
                                 assertThat(beerUnit.getSku()).isEqualTo("76767676");
                                 assertThat(beerUnit.getWholesale_number()).isEqualTo(34);
                                 assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
+                                assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.is_show()).isEqualTo(true);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .verifyComplete();

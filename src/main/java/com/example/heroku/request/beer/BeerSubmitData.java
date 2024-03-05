@@ -44,11 +44,14 @@ public class BeerSubmitData {
                     .price(beerUnit.price)
                     .wholesale_price(beerUnit.wholesale_price)
                     .wholesale_number(beerUnit.wholesale_number)
+                    .promotional_price(beerUnit.promotional_price)
+                    .inventory_number(beerUnit.inventory_number)
                     .buy_price(beerUnit.buy_price)
                     .discount(beerUnit.discount)
                     .volumetric(beerUnit.volumetric)
                     .weight(beerUnit.weight)
                     .product_unit_second_id(beerUnit.beer_unit_second_id)
+                    .is_show(beerUnit.is_show)
                     .status(ProductUnit.Status.get(beerUnit.status))
                     .date_expire(beerUnit.GetExpirDateTime())
                     .build());
@@ -99,12 +102,15 @@ public class BeerSubmitData {
                     .price(item.getPrice())
                     .wholesale_price(item.getWholesale_price())
                     .wholesale_number(item.getWholesale_number())
+                    .promotional_price(item.getPromotional_price())
+                    .inventory_number(item.getInventory_number())
                     .buy_price(item.getBuy_price())
                     .discount(item.getDiscount())
                     .dateExpir(NgbDateStruct.FromTimestamp(item.getDate_expire()))
                     .volumetric(item.getVolumetric())
                     .weight(item.getWeight())
                     .beer_unit_second_id(item.getProduct_unit_second_id())
+                    .is_show(item.is_show())
                     .status(item.GetStatusNuable().toString())
                     .build();
         }
@@ -138,12 +144,15 @@ public class BeerSubmitData {
         private float price;
         private float wholesale_price;
         private int wholesale_number;
+        private float promotional_price;
+        private int inventory_number;
         private float buy_price;
         private float discount;
         private NgbDateStruct dateExpir;
         private float volumetric;
         private float weight;
         private String beer_unit_second_id;
+        private boolean is_show;
         private String status;
 
         public Timestamp GetExpirDateTime() {

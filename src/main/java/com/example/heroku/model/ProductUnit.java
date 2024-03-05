@@ -32,9 +32,13 @@ public class ProductUnit extends BaseEntity {
 
     private float price;
 
-    private float wholesale_price;
+    private float promotional_price;
+
+    private int inventory_number;
 
     private int wholesale_number;
+
+    private float wholesale_price;
 
     private float buy_price;
 
@@ -45,6 +49,8 @@ public class ProductUnit extends BaseEntity {
     private float volumetric;
 
     private float weight;
+
+    private boolean is_show;
 
     private Status status;
 
