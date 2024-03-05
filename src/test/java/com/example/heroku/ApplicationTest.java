@@ -139,7 +139,7 @@ public class ApplicationTest extends TestConfig {
     @Test
     @Order(3)
     public void BeerTest() {
-        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).build().saveBeerTest();
+//        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).build().saveBeerTest();
     }
 
     @Test
@@ -171,6 +171,7 @@ public class ApplicationTest extends TestConfig {
     @Test
     @Order(4)
     public void testUserAddBeerToPackage() {
+        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).build().saveBeerTest();
         UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(mainGroup).buyer(buyer).statisticServices(statisticServices).build().TestUserPackage();
     }
 

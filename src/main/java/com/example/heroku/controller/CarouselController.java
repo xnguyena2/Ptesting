@@ -31,7 +31,7 @@ public class CarouselController {
         return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<com.example.heroku.model.Image>>builder()
                 .principal(principal)
                 .subject(() -> groupid)
-                .monoAction(() -> imageAPI.Upload(file, "Carousel", groupid))
+                .monoAction(() -> imageAPI.Upload(file, "Carousel", groupid, null))
                 .build().toMono();
     }
 

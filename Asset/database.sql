@@ -261,3 +261,64 @@ $$;
 
 
 CREATE OR REPLACE TRIGGER update_buyer AFTER INSERT ON package_order FOR EACH ROW EXECUTE PROCEDURE add_buyer();
+
+
+CREATE OR REPLACE FUNCTION decrese_product_unit_inventory()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+	UPDATE product_unit
+    SET
+    	inventory_number = product_unit.inventory_number - NEW.number_unit
+    WHERE NEW.status <> 'RETURN' AND NEW.status <> 'CANCEL' AND NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
+
+	RETURN NEW;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION increase_product_unit_inventory()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+	UPDATE product_unit
+    SET
+    	inventory_number = product_unit.inventory_number + OLD.number_unit
+    WHERE OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id;
+
+	RETURN OLD;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION update_product_unit_inventory()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+	UPDATE product_unit
+    SET
+    	inventory_number = CASE
+    	                    WHEN OLD.status = NEW.status AND NEW.status <> 'RETURN' AND NEW.status <> 'CANCEL' THEN product_unit.inventory_number + OLD.number_unit - NEW.number_unit
+    	                    WHEN OLD.status <> NEW.status AND OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND (NEW.status = 'RETURN' OR NEW.status = 'CANCEL') THEN product_unit.inventory_number + OLD.number_unit
+    	                    WHEN OLD.status <> NEW.status AND (OLD.status = 'RETURN' OR OLD.status = 'CANCEL') AND NEW.status <> 'RETURN' AND NEW.status = 'CANCEL' THEN product_unit.inventory_number - OLD.number_unit
+    	                    ELSE product_unit.inventory_number
+    	                   END
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
+
+	RETURN NEW;
+END;
+$$;
+
+
+CREATE OR REPLACE TRIGGER decrese_product_unit_inventory AFTER INSERT ON user_package FOR EACH ROW EXECUTE PROCEDURE decrese_product_unit_inventory();
+CREATE OR REPLACE TRIGGER increase_product_unit_inventory AFTER DELETE ON user_package FOR EACH ROW EXECUTE PROCEDURE increase_product_unit_inventory();
+CREATE OR REPLACE TRIGGER update_product_unit_inventory AFTER UPDATE ON user_package FOR EACH ROW EXECUTE PROCEDURE update_product_unit_inventory();

@@ -32,7 +32,7 @@ public class ImageController {
         return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<Image>>builder()
                 .principal(principal)
                 .subject(() -> groupid)
-                .monoAction(() -> imageAPI.Upload(file, categoryID, groupid))
+                .monoAction(() -> imageAPI.Upload(file, categoryID, groupid, null))
                 .build().toMono();
     }
 

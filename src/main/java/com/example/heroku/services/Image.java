@@ -32,7 +32,7 @@ public class Image {
     private FlickrLib flickrLib;
 
 
-    public Mono<ResponseEntity<com.example.heroku.model.Image>> Upload(Flux<FilePart> file, String category, String groupID) {
+    public Mono<ResponseEntity<com.example.heroku.model.Image>> Upload(Flux<FilePart> file, String category, String groupID, String tag) {
         AtomicReference<String> fileName = new AtomicReference<>();
         return file.flatMap(f -> {
                     fileName.set(f.filename());
@@ -48,6 +48,7 @@ public class Image {
                             .medium(info[2])
                             .large(info[3])
                             .category(category)
+                            .tag(tag)
                             .createat(Util.getInstance().Now())
                             .group_id(groupID)
                             .build());

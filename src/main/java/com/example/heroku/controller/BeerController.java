@@ -44,7 +44,18 @@ public class BeerController {
         return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<com.example.heroku.model.Image>>builder()
                 .principal(principal)
                 .subject(() -> groupid)
-                .monoAction(() -> imageAPI.Upload(file, beerID, groupid))
+                .monoAction(() -> imageAPI.Upload(file, beerID, groupid, null))
+                .build().toMono();
+    }
+    @PostMapping(value = "/admin/{groupid}/{id}/{tag}/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_NDJSON_VALUE)
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<com.example.heroku.model.Image>> uploadIMGWithTag(@AuthenticationPrincipal Mono<Users> principal, @RequestPart("file") Flux<FilePart> file,
+                                                                                 @PathVariable("groupid") String groupid, @PathVariable("id") String beerID, @PathVariable("tag") String tag) {
+        System.out.println("Uplaod image for beer!");
+        return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<com.example.heroku.model.Image>>builder()
+                .principal(principal)
+                .subject(() -> groupid)
+                .monoAction(() -> imageAPI.Upload(file, beerID, groupid, tag))
                 .build().toMono();
     }
 
