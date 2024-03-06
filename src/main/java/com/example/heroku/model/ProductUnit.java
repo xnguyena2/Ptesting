@@ -55,6 +55,8 @@ public class ProductUnit extends BaseEntity {
 
     private boolean visible;
 
+    private boolean enable_warehouse;
+
     private Status status;
 
     public enum Status{

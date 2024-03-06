@@ -52,6 +52,7 @@ public class BeerSubmitData {
                     .weight(beerUnit.weight)
                     .product_unit_second_id(beerUnit.beer_unit_second_id)
                     .visible(beerUnit.visible)
+                    .enable_warehouse((beerUnit.enable_warehouse))
                     .status(ProductUnit.Status.get(beerUnit.status))
                     .date_expire(beerUnit.GetExpirDateTime())
                     .build());
@@ -111,6 +112,7 @@ public class BeerSubmitData {
                     .weight(item.getWeight())
                     .beer_unit_second_id(item.getProduct_unit_second_id())
                     .visible(item.isVisible())
+                    .enable_warehouse(item.isEnable_warehouse())
                     .status(item.GetStatusNuable().toString())
                     .build();
         }
@@ -153,6 +155,7 @@ public class BeerSubmitData {
         private float weight;
         private String beer_unit_second_id;
         private boolean visible;
+        private boolean enable_warehouse;
         private String status;
 
         public Timestamp GetExpirDateTime() {

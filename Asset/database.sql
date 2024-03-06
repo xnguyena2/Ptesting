@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users_info (id SERIAL PRIMARY KEY, group_id VARCHAR N
 
 CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, tokens TSVECTOR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number INTEGER, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number INTEGER, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, imgid VARCHAR, tag VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, categorys VARCHAR, config TEXT, createat TIMESTAMP);
 
@@ -263,17 +263,53 @@ $$;
 CREATE OR REPLACE TRIGGER update_buyer AFTER INSERT ON package_order FOR EACH ROW EXECUTE PROCEDURE add_buyer();
 
 
+
+create or replace function delete_all_data_belong_user_package_detail (
+  by_group_id VARCHAR, by_package_second_id VARCHAR
+)
+	returns void
+	language plpgsql
+as
+$$
+begin
+
+    DELETE FROM user_package_detail WHERE group_id = by_group_id AND package_second_id = by_package_second_id;
+    DELETE FROM user_package WHERE group_id = by_group_id AND package_second_id = by_package_second_id;
+    DELETE FROM payment_transaction WHERE group_id = by_group_id AND package_second_id = by_package_second_id;
+
+end;
+$$;
+
 CREATE OR REPLACE FUNCTION decrese_product_unit_inventory()
   RETURNS TRIGGER
   LANGUAGE PLPGSQL
   AS
 $$
+DECLARE
+   _inventory_number INTEGER;
+   _enable_warehouse BOOL;
 BEGIN
+
+    SELECT enable_warehouse, inventory_number
+    INTO _enable_warehouse, _inventory_number
+    FROM product_unit
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
+
+    IF _enable_warehouse <> TRUE
+    THEN
+	    RETURN NEW;
+    END IF;
+
+    IF _inventory_number < NEW.number_unit
+    THEN
+--        PERFORM delete_all_data_belong_user_package_detail(NEW.group_id, NEW.package_second_id);
+	    RAISE EXCEPTION 'inventory_number small than number_unit';
+    END IF;
 
 	UPDATE product_unit
     SET
     	inventory_number = product_unit.inventory_number - NEW.number_unit
-    WHERE NEW.status <> 'RETURN' AND NEW.status <> 'CANCEL' AND NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
+    WHERE NEW.status <> 'RETURN' AND NEW.status <> 'CANCEL' AND NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
 
 	RETURN NEW;
 END;
@@ -290,7 +326,7 @@ BEGIN
 	UPDATE product_unit
     SET
     	inventory_number = product_unit.inventory_number + OLD.number_unit
-    WHERE OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id;
+    WHERE OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
 
 	RETURN OLD;
 END;
@@ -302,17 +338,39 @@ CREATE OR REPLACE FUNCTION update_product_unit_inventory()
   LANGUAGE PLPGSQL
   AS
 $$
+DECLARE
+   _inventory_number INTEGER;
+   _inventory_number_new INTEGER;
+   _enable_warehouse BOOL;
 BEGIN
+
+    SELECT enable_warehouse, inventory_number
+    INTO _enable_warehouse, _inventory_number
+    FROM product_unit
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
+
+    IF _enable_warehouse <> TRUE
+    THEN
+	    RETURN NEW;
+    END IF;
+
+    _inventory_number_new = CASE
+                        WHEN OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND NEW.status <> 'RETURN' AND NEW.status <> 'CANCEL' THEN _inventory_number + OLD.number_unit - NEW.number_unit
+                        WHEN OLD.status <> NEW.status AND OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND (NEW.status = 'RETURN' OR NEW.status = 'CANCEL') THEN _inventory_number + OLD.number_unit
+                        WHEN OLD.status <> NEW.status AND (OLD.status = 'RETURN' OR OLD.status = 'CANCEL') AND NEW.status <> 'RETURN' AND NEW.status = 'CANCEL' THEN _inventory_number - OLD.number_unit
+--                        WHEN (OLD.status = 'RETURN' OR OLD.status <> 'CANCEL') AND (NEW.status = 'RETURN' OR NEW.status <> 'CANCEL') THEN ???
+                        ELSE _inventory_number
+                       END;
+    IF _inventory_number_new < 0
+    THEN
+--        PERFORM delete_all_data_belong_user_package_detail(NEW.group_id, NEW.package_second_id);
+	    RAISE EXCEPTION 'inventory_number_new small than number_unit';
+    END IF;
 
 	UPDATE product_unit
     SET
-    	inventory_number = CASE
-    	                    WHEN OLD.status = NEW.status AND NEW.status <> 'RETURN' AND NEW.status <> 'CANCEL' THEN product_unit.inventory_number + OLD.number_unit - NEW.number_unit
-    	                    WHEN OLD.status <> NEW.status AND OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND (NEW.status = 'RETURN' OR NEW.status = 'CANCEL') THEN product_unit.inventory_number + OLD.number_unit
-    	                    WHEN OLD.status <> NEW.status AND (OLD.status = 'RETURN' OR OLD.status = 'CANCEL') AND NEW.status <> 'RETURN' AND NEW.status = 'CANCEL' THEN product_unit.inventory_number - OLD.number_unit
-    	                    ELSE product_unit.inventory_number
-    	                   END
-    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
+    	inventory_number = _inventory_number_new
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
 
 	RETURN NEW;
 END;
@@ -322,3 +380,32 @@ $$;
 CREATE OR REPLACE TRIGGER decrese_product_unit_inventory AFTER INSERT ON user_package FOR EACH ROW EXECUTE PROCEDURE decrese_product_unit_inventory();
 CREATE OR REPLACE TRIGGER increase_product_unit_inventory AFTER DELETE ON user_package FOR EACH ROW EXECUTE PROCEDURE increase_product_unit_inventory();
 CREATE OR REPLACE TRIGGER update_product_unit_inventory AFTER UPDATE ON user_package FOR EACH ROW EXECUTE PROCEDURE update_product_unit_inventory();
+
+
+
+CREATE OR REPLACE FUNCTION delete_user_package_detail_decrese_buyer()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+    IF OLD.status <> 'DONE'
+    THEN
+	    RETURN OLD;
+    END IF;
+
+	UPDATE buyer
+    SET
+        total_price = buyer.total_price - OLD.price,
+        real_price = buyer.real_price - OLD.payment,
+        ship_price = buyer.ship_price - OLD.ship_price,
+        discount = buyer.discount - (OLD.discount_amount + (OLD.discount_percent / 100) * OLD.price),
+        point = buyer.point - OLD.point
+    WHERE OLD.status = 'DONE' AND OLD.group_id = buyer.group_id AND OLD.device_id = buyer.device_id;
+
+	RETURN OLD;
+END;
+$$;
+
+CREATE OR REPLACE TRIGGER delete_user_package_detail_decrese_buyer AFTER DELETE ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE delete_user_package_detail_decrese_buyer();
