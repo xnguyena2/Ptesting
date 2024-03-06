@@ -295,7 +295,7 @@ BEGIN
     FROM product_unit
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
 
-    IF _enable_warehouse <> TRUE
+    IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
 	    RETURN NEW;
     END IF;
@@ -349,7 +349,7 @@ BEGIN
     FROM product_unit
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
 
-    IF _enable_warehouse <> TRUE
+    IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
 	    RETURN NEW;
     END IF;
@@ -409,3 +409,5 @@ END;
 $$;
 
 CREATE OR REPLACE TRIGGER delete_user_package_detail_decrese_buyer AFTER DELETE ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE delete_user_package_detail_decrese_buyer();
+
+
