@@ -395,6 +395,9 @@ BEGIN
     UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = OLD.group_id AND package_second_id = OLD.package_second_id;
 
 
+--  delete all payment_transaction belong to user_package_detail
+    DELETE FROM payment_transaction WHERE group_id = OLD.group_id AND package_second_id = OLD.package_second_id AND package_second_id IS NOT NULL;
+
     IF OLD.status <> 'DONE'
     THEN
 	    RETURN OLD;
@@ -422,13 +425,28 @@ $$
 BEGIN
 
 --  set table for user_packge_detail
-    IF OLD.table_id = NEW.table_id
+    IF OLD.table_id <> NEW.table_id
     THEN
-	    RETURN NEW;
+
+        UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = NEW.group_id AND package_second_id = NEW.package_second_id;
+        UPDATE table_detail SET package_second_id = NEW.package_second_id, createat = NOW() WHERE table_detail.group_id = NEW.group_id AND table_detail.table_id = NEW.table_id;
+
     END IF;
 
-    UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = NEW.group_id AND package_second_id = NEW.package_second_id;
-    UPDATE table_detail SET package_second_id = NEW.package_second_id, createat = NOW() WHERE table_detail.group_id = NEW.group_id AND table_detail.table_id = NEW.table_id;
+--  update payment transaction
+    IF (OLD.status = 'CANCEL' OR OLD.status = 'RETURN') AND (NEW.status <> 'CANCEL' AND NEW.status <> 'RETURN')
+    THEN
+        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, transaction_type, amount, category, money_source, note, status, createat ) VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, 'INCOME', NEW.payment, 'SELLING', NULL, CONCAT('REBUY-', NEW.package_second_id), 'CREATE', NOW() );
+    ELSEIF (OLD.status <> 'CANCEL' AND OLD.status <> 'RETURN') AND (NEW.status = 'CANCEL' OR NEW.status = 'RETURN')
+    THEN
+        DELETE FROM payment_transaction WHERE group_id = NEW.group_id AND package_second_id = NEW.package_second_id AND package_second_id IS NOT NULL;
+    ELSEIF NEW.payment - OLD.payment > 0 AND (NEW.status <> 'CANCEL' OR NEW.status <> 'RETURN')
+    THEN
+
+        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, transaction_type, amount, category, money_source, note, status, createat )
+            VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, 'INCOME', NEW.payment - OLD.payment, 'SELLING', NULL, CONCAT(CASE WHEN NEW.status = 'DONE-' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.package_second_id), 'CREATE', NOW() );
+
+    END IF;
 
 	RETURN NEW;
 END;
@@ -443,13 +461,23 @@ $$
 BEGIN
 
 --  set table for user_packge_detail
-    IF NEW.table_id IS NULL
+    IF NEW.table_id IS NOT NULL
     THEN
-	    RETURN NEW;
+
+        UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = NEW.group_id AND package_second_id = NEW.package_second_id;
+        UPDATE table_detail SET package_second_id = NEW.package_second_id, createat = NOW() WHERE table_detail.group_id = NEW.group_id AND table_detail.table_id = NEW.table_id;
+
     END IF;
 
-    UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = NEW.group_id AND package_second_id = NEW.package_second_id;
-    UPDATE table_detail SET package_second_id = NEW.package_second_id, createat = NOW() WHERE table_detail.group_id = NEW.group_id AND table_detail.table_id = NEW.table_id;
+--  add to payment transaction
+    IF NEW.payment > 0 AND (NEW.status <> 'CANCEL' OR NEW.status <> 'RETURN')
+    THEN
+
+        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, transaction_type, amount, category, money_source, note, status, createat )
+            VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, 'INCOME', NEW.payment, 'SELLING', NULL, CONCAT(CASE WHEN NEW.status = 'DONE-' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.package_second_id), 'CREATE', NOW() );
+
+    END IF;
+
 
 	RETURN NEW;
 END;

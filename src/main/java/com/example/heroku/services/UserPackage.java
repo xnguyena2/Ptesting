@@ -37,9 +37,6 @@ public class UserPackage {
     @Autowired
     UserPackageDetailRepository userPackageDetailRepository;
 
-    @Autowired
-    PaymentTransation paymentTransation;
-
     public Mono<ResponseEntity<Format>> AddProductToPackage(ProductPackage productPackage) {
 
         if (productPackage.isEmpty())
@@ -78,8 +75,7 @@ public class UserPackage {
     }
 
     public Mono<ResponseEntity<Format>> SavePackageWithoutCheckWithTransaction(ProductPackgeWithTransaction productPackgeWithTransaction) {
-        return paymentTransation.insertOrUpdate(productPackgeWithTransaction.getTransation())
-                .then(SavePackageWithoutCheck(productPackgeWithTransaction.getProductPackage()));
+        return SavePackageWithoutCheck(productPackgeWithTransaction.getProductPackage());
     }
 
     public Mono<ResponseEntity<Format>> SavePackageWithoutCheck(ProductPackage productPackage) {
@@ -261,8 +257,7 @@ public class UserPackage {
         return userPackageDetailRepository.GetPackageDetailByID(packageID.getGroup_id(), packageID.getPackage_id())
                 .filter(sd -> sd.getStatus() == UserPackageDetail.Status.CREATE && status == UserPackageDetail.Status.CANCEL ||
                         sd.getStatus() == UserPackageDetail.Status.DONE && status == UserPackageDetail.Status.RETURN)
-                .flatMap(userPackageDetail -> paymentTransation.deleteOfPackgeID(IDContainer.builder().group_id(packageID.getGroup_id()).id(packageID.getPackage_id()).build())
-                        .thenMany(userPackageRepository.UpdateStatusByPackgeID(packageID.getGroup_id(), packageID.getPackage_id(), status))
+                .flatMap(userPackageDetail -> userPackageRepository.UpdateStatusByPackgeID(packageID.getGroup_id(), packageID.getPackage_id(), status)
                         .then(
                                 userPackageDetailRepository.UpdateStatusByID(packageID.getGroup_id(), packageID.getPackage_id(), status)
                         )
@@ -283,10 +278,7 @@ public class UserPackage {
 
     public Mono<ResponseEntity<Format>> DeletePackage(PackageID packageID) {
 
-        return paymentTransation.deleteOfPackgeID(IDContainer.builder().group_id(packageID.getGroup_id()).id(packageID.getPackage_id()).build())
-                .then(
-                        userPackageDetailRepository.DeleteByID(packageID.getGroup_id(), packageID.getDevice_id(), packageID.getPackage_id())
-                )
+        return userPackageDetailRepository.DeleteByID(packageID.getGroup_id(), packageID.getDevice_id(), packageID.getPackage_id())
                 .then(Mono.just(ok(Format.builder().response("done").build())));
     }
 
