@@ -444,7 +444,7 @@ BEGIN
     THEN
 
         INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, transaction_type, amount, category, money_source, note, status, createat )
-            VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, 'INCOME', NEW.payment - OLD.payment, 'SELLING', NULL, CONCAT(CASE WHEN NEW.status = 'DONE-' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.package_second_id), 'CREATE', NOW() );
+            VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, 'INCOME', NEW.payment - OLD.payment, 'SELLING', NULL, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.package_second_id), 'CREATE', NOW() );
 
     END IF;
 
@@ -474,7 +474,7 @@ BEGIN
     THEN
 
         INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, transaction_type, amount, category, money_source, note, status, createat )
-            VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, 'INCOME', NEW.payment, 'SELLING', NULL, CONCAT(CASE WHEN NEW.status = 'DONE-' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.package_second_id), 'CREATE', NOW() );
+            VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, 'INCOME', NEW.payment, 'SELLING', NULL, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.package_second_id), 'CREATE', NOW() );
 
     END IF;
 
