@@ -390,6 +390,11 @@ CREATE OR REPLACE FUNCTION delete_user_package_detail_decrese_buyer()
 $$
 BEGIN
 
+
+--  reset table
+    UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = OLD.group_id AND package_second_id = OLD.package_second_id;
+
+
     IF OLD.status <> 'DONE'
     THEN
 	    RETURN OLD;
@@ -429,7 +434,28 @@ BEGIN
 END;
 $$;
 
+
+CREATE OR REPLACE FUNCTION trigger_on_insert_user_package_detail()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+--  set table for user_packge_detail
+    IF NEW.table_id IS NULL
+    THEN
+	    RETURN NEW;
+    END IF;
+
+    UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = NEW.group_id AND package_second_id = NEW.package_second_id;
+    UPDATE table_detail SET package_second_id = NEW.package_second_id, createat = NOW() WHERE table_detail.group_id = NEW.group_id AND table_detail.table_id = NEW.table_id;
+
+	RETURN NEW;
+END;
+$$;
+
 CREATE OR REPLACE TRIGGER delete_user_package_detail_decrese_buyer AFTER DELETE ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE delete_user_package_detail_decrese_buyer();
 CREATE OR REPLACE TRIGGER trigger_on_update_user_package_detail AFTER UPDATE ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE trigger_on_update_user_package_detail();
-
+CREATE OR REPLACE TRIGGER trigger_on_insert_user_package_detail AFTER INSERT ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE trigger_on_insert_user_package_detail();
 
