@@ -1142,6 +1142,100 @@ public class UserPackageTest {
                 .verifyComplete();
 
 
+        userPackageAPI.GetWorkingPackageByGroupByJoinWith(UserID.builder().group_id(group).page(0).size(10000).build())
+                .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(2);
+
+                    BuyerData buyer1 = userPackage.getBuyer();
+                    assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(buyer1.getRegion_id()).isEqualTo(294);
+                    assertThat(buyer1.getDistrict_id()).isEqualTo(484);
+                    assertThat(buyer1.getWard_id()).isEqualTo(10379);
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
+
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+
+                    ProductInPackageResponse item = listItem.get(0);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getDiscount_amount()).isEqualTo(19);
+                    assertThat(item.getDiscount_percent()).isEqualTo(10);
+                    assertThat(item.getNote()).isEqualTo("note hhh");
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(1);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(4);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+
+                    assertThat(listItem.size()).isEqualTo(0);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(2);
+
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+
+                    ProductInPackageResponse item = listItem.get(0);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(106);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(1);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(12);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .verifyComplete();
+
+
         userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(group).page(0).size(10000).build(), UserPackageDetail.Status.CREATE)
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
                 .as(StepVerifier::create)
@@ -1568,6 +1662,102 @@ public class UserPackageTest {
                 .verifyComplete();
 
 
+        userPackageAPI.GetWorkingPackageByGroupByJoinWith(UserID.builder().group_id(group).page(0).size(10000).build())
+                .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
+                    assertThat(userPackage.getPoint()).isEqualTo(-77);
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(2);
+
+                    BuyerData buyer1 = userPackage.getBuyer();
+                    assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(buyer1.getRegion_id()).isEqualTo(294);
+                    assertThat(buyer1.getDistrict_id()).isEqualTo(484);
+                    assertThat(buyer1.getWard_id()).isEqualTo(10379);
+                    assertThat(buyer1.getPoint()).isEqualTo(-77);
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
+
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+
+                    ProductInPackageResponse item = listItem.get(0);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getDiscount_amount()).isEqualTo(19);
+                    assertThat(item.getDiscount_percent()).isEqualTo(10);
+                    assertThat(item.getNote()).isEqualTo("note hhh");
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(1);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(4);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+
+                    assertThat(listItem.size()).isEqualTo(0);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(2);
+
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+
+                    ProductInPackageResponse item = listItem.get(0);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(106);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(1);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(12);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .verifyComplete();
+
+
         userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(group).page(0).size(10000).build(), UserPackageDetail.Status.DONE)
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
                 .as(StepVerifier::create)
@@ -1850,6 +2040,57 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
+
+        userPackageAPI.GetWorkingPackageByGroupByJoinWith(UserID.builder().group_id(group).page(0).size(10000).build())
+                .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+
+                    assertThat(listItem.size()).isEqualTo(0);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(2);
+
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+
+                    ProductInPackageResponse item = listItem.get(0);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(106);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(1);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(12);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .verifyComplete();
+
         buyer.FindByDeviceID(group, "0022929222")
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
@@ -1908,6 +2149,27 @@ public class UserPackageTest {
 
 
         userPackageAPI.GetWorkingPackageByGroupAfterID(UserID.builder().group_id(group).id("1000").page(0).size(10000).build())
+                .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+
+                    assertThat(listItem.size()).isEqualTo(0);
+                })
+                .verifyComplete();
+
+
+        userPackageAPI.GetWorkingPackageByJoinWithByGroupAfterID(UserID.builder().group_id(group).id("1000").page(0).size(10000).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {

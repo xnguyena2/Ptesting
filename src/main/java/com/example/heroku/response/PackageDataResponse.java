@@ -1,6 +1,5 @@
 package com.example.heroku.response;
 
-import com.example.heroku.model.Buyer;
 import com.example.heroku.model.UserPackageDetail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +18,10 @@ public class PackageDataResponse extends UserPackageDetail {
     private List<ProductInPackageResponse> items;
 
     private BuyerData buyer;
+
+    public static PackageDataResponse Empty() {
+        return new PackageDataResponse();
+    }
 
     public PackageDataResponse(UserPackageDetail s) {
         super.copy(s);

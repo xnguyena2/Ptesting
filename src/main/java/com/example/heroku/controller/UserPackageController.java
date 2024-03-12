@@ -104,7 +104,7 @@ public class UserPackageController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<PackageDataResponse> getWorkingByGroup(@RequestBody @Valid UserID userID) {
         System.out.println("Get all working package by group: " + userID.getGroup_id());
-        return userPackageAPI.GetWorkingPackageByGroup(userID);
+        return userPackageAPI.GetWorkingPackageByGroupByJoinWith(userID);//.GetWorkingPackageByGroup(userID);
     }
 
 
