@@ -133,6 +133,10 @@ public class BeerSubmitData {
         return beerSubmitData;
     }
 
+    public static BeerSubmitData Empty() {
+        return BeerSubmitData.builder().build();
+    }
+
     @Data
     @Builder
     @NoArgsConstructor

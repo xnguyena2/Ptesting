@@ -59,6 +59,9 @@ public class ProductUnit extends BaseEntity {
 
     private Status status;
 
+    //update ProductJoinWithProductUnit
+    //update BeerSubmitData
+
     public enum Status{
         AVARIABLE("AVARIABLE"),
         NOT_FOR_SELL("NOT_FOR_SELL"),

@@ -1,7 +1,8 @@
 package com.example.heroku.services;
 
-import com.example.heroku.model.ProductUnit;
 import com.example.heroku.model.Product;
+import com.example.heroku.model.ProductUnit;
+import com.example.heroku.model.joinwith.ProductJoinWithProductUnit;
 import com.example.heroku.model.repository.*;
 import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
@@ -19,7 +20,6 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @Component
@@ -41,6 +41,9 @@ public class Beer {
 
     @Autowired
     BeerUnitRepository beerUnitRepository;
+
+    @Autowired
+    JoinProductWithProductUnitRepository joinProductWithProductUnitRepository;
 
     public Mono<BeerSubmitData> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
         info.CorrectData();
@@ -104,6 +107,13 @@ public class Beer {
     public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {
         return this.beerRepository.findByIdNotNull(query.getGroup_id(), query.getPage(), query.getSize())
                 .flatMap(this::CoverToSubmitData);
+    }
+
+    public Flux<BeerSubmitData> GetAllBeerByJoinFirst(SearchQuery query) {
+        return this.joinProductWithProductUnitRepository.getIfProductNotHide(query.getGroup_id(), query.getPage(), query.getSize())
+                .groupBy(ProductJoinWithProductUnit::getProduct_second_id)
+                .flatMap(groupedFlux -> groupedFlux.collectList().map(ProductJoinWithProductUnit::GenerateBeerSubmitData))
+                .flatMap(this::_setImg4SubmitData);
     }
 
     public Flux<ProductUnit> getAllProductUnitOfIDs(String groupID, List<String> productIDs, List<String> productUinitIDs) {
@@ -203,6 +213,12 @@ public class Beer {
                                 .map(beerSubmitData::AddImage)
                                 .then(Mono.just(beerSubmitData))
                 );
+    }
+
+    private Mono<BeerSubmitData> _setImg4SubmitData(BeerSubmitData beerSubmitData) {
+        return imageRepository.findByCategory(beerSubmitData.getGroup_id(), beerSubmitData.getBeerSecondID())
+                .map(beerSubmitData::AddImage)
+                .then(Mono.just(beerSubmitData));
     }
 
     private Mono<BeerSubmitData> CoverToSubmitDataWithUnitID(Product product, String unitID) {

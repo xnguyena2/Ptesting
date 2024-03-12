@@ -135,7 +135,7 @@ public class UserPackageDetailJoinWithUserPackage {
         PackageDataResponse result = new PackageDataResponse(firstElement.getParent());
         for (UserPackageDetailJoinWithUserPackage child : listData) {
             UserPackage userPackage = child.getChild();
-            if (userPackage.getProduct_second_id() == null || child.getChild().getProduct_second_id().isEmpty()) {
+            if (userPackage.getProduct_second_id() == null || userPackage.getProduct_second_id().isEmpty()) {
                 continue;
             }
             ProductInPackageResponse productInPackageResponse = new ProductInPackageResponse(userPackage);

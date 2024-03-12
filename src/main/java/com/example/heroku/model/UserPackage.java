@@ -39,6 +39,8 @@ public class UserPackage extends BaseEntity {
 
     private UserPackageDetail.Status status;
 
+//    update UserPackageDetailJoinWithUserPackage
+
     public UserPackage(UserPackage s) {
         super(s);
         this.setId(s.getId());

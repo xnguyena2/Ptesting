@@ -33,6 +33,9 @@ public class Product extends BaseEntity {
 
     private Status status;
 
+    //update ProductJoinWithProductUnit
+    //update BeerSubmitData
+
     private String appendToken(String token, String appendTxt) {
         if (appendTxt != null && !appendTxt.isEmpty()) {
             if (!token.isEmpty()) {
