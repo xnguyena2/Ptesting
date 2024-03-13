@@ -35,6 +35,8 @@ public class UserPackage extends BaseEntity {
 
     private float discount_percent;
 
+    private float discount_promotional;
+
     private String note;
 
     private UserPackageDetail.Status status;
@@ -53,6 +55,7 @@ public class UserPackage extends BaseEntity {
         this.buy_price = s.buy_price;
         this.discount_amount = s.discount_amount;
         this.discount_percent = s.discount_percent;
+        this.discount_promotional = s.discount_promotional;
         this.note = s.note;
         this.status = s.status;
     }

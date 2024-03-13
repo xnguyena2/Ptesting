@@ -47,6 +47,14 @@ public class UserPackageDetail  extends BaseEntity {
 
     private float discount_percent;
 
+    private float discount_promotional;
+
+    private float discount_by_point;
+
+    private float additional_fee;
+
+    private String additional_config;
+
     private float ship_price;
 
     private float cost;
@@ -86,6 +94,10 @@ public class UserPackageDetail  extends BaseEntity {
         payment = s.payment;
         discount_amount = s.discount_amount;
         discount_percent = s.discount_percent;
+        discount_promotional = s.discount_promotional;
+        discount_by_point = s.discount_by_point;
+        additional_fee = s.additional_fee;
+        additional_config = s.additional_config;
         ship_price = s.ship_price;
         cost = s.cost;
         profit = s.profit;

@@ -52,7 +52,7 @@ public class UserPackage {
                         .flatMap(this::savePackageDetail)
                         .flatMap(productPackage1 -> Flux.just(productPackage1.getUserPackage())
                                 .flatMap(userPackage ->
-                                        userPackageRepository.AddPackage(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
+                                        userPackageRepository.BuyerHimSelfAddPackage(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
                                                 userPackage.getNumber_unit(), userPackage.getStatus())
 
                                 )
@@ -60,6 +60,7 @@ public class UserPackage {
                         );
     }
 
+    @Deprecated
     public Mono<ResponseEntity<Format>> SavePackage(ProductPackage productPackage) {
 
         if (productPackage.isEmpty())
@@ -150,19 +151,23 @@ public class UserPackage {
         return userPackageDetailRepository.InsertOrUpdate(detail.getGroup_id(), detail.getDevice_id(), detail.getStaff_id(), detail.getPackage_second_id(),
                 detail.getPackage_type(), detail.getVoucher(),
                 detail.getArea_id(), detail.getArea_name(), detail.getTable_id(), detail.getTable_name(),
-                detail.getPrice(), detail.getPayment(), detail.getDiscount_amount(), detail.getDiscount_percent(), detail.getShip_price(), detail.getCost(), detail.getProfit(),
+                detail.getPrice(), detail.getPayment(), detail.getDiscount_amount(), detail.getDiscount_percent(),
+                detail.getDiscount_promotional(), detail.getDiscount_by_point(), detail.getAdditional_fee(), detail.getAdditional_config(),
+                detail.getShip_price(), detail.getCost(), detail.getProfit(),
                 detail.getPoint(), detail.getNote(), detail.getImage(), detail.getProgress(), detail.getStatus(), detail.getCreateat());
     }
 
     Mono<com.example.heroku.model.UserPackage> savePackageItem(com.example.heroku.model.UserPackage userPackage) {
         return userPackageRepository.InsertOrUpdatePackage(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
-                userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(), userPackage.getDiscount_amount(), userPackage.getDiscount_percent(),
+                userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(),
+                userPackage.getDiscount_amount(), userPackage.getDiscount_percent(), userPackage.getDiscount_promotional(),
                 userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());
     }
 
     Mono<com.example.heroku.model.UserPackage> savePackageItemWithoutCheck(com.example.heroku.model.UserPackage userPackage) {
         return userPackageRepository.InsertOrUpdatePackageWithoutCheck(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
-                userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(), userPackage.getDiscount_amount(), userPackage.getDiscount_percent(),
+                userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(),
+                userPackage.getDiscount_amount(), userPackage.getDiscount_percent(), userPackage.getDiscount_promotional(),
                 userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());
     }
 

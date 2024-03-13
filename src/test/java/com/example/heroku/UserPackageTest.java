@@ -540,6 +540,10 @@ public class UserPackageTest {
                 .image("img.jpeg")
                 .discount_amount(10000)
                 .discount_percent(10)
+                .discount_promotional(89)
+                .discount_by_point(98)
+                .additional_fee(87)
+                .additional_config("additional_config")
                 .ship_price(20000)
                 .voucher("voucher_1d")
                 .package_type("deliver")
@@ -550,10 +554,12 @@ public class UserPackageTest {
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(100)
+                                .discount_promotional(54)
                                 .build(),
                         com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit2ID.get())
+                                .discount_promotional(45)
                                 .number_unit(9)
                                 .build()
                 })
@@ -574,6 +580,10 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("save_package");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("note here!!");
+                    assertThat(userPackage.getDiscount_promotional()).isEqualTo(89);
+                    assertThat(userPackage.getDiscount_by_point()).isEqualTo(98);
+                    assertThat(userPackage.getAdditional_fee()).isEqualTo(87);
+                    assertThat(userPackage.getAdditional_config()).isEqualTo("additional_config");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
@@ -583,6 +593,7 @@ public class UserPackageTest {
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(100);
+                    assertThat(item.getDiscount_promotional()).isEqualTo(54);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
 
@@ -591,6 +602,7 @@ public class UserPackageTest {
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(9);
+                    assertThat(item.getDiscount_promotional()).isEqualTo(45);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
@@ -802,6 +814,10 @@ public class UserPackageTest {
                 .image("img.jpeg")
                 .discount_amount(10000)
                 .discount_percent(10)
+                .discount_promotional(89)
+                .discount_by_point(98)
+                .additional_fee(87)
+                .additional_config("additional_config")
                 .ship_price(20000)
                 .voucher("voucher_1d")
                 .package_type("deliver")
@@ -827,6 +843,7 @@ public class UserPackageTest {
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(3)
+                                .discount_promotional(54)
                                 .buy_price(3)
                                 .price(7)
                                 .discount_amount(19)
@@ -857,6 +874,10 @@ public class UserPackageTest {
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(userPackage.getDiscount_promotional()).isEqualTo(89);
+                    assertThat(userPackage.getDiscount_by_point()).isEqualTo(98);
+                    assertThat(userPackage.getAdditional_fee()).isEqualTo(87);
+                    assertThat(userPackage.getAdditional_config()).isEqualTo("additional_config");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     assertThat(userPackage.getTable_id()).isEqualTo("table_1");
                     assertThat(userPackage.getTable_name()).isEqualTo("ban 1");
@@ -883,6 +904,7 @@ public class UserPackageTest {
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getDiscount_promotional()).isEqualTo(54);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getDiscount_amount()).isEqualTo(19);
                     assertThat(item.getDiscount_percent()).isEqualTo(10);

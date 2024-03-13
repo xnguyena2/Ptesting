@@ -36,6 +36,10 @@ public class UserPackageDetailJoinWithUserPackage {
     private float payment;
     private float discount_amount;
     private float discount_percent;
+    private float discount_promotional;
+    private float discount_by_point;
+    private float additional_fee;
+    private String additional_config;
     private float ship_price;
     private float cost;
     private float profit;
@@ -53,25 +57,16 @@ public class UserPackageDetailJoinWithUserPackage {
     protected Timestamp child_createat;
 
     private String child_package_second_id;
-
     private String child_device_id;
-
     private String child_product_second_id;
-
     private String child_product_unit_second_id;
-
     private int child_number_unit;
-
     private float child_price;
-
     private float child_buy_price;
-
     private float child_discount_amount;
-
     private float child_discount_percent;
-
+    private float child_discount_promotional;
     private String child_note;
-
     private UserPackageDetail.Status child_status;
 
 
@@ -97,6 +92,10 @@ public class UserPackageDetailJoinWithUserPackage {
                 .payment(payment)
                 .discount_amount(discount_amount)
                 .discount_percent(discount_percent)
+                .discount_promotional(discount_promotional)
+                .discount_by_point(discount_by_point)
+                .additional_fee(additional_fee)
+                .additional_config(additional_config)
                 .ship_price(ship_price)
                 .cost(cost)
                 .profit(profit)
@@ -122,6 +121,7 @@ public class UserPackageDetailJoinWithUserPackage {
                 .buy_price(child_buy_price)
                 .discount_percent(child_discount_percent)
                 .discount_amount(child_discount_amount)
+                .discount_promotional(child_discount_promotional)
                 .note(child_note)
                 .status(child_status)
                 .build();
