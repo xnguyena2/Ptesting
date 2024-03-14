@@ -5,14 +5,6 @@ import lombok.Data;
 import java.sql.Date;
 
 @Data
-public class BenifitByDate {
+public class BenifitByDate extends BenifitOfOrder{
     private Date local_time;
-    private float ship_price;
-    private float discount;
-    private float price;
-    private float revenue;
-    private float profit;
-    private float cost;
-    private int count;
-    private int buyer;
 }

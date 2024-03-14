@@ -25,7 +25,7 @@ public class StatisticPackageOrderDetail {
     @PostMapping("/admin/getbyproductid")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BenifitByDate> getbyproductid(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("getbyproductid: " + query.getGroup_id());
+        System.out.println("get report getbyproductid: " + query.getGroup_id());
         return WrapPermissionAction.<BenifitByDate>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
@@ -37,7 +37,7 @@ public class StatisticPackageOrderDetail {
     @PostMapping("/admin/getbyhour")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BenifitByDateHour> getbyproductidofhours(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("getbyproductid of hours: " + query.getGroup_id());
+        System.out.println("get report getbyproductid of hours: " + query.getGroup_id());
         return WrapPermissionAction.<BenifitByDateHour>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())

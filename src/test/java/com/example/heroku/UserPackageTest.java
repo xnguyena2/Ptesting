@@ -1415,6 +1415,9 @@ public class UserPackageTest {
                     assertThat(data.getCount()).isEqualTo(3);
                     assertThat(data.getBuyer()).isEqualTo(2);
                     assertThat(data.getShip_price()).isEqualTo(60000);
+                    assertThat(data.getDiscount_by_point()).isEqualTo(98);
+                    assertThat(data.getDiscount_promotional()).isEqualTo(89);
+                    assertThat(data.getAdditional_fee()).isEqualTo(87);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("30000.4");
                 })
                 .verifyComplete();
@@ -1430,6 +1433,9 @@ public class UserPackageTest {
                     assertThat(data.getBuyer()).isEqualTo(2);
                     assertThat(data.getShip_price()).isEqualTo(60000);
                     assertThat(data.getPrice()).isEqualTo(4);
+                    assertThat(data.getDiscount_by_point()).isEqualTo(98);
+                    assertThat(data.getDiscount_promotional()).isEqualTo(89);
+                    assertThat(data.getAdditional_fee()).isEqualTo(87);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("30000.4");
                 })
                 .verifyComplete();
@@ -2247,6 +2253,9 @@ public class UserPackageTest {
                     assertThat(data.getCount()).isEqualTo(1);
                     assertThat(data.getBuyer()).isEqualTo(1);
                     assertThat(data.getShip_price()).isEqualTo(20000);
+                    assertThat(data.getDiscount_by_point()).isEqualTo(0);
+                    assertThat(data.getDiscount_promotional()).isEqualTo(0);
+                    assertThat(data.getAdditional_fee()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("10000.1");
                 })
                 .verifyComplete();
@@ -2262,6 +2271,9 @@ public class UserPackageTest {
                     assertThat(data.getCount()).isEqualTo(1);
                     assertThat(data.getBuyer()).isEqualTo(1);
                     assertThat(data.getShip_price()).isEqualTo(20000);
+                    assertThat(data.getDiscount_promotional()).isEqualTo(0);
+                    assertThat(data.getDiscount_by_point()).isEqualTo(0);
+                    assertThat(data.getAdditional_fee()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("10000.1");
                 })
                 .verifyComplete();
