@@ -63,12 +63,32 @@ public class StatisticServices {
 
     }
 
-    public Flux<BenifitByDate> getPackageStatictis(PackageID query) {
-        return statisticBenifitRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
+    public Flux<BenifitByDate> getPackageStatictis(PackageID query, boolean isQueryReturn) {
+        return statisticBenifitRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus())
+                .flatMap(benifitByDate -> {
+                    if (isQueryReturn) {
+                        return statisticCountOrdersRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), UserPackageDetail.Status.CANCEL, UserPackageDetail.Status.RETURN)
+                                .map(countOrderByDate -> {
+                                    benifitByDate.setReturn_price(countOrderByDate.getRevenue_return());
+                                    return benifitByDate;
+                                });
+                    }
+                    return Mono.just(benifitByDate);
+                });
     }
 
-    public Flux<BenifitByDateHour> getPackageStatictisByHour(PackageID query) {
-        return statisticBenifitByHourRepository.getStatictisByHour(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
+    public Flux<BenifitByDateHour> getPackageStatictisByHour(PackageID query, boolean isQueryReturn) {
+        return statisticBenifitByHourRepository.getStatictisByHour(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus())
+                .flatMap(benifitByDate -> {
+                    if (isQueryReturn) {
+                        return statisticCountOrdersRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), UserPackageDetail.Status.CANCEL, UserPackageDetail.Status.RETURN)
+                                .map(countOrderByDate -> {
+                                    benifitByDate.setReturn_price(countOrderByDate.getRevenue_return());
+                                    return benifitByDate;
+                                });
+                    }
+                    return Mono.just(benifitByDate);
+                });
     }
 
     public Mono<BenifitByMonth> getPackageTotalStatictis(PackageID query) {

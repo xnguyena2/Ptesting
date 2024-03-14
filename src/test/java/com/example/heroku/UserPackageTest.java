@@ -1405,7 +1405,7 @@ public class UserPackageTest {
                 .verifyComplete();
 
 
-        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build(), true)
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getCost()).isEqualTo(444);
@@ -1418,11 +1418,12 @@ public class UserPackageTest {
                     assertThat(data.getDiscount_by_point()).isEqualTo(98);
                     assertThat(data.getDiscount_promotional()).isEqualTo(89);
                     assertThat(data.getAdditional_fee()).isEqualTo(87);
+                    assertThat(data.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("30000.4");
                 })
                 .verifyComplete();
 
-        statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build(), true)
                 .sort(Comparator.comparing(BenifitByDateHour::getRevenue))
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
@@ -1436,6 +1437,7 @@ public class UserPackageTest {
                     assertThat(data.getDiscount_by_point()).isEqualTo(98);
                     assertThat(data.getDiscount_promotional()).isEqualTo(89);
                     assertThat(data.getAdditional_fee()).isEqualTo(87);
+                    assertThat(data.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("30000.4");
                 })
                 .verifyComplete();
@@ -2243,7 +2245,7 @@ public class UserPackageTest {
 
         buyer.deleteBuyer(group, "0022929222").block();
 
-        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build(), true)
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getCost()).isEqualTo(0);
@@ -2256,11 +2258,12 @@ public class UserPackageTest {
                     assertThat(data.getDiscount_by_point()).isEqualTo(0);
                     assertThat(data.getDiscount_promotional()).isEqualTo(0);
                     assertThat(data.getAdditional_fee()).isEqualTo(0);
+                    assertThat(data.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("10000.1");
                 })
                 .verifyComplete();
 
-        statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build(), true)
                 .sort(Comparator.comparing(BenifitByDateHour::getRevenue))
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
@@ -2274,6 +2277,7 @@ public class UserPackageTest {
                     assertThat(data.getDiscount_promotional()).isEqualTo(0);
                     assertThat(data.getDiscount_by_point()).isEqualTo(0);
                     assertThat(data.getAdditional_fee()).isEqualTo(0);
+                    assertThat(data.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("10000.1");
                 })
                 .verifyComplete();

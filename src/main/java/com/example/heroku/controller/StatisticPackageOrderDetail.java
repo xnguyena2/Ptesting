@@ -29,7 +29,19 @@ public class StatisticPackageOrderDetail {
         return WrapPermissionAction.<BenifitByDate>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
-                .fluxAction(q -> statisticServices.getPackageStatictis(query))
+                .fluxAction(q -> statisticServices.getPackageStatictis(query, false))
+                .build()
+                .toFlux();
+    }
+
+    @PostMapping("/admin/getbyproductidwithreturn")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<BenifitByDate> getbyproductidWithReturn(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
+        System.out.println("get report getbyproductidwithreturn with return: " + query.getGroup_id());
+        return WrapPermissionAction.<BenifitByDate>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> statisticServices.getPackageStatictis(query, true))
                 .build()
                 .toFlux();
     }
@@ -41,7 +53,19 @@ public class StatisticPackageOrderDetail {
         return WrapPermissionAction.<BenifitByDateHour>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
-                .fluxAction(q -> statisticServices.getPackageStatictisByHour(query))
+                .fluxAction(q -> statisticServices.getPackageStatictisByHour(query, false))
+                .build()
+                .toFlux();
+    }
+
+    @PostMapping("/admin/getbyhourwithreturn")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<BenifitByDateHour> getbyproductidofhoursWithReturn(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
+        System.out.println("get report getbyhourwithreturn of hours with return: " + query.getGroup_id());
+        return WrapPermissionAction.<BenifitByDateHour>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> statisticServices.getPackageStatictisByHour(query, true))
                 .build()
                 .toFlux();
     }
