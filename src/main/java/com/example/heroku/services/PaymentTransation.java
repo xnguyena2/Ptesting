@@ -18,7 +18,7 @@ public class PaymentTransation {
         paymentTransation.AutoFill();
         System.out.println("add or update transaction: " + paymentTransation.getTransaction_second_id() + ", group: " + paymentTransation.getGroup_id());
         return paymentTransactionRepository.saveTransaction(paymentTransation.getGroup_id(), paymentTransation.getTransaction_second_id(), paymentTransation.getDevice_id(),
-                paymentTransation.getPackage_second_id(), paymentTransation.getTransaction_type(), paymentTransation.getAmount(), paymentTransation.getCategory(),
+                paymentTransation.getPackage_second_id(), paymentTransation.getPackage_second_id(), paymentTransation.getAction_type(), paymentTransation.getTransaction_type(), paymentTransation.getAmount(), paymentTransation.getCategory(),
                 paymentTransation.getMoney_source(), paymentTransation.getNote(), paymentTransation.getStatus(), paymentTransation.getCreateat());
     }
 

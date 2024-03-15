@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NU
 
 CREATE TABLE IF NOT EXISTS buyer (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, total_price float8, real_price float8, ship_price float8, discount float8, point INTEGER, status VARCHAR, createat TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS payment_transaction (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, transaction_second_id VARCHAR NOT NULL, device_id VARCHAR, package_second_id VARCHAR, transaction_type VARCHAR, amount float8, category VARCHAR, money_source VARCHAR, note VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS payment_transaction (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, transaction_second_id VARCHAR NOT NULL, device_id VARCHAR, package_second_id VARCHAR, action_id VARCHAR, action_type VARCHAR, transaction_type VARCHAR, amount float8, category VARCHAR, money_source VARCHAR, note VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS table_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, area_id VARCHAR, table_id VARCHAR, table_name VARCHAR, package_second_id VARCHAR, detail VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS area (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, area_id VARCHAR, area_name VARCHAR, detail VARCHAR, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP);
@@ -67,7 +67,8 @@ CREATE INDEX voucher_relate_user_device_index ON voucher_relate_user_device(vouc
 CREATE INDEX voucher_relate_product_index ON voucher_relate_product(voucher_second_id);
 CREATE INDEX notification_index ON notification(notification_second_id);
 CREATE INDEX notification_relate_user_device_index ON notification_relate_user_device(user_device_id);
-CREATE INDEX payment_transaction_index ON payment_transaction(package_second_id);
+CREATE INDEX payment_transaction_index ON payment_transaction(transaction_second_id);
+CREATE INDEX payment_transaction_action_index ON payment_transaction(action_id);
 CREATE INDEX payment_transaction_createat_index ON payment_transaction(createat);
 CREATE INDEX payment_transaction_group_index ON payment_transaction(group_id);
 CREATE INDEX table_detail_index ON table_detail(table_id);
@@ -279,7 +280,7 @@ begin
 
     DELETE FROM user_package_detail WHERE group_id = by_group_id AND package_second_id = by_package_second_id;
     DELETE FROM user_package WHERE group_id = by_group_id AND package_second_id = by_package_second_id;
-    DELETE FROM payment_transaction WHERE group_id = by_group_id AND package_second_id = by_package_second_id;
+    DELETE FROM payment_transaction WHERE group_id = by_group_id AND (package_second_id = by_package_second_id OR action_id = by_package_second_id);
 
 end;
 $$;
@@ -400,7 +401,7 @@ BEGIN
 
 
 --  delete all payment_transaction belong to user_package_detail
-    DELETE FROM payment_transaction WHERE group_id = OLD.group_id AND package_second_id = OLD.package_second_id AND package_second_id IS NOT NULL;
+    DELETE FROM payment_transaction WHERE group_id = OLD.group_id AND (package_second_id = OLD.package_second_id OR action_id = OLD.package_second_id) AND package_second_id IS NOT NULL;
 
     IF OLD.status <> 'DONE'
     THEN
@@ -440,15 +441,15 @@ BEGIN
 --  update payment transaction
     IF (OLD.status = 'CANCEL' OR OLD.status = 'RETURN') AND (NEW.status <> 'CANCEL' AND NEW.status <> 'RETURN')
     THEN
-        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, transaction_type, amount, category, money_source, note, status, createat ) VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, 'INCOME', NEW.payment, 'SELLING', NULL, CONCAT('REBUY-', NEW.package_second_id), 'CREATE', NOW() );
+        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat ) VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, NEW.package_second_id, 'PAYMENT_ORDER', 'INCOME', NEW.payment, 'SELLING', NULL, CONCAT('REBUY-', NEW.package_second_id), 'CREATE', NOW() );
     ELSEIF (OLD.status <> 'CANCEL' AND OLD.status <> 'RETURN') AND (NEW.status = 'CANCEL' OR NEW.status = 'RETURN')
     THEN
-        DELETE FROM payment_transaction WHERE group_id = NEW.group_id AND package_second_id = NEW.package_second_id AND package_second_id IS NOT NULL;
+        DELETE FROM payment_transaction WHERE group_id = NEW.group_id AND (package_second_id = NEW.package_second_id OR action_id = NEW.package_second_id) AND package_second_id IS NOT NULL AND action_id IS NOT NULL;
     ELSEIF NEW.payment - OLD.payment > 0 AND (NEW.status <> 'CANCEL' OR NEW.status <> 'RETURN')
     THEN
 
-        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, transaction_type, amount, category, money_source, note, status, createat )
-            VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, 'INCOME', NEW.payment - OLD.payment, 'SELLING', NULL, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.package_second_id), 'CREATE', NOW() );
+        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
+            VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, NEW.package_second_id, 'PAYMENT_ORDER', 'INCOME', NEW.payment - OLD.payment, 'SELLING', NULL, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.package_second_id), 'CREATE', NOW() );
 
     END IF;
 
@@ -477,8 +478,8 @@ BEGIN
     IF NEW.payment > 0 AND (NEW.status <> 'CANCEL' OR NEW.status <> 'RETURN')
     THEN
 
-        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, transaction_type, amount, category, money_source, note, status, createat )
-            VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, 'INCOME', NEW.payment, 'SELLING', NULL, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.package_second_id), 'CREATE', NOW() );
+        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
+            VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, NEW.package_second_id, 'PAYMENT_ORDER', 'INCOME', NEW.payment, 'SELLING', NULL, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.package_second_id), 'CREATE', NOW() );
 
     END IF;
 

@@ -28,6 +28,10 @@ public class PaymentTransation extends BaseEntity {
 
     private String package_second_id;
 
+    private String action_id;
+
+    private ActionType action_type;
+
     private float amount;
 
     private String note;
@@ -48,7 +52,56 @@ public class PaymentTransation extends BaseEntity {
         if (status == null) {
             status = Status.CREATE;
         }
+        if (action_type == null) {
+            action_type = ActionType.USER_PROPOSE;
+        }
         return (PaymentTransation) super.AutoFillIfNull();
+    }
+
+
+    public enum ActionType {
+        PAYMENT_ORDER("PAYMENT_ORDER"),
+        USER_PROPOSE("USER_PROPOSE");
+
+
+
+        private final String name;
+
+        ActionType(String name){
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        private static final Map<String, ActionType> lookup = new HashMap<>();
+
+        static
+        {
+            for(ActionType sts : ActionType.values())
+            {
+                lookup.put(sts.getName(), sts);
+            }
+        }
+
+        public static ActionType get(String text) {
+            try {
+                ActionType val = lookup.get(text);
+                if (val == null) {
+                    return USER_PROPOSE;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return USER_PROPOSE;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
     }
 
 
@@ -58,7 +111,7 @@ public class PaymentTransation extends BaseEntity {
 
 
 
-        private String name;
+        private final String name;
 
         TType(String name){
             this.name = name;
@@ -105,7 +158,7 @@ public class PaymentTransation extends BaseEntity {
 
 
 
-        private String name;
+        private final String name;
 
         Status(String name){
             this.name = name;

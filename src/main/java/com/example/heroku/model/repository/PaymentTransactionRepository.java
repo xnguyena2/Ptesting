@@ -11,12 +11,14 @@ import java.sql.Timestamp;
 
 public interface PaymentTransactionRepository extends ReactiveCrudRepository<PaymentTransation, Long> {
 
-    @Query(value = "INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, transaction_type, amount, category, money_source, note, status, createat ) VALUES ( :group_id, :transaction_second_id, :device_id, :package_second_id, :transaction_type, :amount, :category, :money_source, :note, :status, :createat ) ON CONFLICT (group_id, transaction_second_id) DO UPDATE SET device_id = :device_id, package_second_id = :package_second_id, transaction_type = :transaction_type, amount = :amount, category = :category, money_source = :money_source, note = :note, status = :status, createat = :createat")
+    @Query(value = "INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat ) VALUES ( :group_id, :transaction_second_id, :device_id, :package_second_id, :action_id, :action_type, :transaction_type, :amount, :category, :money_source, :note, :status, :createat ) ON CONFLICT (group_id, transaction_second_id) DO UPDATE SET device_id = :device_id, package_second_id = :package_second_id, action_id = :action_id, action_type = :action_type, transaction_type = :transaction_type, amount = :amount, category = :category, money_source = :money_source, note = :note, status = :status, createat = :createat")
     Mono<PaymentTransation> saveTransaction(@Param("group_id") String group_id, @Param("transaction_second_id") String transaction_second_id,
-                              @Param("device_id") String device_id, @Param("package_second_id") String package_second_id, @Param("transaction_type") PaymentTransation.TType transaction_type,
-                              @Param("amount") float amount, @Param("category") String category,
-                              @Param("money_source") String money_source, @Param("note") String note,
-                              @Param("status") PaymentTransation.Status status, @Param("createat") Timestamp createat);
+                                            @Param("device_id") String device_id, @Param("package_second_id") String package_second_id,
+                                            @Param("action_id") String action_id, @Param("action_type") PaymentTransation.ActionType action_type,
+                                            @Param("transaction_type") PaymentTransation.TType transaction_type,
+                                            @Param("amount") float amount, @Param("category") String category,
+                                            @Param("money_source") String money_source, @Param("note") String note,
+                                            @Param("status") PaymentTransation.Status status, @Param("createat") Timestamp createat);
 
     @Query(value = "DELETE FROM payment_transaction WHERE payment_transaction.group_id = :group_id AND payment_transaction.transaction_second_id = :transaction_second_id")
     Mono<PaymentTransation> deleteTransaction(@Param("group_id") String group_id, @Param("transaction_second_id") String transaction_second_id);

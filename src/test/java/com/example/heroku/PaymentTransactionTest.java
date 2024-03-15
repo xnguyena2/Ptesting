@@ -69,6 +69,8 @@ public class PaymentTransactionTest {
                     assertThat(transation.getGroup_id()).isEqualTo(group);
                     assertThat(transation.getTransaction_second_id()).isEqualTo(group+"123");
                     assertThat(transation.getPackage_second_id()).isEqualTo("2222");
+                    assertThat(transation.getAction_id()).isEqualTo("2222");
+                    assertThat(transation.getAction_type()).isEqualTo(PaymentTransation.ActionType.USER_PROPOSE);
                     assertThat(transation.getTransaction_type()).isEqualTo(PaymentTransation.TType.INCOME);
                     assertThat(transation.getCategory()).isEqualTo("ban hang");
                     assertThat(transation.getMoney_source()).isEqualTo("tien mat");
@@ -78,6 +80,8 @@ public class PaymentTransactionTest {
                     assertThat(transation.getGroup_id()).isEqualTo(group);
                     assertThat(transation.getTransaction_second_id()).isEqualTo(group+"234");
                     assertThat(transation.getPackage_second_id()).isNull();
+                    assertThat(transation.getAction_id()).isNull();
+                    assertThat(transation.getAction_type()).isEqualTo(PaymentTransation.ActionType.USER_PROPOSE);
                     assertThat(transation.getTransaction_type()).isEqualTo(PaymentTransation.TType.INCOME);
                     assertThat(transation.getCategory()).isEqualTo("ban hang");
                     assertThat(transation.getMoney_source()).isEqualTo("tien mat");
@@ -86,6 +90,8 @@ public class PaymentTransactionTest {
                 .consumeNextWith(transation -> {
                     assertThat(transation.getGroup_id()).isEqualTo(group);
                     assertThat(transation.getPackage_second_id()).isEqualTo("2222");
+                    assertThat(transation.getAction_id()).isEqualTo("2222");
+                    assertThat(transation.getAction_type()).isEqualTo(PaymentTransation.ActionType.USER_PROPOSE);
                     assertThat(transation.getTransaction_second_id()).isEqualTo(group+"345");
                     assertThat(transation.getTransaction_type()).isEqualTo(PaymentTransation.TType.OUTCOME);
                     assertThat(transation.getCategory()).isEqualTo("mua hang");
@@ -101,6 +107,8 @@ public class PaymentTransactionTest {
                     assertThat(transation.getGroup_id()).isEqualTo(group);
                     assertThat(transation.getTransaction_second_id()).isEqualTo(group+"123");
                     assertThat(transation.getPackage_second_id()).isEqualTo("2222");
+                    assertThat(transation.getAction_id()).isEqualTo("2222");
+                    assertThat(transation.getAction_type()).isEqualTo(PaymentTransation.ActionType.USER_PROPOSE);
                     assertThat(transation.getTransaction_type()).isEqualTo(PaymentTransation.TType.INCOME);
                     assertThat(transation.getCategory()).isEqualTo("ban hang");
                     assertThat(transation.getMoney_source()).isEqualTo("tien mat");
@@ -109,6 +117,8 @@ public class PaymentTransactionTest {
                 .consumeNextWith(transation -> {
                     assertThat(transation.getGroup_id()).isEqualTo(group);
                     assertThat(transation.getPackage_second_id()).isEqualTo("2222");
+                    assertThat(transation.getAction_id()).isEqualTo("2222");
+                    assertThat(transation.getAction_type()).isEqualTo(PaymentTransation.ActionType.USER_PROPOSE);
                     assertThat(transation.getTransaction_second_id()).isEqualTo(group+"345");
                     assertThat(transation.getTransaction_type()).isEqualTo(PaymentTransation.TType.OUTCOME);
                     assertThat(transation.getCategory()).isEqualTo("mua hang");
@@ -128,6 +138,8 @@ public class PaymentTransactionTest {
                     assertThat(transation.getGroup_id()).isEqualTo(group);
                     assertThat(transation.getTransaction_second_id()).isEqualTo(group+"234");
                     assertThat(transation.getPackage_second_id()).isNull();
+                    assertThat(transation.getAction_id()).isNull();
+                    assertThat(transation.getAction_type()).isEqualTo(PaymentTransation.ActionType.USER_PROPOSE);
                     assertThat(transation.getTransaction_type()).isEqualTo(PaymentTransation.TType.INCOME);
                     assertThat(transation.getCategory()).isEqualTo("ban hang");
                     assertThat(transation.getMoney_source()).isEqualTo("tien mat");
@@ -136,6 +148,8 @@ public class PaymentTransactionTest {
                 .consumeNextWith(transation -> {
                     assertThat(transation.getGroup_id()).isEqualTo(group);
                     assertThat(transation.getPackage_second_id()).isEqualTo("2222");
+                    assertThat(transation.getAction_id()).isEqualTo("2222");
+                    assertThat(transation.getAction_type()).isEqualTo(PaymentTransation.ActionType.USER_PROPOSE);
                     assertThat(transation.getTransaction_second_id()).isEqualTo(group+"345");
                     assertThat(transation.getTransaction_type()).isEqualTo(PaymentTransation.TType.OUTCOME);
                     assertThat(transation.getCategory()).isEqualTo("mua hang");
@@ -155,6 +169,8 @@ public class PaymentTransactionTest {
                 .consumeNextWith(transation -> {
                     assertThat(transation.getGroup_id()).isEqualTo(group);
                     assertThat(transation.getPackage_second_id()).isEqualTo("2222");
+                    assertThat(transation.getAction_id()).isEqualTo("2222");
+                    assertThat(transation.getAction_type()).isEqualTo(PaymentTransation.ActionType.USER_PROPOSE);
                     assertThat(transation.getTransaction_second_id()).isEqualTo(group+"345");
                     assertThat(transation.getTransaction_type()).isEqualTo(PaymentTransation.TType.OUTCOME);
                     assertThat(transation.getCategory()).isEqualTo("mua hang");
