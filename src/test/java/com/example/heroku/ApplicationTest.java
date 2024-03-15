@@ -216,7 +216,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void testPaymentTransaction(){
-        PaymentTransactionTest.builder().paymentTransation(paymentTransation).group(mainGroup).build().Test();
+        PaymentTransactionTest.builder().paymentTransation(paymentTransation).statisticServices(statisticServices).group(mainGroup).build().Test();
     }
 
     /*
@@ -342,7 +342,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void testPaymentTransaction2(){
-        PaymentTransactionTest.builder().paymentTransation(paymentTransation).group(anotherGroup).build().Test();
+        PaymentTransactionTest.builder().paymentTransation(paymentTransation).statisticServices(statisticServices).group(anotherGroup).build().Test();
     }
 
 }

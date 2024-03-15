@@ -37,4 +37,8 @@ public class PaymentTransation {
     public Flux<com.example.heroku.model.PaymentTransation> getAllTransactionBettwen(PackageID query) {
         return paymentTransactionRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo());
     }
+
+    public Flux<com.example.heroku.model.PaymentTransation> getAllCategory(IDContainer idContainer) {
+        return paymentTransactionRepository.getAllCategory(idContainer.getGroup_id());
+    }
 }

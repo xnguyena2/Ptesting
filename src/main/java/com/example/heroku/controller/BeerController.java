@@ -99,7 +99,7 @@ public class BeerController {
     @DeleteMapping("/admin/delete/{groupid}/{id}")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Product> delete(@AuthenticationPrincipal Mono<Users> principal, @PathVariable("groupid") String groupID, @PathVariable("id") String beerID) {
-        System.out.println("delete beer: " + beerID);
+        System.out.println("delete beer: " + beerID + ", group_id: " + groupID);
         return WrapPermissionGroupWithPrincipalAction.<Product>builder()
                 .principal(principal)
                 .subject(() -> groupID)

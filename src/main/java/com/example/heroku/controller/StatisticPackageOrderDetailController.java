@@ -5,7 +5,8 @@ import com.example.heroku.model.statistics.*;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.permission.WrapPermissionAction;
-import com.example.heroku.response.ProductOrderStatus;
+import com.example.heroku.response.BenifitOfOrderAndPaymentTransactionByDate;
+import com.example.heroku.response.BenifitOfOrderAndPaymentTransactionByHour;
 import com.example.heroku.services.StatisticServices;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,33 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/packageorderstatistic")
-public class StatisticPackageOrderDetail {
+public class StatisticPackageOrderDetailController {
     @Autowired
     StatisticServices statisticServices;
+
+    @PostMapping("/admin/getfinalbenifitbydate")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<BenifitOfOrderAndPaymentTransactionByDate> getFinalBenifitByDate(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
+        System.out.println("get final benifit by date: " + query.getGroup_id());
+        return WrapPermissionAction.<BenifitOfOrderAndPaymentTransactionByDate>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .monoAction(q -> statisticServices.getBenifitOfPaymentByDateStatictis(query))
+                .build()
+                .toMono();
+    }
+
+    @PostMapping("/admin/getfinalbenifitbyhour")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<BenifitOfOrderAndPaymentTransactionByHour> getFinalBenifitByHour(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
+        System.out.println("get final benifig by hour: " + query.getGroup_id());
+        return WrapPermissionAction.<BenifitOfOrderAndPaymentTransactionByHour>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .monoAction(q -> statisticServices.getBenifitOfPaymentByHourStatictis(query))
+                .build()
+                .toMono();
+    }
 
     @PostMapping("/admin/getbyproductid")
     @CrossOrigin(origins = Util.HOST_URL)
@@ -29,19 +54,7 @@ public class StatisticPackageOrderDetail {
         return WrapPermissionAction.<BenifitByDate>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
-                .fluxAction(q -> statisticServices.getPackageStatictis(query, false))
-                .build()
-                .toFlux();
-    }
-
-    @PostMapping("/admin/getbyproductidwithreturn")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<BenifitByDate> getbyproductidWithReturn(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("get report getbyproductidwithreturn with return: " + query.getGroup_id());
-        return WrapPermissionAction.<BenifitByDate>builder()
-                .principal(principal)
-                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
-                .fluxAction(q -> statisticServices.getPackageStatictis(query, true))
+                .fluxAction(q -> statisticServices.getPackageStatictis(query))
                 .build()
                 .toFlux();
     }
@@ -53,19 +66,7 @@ public class StatisticPackageOrderDetail {
         return WrapPermissionAction.<BenifitByDateHour>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
-                .fluxAction(q -> statisticServices.getPackageStatictisByHour(query, false))
-                .build()
-                .toFlux();
-    }
-
-    @PostMapping("/admin/getbyhourwithreturn")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<BenifitByDateHour> getbyproductidofhoursWithReturn(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("get report getbyhourwithreturn of hours with return: " + query.getGroup_id());
-        return WrapPermissionAction.<BenifitByDateHour>builder()
-                .principal(principal)
-                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
-                .fluxAction(q -> statisticServices.getPackageStatictisByHour(query, true))
+                .fluxAction(q -> statisticServices.getPackageStatictisByHour(query))
                 .build()
                 .toFlux();
     }

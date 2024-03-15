@@ -1405,7 +1405,7 @@ public class UserPackageTest {
                 .verifyComplete();
 
 
-        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build(), true)
+        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getCost()).isEqualTo(444);
@@ -1423,7 +1423,36 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build(), true)
+
+        statisticServices.getBenifitOfPaymentByDateStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(data -> {
+                    assertThat(data.getReturn_price()).isEqualTo(0);
+                    assertThat(data.getBenifit_by_date().size()).isEqualTo(1);
+                    assertThat(data.getBenifit_by_date_transaction().size()).isEqualTo(0);
+                    assertThat(data.getBenifit_by_category_transaction().size()).isEqualTo(0);
+
+
+                    BenifitByDate benifitByDate = data.getBenifit_by_date().get(0);
+
+
+                    assertThat(benifitByDate.getCost()).isEqualTo(444);
+                    assertThat(benifitByDate.getProfit()).isEqualTo(7878);
+                    assertThat(benifitByDate.getRevenue()).isEqualTo(7868);
+                    assertThat(benifitByDate.getPrice()).isEqualTo(4);
+                    assertThat(benifitByDate.getCount()).isEqualTo(3);
+                    assertThat(benifitByDate.getBuyer()).isEqualTo(2);
+                    assertThat(benifitByDate.getShip_price()).isEqualTo(60000);
+                    assertThat(benifitByDate.getDiscount_by_point()).isEqualTo(98);
+                    assertThat(benifitByDate.getDiscount_promotional()).isEqualTo(89);
+                    assertThat(benifitByDate.getAdditional_fee()).isEqualTo(87);
+                    assertThat(benifitByDate.getReturn_price()).isEqualTo(0);
+                    assertThat(new DecimalFormat("0.0").format(benifitByDate.getDiscount())).isEqualTo("30000.4");
+
+                })
+                .verifyComplete();
+
+        statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByDateHour::getRevenue))
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
@@ -1439,6 +1468,33 @@ public class UserPackageTest {
                     assertThat(data.getAdditional_fee()).isEqualTo(87);
                     assertThat(data.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("30000.4");
+                })
+                .verifyComplete();
+
+        statisticServices.getBenifitOfPaymentByHourStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(data -> {
+                    assertThat(data.getReturn_price()).isEqualTo(0);
+                    assertThat(data.getBenifit_by_hour().size()).isEqualTo(1);
+                    assertThat(data.getBenifit_by_hour_transaction().size()).isEqualTo(0);
+                    assertThat(data.getBenifit_by_category_transaction().size()).isEqualTo(0);
+
+
+                    BenifitByDateHour benifitByHour = data.getBenifit_by_hour().get(0);
+
+
+                    assertThat(benifitByHour.getCost()).isEqualTo(444);
+                    assertThat(benifitByHour.getProfit()).isEqualTo(7878);
+                    assertThat(benifitByHour.getRevenue()).isEqualTo(7868);
+                    assertThat(benifitByHour.getCount()).isEqualTo(3);
+                    assertThat(benifitByHour.getBuyer()).isEqualTo(2);
+                    assertThat(benifitByHour.getShip_price()).isEqualTo(60000);
+                    assertThat(benifitByHour.getPrice()).isEqualTo(4);
+                    assertThat(benifitByHour.getDiscount_by_point()).isEqualTo(98);
+                    assertThat(benifitByHour.getDiscount_promotional()).isEqualTo(89);
+                    assertThat(benifitByHour.getAdditional_fee()).isEqualTo(87);
+                    assertThat(data.getReturn_price()).isEqualTo(0);
+                    assertThat(new DecimalFormat("0.0").format(benifitByHour.getDiscount())).isEqualTo("30000.4");
                 })
                 .verifyComplete();
 
@@ -2245,7 +2301,7 @@ public class UserPackageTest {
 
         buyer.deleteBuyer(group, "0022929222").block();
 
-        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build(), true)
+        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getCost()).isEqualTo(0);
@@ -2263,7 +2319,34 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build(), true)
+        statisticServices.getBenifitOfPaymentByDateStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(data -> {
+                    assertThat(data.getReturn_price()).isEqualTo(0);
+                    assertThat(data.getBenifit_by_date().size()).isEqualTo(1);
+                    assertThat(data.getBenifit_by_date_transaction().size()).isEqualTo(0);
+                    assertThat(data.getBenifit_by_category_transaction().size()).isEqualTo(0);
+
+
+                    BenifitByDate benifitByDate = data.getBenifit_by_date().get(0);
+
+
+                    assertThat(benifitByDate.getCost()).isEqualTo(0);
+                    assertThat(benifitByDate.getProfit()).isEqualTo(0);
+                    assertThat(benifitByDate.getRevenue()).isEqualTo(0);
+                    assertThat(benifitByDate.getPrice()).isEqualTo(1);
+                    assertThat(benifitByDate.getCount()).isEqualTo(1);
+                    assertThat(benifitByDate.getBuyer()).isEqualTo(1);
+                    assertThat(benifitByDate.getShip_price()).isEqualTo(20000);
+                    assertThat(benifitByDate.getDiscount_by_point()).isEqualTo(0);
+                    assertThat(benifitByDate.getDiscount_promotional()).isEqualTo(0);
+                    assertThat(benifitByDate.getAdditional_fee()).isEqualTo(0);
+                    assertThat(data.getReturn_price()).isEqualTo(0);
+                    assertThat(new DecimalFormat("0.0").format(benifitByDate.getDiscount())).isEqualTo("10000.1");
+                })
+                .verifyComplete();
+
+        statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByDateHour::getRevenue))
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
@@ -2279,6 +2362,33 @@ public class UserPackageTest {
                     assertThat(data.getAdditional_fee()).isEqualTo(0);
                     assertThat(data.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("10000.1");
+                })
+                .verifyComplete();
+
+        statisticServices.getBenifitOfPaymentByHourStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(data -> {
+                    assertThat(data.getReturn_price()).isEqualTo(0);
+                    assertThat(data.getBenifit_by_hour().size()).isEqualTo(1);
+                    assertThat(data.getBenifit_by_hour_transaction().size()).isEqualTo(0);
+                    assertThat(data.getBenifit_by_category_transaction().size()).isEqualTo(0);
+
+
+                    BenifitByDateHour benifitByHour = data.getBenifit_by_hour().get(0);
+
+
+                    assertThat(benifitByHour.getCost()).isEqualTo(0);
+                    assertThat(benifitByHour.getProfit()).isEqualTo(0);
+                    assertThat(benifitByHour.getRevenue()).isEqualTo(0);
+                    assertThat(benifitByHour.getPrice()).isEqualTo(1);
+                    assertThat(benifitByHour.getCount()).isEqualTo(1);
+                    assertThat(benifitByHour.getBuyer()).isEqualTo(1);
+                    assertThat(benifitByHour.getShip_price()).isEqualTo(20000);
+                    assertThat(benifitByHour.getDiscount_promotional()).isEqualTo(0);
+                    assertThat(benifitByHour.getDiscount_by_point()).isEqualTo(0);
+                    assertThat(benifitByHour.getAdditional_fee()).isEqualTo(0);
+                    assertThat(benifitByHour.getReturn_price()).isEqualTo(0);
+                    assertThat(new DecimalFormat("0.0").format(benifitByHour.getDiscount())).isEqualTo("10000.1");
                 })
                 .verifyComplete();
 

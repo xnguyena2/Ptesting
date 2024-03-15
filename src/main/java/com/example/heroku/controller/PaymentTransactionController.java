@@ -42,6 +42,13 @@ public class PaymentTransactionController {
         return paymentTransation.getAllTransactionByPackageID(idContainer);
     }
 
+    @PostMapping("/getcategory")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<com.example.heroku.model.PaymentTransation> getCategory(@RequestBody @Valid IDContainer idContainer) {
+        System.out.println("get all category of payment transaction of group id: " + idContainer.getGroup_id());
+        return paymentTransation.getAllCategory(idContainer);
+    }
+
     @PostMapping("/getbytime")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<com.example.heroku.model.PaymentTransation> getBettwenTime(@RequestBody @Valid PackageID packageID) {

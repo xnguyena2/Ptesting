@@ -5,6 +5,8 @@ import com.example.heroku.model.repository.*;
 import com.example.heroku.model.statistics.*;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.PackageID;
+import com.example.heroku.response.BenifitOfOrderAndPaymentTransactionByDate;
+import com.example.heroku.response.BenifitOfOrderAndPaymentTransactionByHour;
 import com.example.heroku.response.ProductOrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,6 +45,15 @@ public class StatisticServices {
     @Autowired
     StatisticBenifitOfOrderRepository statisticBenifitOfOrderRepository;
 
+    @Autowired
+    StatisticBenifitPaymentTransactionByDateRepository statisticBenifitPaymentTransactionByDateRepository;
+
+    @Autowired
+    StatisticBenifitPaymentTransactionByHourRepository statisticBenifitPaymentTransactionByHourRepository;
+
+    @Autowired
+    StatisticBenifitPaymentTransactionByCategoryRepository statisticBenifitPaymentTransactionByCategoryRepository;
+
     public Flux<ProductOrderStatus> getByProductID(SearchQuery query) {
         String dateTxt = query.GetFilterTxt();
         int date = Integer.parseInt(dateTxt);
@@ -63,32 +74,38 @@ public class StatisticServices {
 
     }
 
-    public Flux<BenifitByDate> getPackageStatictis(PackageID query, boolean isQueryReturn) {
+    public Mono<BenifitOfOrderAndPaymentTransactionByDate> getBenifitOfPaymentByDateStatictis(PackageID query) {
+        BenifitOfOrderAndPaymentTransactionByDate result = BenifitOfOrderAndPaymentTransactionByDate.builder().build();
         return statisticBenifitRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus())
-                .flatMap(benifitByDate -> {
-                    if (isQueryReturn) {
-                        return statisticCountOrdersRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), UserPackageDetail.Status.CANCEL, UserPackageDetail.Status.RETURN)
-                                .map(countOrderByDate -> {
-                                    benifitByDate.setReturn_price(countOrderByDate.getRevenue_return());
-                                    return benifitByDate;
-                                });
-                    }
-                    return Mono.just(benifitByDate);
-                });
+                .collectList().map(result::setBenifitByDate)
+                .flatMap(benifitOfOrderAndPaymentTransactionByDate -> statisticBenifitPaymentTransactionByDateRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo())
+                        .collectList().map(benifitOfOrderAndPaymentTransactionByDate::setBenifitTransactionByDate)
+                )
+                .flatMap(benifitOfOrderAndPaymentTransactionByDate -> statisticBenifitPaymentTransactionByCategoryRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo())
+                        .collectList().map(benifitOfOrderAndPaymentTransactionByDate::setBenifitTransactionCategoryByDate)
+                )
+                .flatMap(benifitOfOrderAndPaymentTransactionByDate -> getCountCancelReturnStatictis(query).map(countOrderByDate -> benifitOfOrderAndPaymentTransactionByDate.setReturnPrice(countOrderByDate.getRevenue_return())));
     }
 
-    public Flux<BenifitByDateHour> getPackageStatictisByHour(PackageID query, boolean isQueryReturn) {
+    public Mono<BenifitOfOrderAndPaymentTransactionByHour> getBenifitOfPaymentByHourStatictis(PackageID query) {
+        BenifitOfOrderAndPaymentTransactionByHour result = BenifitOfOrderAndPaymentTransactionByHour.builder().build();
         return statisticBenifitByHourRepository.getStatictisByHour(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus())
-                .flatMap(benifitByDate -> {
-                    if (isQueryReturn) {
-                        return statisticCountOrdersRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), UserPackageDetail.Status.CANCEL, UserPackageDetail.Status.RETURN)
-                                .map(countOrderByDate -> {
-                                    benifitByDate.setReturn_price(countOrderByDate.getRevenue_return());
-                                    return benifitByDate;
-                                });
-                    }
-                    return Mono.just(benifitByDate);
-                });
+                .collectList().map(result::setBenifitByHour)
+                .flatMap(benifitOfOrderAndPaymentTransactionByDate -> statisticBenifitPaymentTransactionByHourRepository.getStatictisByHour(query.getGroup_id(), query.getFrom(), query.getTo())
+                        .collectList().map(benifitOfOrderAndPaymentTransactionByDate::setBenifitTransactionByHour)
+                )
+                .flatMap(benifitOfOrderAndPaymentTransactionByDate -> statisticBenifitPaymentTransactionByCategoryRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo())
+                        .collectList().map(benifitOfOrderAndPaymentTransactionByDate::setBenifitTransactionCategoryByHour)
+                )
+                .flatMap(benifitOfOrderAndPaymentTransactionByDate -> getCountCancelReturnStatictis(query).map(countOrderByDate -> benifitOfOrderAndPaymentTransactionByDate.setReturnPrice(countOrderByDate.getRevenue_return())));
+    }
+
+    public Flux<BenifitByDate> getPackageStatictis(PackageID query) {
+        return statisticBenifitRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
+    }
+
+    public Flux<BenifitByDateHour> getPackageStatictisByHour(PackageID query) {
+        return statisticBenifitByHourRepository.getStatictisByHour(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
     }
 
     public Mono<BenifitByMonth> getPackageTotalStatictis(PackageID query) {
