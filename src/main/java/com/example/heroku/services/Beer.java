@@ -43,7 +43,7 @@ public class Beer {
     BeerUnitRepository beerUnitRepository;
 
     @Autowired
-    JoinProductWithProductUnitRepository joinProductWithProductUnitRepository;
+    JoinProductWithProductUnit joinProductWithProductUnit;
 
     public Mono<BeerSubmitData> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
         info.CorrectData();
@@ -52,7 +52,7 @@ public class Beer {
                         this.beerRepository.saveProduct(product.getGroup_id(), product.getProduct_second_id(),
                                 product.getName(), product.getDetail(),
                                 product.getCategory(), product.getUnit_category_config(),
-                                product.getMeta_search(),
+                                product.getMeta_search(), product.isVisible_web(),
                                 product.getStatus(), product.getCreateat()
                         ).then(Mono.just(product))
                 )
@@ -110,9 +110,12 @@ public class Beer {
     }
 
     public Flux<BeerSubmitData> GetAllBeerByJoinFirst(SearchQuery query) {
-        return this.joinProductWithProductUnitRepository.getIfProductNotHide(query.getGroup_id(), query.getPage(), query.getSize())
-                .groupBy(ProductJoinWithProductUnit::getProduct_second_id)
-                .flatMap(groupedFlux -> groupedFlux.collectList().map(ProductJoinWithProductUnit::GenerateBeerSubmitData))
+        return this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHide(query)
+                .flatMap(this::_setImg4SubmitData);
+    }
+
+    public Flux<BeerSubmitData> GetAllBeerByJoinFirstForWeb(SearchQuery query) {
+        return this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHideForWeb(query)
                 .flatMap(this::_setImg4SubmitData);
     }
 

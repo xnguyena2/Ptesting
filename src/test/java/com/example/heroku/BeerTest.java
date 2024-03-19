@@ -47,6 +47,7 @@ public class BeerTest {
                                 .product_second_id("sold_out")
                                 .status(Product.Status.SOLD_OUT)
                                 .group_id(group)
+                                .visible_web(true)
                                 .build()
                                 .AutoFill()
                         )
@@ -90,6 +91,7 @@ public class BeerTest {
                                 .name("beer tiger")
                                 .product_second_id("123")
                                 .group_id(group)
+                                .visible_web(true)
                                 .build()
                                 .AutoFill()
                         )
@@ -205,6 +207,7 @@ public class BeerTest {
                                 .product_second_id("456")
                                 .unit_category_config("hello i am config")
                                 .group_id(group)
+                                .visible_web(true)
                                 .build()
                                 .AutoFill()
                         )
@@ -280,6 +283,7 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
+                    assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
@@ -323,6 +327,7 @@ public class BeerTest {
                             "- bia thom ngon\n" +
                             "- bia nhap ngoai\n" +
                             "- bia san xuat tu ha lan");
+                    assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))

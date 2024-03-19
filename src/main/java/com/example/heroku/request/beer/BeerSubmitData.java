@@ -28,6 +28,7 @@ public class BeerSubmitData {
     private String category;
     private String unit_category_config;
     private String status;
+    private boolean visible_web;
     private List<Image> images;
     private BeerUnit[] listUnit;
 
@@ -71,6 +72,7 @@ public class BeerSubmitData {
                                 .unit_category_config(this.unit_category_config)
                                 .status(Product.Status.get(this.status))
                                 .meta_search(this.meta_search)
+                                .visible_web(this.visible_web)
                                 .build()
                 )
                 .build()
@@ -87,6 +89,7 @@ public class BeerSubmitData {
                 .unit_category_config(product.getUnit_category_config())
                 .status(product.GetStatusNuable().getName())
                 .meta_search(product.getMeta_search())
+                .visible_web(product.isVisible_web())
                 .build();
     }
 

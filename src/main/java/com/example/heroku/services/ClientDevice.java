@@ -32,7 +32,7 @@ public class ClientDevice {
     @Autowired
     Store storeServices;
 
-    public Mono<BootStrapData> bootStrapData(String groupID) {
+    public Mono<BootStrapData> bootStrapDataForWeb(String groupID) {
 
         return Mono.just(
                 BootStrapData.builder()
@@ -40,7 +40,7 @@ public class ClientDevice {
                         .products(new ArrayList<>())
                         .build())
                 .flatMap(bootStrapData ->
-                        beerAPI.GetAllBeer(SearchQuery.builder().group_id(groupID).page(0).size(24).build())
+                        beerAPI.GetAllBeerByJoinFirstForWeb(SearchQuery.builder().group_id(groupID).page(0).size(24).build())
                                 .map(beerSubmitData ->
                                         bootStrapData.getProducts().add(beerSubmitData)
                                 ).then(
@@ -67,15 +67,6 @@ public class ClientDevice {
                         this.storeServices.getStore(groupID)
                                 .switchIfEmpty(Mono.just(com.example.heroku.model.Store.builder().build()))
                                 .map(bootStrapData::setStore)
-                )
-                .flatMap(bootStrapData ->
-                        this.statisticServices.getPackageTotalStatictis(PackageID.builder()
-                                        .group_id(groupID)
-                                        .from(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).atZone(ZoneId.of("UTC")).toLocalDateTime()))
-                                        .to(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))))
-                                        .status(UserPackageDetail.Status.DONE).build())
-                                .switchIfEmpty(Mono.just(BenifitByMonth.builder().build()))
-                                .map(bootStrapData::setBenifit)
                 );
     }
 

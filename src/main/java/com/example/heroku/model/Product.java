@@ -33,6 +33,8 @@ public class Product extends BaseEntity {
 
     private Status status;
 
+    private boolean visible_web;
+
     //update ProductJoinWithProductUnit
     //update BeerSubmitData
 

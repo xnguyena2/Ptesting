@@ -31,8 +31,8 @@ public class ClientDeviceController {
     @GetMapping("/bootstrap/{groupid}")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<BootStrapData> bootStrapData(@PathVariable("groupid") String groupID) {
-        System.out.println("Get bootstrap!");
-        return clientDeviceAPI.bootStrapData(groupID);
+        System.out.println("Website get bootstrap!");
+        return clientDeviceAPI.bootStrapDataForWeb(groupID);
     }
 
     @GetMapping("/bootstrapfull/{groupid}")

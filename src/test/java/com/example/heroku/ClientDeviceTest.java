@@ -22,7 +22,7 @@ public class ClientDeviceTest {
     boolean testWithMainGroup;
 
     public void BootStrapData() {
-        clientDeviceAPI.bootStrapData(group)
+        clientDeviceAPI.bootStrapDataForWeb(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {
@@ -58,7 +58,7 @@ public class ClientDeviceTest {
     }
 
     public void BootStrapDataWithoutImage() {
-        clientDeviceAPI.bootStrapData(group)
+        clientDeviceAPI.bootStrapDataForWeb(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {
@@ -164,7 +164,7 @@ public class ClientDeviceTest {
     }
 
     public void BootStrapDataLarge() {
-        clientDeviceAPI.bootStrapData(group)
+        clientDeviceAPI.bootStrapDataForWeb(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {

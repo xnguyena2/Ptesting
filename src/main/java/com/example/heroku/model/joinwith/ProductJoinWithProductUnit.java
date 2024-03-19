@@ -31,6 +31,7 @@ public class ProductJoinWithProductUnit {
     private String category;
     private String unit_category_config;
     private Product.Status status;
+    private boolean visible_web;
 
 
 
@@ -75,6 +76,7 @@ public class ProductJoinWithProductUnit {
                 .meta_search(meta_search)
                 .category(category)
                 .unit_category_config(unit_category_config)
+                .visible_web(visible_web)
                 .status(status)
                 .build();
     }
