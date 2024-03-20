@@ -34,40 +34,39 @@ public class ClientDevice {
 
     public Mono<BootStrapData> bootStrapDataForWeb(String groupID) {
 
-        return Mono.just(
-                BootStrapData.builder()
-                        .carousel(new ArrayList<>())
-                        .products(new ArrayList<>())
-                        .build())
-                .flatMap(bootStrapData ->
-                        beerAPI.GetAllBeerByJoinFirstForWeb(SearchQuery.builder().group_id(groupID).page(0).size(24).build())
-                                .map(beerSubmitData ->
-                                        bootStrapData.getProducts().add(beerSubmitData)
-                                ).then(
-                                Mono.just(bootStrapData)
+        return
+                this.storeServices.getStoreLowerCase(groupID)
+                        .switchIfEmpty(Mono.just(com.example.heroku.model.Store.builder().group_id(groupID).build()))
+                        .map(store -> BootStrapData.builder()
+                                .store(store)
+                                .carousel(new ArrayList<>())
+                                .products(new ArrayList<>())
+                                .build()
                         )
-                )
-                .flatMap(bootStrapData ->
-                                imageAPI.GetAll(groupID, "Carousel")
+                        .flatMap(bootStrapData ->
+                                beerAPI.GetAllBeerByJoinFirstForWeb(SearchQuery.builder().group_id(bootStrapData.getStore().getGroup_id()).page(0).size(24).build())
+                                        .map(beerSubmitData ->
+                                                bootStrapData.getProducts().add(beerSubmitData)
+                                        ).then(
+                                                Mono.just(bootStrapData)
+                                        )
+                        )
+                        .flatMap(bootStrapData ->
+                                imageAPI.GetAll(bootStrapData.getStore().getGroup_id(), "Carousel")
                                         .switchIfEmpty(Mono.just(com.example.heroku.model.Image.builder().build()))
                                         .map(image ->
                                                 {
-                                                    if(image.getImgid() == null)
+                                                    if (image.getImgid() == null)
                                                         return false;
                                                     return bootStrapData.getCarousel().add(image.getLarge());
                                                 }
                                         ).then(Mono.just(bootStrapData))
-                )
-                .flatMap(bootStrapData ->
-                        this.deviceConfigAPI.GetConfig(groupID)
-                                .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().color("#333333").build()))
-                                .map(bootStrapData::setDeviceConfig)
-                )
-                .flatMap(bootStrapData ->
-                        this.storeServices.getStore(groupID)
-                                .switchIfEmpty(Mono.just(com.example.heroku.model.Store.builder().build()))
-                                .map(bootStrapData::setStore)
-                );
+                        )
+                        .flatMap(bootStrapData ->
+                                this.deviceConfigAPI.GetConfig(bootStrapData.getStore().getGroup_id())
+                                        .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().color("#333333").build()))
+                                        .map(bootStrapData::setDeviceConfig)
+                        );
     }
 
     public Mono<BootStrapData> adminBootStrapWithoutCarouselData(String groupID) {

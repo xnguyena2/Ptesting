@@ -62,6 +62,7 @@ CREATE INDEX user_device_index ON user_device(device_id);
 CREATE INDEX user_package_detail_index ON user_package_detail(package_second_id);
 CREATE INDEX user_package_index ON user_package(package_second_id);
 CREATE INDEX store_index ON store(group_id);
+CREATE INDEX store_group_id_low_index ON store(LOWER(group_id));
 CREATE INDEX buyer_index ON buyer(device_id);
 CREATE INDEX buyer_phone_number_clean_index ON buyer(phone_number_clean);
 CREATE INDEX voucher_index ON voucher(voucher_second_id);

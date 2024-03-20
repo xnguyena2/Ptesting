@@ -28,6 +28,10 @@ public class Store {
         return storeManagementRepository.getStore(groupID);
     }
 
+    public Mono<com.example.heroku.model.Store> getStoreLowerCase(String groupID) {
+        return storeManagementRepository.getStoreLowerCase(groupID);
+    }
+
     public Mono<com.example.heroku.model.Store> createOrUpdateStore(com.example.heroku.model.Store store) {
         return storeManagementRepository.insertOrUpdate(store.getGroup_id(), store.getName(), store.getTime_open(), store.getAddress(), store.getPhone(), store.getStatus(), store.getStore_type(), store.getCreateat());
     }

@@ -16,6 +16,9 @@ public interface StoreManagementRepository extends ReactiveCrudRepository<Store,
     @Query(value = "SELECT * FROM store WHERE store.group_id = :group_id")
     Mono<Store> getStore(@Param("group_id")String groupID);
 
+    @Query(value = "SELECT * FROM store WHERE LOWER(store.group_id) = LOWER(:group_id)")
+    Mono<Store> getStoreLowerCase(@Param("group_id")String groupID);
+
     @Query(value = "DELETE FROM store WHERE store.group_id = :group_id")
     Mono<Store> deleteStore(@Param("group_id")String groupID);
 
