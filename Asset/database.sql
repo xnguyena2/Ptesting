@@ -298,6 +298,12 @@ DECLARE
    _enable_warehouse BOOL;
 BEGIN
 
+    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    THEN
+	    RETURN NEW;
+    END IF;
+
+
     SELECT enable_warehouse, inventory_number
     INTO _enable_warehouse, _inventory_number
     FROM product_unit
@@ -331,6 +337,11 @@ CREATE OR REPLACE FUNCTION increase_product_unit_inventory()
 $$
 BEGIN
 
+    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    THEN
+	    RETURN OLD;
+    END IF;
+
 	UPDATE product_unit
     SET
     	inventory_number = product_unit.inventory_number + OLD.number_unit
@@ -352,6 +363,13 @@ DECLARE
    _enable_warehouse BOOL;
 BEGIN
 
+
+    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    THEN
+	    RETURN NEW;
+    END IF;
+
+    
     SELECT enable_warehouse, inventory_number
     INTO _enable_warehouse, _inventory_number
     FROM product_unit
@@ -441,6 +459,11 @@ BEGIN
 
     END IF;
 
+    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    THEN
+	    RETURN NEW;
+    END IF;
+
 --  update payment transaction
     IF (OLD.status = 'CANCEL' OR OLD.status = 'RETURN') AND (NEW.status <> 'CANCEL' AND NEW.status <> 'RETURN')
     THEN
@@ -475,6 +498,11 @@ BEGIN
         UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = NEW.group_id AND package_second_id = NEW.package_second_id;
         UPDATE table_detail SET package_second_id = NEW.package_second_id, createat = NOW() WHERE table_detail.group_id = NEW.group_id AND table_detail.table_id = NEW.table_id;
 
+    END IF;
+
+    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    THEN
+	    RETURN NEW;
     END IF;
 
 --  add to payment transaction

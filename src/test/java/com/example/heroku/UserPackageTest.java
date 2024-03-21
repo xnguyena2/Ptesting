@@ -1971,6 +1971,107 @@ public class UserPackageTest {
         userPackageAPI.CancelPackage(PackageID.builder().group_id(group).package_id("save_pack").build()).block();
 
 
+
+        productPackage = ProductPackage.builder()
+                .group_id(group)
+                .package_second_id("save_pack_temp")
+                .note("notettt here!!")
+                .image("img.jpeg")
+                .discount_amount(10000)
+                .discount_percent(10)
+                .ship_price(20000)
+                .voucher("voucher_1d")
+                .package_type("deliver")
+                .progress("{}")
+                .status(UserPackageDetail.Status.WEB_TEMP)
+                .area_id("area_1")
+                .area_name("tang 1")
+                .table_id("table_1")
+                .table_name("ban 1")
+                .payment(7868)
+                .cost(444)
+                .profit(7878)
+                .staff_id("nguyen_phong")
+                .buyer(Buyer.builder()
+                        .phone_number(" +84 0 229292 223")
+                        .reciver_fullname("test create package")
+                        .region_id(294)
+                        .district_id(484)
+                        .ward_id(10379)
+                        .build())
+                .product_units(new com.example.heroku.model.UserPackage[]{
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit1ID.get())
+                                .number_unit(3)
+                                .buy_price(3)
+                                .price(7)
+                                .discount_amount(19)
+                                .discount_percent(10)
+                                .note("note hhh")
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit2ID.get())
+                                .buy_price(3)
+                                .price(5)
+                                .number_unit(4)
+                                .build()
+                })
+                .build();
+        userPackageAPI.SavePackage(productPackage)
+                .block();
+
+        userPackageAPI.BuyerFromWebSubmitPackage(PackageID.builder().group_id(group).package_id("save_pack_temp").build()).block();
+
+        userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(group).page(0).size(10000).build(), UserPackageDetail.Status.WEB_SUBMIT)
+                .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("00229292223");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack_temp");
+                    assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(2);
+
+                    BuyerData buyer1 = userPackage.getBuyer();
+                    assertThat(buyer1.getDevice_id()).isEqualTo("00229292223");
+                    assertThat(buyer1.getRegion_id()).isEqualTo(294);
+                    assertThat(buyer1.getDistrict_id()).isEqualTo(484);
+                    assertThat(buyer1.getWard_id()).isEqualTo(10379);
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
+
+                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+
+                    ProductInPackageResponse item = listItem.get(0);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getDiscount_amount()).isEqualTo(19);
+                    assertThat(item.getDiscount_percent()).isEqualTo(10);
+                    assertThat(item.getNote()).isEqualTo("note hhh");
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(1);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(4);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .verifyComplete();
+
         userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(group).page(0).size(10000).build(), UserPackageDetail.Status.DONE)
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
                 .as(StepVerifier::create)
@@ -2018,6 +2119,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .verifyComplete();
+
+        userPackageAPI.BuyerFromWebSubmitPackage(PackageID.builder().group_id(group).package_id("save_pack").build()).block();
 
         userPackageAPI.ReturnPackage(PackageID.builder().group_id(group).package_id("save_pack").build()).block();
 

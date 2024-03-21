@@ -125,6 +125,14 @@ public class UserPackageController {
     }
 
 
+    @PostMapping("/buyerfromwebsubmit")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<Format>> buyerFromWebSubmitPackage(@RequestBody @Valid PackageID packageID) {
+        System.out.println("buyer from web submit package: " + packageID.getPackage_id());
+        return userPackageAPI.BuyerFromWebSubmitPackage(packageID);
+    }
+
+
     @PostMapping("/return")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> returnPackage(@RequestBody @Valid PackageID packageID) {

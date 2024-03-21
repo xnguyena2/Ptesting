@@ -318,6 +318,18 @@ public class UserPackage {
                 );
     }
 
+    public Mono<ResponseEntity<Format>> BuyerFromWebSubmitPackage(PackageID packageID) {
+
+        return userPackageDetailRepository.GetPackageDetailByID(packageID.getGroup_id(), packageID.getPackage_id())
+                .filter(sd -> sd.getStatus() == UserPackageDetail.Status.WEB_TEMP)
+                .flatMap(userPackageDetail -> userPackageRepository.UpdateStatusByPackgeID(packageID.getGroup_id(), packageID.getPackage_id(), UserPackageDetail.Status.WEB_SUBMIT)
+                        .then(
+                                userPackageDetailRepository.UpdateStatusByID(packageID.getGroup_id(), packageID.getPackage_id(), UserPackageDetail.Status.WEB_SUBMIT)
+                        )
+                        .then(Mono.just(ok(Format.builder().response("done").build())))
+                );
+    }
+
     public Mono<ResponseEntity<Format>> ReturnPackage(PackageID packageID) {
 
         return ReturnOrCalcelPackage(packageID, UserPackageDetail.Status.RETURN);
