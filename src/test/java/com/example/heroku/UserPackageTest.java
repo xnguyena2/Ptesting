@@ -343,6 +343,7 @@ public class UserPackageTest {
                 .group_id(group)
                 .price(3)
                 .device_id("222222")
+                .status(UserPackageDetail.Status.CREATE)
                 .product_units(new com.example.heroku.model.UserPackage[]{
                         com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("456")
@@ -425,7 +426,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        userPackageAPI.DeleteByBeerUnit(PackageItemRemove.builder().device_id("222222").unit_id(beerUnit1ID.get()).group_id(group).build()).blockLast();
+        userPackageAPI.DeleteByBeerUnit(PackageItemRemove.builder().device_id("222222").unit_id(beerUnit1ID.get()).group_id(group).build(), UserPackageDetail.Status.CREATE).blockLast();
 
         userPackageAPI.GetMyPackage(UserID.builder().id("222222").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
@@ -474,7 +475,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        userPackageAPI.DeleteByUserID(UserID.builder().id("222222").page(0).size(1000).group_id(group).build()).blockLast();
+        userPackageAPI.DeleteByUserID(UserID.builder().id("222222").page(0).size(1000).group_id(group).build(), UserPackageDetail.Status.CREATE).blockLast();
 
         userPackageAPI.GetMyPackage(UserID.builder().id("222222").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
@@ -682,7 +683,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        userPackageAPI.DeleteByUserID(UserID.builder().id("save_package").page(0).size(1000).group_id(group).build()).blockLast();
+        userPackageAPI.DeleteByUserID(UserID.builder().id("save_package").page(0).size(1000).group_id(group).build(), UserPackageDetail.Status.CREATE).blockLast();
 
         userPackageAPI.GetMyPackage(UserID.builder().id("save_package").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())

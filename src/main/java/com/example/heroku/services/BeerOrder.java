@@ -1,9 +1,7 @@
 package com.example.heroku.services;
 
 import com.example.heroku.firebase.MyFireBase;
-import com.example.heroku.model.ProductOrder;
-import com.example.heroku.model.ProductUnit;
-import com.example.heroku.model.ProductUnitOrder;
+import com.example.heroku.model.*;
 import com.example.heroku.model.PackageOrder;
 import com.example.heroku.model.repository.*;
 import com.example.heroku.request.order.OrderSearchResult;
@@ -162,7 +160,7 @@ public class BeerOrder {
         }
         return Flux.just(beerOrderData.getProductUnitOrders())
                 .flatMap(beerUnitOrder -> userPackageRepository.DeleteProductByBeerUnit(packageOrderData.getPackageOrder().getGroup_id(),
-                        packageOrderData.getPackageOrder().getUser_device_id(), beerUnitOrder.getProduct_unit_second_id())
+                        packageOrderData.getPackageOrder().getUser_device_id(), beerUnitOrder.getProduct_unit_second_id(), UserPackageDetail.Status.CREATE)
                 ).then(Mono.empty());
     }
 

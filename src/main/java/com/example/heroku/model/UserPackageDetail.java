@@ -124,8 +124,10 @@ public class UserPackageDetail  extends BaseEntity {
         CREATE("CREATE"),
         CANCEL("CANCEL"),
         RETURN("RETURN"),
-        DONE("DONE");
+        DONE("DONE"),
 
+        WEB_TEMP("WEB_TEMP"),
+        WEB_SUBMIT("WEB_SUBMIT");
 
 
         private String name;

@@ -1,5 +1,6 @@
 package com.example.heroku.controller;
 
+import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.beer.ProductPackgeWithTransaction;
@@ -29,7 +30,7 @@ public class UserPackageController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> addBeerToPackage(@RequestBody @Valid ProductPackage productPackage) {
         System.out.println("add beer to package: " + productPackage.getPackage_second_id());
-        return userPackageAPI.AddProductToPackage(productPackage);
+        return userPackageAPI.AddProductToPackage(productPackage.SetProductPackageForWeb());
     }
 
     @PostMapping("/update")
@@ -53,7 +54,7 @@ public class UserPackageController {
         return userPackageAPI.SavePackageWithoutCheck(productPackage);
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/admin/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> deletePackage(@RequestBody @Valid PackageID packageID) {
         System.out.println("delete package: " + packageID.getPackage_id());
@@ -64,7 +65,7 @@ public class UserPackageController {
     @PostMapping("/remove")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<com.example.heroku.model.UserPackage> removeFromPckage(@RequestBody @Valid PackageItemRemove beerUnitDelete) {
-        return userPackageAPI.DeleteByBeerUnit(beerUnitDelete);
+        return userPackageAPI.DeleteByBeerUnit(beerUnitDelete, UserPackageDetail.Status.WEB_TEMP);
     }
 
 
@@ -73,6 +74,14 @@ public class UserPackageController {
     public Flux<PackageDataResponse> getAll(@RequestBody @Valid UserID userID) {
         System.out.println("Get all my package: " + userID.getId());
         return userPackageAPI.GetMyPackage(userID);
+    }
+
+
+    @PostMapping("/getbydeviceforweb")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<PackageDataResponse> getAll(@RequestBody @Valid PackageID packageID) {
+        System.out.println("Get all my package for web: " + packageID.getDevice_id());
+        return userPackageAPI.GetMyPackageOfStatus(UserID.builder().id(packageID.getDevice_id()).page(packageID.getPage()).size(packageID.getSize()).build(), UserPackageDetail.Status.WEB_TEMP);
     }
 
 
@@ -135,6 +144,6 @@ public class UserPackageController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<com.example.heroku.model.UserPackage> clean(@RequestBody @Valid UserID userID) {
         System.out.println("clean all package with device_id: " + userID.getId());
-        return userPackageAPI.DeleteByUserID(userID);
+        return userPackageAPI.DeleteByUserID(userID, UserPackageDetail.Status.WEB_TEMP);
     }
 }

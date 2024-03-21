@@ -334,12 +334,12 @@ public class UserPackage {
                 .then(Mono.just(ok(Format.builder().response("done").build())));
     }
 
-    public Flux<com.example.heroku.model.UserPackage> DeleteByBeerUnit(PackageItemRemove beerUnitDelete) {
-        return userPackageRepository.DeleteProductByBeerUnit(beerUnitDelete.getGroup_id(), beerUnitDelete.getDevice_id(), beerUnitDelete.getUnit_id());
+    public Flux<com.example.heroku.model.UserPackage> DeleteByBeerUnit(PackageItemRemove beerUnitDelete, UserPackageDetail.Status status) {
+        return userPackageRepository.DeleteProductByBeerUnit(beerUnitDelete.getGroup_id(), beerUnitDelete.getDevice_id(), beerUnitDelete.getUnit_id(), status);
     }
 
-    public Flux<com.example.heroku.model.UserPackage> DeleteByUserID(UserID userID) {
-        return userPackageDetailRepository.DeleteByUserID(userID.getGroup_id(), userID.getId())
-                .thenMany(userPackageRepository.DeleteProductByUserID(userID.getGroup_id(), userID.getId()));
+    public Flux<com.example.heroku.model.UserPackage> DeleteByUserID(UserID userID, UserPackageDetail.Status status) {
+        return userPackageDetailRepository.DeleteByUserID(userID.getGroup_id(), userID.getId(), status)
+                .thenMany(userPackageRepository.DeleteProductByUserID(userID.getGroup_id(), userID.getId(), status));
     }
 }

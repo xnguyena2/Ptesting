@@ -29,6 +29,11 @@ public class ProductPackage extends UserPackageDetail {
         return (ProductPackage) super.AutoFill();
     }
 
+    public ProductPackage SetProductPackageForWeb() {
+        setStatus(Status.WEB_TEMP);
+        return this;
+    }
+
     public boolean isEmpty() {
         return product_units == null;
     }

@@ -19,11 +19,11 @@ public interface UserPackageRepository extends ReactiveCrudRepository<UserPackag
     @Query(value = "SELECT * FROM user_package WHERE user_package.group_id = :group_id AND user_package.package_second_id = :package_second_id")
     Flux<UserPackage> GetDevicePackageWithID(@Param("group_id") String group_id, @Param("package_second_id") String package_second_id);
 
-    @Query(value = "DELETE FROM user_package WHERE group_id = :group_id AND device_id = :device_id AND product_unit_second_id = :product_unit_second_id")
-    Flux<UserPackage> DeleteProductByBeerUnit(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("product_unit_second_id") String product_unit_second_id);
+    @Query(value = "DELETE FROM user_package WHERE group_id = :group_id AND device_id = :device_id AND product_unit_second_id = :product_unit_second_id AND status = :status")
+    Flux<UserPackage> DeleteProductByBeerUnit(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("product_unit_second_id") String product_unit_second_id, @Param("status") UserPackageDetail.Status status);
 
-    @Query(value = "DELETE FROM user_package WHERE group_id = :group_id AND device_id = :id")
-    Flux<UserPackage> DeleteProductByUserID(@Param("group_id") String groupID, @Param("id") String id);
+    @Query(value = "DELETE FROM user_package WHERE group_id = :group_id AND device_id = :id AND status = :status")
+    Flux<UserPackage> DeleteProductByUserID(@Param("group_id") String groupID, @Param("id") String id, @Param("status") UserPackageDetail.Status status);
 
     @Query(value = "DELETE FROM user_package WHERE group_id = :group_id AND package_second_id = :package_second_id")
     Flux<UserPackage> DeleteProductByPackageID(@Param("group_id") String groupID, @Param("package_second_id") String package_second_id);
