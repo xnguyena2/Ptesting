@@ -81,7 +81,7 @@ public class UserPackageController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<PackageDataResponse> getAllOfWeb(@RequestBody @Valid UserID packageID) {
         System.out.println("Get all my package for web: " + packageID.getId());
-        return userPackageAPI.GetMyPackageOfStatus(UserID.builder().id(packageID.getId()).page(packageID.getPage()).size(packageID.getSize()).build(), UserPackageDetail.Status.WEB_TEMP);
+        return userPackageAPI.GetMyPackageOfStatus(UserID.builder().group_id(packageID.getGroup_id()).id(packageID.getId()).page(packageID.getPage()).size(packageID.getSize()).build(), UserPackageDetail.Status.WEB_TEMP);
     }
 
 
