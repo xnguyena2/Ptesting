@@ -2022,7 +2022,7 @@ public class UserPackageTest {
         userPackageAPI.SavePackage(productPackage)
                 .block();
 
-        userPackageAPI.BuyerFromWebSubmitPackage(PackageID.builder().group_id(group).package_id("save_pack_temp").build()).block();
+        userPackageAPI.BuyerFromWebSubmitPackage(productPackage).block();
 
         userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(group).page(0).size(10000).build(), UserPackageDetail.Status.WEB_SUBMIT)
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
@@ -2120,7 +2120,9 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        userPackageAPI.BuyerFromWebSubmitPackage(PackageID.builder().group_id(group).package_id("save_pack").build()).block();
+        userPackageAPI.BuyerFromWebSubmitPackage(ProductPackage.builder()
+                .group_id(group)
+                .package_second_id("save_pack").build()).block();
 
         userPackageAPI.ReturnPackage(PackageID.builder().group_id(group).package_id("save_pack").build()).block();
 

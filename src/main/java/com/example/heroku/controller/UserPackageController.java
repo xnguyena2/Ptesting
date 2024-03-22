@@ -79,9 +79,9 @@ public class UserPackageController {
 
     @PostMapping("/getbydeviceforweb")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<PackageDataResponse> getAll(@RequestBody @Valid PackageID packageID) {
-        System.out.println("Get all my package for web: " + packageID.getDevice_id());
-        return userPackageAPI.GetMyPackageOfStatus(UserID.builder().id(packageID.getDevice_id()).page(packageID.getPage()).size(packageID.getSize()).build(), UserPackageDetail.Status.WEB_TEMP);
+    public Flux<PackageDataResponse> getAllOfWeb(@RequestBody @Valid UserID packageID) {
+        System.out.println("Get all my package for web: " + packageID.getId());
+        return userPackageAPI.GetMyPackageOfStatus(UserID.builder().id(packageID.getId()).page(packageID.getPage()).size(packageID.getSize()).build(), UserPackageDetail.Status.WEB_TEMP);
     }
 
 
@@ -127,9 +127,9 @@ public class UserPackageController {
 
     @PostMapping("/buyerfromwebsubmit")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<Format>> buyerFromWebSubmitPackage(@RequestBody @Valid PackageID packageID) {
-        System.out.println("buyer from web submit package: " + packageID.getPackage_id());
-        return userPackageAPI.BuyerFromWebSubmitPackage(packageID);
+    public Mono<ResponseEntity<Format>> buyerFromWebSubmitPackage(@RequestBody @Valid ProductPackage productPackage) {
+        System.out.println("buyer from web submit package: " + productPackage.getPackage_second_id());
+        return userPackageAPI.BuyerFromWebSubmitPackage(productPackage);
     }
 
 

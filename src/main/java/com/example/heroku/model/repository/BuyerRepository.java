@@ -25,6 +25,9 @@ public interface BuyerRepository extends ReactiveCrudRepository<Buyer, Long> {
     @Query(value = "SELECT * FROM buyer WHERE buyer.group_id = :group_id AND (buyer.device_id LIKE :phone OR buyer.phone_number_clean LIKE :phone) LIMIT :size OFFSET (:page * :size)")
     Flux<Buyer> findByPhoneOrDeviceIDContains(@Param("group_id") String group_id, @Param("phone") String phone, @Param("page") int page, @Param("size") int size);
 
+    @Query(value = "SELECT * FROM buyer WHERE buyer.group_id = :group_id AND buyer.phone_number_clean = :phone LIMIT 1")
+    Mono<Buyer> findByPhoneClean(@Param("group_id") String group_id, @Param("phone") String phone);
+
     @Query(value = "DELETE FROM buyer WHERE buyer.group_id = :group_id AND (buyer.device_id = :phone OR buyer.phone_number_clean = :phone)")
     Mono<Buyer> deleteByPhone(@Param("group_id") String group_id, @Param("phone") String page);
 

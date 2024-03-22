@@ -262,19 +262,25 @@ public class OrderPackageTest extends TestConfig {
         AtomicReference<Float> cancelPrice = new AtomicReference<>((float) 0);
         AtomicReference<String> orderDoneID = new AtomicReference<>();
         AtomicReference<String> orderCancelID = new AtomicReference<>();
+        AtomicReference<String> orderDonePhone = new AtomicReference<>();
+        AtomicReference<String> orderCancelPhone = new AtomicReference<>();
         packageOrder.CountGetAllOrder(SearchQuery.builder().query(PackageOrder.Status.ORDER.getName()).group_id(mainGroup).page(0).size(200).filter("30").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(orderSearchResult -> {
                     System.out.println("total order: " + orderSearchResult.getCount());
                     System.out.println("total order size: " + orderSearchResult.getResult().size());
+                    orderDonePhone.set(orderSearchResult.getResult().get(0).getPhone_number_clean());
+                    orderCancelPhone.set(orderSearchResult.getResult().get(1).getPhone_number_clean());
                     orderDoneID.set(orderSearchResult.getResult().get(0).getPackage_order_second_id());
                     orderCancelID.set(orderSearchResult.getResult().get(1).getPackage_order_second_id());
                     donePrice.updateAndGet(v -> v + orderSearchResult.getResult().get(0).getReal_price());
                     cancelPrice.updateAndGet(v -> v + orderSearchResult.getResult().get(1).getReal_price());
                     donePointDiscount.updateAndGet(v -> v + orderSearchResult.getResult().get(0).getDiscount());
                     cancelPointDiscount.updateAndGet(v -> v + orderSearchResult.getResult().get(1).getDiscount());
-                    System.out.println("Done order value: " + orderSearchResult.getResult().get(0).getReal_price());
-                    System.out.println("Cancel order value: " + orderSearchResult.getResult().get(1).getReal_price());
+                    System.out.println("Done phone clean value: " + orderDonePhone.get());
+                    System.out.println("Cancel phone clean value: " + orderCancelPhone.get());
+                    System.out.println("Done order value: " + donePrice.get());
+                    System.out.println("Cancel order value: " + cancelPrice.get());
                     System.out.println("Done point_discount value: " + donePointDiscount.get());
                     System.out.println("Cancel point_discount value: " + cancelPointDiscount.get());
                     assertThat(orderSearchResult.getCount()).isEqualTo(testcase * totalSaveOrder);
@@ -309,11 +315,33 @@ public class OrderPackageTest extends TestConfig {
                 .verifyComplete();
 
         buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.ORDER.getName()).group_id(mainGroup).page(0).size(500).build())
+                .sort(Comparator.comparing(BuyerData::getDiscount))
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
+                    float sub = 0;
+                    if(buyerData.getPhone_number_clean().equals(orderDonePhone.get())){
+                        sub += donePrice.get();
+                    }
+                    if(buyerData.getPhone_number_clean().equals(orderCancelPhone.get())){
+                        sub += cancelPrice.get();
+                    }
+                    System.out.println("sub: " + sub + ", total sub: " + (donePrice.get() + cancelPrice.get()));
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("12345678909");
+                    assertThat(buyerData.getDiscount()).isEqualTo(0);
+                    assertThat(buyerData.getReal_price()).isEqualTo(10375 - sub);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
+                })
+                .consumeNextWith(buyerData -> {
+                    float sub = 0;
+                    if(buyerData.getPhone_number_clean().equals(orderDonePhone.get())){
+                        sub += donePrice.get();
+                    }
+                    if(buyerData.getPhone_number_clean().equals(orderCancelPhone.get())){
+                        sub += cancelPrice.get();
+                    }
+                    System.out.println("sub: " + sub + ", total sub: " + (donePrice.get() + cancelPrice.get()));
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
                     assertThat(buyerData.getDiscount()).isEqualTo(30 - cancelPointDiscount.get() - donePointDiscount.get());
-                    assertThat(buyerData.getReal_price()).isEqualTo(80361f - donePrice.get() - cancelPrice.get());// 80361 = (106 + 122 + 365.4*3 + 672 * 0.7) * 30 + (122*5 + (122-5)*25) + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
+                    assertThat(buyerData.getReal_price()).isEqualTo(80361f - 10375 - sub);// 80361 = (106 + 122 + 365.4*3 + 672 * 0.7) * 30 + (122*5 + (122-5)*25) + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
                 })
                 .verifyComplete();
 
@@ -321,7 +349,7 @@ public class OrderPackageTest extends TestConfig {
                 .sort(Comparator.comparing(BuyerData::getDiscount))
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
-                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("12345678909");
                     assertThat(buyerData.getDiscount()).isEqualTo(0);
                     assertThat(buyerData.getReal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
                 })
@@ -341,7 +369,20 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
+        buyer.FindByPhoneClean(SearchQuery.builder().query("12345678909").group_id(mainGroup).page(0).size(500).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(buyerData -> {
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("12345678909");
+                    assertThat(buyerData.getDiscount()).isEqualTo(0);
+                    assertThat(buyerData.getReal_price()).isEqualTo(10375);
+                })
+                .verifyComplete();
+
         buyer.FindByPhone(SearchQuery.builder().query("nophone").group_id(mainGroup).page(0).size(500).build())
+                .as(StepVerifier::create)
+                .verifyComplete();
+
+        buyer.FindByPhoneClean(SearchQuery.builder().query("nophone").group_id(mainGroup).page(0).size(500).build())
                 .as(StepVerifier::create)
                 .verifyComplete();
 
@@ -373,7 +414,7 @@ public class OrderPackageTest extends TestConfig {
                     assertThat(buyerData.getWard()).isEqualTo(null);
                 })
                 .consumeNextWith(buyerData -> {
-                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("12345678909");
                     assertThat(buyerData.getDiscount()).isEqualTo(0);
                     assertThat(buyerData.getReal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
                 })
@@ -393,7 +434,7 @@ public class OrderPackageTest extends TestConfig {
                     assertThat(buyerData.getReciver_fullname()).isEqualTo("phong nguyen");
                 })
                 .consumeNextWith(buyerData -> {
-                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("12345678909");
                     assertThat(buyerData.getDiscount()).isEqualTo(0);
                     assertThat(buyerData.getReal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
                 })
@@ -408,7 +449,7 @@ public class OrderPackageTest extends TestConfig {
         buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.DONE.getName()).group_id(mainGroup).page(0).size(300).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
-                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo(orderDonePhone.get());
                     assertThat(buyerData.getReal_price()).isEqualTo(donePrice.get());
                 })
                 .verifyComplete();
@@ -416,7 +457,7 @@ public class OrderPackageTest extends TestConfig {
         buyer.GetAll(SearchQuery.builder().filter(PackageOrder.Status.CANCEL.getName()).group_id(mainGroup).page(0).size(300).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
-                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo(orderCancelPhone.get());
                     assertThat(buyerData.getReal_price()).isEqualTo(cancelPrice.get());
                 })
                 .verifyComplete();
@@ -546,7 +587,7 @@ public class OrderPackageTest extends TestConfig {
                                 .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
-                                .phone_number("1234567890")
+                                .phone_number("12345678909")
                                 .reciver_fullname("Nguyen Phong")
                                 .reciver_address("232 bau cat, tan binh")
                                 .user_device_id("android")
@@ -600,7 +641,7 @@ public class OrderPackageTest extends TestConfig {
                                 .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
-                                .phone_number("1234567890")
+                                .phone_number("12345678909")
                                 .reciver_fullname("Nguyen Phong")
                                 .reciver_address("232 bau cat, tan binh")
                                 .user_device_id("android")
@@ -657,7 +698,7 @@ public class OrderPackageTest extends TestConfig {
                                 .group_id(mainGroup)
                                 .region_id(294)
                                 .district_id(484)
-                                .phone_number("1234567890")
+                                .phone_number("12345678909")
                                 .reciver_fullname("Nguyen Phong")
                                 .reciver_address("232 bau cat, tan binh")
                                 .user_device_id("android")

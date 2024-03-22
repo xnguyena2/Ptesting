@@ -57,6 +57,13 @@ public class Buyer {
     }
 
 
+    public Mono<BuyerData> FindByPhoneClean(SearchQuery query) {
+        String phone = query.getQuery();
+        return this.buyerRepository.findByPhoneClean(query.getGroup_id(), phone)
+                .map(BuyerData::new);
+    }
+
+
     public Mono<BuyerData> FindByDeviceID(String groupID, String deviceID) {
         return this.buyerRepository.findByGroupIDAndDeviceID(groupID, deviceID)
                 .map(BuyerData::new);

@@ -5,10 +5,7 @@ import com.example.heroku.model.joinwith.UserPackageDetailJoinWithUserPackage;
 import com.example.heroku.model.repository.JoinUserPackageDetailWithUserPackgeRepository;
 import com.example.heroku.model.repository.UserPackageDetailRepository;
 import com.example.heroku.model.repository.UserPackageRepository;
-import com.example.heroku.request.beer.BeerSubmitData;
-import com.example.heroku.request.beer.ProductPackage;
-import com.example.heroku.request.beer.PackageItemRemove;
-import com.example.heroku.request.beer.ProductPackgeWithTransaction;
+import com.example.heroku.request.beer.*;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
@@ -318,16 +315,24 @@ public class UserPackage {
                 );
     }
 
-    public Mono<ResponseEntity<Format>> BuyerFromWebSubmitPackage(PackageID packageID) {
+    public Mono<ResponseEntity<Format>> BuyerFromWebSubmitPackage(ProductPackage productPackage) {
 
-        return userPackageDetailRepository.GetPackageDetailByID(packageID.getGroup_id(), packageID.getPackage_id())
+        return userPackageDetailRepository.GetPackageDetailByID(productPackage.getGroup_id(), productPackage.getPackage_second_id())
                 .filter(sd -> sd.getStatus() == UserPackageDetail.Status.WEB_TEMP)
-                .flatMap(userPackageDetail -> userPackageRepository.UpdateStatusByPackgeID(packageID.getGroup_id(), packageID.getPackage_id(), UserPackageDetail.Status.WEB_SUBMIT)
-                        .then(
-                                userPackageDetailRepository.UpdateStatusByID(packageID.getGroup_id(), packageID.getPackage_id(), UserPackageDetail.Status.WEB_SUBMIT)
-                        )
-                        .then(Mono.just(ok(Format.builder().response("done").build())))
-                );
+                .map(ProductPackage -> {
+                    com.example.heroku.model.Buyer buyer1 = productPackage.getBuyer();
+                    if (buyer1 == null) {
+                        return Mono.just(ProductPackage);
+                    }
+                    String phone = buyer1.getPhone_number_clean();
+                    return buyer.FindByPhoneClean(SearchQuery.builder().query(phone).build())
+                            .map(buyerData -> {
+                                buyer1.setDevice_id(buyerData.getDevice_id());
+                                return ProductPackage;
+                            });
+                })
+                .then(Mono.just(productPackage.SetProductPackageForWebSubmit()))
+                .flatMap(this::SavePackageWithoutCheck);
     }
 
     public Mono<ResponseEntity<Format>> ReturnPackage(PackageID packageID) {

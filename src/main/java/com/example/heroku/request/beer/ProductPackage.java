@@ -34,6 +34,11 @@ public class ProductPackage extends UserPackageDetail {
         return this;
     }
 
+    public ProductPackage SetProductPackageForWebSubmit() {
+        setStatus(Status.WEB_SUBMIT);
+        return this;
+    }
+
     public boolean isEmpty() {
         return product_units == null;
     }
