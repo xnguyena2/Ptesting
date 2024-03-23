@@ -326,7 +326,8 @@ public class UserPackage {
                     }
                     buyer1.AutoFill(productPackage.getGroup_id());
                     String phone = buyer1.getPhone_number_clean();
-                    return buyer.FindByPhoneClean(SearchQuery.builder().query(phone).build())
+                    System.out.println("web submit order by phone : " + phone);
+                    return buyer.FindByPhoneClean(SearchQuery.builder().group_id(productPackage.getGroup_id()).query(phone).build())
                             .map(buyerData -> {
                                 buyer1.setDevice_id(buyerData.getDevice_id());
                                 return ProductPackage;
