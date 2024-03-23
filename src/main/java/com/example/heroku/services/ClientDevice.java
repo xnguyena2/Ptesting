@@ -35,7 +35,7 @@ public class ClientDevice {
     public Mono<BootStrapData> bootStrapDataForWeb(String groupID) {
 
         return
-                this.storeServices.getStoreLowerCase(groupID)
+                this.storeServices.getStoreDomainUrl(groupID)
                         .switchIfEmpty(Mono.just(com.example.heroku.model.Store.builder().group_id(groupID).build()))
                         .map(store -> BootStrapData.builder()
                                 .store(store)

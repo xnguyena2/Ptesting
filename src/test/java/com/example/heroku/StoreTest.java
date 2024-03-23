@@ -24,11 +24,12 @@ public class StoreTest {
                 .address("address")
                 .status(com.example.heroku.model.Store.Status.ACTIVE)
                 .store_type(com.example.heroku.model.Store.StoreType.DONTHAVETABLE)
-                .build()).block();
+                .build().AutoFill(group)).block();
         storeServices.getStore(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(store -> {
                     assertThat(store.getGroup_id()).isEqualTo(group);
+                    assertThat(store.getDomain_url()).isEqualTo(group);
                     assertThat(store.getPhone()).isEqualTo("1212121121");
                     assertThat(store.getName()).isEqualTo("store name");
                     assertThat(store.getTime_open()).isEqualTo("time open");
@@ -46,11 +47,12 @@ public class StoreTest {
                 .address("address")
                 .status(com.example.heroku.model.Store.Status.ACTIVE)
                 .store_type(com.example.heroku.model.Store.StoreType.HAVETABLE)
-                .build()).block();
+                .build().AutoFill(group)).block();
         storeServices.getStore(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(store -> {
                     assertThat(store.getGroup_id()).isEqualTo(group);
+                    assertThat(store.getDomain_url()).isEqualTo(group);
                     assertThat(store.getPhone()).isEqualTo("121212112133");
                     assertThat(store.getName()).isEqualTo("store name");
                     assertThat(store.getTime_open()).isEqualTo("time open");
@@ -63,6 +65,7 @@ public class StoreTest {
         storeServices.update(com.example.heroku.model.Store.builder()
                 .group_id(group)
                 .phone("12121211213344")
+                .domain_url(group + "hello")
                 .name("store name4")
                 .time_open("time open4")
                 .address("address4")
@@ -73,6 +76,7 @@ public class StoreTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(store -> {
                     assertThat(store.getGroup_id()).isEqualTo(group);
+                    assertThat(store.getDomain_url()).isEqualTo(group + "hello");
                     assertThat(store.getPhone()).isEqualTo("12121211213344");
                     assertThat(store.getName()).isEqualTo("store name4");
                     assertThat(store.getTime_open()).isEqualTo("time open4");

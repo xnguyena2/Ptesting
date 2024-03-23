@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, group_id VA
 
 CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_import_second_id VARCHAR, product_id VARCHAR, product_name VARCHAR, price float8, amount float8, detail TEXT, createat TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, status VARCHAR, store_type VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, domain_url VARCHAR, status VARCHAR, store_type VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS buyer (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, total_price float8, real_price float8, ship_price float8, discount float8, point INTEGER, status VARCHAR, createat TIMESTAMP);
 
@@ -62,7 +62,7 @@ CREATE INDEX user_device_index ON user_device(device_id);
 CREATE INDEX user_package_detail_index ON user_package_detail(package_second_id);
 CREATE INDEX user_package_index ON user_package(package_second_id);
 CREATE INDEX store_index ON store(group_id);
-CREATE INDEX store_group_id_low_index ON store(LOWER(group_id));
+CREATE INDEX store_domain_url_index ON store(domain_url);
 CREATE INDEX buyer_index ON buyer(device_id);
 CREATE INDEX buyer_phone_number_clean_index ON buyer(phone_number_clean);
 CREATE INDEX voucher_index ON voucher(voucher_second_id);
@@ -97,6 +97,7 @@ ALTER TABLE voucher_relate_user_device ADD CONSTRAINT UQ_voucher_relate_user_dev
 ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(group_id, product_import_second_id);
 ALTER TABLE user_device ADD CONSTRAINT UQ_user_device UNIQUE(group_id, device_id);
 ALTER TABLE store ADD CONSTRAINT UQ_store UNIQUE(group_id);
+ALTER TABLE store ADD CONSTRAINT UQ_domain_url UNIQUE(domain_url);
 ALTER TABLE buyer ADD CONSTRAINT UQ_buyer UNIQUE(group_id, device_id);
 ALTER TABLE user_package_detail ADD CONSTRAINT UQ_user_package_detail UNIQUE(group_id, package_second_id);
 ALTER TABLE user_package ADD CONSTRAINT UQ_user_package UNIQUE(group_id, package_second_id, product_second_id, product_unit_second_id);

@@ -25,6 +25,7 @@ public class Store extends BaseEntity {
     private String time_open;
     private String address;
     private String phone;
+    private String domain_url;
 
     private Status status;
 
@@ -33,6 +34,7 @@ public class Store extends BaseEntity {
     public Store AutoFill(String groupID) {
         super.AutoFill();
         this.group_id = groupID;
+        this.domain_url = groupID;
         if (status == null) {
             status = Status.ACTIVE;
         }

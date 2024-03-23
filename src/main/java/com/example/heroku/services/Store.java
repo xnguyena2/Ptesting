@@ -28,16 +28,16 @@ public class Store {
         return storeManagementRepository.getStore(groupID);
     }
 
-    public Mono<com.example.heroku.model.Store> getStoreLowerCase(String groupID) {
-        return storeManagementRepository.getStoreLowerCase(groupID);
+    public Mono<com.example.heroku.model.Store> getStoreDomainUrl(String domain) {
+        return storeManagementRepository.getStoreDomainUrl(domain);
     }
 
     public Mono<com.example.heroku.model.Store> createOrUpdateStore(com.example.heroku.model.Store store) {
-        return storeManagementRepository.insertOrUpdate(store.getGroup_id(), store.getName(), store.getTime_open(), store.getAddress(), store.getPhone(), store.getStatus(), store.getStore_type(), store.getCreateat());
+        return storeManagementRepository.insertOrUpdate(store.getGroup_id(), store.getName(), store.getTime_open(), store.getAddress(), store.getPhone(), store.getDomain_url(), store.getStatus(), store.getStore_type(), store.getCreateat());
     }
 
     public Mono<com.example.heroku.model.Store> update(com.example.heroku.model.Store store) {
-        return storeManagementRepository.update(store.getGroup_id(), store.getName(), store.getTime_open(), store.getAddress(), store.getPhone(), store.getStatus(), store.getStore_type());
+        return storeManagementRepository.update(store.getGroup_id(), store.getName(), store.getTime_open(), store.getAddress(), store.getPhone(), store.getDomain_url(), store.getStatus(), store.getStore_type());
     }
 
     public Mono<com.example.heroku.model.Store> initialStore(StoreInitData storeInitData) {
