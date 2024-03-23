@@ -319,7 +319,7 @@ public class UserPackage {
 
         return userPackageDetailRepository.GetPackageDetailByID(productPackage.getGroup_id(), productPackage.getPackage_second_id())
                 .filter(sd -> sd.getStatus() == UserPackageDetail.Status.WEB_TEMP)
-                .map(ProductPackage -> {
+                .flatMap(ProductPackage -> {
                     com.example.heroku.model.Buyer buyer1 = productPackage.getBuyer();
                     if (buyer1 == null) {
                         return Mono.just(ProductPackage);
@@ -329,6 +329,7 @@ public class UserPackage {
                     System.out.println("web submit order by phone : " + phone);
                     return buyer.FindByPhoneClean(SearchQuery.builder().group_id(productPackage.getGroup_id()).query(phone).build())
                             .map(buyerData -> {
+                                System.out.println("Found buyer id: " + buyerData.getDevice_id());
                                 buyer1.setDevice_id(buyerData.getDevice_id());
                                 return ProductPackage;
                             });

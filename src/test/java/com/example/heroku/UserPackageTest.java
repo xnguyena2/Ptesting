@@ -2022,6 +2022,7 @@ public class UserPackageTest {
         userPackageAPI.SavePackage(productPackage)
                 .block();
 
+        productPackage.getBuyer().setDevice_id("device_wrong");
         userPackageAPI.BuyerFromWebSubmitPackage(productPackage).block();
 
         userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(group).page(0).size(10000).build(), UserPackageDetail.Status.WEB_SUBMIT)
