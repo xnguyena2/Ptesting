@@ -324,6 +324,7 @@ public class UserPackage {
                     if (buyer1 == null) {
                         return Mono.just(ProductPackage);
                     }
+                    buyer1.AutoFill(productPackage.getGroup_id());
                     String phone = buyer1.getPhone_number_clean();
                     return buyer.FindByPhoneClean(SearchQuery.builder().query(phone).build())
                             .map(buyerData -> {
