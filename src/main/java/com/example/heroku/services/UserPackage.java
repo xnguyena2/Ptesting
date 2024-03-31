@@ -71,7 +71,7 @@ public class UserPackage {
                         .flatMap(productPackage1 -> userPackageRepository.DeleteProductByPackageID(productPackage1.getGroup_id(), productPackage1.getPackage_second_id())
                                 .then(Mono.just(productPackage1))
                         )
-                        .filter(productPackage1 -> productPackage1.getUserPackage() != null)
+                        .filter(productPackage1 -> !productPackage1.isEmpty())
                         .flatMapMany(productPackage1 -> Flux.just(productPackage1.getUserPackage()))
                         .flatMap(this::savePackageItem)
                         .then(Mono.just(ok(Format.builder().response("done").build())));
@@ -92,22 +92,14 @@ public class UserPackage {
                         .flatMap(productPackage1 -> userPackageRepository.DeleteProductByPackageID(productPackage1.getGroup_id(), productPackage1.getPackage_second_id())
                                 .then(Mono.just(productPackage1))
                         )
-                        .filter(productPackage1 -> productPackage1.getUserPackage() != null)
+                        .filter(productPackage1 -> !productPackage1.isEmpty())
                         .flatMapMany(productPackage1 -> Flux.just(productPackage1.getUserPackage()))
                         .flatMap(this::savePackageItemWithoutCheck)
                         .then(Mono.just(ok(Format.builder().response("done").build())));
     }
 
     Mono<ProductPackage> savePackageDetail(ProductPackage productPackage) {
-        UserPackageDetail detail = productPackage;
-        if (productPackage.getPackage_second_id() == null) {
-            detail = null;
-        }
-        productPackage.AutoFill();
-        if (detail == null) {
-            detail = productPackage.getUserPackageDetail();
-        }
-        return savePackageDetail(detail)
+        return savePackageDetailToRepo(productPackage.AutoFill())
                 .then(Mono.just(productPackage));
     }
 
@@ -144,7 +136,7 @@ public class UserPackage {
         return Mono.just(productPackage);
     }
 
-    Mono<UserPackageDetail> savePackageDetail(UserPackageDetail detail) {
+    Mono<UserPackageDetail> savePackageDetailToRepo(UserPackageDetail detail) {
         return userPackageDetailRepository.InsertOrUpdate(detail.getGroup_id(), detail.getDevice_id(), detail.getStaff_id(), detail.getPackage_second_id(),
                 detail.getPackage_type(), detail.getVoucher(),
                 detail.getArea_id(), detail.getArea_name(), detail.getTable_id(), detail.getTable_name(),

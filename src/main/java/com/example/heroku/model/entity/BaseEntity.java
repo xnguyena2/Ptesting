@@ -32,6 +32,12 @@ public class BaseEntity {
         createat = s.getCreateat();
     }
 
+    public void copy(BaseEntity b){
+        id = b.id;
+        group_id = b.group_id;
+        createat = b.createat;
+    }
+
     public BaseEntity AutoFill() {
         this.createat = Util.getInstance().Now();
         return this;

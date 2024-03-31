@@ -72,7 +72,7 @@ public class ApplicationTest extends TestConfig {
     UsersInfo usersInfo;
 
     @Autowired
-    ProductImport productImport;
+    GroupImport groupImport;
 
     @Autowired
     UserFCMS fcmServices;
@@ -150,7 +150,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void ProductImport(){
-        ProductImportTest.builder().productImport(productImport).group(mainGroup).build().Test();
+        ProductImportTest.builder().groupImport(groupImport).group(mainGroup).build().Test();
     }
 
     @Test
@@ -283,7 +283,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void ProductImport2(){
-        ProductImportTest.builder().productImport(productImport).group(anotherGroup).build().Test();
+        ProductImportTest.builder().groupImport(groupImport).group(anotherGroup).build().Test();
     }
 
     @Test

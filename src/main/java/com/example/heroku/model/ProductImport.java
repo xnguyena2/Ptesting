@@ -1,11 +1,14 @@
 package com.example.heroku.model;
 
 import com.example.heroku.model.entity.BaseEntity;
+import com.example.heroku.util.Util;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.HashMap;
+import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -16,20 +19,126 @@ import javax.persistence.Table;
 @AllArgsConstructor
 public class ProductImport extends BaseEntity {
 
+    private String group_import_second_id;
+
     private String product_import_second_id;
 
-    private String product_id;
+    private String product_second_id;
 
-    private String product_name;
+    private String product_unit_second_id;
+
+    private String product_unit_name_category;
 
     private float price;
 
-    private float amount;
+    private int amount;
 
-    private String detail;
+    private String note;
+
+    private ImportType type;
+
+    private Status status;
+
+    // GroupImportJoinProductImport
 
 
     public ProductImport AutoFill() {
-        return (ProductImport) super.AutoFill();
+        if(product_import_second_id == null || product_import_second_id.isEmpty()){
+            product_import_second_id = Util.getInstance().GenerateID();
+        }
+        return (ProductImport) super.AutoFillIfNull();
+    }
+
+
+
+    public enum ImportType {
+        UN_KNOW("UN_KNOW"),
+        UPDATE_NUMBER("UPDATE_NUMBER"),
+        IMPORT("IMPORT"),
+        EXPORT("EXPORT");
+
+
+        private String name;
+
+        ImportType(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        private static final Map<String, ImportType> lookup = new HashMap<>();
+
+        static {
+            for (ImportType sts : ImportType.values()) {
+                lookup.put(sts.getName(), sts);
+            }
+        }
+
+        public static ImportType get(String text) {
+            try {
+                ImportType val = lookup.get(text);
+                if (val == null) {
+                    return UN_KNOW;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return UN_KNOW;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
+    }
+
+
+
+    public enum Status {
+        CREATE("CREATE"),
+        UPDATE_NUMBER("UPDATE_NUMBER"),
+        IMPORT("IMPORT"),
+        EXPORT("EXPORT"),
+        RETURN("RETURN");
+
+
+        private String name;
+
+        Status(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        private static final Map<String, Status> lookup = new HashMap<>();
+
+        static {
+            for (Status sts : Status.values()) {
+                lookup.put(sts.getName(), sts);
+            }
+        }
+
+        public static Status get(String text) {
+            try {
+                Status val = lookup.get(text);
+                if (val == null) {
+                    return CREATE;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return CREATE;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
     }
 }

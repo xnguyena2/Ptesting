@@ -22,16 +22,16 @@ public class ProductImportController {
     ProductImport productImport;
 
 
-    @PostMapping("/admin/create")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<com.example.heroku.model.ProductImport> addProductImportInfo(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid com.example.heroku.model.ProductImport newRecord) {
-        System.out.println("add or update product record: " + newRecord.getProduct_name());
-        return WrapPermissionGroupWithPrincipalAction.<com.example.heroku.model.ProductImport>builder()
-                .principal(principal)
-                .subject(newRecord::getProduct_id)
-                .monoAction(() -> productImport.addNewRecord(newRecord))
-                .build().toMono();
-    }
+//    @PostMapping("/admin/create")
+//    @CrossOrigin(origins = Util.HOST_URL)
+//    public Mono<com.example.heroku.model.ProductImport> addProductImportInfo(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid com.example.heroku.model.ProductImport newRecord) {
+//        System.out.println("add or update product record: " + newRecord.getProduct_name());
+//        return WrapPermissionGroupWithPrincipalAction.<com.example.heroku.model.ProductImport>builder()
+//                .principal(principal)
+//                .subject(newRecord::getProduct_id)
+//                .monoAction(() -> productImport.addNewRecord(newRecord))
+//                .build().toMono();
+//    }
 
     @PostMapping("/admin/getbyproductid")
     @CrossOrigin(origins = Util.HOST_URL)
@@ -57,14 +57,14 @@ public class ProductImportController {
                 .toFlux();
     }
 
-    @DeleteMapping("/admin/delete/{groupid}/{id}")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<com.example.heroku.model.ProductImport> delete(@AuthenticationPrincipal Mono<Users> principal, @PathVariable("groupid") String groupid, @PathVariable("id") String id) {
-        System.out.println("delete record: " + id);
-        return WrapPermissionGroupWithPrincipalAction.<com.example.heroku.model.ProductImport>builder()
-                .principal(principal)
-                .subject(() -> groupid)
-                .monoAction(() -> productImport.deleteRecord(groupid, id))
-                .build().toMono();
-    }
+//    @DeleteMapping("/admin/delete/{groupid}/{id}")
+//    @CrossOrigin(origins = Util.HOST_URL)
+//    public Mono<com.example.heroku.model.ProductImport> delete(@AuthenticationPrincipal Mono<Users> principal, @PathVariable("groupid") String groupid, @PathVariable("id") String id) {
+//        System.out.println("delete record: " + id);
+//        return WrapPermissionGroupWithPrincipalAction.<com.example.heroku.model.ProductImport>builder()
+//                .principal(principal)
+//                .subject(() -> groupid)
+//                .monoAction(() -> productImport.deleteRecord(groupid, id))
+//                .build().toMono();
+//    }
 }
