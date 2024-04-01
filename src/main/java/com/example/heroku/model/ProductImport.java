@@ -99,9 +99,7 @@ public class ProductImport extends BaseEntity {
 
     public enum Status {
         CREATE("CREATE"),
-        UPDATE_NUMBER("UPDATE_NUMBER"),
-        IMPORT("IMPORT"),
-        EXPORT("EXPORT"),
+        DONE("DONE"),
         RETURN("RETURN");
 
 

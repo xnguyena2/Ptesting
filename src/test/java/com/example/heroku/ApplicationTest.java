@@ -150,7 +150,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void ProductImport(){
-        ProductImportTest.builder().groupImport(groupImport).group(mainGroup).build().Test();
+        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).group(mainGroup).build().Test();
     }
 
     @Test
@@ -283,7 +283,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void ProductImport2(){
-        ProductImportTest.builder().groupImport(groupImport).group(anotherGroup).build().Test();
+        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).group(anotherGroup).build().Test();
     }
 
     @Test

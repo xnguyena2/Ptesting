@@ -344,7 +344,7 @@ CREATE OR REPLACE FUNCTION increase_product_unit_inventory()
 $$
 BEGIN
 
-    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    IF OLD.status = 'WEB_TEMP' OR OLD.status = 'WEB_SUBMIT'
     THEN
 	    RETURN OLD;
     END IF;
@@ -423,6 +423,11 @@ CREATE OR REPLACE FUNCTION delete_user_package_detail_decrese_buyer()
 $$
 BEGIN
 
+    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    THEN
+	    RETURN OLD;
+    END IF;
+
 
 --  reset table
     UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = OLD.group_id AND package_second_id = OLD.package_second_id;
@@ -457,6 +462,11 @@ CREATE OR REPLACE FUNCTION trigger_on_update_user_package_detail()
 $$
 BEGIN
 
+    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    THEN
+	    RETURN NEW;
+    END IF;
+
 --  set table for user_packge_detail
     IF OLD.table_id <> NEW.table_id
     THEN
@@ -464,11 +474,6 @@ BEGIN
         UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = NEW.group_id AND package_second_id = NEW.package_second_id;
         UPDATE table_detail SET package_second_id = NEW.package_second_id, createat = NOW() WHERE table_detail.group_id = NEW.group_id AND table_detail.table_id = NEW.table_id;
 
-    END IF;
-
-    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
-    THEN
-	    RETURN NEW;
     END IF;
 
 --  update payment transaction
@@ -498,6 +503,11 @@ CREATE OR REPLACE FUNCTION trigger_on_insert_user_package_detail()
 $$
 BEGIN
 
+    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    THEN
+	    RETURN NEW;
+    END IF;
+
 --  set table for user_packge_detail
     IF NEW.table_id IS NOT NULL
     THEN
@@ -505,11 +515,6 @@ BEGIN
         UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = NEW.group_id AND package_second_id = NEW.package_second_id;
         UPDATE table_detail SET package_second_id = NEW.package_second_id, createat = NOW() WHERE table_detail.group_id = NEW.group_id AND table_detail.table_id = NEW.table_id;
 
-    END IF;
-
-    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
-    THEN
-	    RETURN NEW;
     END IF;
 
 --  add to payment transaction
@@ -529,4 +534,229 @@ $$;
 CREATE OR REPLACE TRIGGER delete_user_package_detail_decrese_buyer AFTER DELETE ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE delete_user_package_detail_decrese_buyer();
 CREATE OR REPLACE TRIGGER trigger_on_update_user_package_detail AFTER UPDATE ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE trigger_on_update_user_package_detail();
 CREATE OR REPLACE TRIGGER trigger_on_insert_user_package_detail AFTER INSERT ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE trigger_on_insert_user_package_detail();
+
+
+
+
+CREATE OR REPLACE FUNCTION trigger_on_insert_product_import()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+DECLARE
+   _inventory_number INTEGER;
+   _inventory_number_new INTEGER;
+   _buy_price float8;
+   _buy_price_new float8;
+   _enable_warehouse BOOL;
+BEGIN
+
+--  return should update status not insert
+    IF NEW.status = 'RETURN'
+    THEN
+	    RETURN NEW;
+    END IF;
+
+    SELECT enable_warehouse, inventory_number, buy_price
+    INTO _enable_warehouse, _inventory_number, _buy_price
+    FROM product_unit
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
+
+
+    IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
+    THEN
+	    RAISE EXCEPTION 'product not enable warehouse';
+    END IF;
+
+
+    IF NEW.type = 'UN_KNOW' OR NEW.type IS NULL
+    THEN
+	    RAISE EXCEPTION 'unknow import type';
+    END IF;
+
+
+    _inventory_number_new = CASE
+                        WHEN NEW.type = 'IMPORT' THEN _inventory_number + NEW.amount
+                        WHEN NEW.type = 'EXPORT' THEN _inventory_number - NEW.amount
+                        WHEN NEW.type = 'UPDATE_NUMBER' THEN NEW.amount
+                        ELSE -1
+                       END;
+
+    IF _inventory_number_new = -1
+    THEN
+	    RAISE EXCEPTION 'unknow import type :-1';
+    END IF;
+
+
+    IF _inventory_number_new < 0
+    THEN
+	    RAISE EXCEPTION 'inventory_number_new small than 0!';
+    END IF;
+
+    _buy_price_new = _buy_price;
+
+    IF _inventory_number_new > 0 AND NEW.type = 'IMPORT'
+    THEN
+        _buy_price_new = (_buy_price * _inventory_number + NEW.amount * NEW.price) / _inventory_number_new;
+    END IF;
+
+	UPDATE product_unit
+    SET
+    	inventory_number = _inventory_number_new,
+    	buy_price = _buy_price_new
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
+
+	RETURN NEW;
+END;
+$$;
+
+
+
+CREATE OR REPLACE FUNCTION trigger_on_delete_product_import()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+DECLARE
+   _inventory_number INTEGER;
+   _inventory_number_new INTEGER;
+   _buy_price float8;
+   _buy_price_new float8;
+   _enable_warehouse BOOL;
+BEGIN
+
+
+    IF OLD.type = 'UN_KNOW' OR OLD.type IS NULL OR OLD.status = 'RETURN'
+    THEN
+	    RETURN OLD;
+    END IF;
+
+    SELECT enable_warehouse, inventory_number, buy_price
+    INTO _enable_warehouse, _inventory_number, _buy_price
+    FROM product_unit
+    WHERE OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id;
+
+
+    IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
+    THEN
+	    RETURN OLD;
+    END IF;
+
+
+    _inventory_number_new = CASE
+                        WHEN OLD.type = 'IMPORT' THEN _inventory_number - OLD.amount
+                        WHEN OLD.type = 'EXPORT' THEN _inventory_number + OLD.amount
+                        WHEN OLD.type = 'UPDATE_NUMBER' THEN 0
+                        ELSE -1
+                       END;
+
+    IF _inventory_number_new = -1
+    THEN
+	    RAISE EXCEPTION 'unknow import type :-1';
+    END IF;
+
+
+    IF _inventory_number_new < 0
+    THEN
+	    RAISE EXCEPTION 'inventory_number_new small than 0!';
+    END IF;
+
+    _buy_price_new = _buy_price;
+
+    IF _inventory_number_new > 0 AND NEW.type = 'IMPORT'
+    THEN
+        _buy_price_new = (_buy_price * _inventory_number - OLD.amount * OLD.price) / _inventory_number_new;
+    END IF;
+
+	UPDATE product_unit
+    SET
+    	inventory_number = _inventory_number_new,
+        buy_price = _buy_price_new
+    WHERE OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
+
+	RETURN OLD;
+END;
+$$;
+
+
+
+CREATE OR REPLACE FUNCTION trigger_on_update_product_import()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+DECLARE
+   _inventory_number INTEGER;
+   _inventory_number_new INTEGER;
+   _buy_price float8;
+   _buy_price_new float8;
+   _enable_warehouse BOOL;
+BEGIN
+
+    IF OLD.status = 'RETURN'
+    THEN
+	    RAISE EXCEPTION 'can not update on RETURN!';
+    END IF;
+
+
+    IF OLD.amount = NEW.amount
+    THEN
+	    RETURN NEW;
+    END IF;
+
+    SELECT enable_warehouse, inventory_number, buy_price
+    INTO _enable_warehouse, _inventory_number, _buy_price
+    FROM product_unit
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
+
+
+    IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
+    THEN
+	    RAISE EXCEPTION 'product not enable warehouse';
+    END IF;
+
+
+    _inventory_number_new = CASE
+                        WHEN NEW.type = 'IMPORT' THEN _inventory_number + NEW.number_unit - OLD.number_unit
+                        WHEN NEW.type = 'EXPORT' THEN _inventory_number - NEW.number_unit + OLD.number_unit
+                        WHEN NEW.type = 'UPDATE_NUMBER' THEN NEW.number_unit
+                        ELSE -1
+                       END;
+
+    IF _inventory_number_new = -1
+    THEN
+	    RAISE EXCEPTION 'unknow import type :-1';
+    END IF;
+
+
+    IF _inventory_number_new < 0
+    THEN
+	    RAISE EXCEPTION 'inventory_number_new small than 0!';
+    END IF;
+
+    _buy_price_new = _buy_price;
+
+    IF _inventory_number_new > 0 AND NEW.type = 'IMPORT'
+    THEN
+        _buy_price_new = (_buy_price * _inventory_number + (NEW.number_unit - OLD.number_unit) * NEW.price) / _inventory_number_new;
+    END IF;
+
+	UPDATE product_unit
+    SET
+    	inventory_number = _inventory_number_new,
+        buy_price = _buy_price_new
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
+
+
+	RETURN NEW;
+END;
+$$;
+
+
+CREATE OR REPLACE TRIGGER trigger_on_delete_product_import AFTER DELETE ON product_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_delete_product_import();
+CREATE OR REPLACE TRIGGER trigger_on_update_product_import AFTER UPDATE ON product_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_update_product_import();
+CREATE OR REPLACE TRIGGER trigger_on_insert_product_import AFTER INSERT ON product_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_insert_product_import();
+
+
+
 

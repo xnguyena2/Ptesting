@@ -72,7 +72,8 @@ public class BeerTest {
                                         .promotional_price(234)
                                         .inventory_number(345)
                                         .visible(true)
-                                        .enable_warehouse(false)
+                                        .buy_price(20)
+                                        .enable_warehouse(true)
                                         .build(),
                                 ProductUnit.builder().product_second_id("123").name("lon").group_id(group)
                                         .upc("3434345")
@@ -82,6 +83,7 @@ public class BeerTest {
                                         .promotional_price(432)
                                         .inventory_number(543)
                                         .visible(false)
+                                        .buy_price(40)
                                         .enable_warehouse(true)
                                         .build()
                         })
@@ -309,7 +311,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(345);
                                 assertThat(beerUnit.isVisible()).isEqualTo(true);
-                                assertThat(beerUnit.isEnable_warehouse()).isEqualTo(false);
+                                assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .verifyComplete();
