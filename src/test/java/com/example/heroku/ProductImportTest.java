@@ -4,11 +4,13 @@ import com.example.heroku.model.ProductImport;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.warehouse.GroupImportWithItem;
+import com.example.heroku.request.warehouse.SearchImportQuery;
 import com.example.heroku.services.GroupImport;
 import lombok.Builder;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -99,16 +101,53 @@ public class ProductImportTest {
         )
                 .block();
 
-//        productImport.getByProductID(SearchQuery.builder().query("123").page(0).size(100).filter("10").group_id(group).build())
-//                .sort(Comparator.comparing(com.example.heroku.model.ProductImport::getCreateat))
-//                .as(StepVerifier::create)
-//                .consumeNextWith(productImport -> {
-//                    assertThat(productImport.getAmount()).isEqualTo(10);
-//                })
-//                .consumeNextWith(productImport -> {
-//                    assertThat(productImport.getAmount()).isEqualTo(5);
-//                })
-//                .verifyComplete();
+
+
+        groupImport.GetAllWorkingBetween(SearchImportQuery.builder().from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).page(0).size(100).group_id(group).build())
+                .sort(Comparator.comparing(GroupImportWithItem::getCreateat))
+                .as(StepVerifier::create)
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getGroup_id()).isEqualTo(group);
+                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");;
+                    assertThat(productImport.getTotal_price()).isEqualTo(23);;
+                    assertThat(productImport.getTotal_amount()).isEqualTo(32);;
+                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);;
+                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);;
+                    assertThat(productImport.getNote()).isEqualTo("note");;
+                    assertThat(productImport.getImages()).isEqualTo("images");
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
+                    assertThat(productImport.getStatus()).isEqualTo(ProductImport.Status.CREATE);
+                    assertThat(productImport.getItems().length).isEqualTo(2);
+                    ProductImport[] items = productImport.getItems();
+                    ProductImport first = items[0];
+                    ProductImport second = items[1];
+                    if(second.getProduct_import_second_id().equals("11")){
+                        ProductImport temp = second;
+                        second = first;
+                        first = temp;
+                    }
+                    assertThat(first.getGroup_id()).isEqualTo(group);
+                    assertThat(first.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
+                    assertThat(first.getStatus()).isEqualTo(ProductImport.Status.CREATE);
+                    assertThat(first.getProduct_second_id()).isEqualTo("123");
+                    assertThat(first.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(first.getProduct_unit_name_category()).isEqualTo("lon");
+                    assertThat(first.getPrice()).isEqualTo(22);
+                    assertThat(first.getAmount()).isEqualTo(33);
+                    assertThat(first.getNote()).isEqualTo("note1");
+
+                    assertThat(second.getGroup_id()).isEqualTo(group);
+                    assertThat(second.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
+                    assertThat(second.getStatus()).isEqualTo(ProductImport.Status.CREATE);
+                    assertThat(second.getProduct_second_id()).isEqualTo("123");
+                    assertThat(second.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(second.getProduct_unit_name_category()).isEqualTo("thung");
+                    assertThat(second.getPrice()).isEqualTo(44);
+                    assertThat(second.getAmount()).isEqualTo(55);
+                    assertThat(second.getNote()).isEqualTo("note2");
+
+                })
+                .verifyComplete();
 
         groupImport.GetAllWorking(SearchQuery.builder().page(0).size(100).filter("10").group_id(group).build())
                 .sort(Comparator.comparing(GroupImportWithItem::getCreateat))
@@ -155,26 +194,81 @@ public class ProductImportTest {
 
                 })
                 .verifyComplete();
-//
-//
-//        productImport.deleteRecord(group, "2")
-//                .block();
-//
-//        productImport.getByProductID(SearchQuery.builder().query("123").page(0).size(100).filter("10").group_id(group).build())
-//                .sort(Comparator.comparing(com.example.heroku.model.ProductImport::getCreateat))
-//                .as(StepVerifier::create)
-//                .consumeNextWith(productImport -> {
-//                    assertThat(productImport.getAmount()).isEqualTo(10);
-//                })
-//                .verifyComplete();
-//
-//        productImport.GetAllWorking(SearchQuery.builder().page(0).size(100).filter("10").group_id(group).build())
-//                .sort(Comparator.comparing(com.example.heroku.model.ProductImport::getCreateat))
-//                .as(StepVerifier::create)
-//                .consumeNextWith(productImport -> {
-//                    assertThat(productImport.getAmount()).isEqualTo(10);
-//                })
-//                .verifyComplete();
+
+
+
+        groupImport.GetAllWorkingOfProductBetween(SearchImportQuery.builder()
+                        .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00"))
+                        .product_second_id("123")
+                        .product_unit_second_id(beerUnit1ID.get())
+                        .page(0).size(100).group_id(group).build())
+                .sort(Comparator.comparing(GroupImportWithItem::getCreateat))
+                .as(StepVerifier::create)
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getGroup_id()).isEqualTo(group);
+                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");;
+                    assertThat(productImport.getTotal_price()).isEqualTo(23);;
+                    assertThat(productImport.getTotal_amount()).isEqualTo(32);;
+                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);;
+                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);;
+                    assertThat(productImport.getNote()).isEqualTo("note");;
+                    assertThat(productImport.getImages()).isEqualTo("images");
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
+                    assertThat(productImport.getStatus()).isEqualTo(ProductImport.Status.CREATE);
+                    assertThat(productImport.getItems().length).isEqualTo(1);
+                    ProductImport[] items = productImport.getItems();
+
+                    ProductImport first = items[0];
+
+                    assertThat(first.getGroup_id()).isEqualTo(group);
+                    assertThat(first.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
+                    assertThat(first.getStatus()).isEqualTo(ProductImport.Status.CREATE);
+                    assertThat(first.getProduct_second_id()).isEqualTo("123");
+                    assertThat(first.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(first.getProduct_unit_name_category()).isEqualTo("lon");
+                    assertThat(first.getPrice()).isEqualTo(22);
+                    assertThat(first.getAmount()).isEqualTo(33);
+                    assertThat(first.getNote()).isEqualTo("note1");
+
+                })
+                .verifyComplete();
+
+
+
+        groupImport.GetAllWorkingOfProduct(SearchImportQuery.builder()
+                        .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00"))
+                        .product_second_id("123")
+                        .product_unit_second_id(beerUnit2ID.get())
+                        .page(0).size(100).group_id(group).build())
+                .sort(Comparator.comparing(GroupImportWithItem::getCreateat))
+                .as(StepVerifier::create)
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getGroup_id()).isEqualTo(group);
+                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");;
+                    assertThat(productImport.getTotal_price()).isEqualTo(23);;
+                    assertThat(productImport.getTotal_amount()).isEqualTo(32);;
+                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);;
+                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);;
+                    assertThat(productImport.getNote()).isEqualTo("note");;
+                    assertThat(productImport.getImages()).isEqualTo("images");
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
+                    assertThat(productImport.getStatus()).isEqualTo(ProductImport.Status.CREATE);
+                    assertThat(productImport.getItems().length).isEqualTo(1);
+                    ProductImport[] items = productImport.getItems();
+                    ProductImport second = items[0];
+
+                    assertThat(second.getGroup_id()).isEqualTo(group);
+                    assertThat(second.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
+                    assertThat(second.getStatus()).isEqualTo(ProductImport.Status.CREATE);
+                    assertThat(second.getProduct_second_id()).isEqualTo("123");
+                    assertThat(second.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(second.getProduct_unit_name_category()).isEqualTo("thung");
+                    assertThat(second.getPrice()).isEqualTo(44);
+                    assertThat(second.getAmount()).isEqualTo(55);
+                    assertThat(second.getNote()).isEqualTo("note2");
+
+                })
+                .verifyComplete();
 
         this.beerAPI.GetBeerByID(group, "123")
                 .map(BeerSubmitData::GetBeerInfo)

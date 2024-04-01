@@ -5,6 +5,7 @@ import com.example.heroku.model.repository.GroupImportRepository;
 import com.example.heroku.model.repository.ProductImportRepository;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.warehouse.GroupImportWithItem;
+import com.example.heroku.request.warehouse.SearchImportQuery;
 import com.example.heroku.response.Format;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,10 +49,16 @@ public class GroupImport {
         return joinGroupImportWithProductImport.GetAllNotReturn(query);
     }
 
-    public Flux<com.example.heroku.model.ProductImport> getByProductID(SearchQuery query) {
-        String dateTxt = query.GetFilterTxt();
-        int date = Integer.parseInt(dateTxt);
-        return productImportRepository.getAllByProductID(query.getGroup_id(), query.getQuery(), query.getPage(), query.getSize(), date);
+    public Flux<GroupImportWithItem> GetAllWorkingOfProduct(SearchImportQuery query) {
+        return joinGroupImportWithProductImport.GetAllOfProductNotReturn(query);
+    }
+
+    public Flux<GroupImportWithItem> GetAllWorkingBetween(SearchImportQuery query) {
+        return joinGroupImportWithProductImport.GetAllNotReturnBetween(query);
+    }
+
+    public Flux<GroupImportWithItem> GetAllWorkingOfProductBetween(SearchImportQuery query) {
+        return joinGroupImportWithProductImport.GetAllNotReturnOfProductBetween(query);
     }
 
     private Mono<GroupImportWithItem> saveGroupDetail(GroupImportWithItem productPackage) {
