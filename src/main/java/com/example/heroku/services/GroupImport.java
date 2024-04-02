@@ -52,7 +52,7 @@ public class GroupImport {
 
         return
                 groupImportRepository.getByID(idContaine.getGroup_id(), idContaine.getId())
-                        .filter(groupImport -> groupImport.getStatus() == ProductImport.Status.DONE)
+                        .filter(groupImport -> groupImport.getStatus() == ProductImport.Status.CREATE || groupImport.getStatus() == ProductImport.Status.DONE)
                         .flatMap(groupImport -> groupImportRepository.updateStatus(groupImport.getGroup_id(), groupImport.getGroup_import_second_id(), ProductImport.Status.RETURN)
                                 .thenMany(
                                         productImportRepository.changeStatus(groupImport.getGroup_id(), groupImport.getGroup_import_second_id(), ProductImport.Status.RETURN)
@@ -69,8 +69,24 @@ public class GroupImport {
         return joinGroupImportWithProductImport.GetAllOfProductNotReturn(query);
     }
 
+    public Flux<GroupImportWithItem> GetAllWorkingAndType(SearchImportQuery query) {
+        return joinGroupImportWithProductImport.GetAllNotReturnAndType(query);
+    }
+
+    public Flux<GroupImportWithItem> GetAllWorkingOfProductAndType(SearchImportQuery query) {
+        return joinGroupImportWithProductImport.GetAllOfProductNotReturnAndType(query);
+    }
+
     public Flux<GroupImportWithItem> GetAllWorkingBetween(SearchImportQuery query) {
         return joinGroupImportWithProductImport.GetAllNotReturnBetween(query);
+    }
+
+    public Flux<GroupImportWithItem> GetAllWorkingBetweenAndType(SearchImportQuery query) {
+        return joinGroupImportWithProductImport.GetAllNotReturnBetweenAndType(query);
+    }
+
+    public Flux<GroupImportWithItem> GetAllWorkingOfProductBetweenAndType(SearchImportQuery query) {
+        return joinGroupImportWithProductImport.GetAllNotReturnOfProductBetweenAndType(query);
     }
 
     public Flux<GroupImportWithItem> GetAllWorkingOfProductBetween(SearchImportQuery query) {

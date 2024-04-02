@@ -30,8 +30,24 @@ public class JoinGroupImportWithProductImport {
         return flattenResult(this.joinGroupImportWithProductImportRepository.getGroupByProductIfNotStatus(query.getGroup_id(), query.getProduct_second_id(), query.getProduct_unit_second_id(), ProductImport.Status.RETURN, query.getPage(), query.getSize()));
     }
 
+    public Flux<GroupImportWithItem> GetAllNotReturnAndType(SearchImportQuery query) {
+        return flattenResult(this.joinGroupImportWithProductImportRepository.getGroupIfNotStatusAndType(query.getGroup_id(), ProductImport.Status.RETURN, query.getType(), query.getPage(), query.getSize()));
+    }
+
+    public Flux<GroupImportWithItem> GetAllOfProductNotReturnAndType(SearchImportQuery query) {
+        return flattenResult(this.joinGroupImportWithProductImportRepository.getGroupByProductIfNotStatusAndType(query.getGroup_id(), query.getProduct_second_id(), query.getProduct_unit_second_id(), ProductImport.Status.RETURN, query.getType(), query.getPage(), query.getSize()));
+    }
+
     public Flux<GroupImportWithItem> GetAllNotReturnBetween(SearchImportQuery query) {
         return flattenResult(this.joinGroupImportWithProductImportRepository.getGroupIfNotStatusBetween(query.getGroup_id(), query.getFrom(), query.getTo(), ProductImport.Status.RETURN, query.getPage(), query.getSize()));
+    }
+
+    public Flux<GroupImportWithItem> GetAllNotReturnBetweenAndType(SearchImportQuery query) {
+        return flattenResult(this.joinGroupImportWithProductImportRepository.getGroupIfNotStatusBetweenAndType(query.getGroup_id(), query.getFrom(), query.getTo(), ProductImport.Status.RETURN, query.getType(), query.getPage(), query.getSize()));
+    }
+
+    public Flux<GroupImportWithItem> GetAllNotReturnOfProductBetweenAndType(SearchImportQuery query) {
+        return flattenResult(this.joinGroupImportWithProductImportRepository.getGroupByProductIfNotStatusBetweenAndType(query.getGroup_id(), query.getProduct_second_id(), query.getProduct_unit_second_id(), query.getFrom(), query.getTo(), ProductImport.Status.RETURN, query.getType(), query.getPage(), query.getSize()));
     }
 
     public Flux<GroupImportWithItem> GetAllNotReturnOfProductBetween(SearchImportQuery query) {
