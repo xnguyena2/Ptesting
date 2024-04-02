@@ -13,10 +13,11 @@ import java.sql.Timestamp;
 public interface GroupImportRepository extends ReactiveCrudRepository<GroupImport, Long> {
 
 
-    @Query(value = "INSERT INTO group_import( group_id, group_import_second_id, supplier_id, total_price, total_amount, discount_amount, additional_fee, note, images, type, status, createat ) VALUES ( :group_id, :group_import_second_id, :supplier_id, :total_price, :total_amount, :discount_amount, :additional_fee, :note, :images, :type, :status, :createat ) ON CONFLICT (group_id, group_import_second_id) DO UPDATE SET supplier_id = :supplier_id, total_price = :total_price, total_amount = :total_amount, discount_amount = :discount_amount, additional_fee = :additional_fee, note = :note, images = :images, type = :type, status = :status, createat = :createat ")
+    @Query(value = "INSERT INTO group_import( group_id, group_import_second_id, supplier_id, total_price, total_amount, payment, discount_amount, additional_fee, note, images, type, status, createat ) VALUES ( :group_id, :group_import_second_id, :supplier_id, :total_price, :total_amount, :payment, :discount_amount, :additional_fee, :note, :images, :type, :status, :createat ) ON CONFLICT (group_id, group_import_second_id) DO UPDATE SET supplier_id = :supplier_id, total_price = :total_price, total_amount = :total_amount, payment = :payment, discount_amount = :discount_amount, additional_fee = :additional_fee, note = :note, images = :images, type = :type, status = :status, createat = :createat ")
     Mono<GroupImport> inertOrUpdate(@Param("group_id") String group_id, @Param("group_import_second_id") String group_import_second_id,
                                     @Param("supplier_id") String supplier_id, @Param("total_price") float total_price,
-                                    @Param("total_amount") int total_amount, @Param("discount_amount") float discount_amount,
+                                    @Param("total_amount") int total_amount, @Param("payment") float payment,
+                                    @Param("discount_amount") float discount_amount,
                                     @Param("additional_fee") float additional_fee, @Param("note") String note,
                                     @Param("images") String images, @Param("type") ProductImport.ImportType type,
                                     @Param("status") ProductImport.Status status, @Param("createat") Timestamp createat);

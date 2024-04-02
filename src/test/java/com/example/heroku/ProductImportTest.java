@@ -69,6 +69,7 @@ public class ProductImportTest {
                         .supplier_id("supplier")
                         .total_price(23)
                         .total_amount(32)
+                        .payment(666)
                         .discount_amount(12)
                         .additional_fee(10)
                         .note("note")
@@ -109,6 +110,7 @@ public class ProductImportTest {
                                 .supplier_id("supplier")
                                 .total_price(23)
                                 .total_amount(32)
+                                .payment(665)
                                 .discount_amount(12)
                                 .additional_fee(10)
                                 .note("note")
@@ -149,6 +151,7 @@ public class ProductImportTest {
                                 .supplier_id("supplier")
                                 .total_price(23)
                                 .total_amount(32)
+                                .payment(654)
                                 .discount_amount(12)
                                 .additional_fee(10)
                                 .note("note")
@@ -189,12 +192,13 @@ public class ProductImportTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
-                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");;
-                    assertThat(productImport.getTotal_price()).isEqualTo(23);;
-                    assertThat(productImport.getTotal_amount()).isEqualTo(32);;
-                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);;
-                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);;
-                    assertThat(productImport.getNote()).isEqualTo("note");;
+                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
+                    assertThat(productImport.getTotal_price()).isEqualTo(23);
+                    assertThat(productImport.getPayment()).isEqualTo(654);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(32);
+                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);
+                    assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
                     assertThat(productImport.getStatus()).isEqualTo(ProductImport.Status.CREATE);
@@ -240,12 +244,13 @@ public class ProductImportTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
-                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");;
-                    assertThat(productImport.getTotal_price()).isEqualTo(23);;
-                    assertThat(productImport.getTotal_amount()).isEqualTo(32);;
-                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);;
-                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);;
-                    assertThat(productImport.getNote()).isEqualTo("note");;
+                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
+                    assertThat(productImport.getTotal_price()).isEqualTo(23);
+                    assertThat(productImport.getPayment()).isEqualTo(654);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(32);
+                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);
+                    assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
                     assertThat(productImport.getStatus()).isEqualTo(ProductImport.Status.CREATE);
@@ -286,12 +291,13 @@ public class ProductImportTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
-                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");;
-                    assertThat(productImport.getTotal_price()).isEqualTo(23);;
-                    assertThat(productImport.getTotal_amount()).isEqualTo(32);;
-                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);;
-                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);;
-                    assertThat(productImport.getNote()).isEqualTo("note");;
+                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
+                    assertThat(productImport.getTotal_price()).isEqualTo(23);
+                    assertThat(productImport.getPayment()).isEqualTo(654);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(32);
+                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);
+                    assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
                     assertThat(productImport.getStatus()).isEqualTo(ProductImport.Status.CREATE);
@@ -332,12 +338,13 @@ public class ProductImportTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
-                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");;
-                    assertThat(productImport.getTotal_price()).isEqualTo(23);;
-                    assertThat(productImport.getTotal_amount()).isEqualTo(32);;
-                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);;
-                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);;
-                    assertThat(productImport.getNote()).isEqualTo("note");;
+                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
+                    assertThat(productImport.getTotal_price()).isEqualTo(23);
+                    assertThat(productImport.getPayment()).isEqualTo(654);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(32);
+                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);
+                    assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
                     assertThat(productImport.getStatus()).isEqualTo(ProductImport.Status.CREATE);
@@ -384,12 +391,13 @@ public class ProductImportTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
-                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");;
-                    assertThat(productImport.getTotal_price()).isEqualTo(23);;
-                    assertThat(productImport.getTotal_amount()).isEqualTo(32);;
-                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);;
-                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);;
-                    assertThat(productImport.getNote()).isEqualTo("note");;
+                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
+                    assertThat(productImport.getTotal_price()).isEqualTo(23);
+                    assertThat(productImport.getPayment()).isEqualTo(654);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(32);
+                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);
+                    assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
                     assertThat(productImport.getStatus()).isEqualTo(ProductImport.Status.CREATE);
@@ -423,12 +431,13 @@ public class ProductImportTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
-                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");;
-                    assertThat(productImport.getTotal_price()).isEqualTo(23);;
-                    assertThat(productImport.getTotal_amount()).isEqualTo(32);;
-                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);;
-                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);;
-                    assertThat(productImport.getNote()).isEqualTo("note");;
+                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
+                    assertThat(productImport.getTotal_price()).isEqualTo(23);
+                    assertThat(productImport.getPayment()).isEqualTo(654);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(32);
+                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);
+                    assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
                     assertThat(productImport.getStatus()).isEqualTo(ProductImport.Status.CREATE);
@@ -461,12 +470,13 @@ public class ProductImportTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
-                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");;
-                    assertThat(productImport.getTotal_price()).isEqualTo(23);;
-                    assertThat(productImport.getTotal_amount()).isEqualTo(32);;
-                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);;
-                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);;
-                    assertThat(productImport.getNote()).isEqualTo("note");;
+                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
+                    assertThat(productImport.getTotal_price()).isEqualTo(23);
+                    assertThat(productImport.getPayment()).isEqualTo(654);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(32);
+                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);
+                    assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
                     assertThat(productImport.getStatus()).isEqualTo(ProductImport.Status.CREATE);
@@ -497,12 +507,13 @@ public class ProductImportTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
-                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");;
-                    assertThat(productImport.getTotal_price()).isEqualTo(23);;
-                    assertThat(productImport.getTotal_amount()).isEqualTo(32);;
-                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);;
-                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);;
-                    assertThat(productImport.getNote()).isEqualTo("note");;
+                    assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
+                    assertThat(productImport.getTotal_price()).isEqualTo(23);
+                    assertThat(productImport.getPayment()).isEqualTo(654);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(32);
+                    assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getAdditional_fee()).isEqualTo(10);
+                    assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
                     assertThat(productImport.getStatus()).isEqualTo(ProductImport.Status.CREATE);
