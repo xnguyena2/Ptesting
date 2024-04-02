@@ -13,7 +13,7 @@ public interface ProductImportRepository extends ReactiveCrudRepository<ProductI
 
 
     @Query(value = "INSERT INTO product_import ( group_id, group_import_second_id, product_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat ) VALUES ( :group_id, :group_import_second_id, :product_import_second_id, :product_second_id, :product_unit_second_id, :product_unit_name_category, :price, :amount, :note, :type, :status, :createat ) ON CONFLICT (group_id, group_import_second_id, product_import_second_id) DO UPDATE SET product_second_id = :product_second_id, product_unit_second_id = :product_unit_second_id, product_unit_name_category = :product_unit_name_category, price = :price, amount = :amount, note = :note, type = :type, status = :status, createat = :createat ")
-    Mono<ProductImport> ínertOrUpdate(@Param("group_id") String group_id, @Param("group_import_second_id") String group_import_second_id,
+    Mono<ProductImport> inertOrUpdate(@Param("group_id") String group_id, @Param("group_import_second_id") String group_import_second_id,
                                        @Param("product_import_second_id") String product_import_second_id, @Param("product_second_id") String product_second_id,
                                        @Param("product_unit_second_id") String product_unit_second_id, @Param("product_unit_name_category") String product_unit_name_category,
                                        @Param("price") float price, @Param("amount") int amount,
@@ -33,6 +33,9 @@ public interface ProductImportRepository extends ReactiveCrudRepository<ProductI
     Flux<ProductImport> getAllByProductID(@Param("group_id") String group_id, @Param("id") String productID, @Param("page") int page, @Param("size") int size, @Param("date") int date);
 
     @Query(value = "DELETE FROM product_import WHERE product_import.group_id = :group_id AND product_import.group_import_second_id = :id")
-    Flux<ProductImport> deleteByGroupID(@Param("group_id") String group_id, @Param("id") String groupID);
+    Flux<ProductImport> deleteByGroupID(@Param("group_id") String group_id, @Param("id") String groupImportID);
+
+    @Query(value = "UPDATE product_import SET status = :status WHERE product_import.group_id = :group_id AND product_import.group_import_second_id = :id")
+    Flux<ProductImport> changeStatus(@Param("group_id") String group_id, @Param("id") String groupImportID, @Param("status") ProductImport.Status status);
 
 }

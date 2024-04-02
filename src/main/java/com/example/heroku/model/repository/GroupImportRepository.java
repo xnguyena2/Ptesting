@@ -14,12 +14,15 @@ public interface GroupImportRepository extends ReactiveCrudRepository<GroupImpor
 
 
     @Query(value = "INSERT INTO group_import( group_id, group_import_second_id, supplier_id, total_price, total_amount, discount_amount, additional_fee, note, images, type, status, createat ) VALUES ( :group_id, :group_import_second_id, :supplier_id, :total_price, :total_amount, :discount_amount, :additional_fee, :note, :images, :type, :status, :createat ) ON CONFLICT (group_id, group_import_second_id) DO UPDATE SET supplier_id = :supplier_id, total_price = :total_price, total_amount = :total_amount, discount_amount = :discount_amount, additional_fee = :additional_fee, note = :note, images = :images, type = :type, status = :status, createat = :createat ")
-    Mono<GroupImport> ínertOrUpdate(@Param("group_id") String group_id, @Param("group_import_second_id") String group_import_second_id,
-                                     @Param("supplier_id") String supplier_id, @Param("total_price") float total_price,
-                                     @Param("total_amount") int total_amount, @Param("discount_amount") float discount_amount,
-                                     @Param("additional_fee") float additional_fee, @Param("note") String note,
-                                     @Param("images") String images, @Param("type") ProductImport.ImportType type,
-                                      @Param("status") ProductImport.Status status, @Param("createat") Timestamp createat);
+    Mono<GroupImport> inertOrUpdate(@Param("group_id") String group_id, @Param("group_import_second_id") String group_import_second_id,
+                                    @Param("supplier_id") String supplier_id, @Param("total_price") float total_price,
+                                    @Param("total_amount") int total_amount, @Param("discount_amount") float discount_amount,
+                                    @Param("additional_fee") float additional_fee, @Param("note") String note,
+                                    @Param("images") String images, @Param("type") ProductImport.ImportType type,
+                                    @Param("status") ProductImport.Status status, @Param("createat") Timestamp createat);
+
+    @Query(value = "SELECT * FROM group_import WHERE group_import.group_id = :group_id AND group_import.group_import_second_id = :id")
+    Mono<GroupImport> getByID(@Param("group_id") String group_id, @Param("id") String groupImportID);
 
     @Query(value = "SELECT * FROM group_import WHERE group_import.group_id = :group_id LIMIT :size OFFSET (:page * :size)")
     Flux<GroupImport> getALL(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size);
@@ -32,5 +35,8 @@ public interface GroupImportRepository extends ReactiveCrudRepository<GroupImpor
 
     @Query(value = "DELETE FROM group_import WHERE group_import.group_id = :group_id AND group_import.group_import_second_id = :id")
     Mono<GroupImport> deleteByImportID(@Param("group_id") String group_id, @Param("id") String groupImportID);
+
+    @Query(value = "UPDATE group_import SET status = :status WHERE group_import.group_id = :group_id AND group_import.group_import_second_id = :id")
+    Mono<GroupImport> updateStatus(@Param("group_id") String group_id, @Param("id") String groupImportID, @Param("status") ProductImport.Status status);
 
 }

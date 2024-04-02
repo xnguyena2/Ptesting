@@ -1,9 +1,11 @@
 package com.example.heroku.services;
 
 import com.example.heroku.model.ProductImport;
+import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.repository.GroupImportRepository;
 import com.example.heroku.model.repository.ProductImportRepository;
 import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.warehouse.GroupImportWithItem;
 import com.example.heroku.request.warehouse.SearchImportQuery;
 import com.example.heroku.response.Format;
@@ -45,6 +47,20 @@ public class GroupImport {
                         .then(Mono.just(ok(Format.builder().response("done").build())));
     }
 
+
+    public Mono<ResponseEntity<Format>> Return(IDContainer idContaine) {
+
+        return
+                groupImportRepository.getByID(idContaine.getGroup_id(), idContaine.getId())
+                        .filter(groupImport -> groupImport.getStatus() == ProductImport.Status.DONE)
+                        .flatMap(groupImport -> groupImportRepository.updateStatus(groupImport.getGroup_id(), groupImport.getGroup_import_second_id(), ProductImport.Status.RETURN)
+                                .thenMany(
+                                        productImportRepository.changeStatus(groupImport.getGroup_id(), groupImport.getGroup_import_second_id(), ProductImport.Status.RETURN)
+                                )
+                                .then(Mono.just(ok(Format.builder().response("done").build())))
+                        );
+    }
+
     public Flux<GroupImportWithItem> GetAllWorking(SearchQuery query) {
         return joinGroupImportWithProductImport.GetAllNotReturn(query);
     }
@@ -67,13 +83,13 @@ public class GroupImport {
     }
 
     private Mono<com.example.heroku.model.GroupImport> saveGroup(com.example.heroku.model.GroupImport groupImport) {
-        return groupImportRepository.ínertOrUpdate(groupImport.getGroup_id(), groupImport.getGroup_import_second_id(), groupImport.getSupplier_id(),
+        return groupImportRepository.inertOrUpdate(groupImport.getGroup_id(), groupImport.getGroup_import_second_id(), groupImport.getSupplier_id(),
                 groupImport.getTotal_price(), groupImport.getTotal_amount(), groupImport.getDiscount_amount(), groupImport.getAdditional_fee(),
                 groupImport.getNote(), groupImport.getImages(), groupImport.getType(), groupImport.getStatus(), groupImport.getCreateat());
     }
 
     private Mono<ProductImport> saveProductImportItem(ProductImport productImport) {
-        return productImportRepository.ínertOrUpdate(productImport.getGroup_id(), productImport.getGroup_import_second_id(), productImport.getProduct_import_second_id(),
+        return productImportRepository.inertOrUpdate(productImport.getGroup_id(), productImport.getGroup_import_second_id(), productImport.getProduct_import_second_id(),
                 productImport.getProduct_second_id(), productImport.getProduct_unit_second_id(),
                 productImport.getProduct_unit_name_category(), productImport.getPrice(), productImport.getAmount(),
                 productImport.getNote(), productImport.getType(), productImport.getStatus(), productImport.getCreateat());

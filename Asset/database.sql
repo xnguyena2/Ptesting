@@ -663,7 +663,7 @@ BEGIN
 
     _buy_price_new = _buy_price;
 
-    IF _inventory_number_new > 0 AND NEW.type = 'IMPORT'
+    IF _inventory_number_new > 0 AND OLD.type = 'IMPORT'
     THEN
         _buy_price_new = (_buy_price * _inventory_number - OLD.amount * OLD.price) / _inventory_number_new;
     END IF;
@@ -699,7 +699,7 @@ BEGIN
     END IF;
 
 
-    IF OLD.amount = NEW.amount
+    IF OLD.amount = NEW.amount AND NEW.status <> 'RETURN'
     THEN
 	    RETURN NEW;
     END IF;
@@ -717,9 +717,11 @@ BEGIN
 
 
     _inventory_number_new = CASE
-                        WHEN NEW.type = 'IMPORT' THEN _inventory_number + NEW.number_unit - OLD.number_unit
-                        WHEN NEW.type = 'EXPORT' THEN _inventory_number - NEW.number_unit + OLD.number_unit
-                        WHEN NEW.type = 'UPDATE_NUMBER' THEN NEW.number_unit
+                        WHEN NEW.type = 'IMPORT' AND NEW.status <> 'RETURN' THEN _inventory_number + NEW.amount - OLD.amount
+                        WHEN NEW.type = 'IMPORT' AND NEW.status = 'RETURN' THEN _inventory_number - NEW.amount
+                        WHEN NEW.type = 'EXPORT' AND NEW.status <> 'RETURN' THEN _inventory_number - NEW.amount + OLD.amount
+                        WHEN NEW.type = 'EXPORT' AND NEW.status = 'RETURN' THEN _inventory_number + NEW.amount
+                        WHEN NEW.type = 'UPDATE_NUMBER' THEN NEW.amount
                         ELSE -1
                        END;
 
@@ -738,7 +740,12 @@ BEGIN
 
     IF _inventory_number_new > 0 AND NEW.type = 'IMPORT'
     THEN
-        _buy_price_new = (_buy_price * _inventory_number + (NEW.number_unit - OLD.number_unit) * NEW.price) / _inventory_number_new;
+        IF NEW.status <> 'RETURN'
+        THEN
+            _buy_price_new = (_buy_price * _inventory_number + (NEW.amount - OLD.amount) * NEW.price) / _inventory_number_new;
+        ELSE
+            _buy_price_new = (_buy_price * _inventory_number - NEW.amount * NEW.price) / _inventory_number_new;
+        END IF;
     END IF;
 
 	UPDATE product_unit
