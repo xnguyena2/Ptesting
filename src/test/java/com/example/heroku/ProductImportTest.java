@@ -78,7 +78,6 @@ public class ProductImportTest {
                         .items(
                                 new ProductImport[]{
                                         ProductImport.builder()
-                                                .product_import_second_id("11")
                                                 .product_second_id("123")
                                                 .product_unit_second_id(beerUnit1ID.get())
                                                 .product_unit_name_category("lon")
@@ -88,7 +87,6 @@ public class ProductImportTest {
                                                 .type(ProductImport.ImportType.EXPORT)
                                                 .build(),
                                         ProductImport.builder()
-                                                .product_import_second_id("22")
                                                 .product_second_id("123")
                                                 .product_unit_second_id(beerUnit2ID.get())
                                                 .product_unit_name_category("thung")
@@ -119,7 +117,6 @@ public class ProductImportTest {
                                 .items(
                                         new ProductImport[]{
                                                 ProductImport.builder()
-                                                        .product_import_second_id("11")
                                                         .product_second_id("123")
                                                         .product_unit_second_id(beerUnit1ID.get())
                                                         .product_unit_name_category("lon")
@@ -129,7 +126,6 @@ public class ProductImportTest {
                                                         .type(ProductImport.ImportType.EXPORT)
                                                         .build(),
                                                 ProductImport.builder()
-                                                        .product_import_second_id("22")
                                                         .product_second_id("123")
                                                         .product_unit_second_id(beerUnit2ID.get())
                                                         .product_unit_name_category("thung")
@@ -160,7 +156,6 @@ public class ProductImportTest {
                                 .items(
                                         new ProductImport[]{
                                                 ProductImport.builder()
-                                                        .product_import_second_id("11")
                                                         .product_second_id("123")
                                                         .product_unit_second_id(beerUnit1ID.get())
                                                         .product_unit_name_category("lon")
@@ -170,7 +165,6 @@ public class ProductImportTest {
                                                         .type(ProductImport.ImportType.EXPORT)
                                                         .build(),
                                                 ProductImport.builder()
-                                                        .product_import_second_id("22")
                                                         .product_second_id("123")
                                                         .product_unit_second_id(beerUnit2ID.get())
                                                         .product_unit_name_category("thung")
@@ -206,7 +200,7 @@ public class ProductImportTest {
                     ProductImport[] items = productImport.getItems();
                     ProductImport first = items[0];
                     ProductImport second = items[1];
-                    if(second.getProduct_import_second_id().equals("11")){
+                    if(second.getProduct_unit_name_category().equals("lon")) {
                         ProductImport temp = second;
                         second = first;
                         first = temp;
@@ -258,7 +252,7 @@ public class ProductImportTest {
                     ProductImport[] items = productImport.getItems();
                     ProductImport first = items[0];
                     ProductImport second = items[1];
-                    if(second.getProduct_import_second_id().equals("11")){
+                    if(second.getProduct_unit_name_category().equals("lon")) {
                         ProductImport temp = second;
                         second = first;
                         first = temp;
@@ -305,7 +299,7 @@ public class ProductImportTest {
                     ProductImport[] items = productImport.getItems();
                     ProductImport first = items[0];
                     ProductImport second = items[1];
-                    if(second.getProduct_import_second_id().equals("11")){
+                    if(second.getProduct_unit_name_category().equals("lon")) {
                         ProductImport temp = second;
                         second = first;
                         first = temp;
@@ -352,7 +346,7 @@ public class ProductImportTest {
                     ProductImport[] items = productImport.getItems();
                     ProductImport first = items[0];
                     ProductImport second = items[1];
-                    if(second.getProduct_import_second_id().equals("11")){
+                    if(second.getProduct_unit_name_category().equals("lon")) {
                         ProductImport temp = second;
                         second = first;
                         first = temp;
@@ -550,7 +544,6 @@ public class ProductImportTest {
                                 .items(
                                         new ProductImport[]{
                                                 ProductImport.builder()
-                                                        .product_import_second_id("11")
                                                         .product_second_id("123")
                                                         .product_unit_second_id(beerUnit1ID.get())
                                                         .product_unit_name_category("lon")
@@ -560,7 +553,6 @@ public class ProductImportTest {
                                                         .type(ProductImport.ImportType.EXPORT)
                                                         .build(),
                                                 ProductImport.builder()
-                                                        .product_import_second_id("22")
                                                         .product_second_id("123")
                                                         .product_unit_second_id(beerUnit2ID.get())
                                                         .product_unit_name_category("thung")
@@ -627,7 +619,6 @@ public class ProductImportTest {
                                 .items(
                                         new ProductImport[]{
                                                 ProductImport.builder()
-                                                        .product_import_second_id("111")
                                                         .product_second_id("123")
                                                         .product_unit_second_id(beerUnit1ID.get())
                                                         .product_unit_name_category("lon")
@@ -637,7 +628,6 @@ public class ProductImportTest {
                                                         .type(ProductImport.ImportType.EXPORT)
                                                         .build(),
                                                 ProductImport.builder()
-                                                        .product_import_second_id("222")
                                                         .product_second_id("123")
                                                         .product_unit_second_id(beerUnit2ID.get())
                                                         .product_unit_name_category("thung")
@@ -700,7 +690,6 @@ public class ProductImportTest {
                                 .items(
                                         new ProductImport[]{
                                                 ProductImport.builder()
-                                                        .product_import_second_id("111")
                                                         .product_second_id("123")
                                                         .product_unit_second_id(beerUnit1ID.get())
                                                         .product_unit_name_category("lon")
@@ -710,7 +699,6 @@ public class ProductImportTest {
                                                         .type(ProductImport.ImportType.EXPORT)
                                                         .build(),
                                                 ProductImport.builder()
-                                                        .product_import_second_id("222")
                                                         .product_second_id("123")
                                                         .product_unit_second_id(beerUnit2ID.get())
                                                         .product_unit_name_category("thung")

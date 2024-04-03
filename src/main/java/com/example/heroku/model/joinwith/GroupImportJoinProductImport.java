@@ -26,7 +26,6 @@ public class GroupImportJoinProductImport extends GroupImport {
     protected String child_group_id;
     protected Timestamp child_createat;
     private String child_group_import_second_id;
-    private String child_product_import_second_id;
     private String child_product_second_id;
     private String child_product_unit_second_id;
     private String child_product_unit_name_category;
@@ -51,7 +50,6 @@ public class GroupImportJoinProductImport extends GroupImport {
                 .group_id(child_group_id)
                 .createat(child_createat)
                 .group_import_second_id(child_group_import_second_id)
-                .product_import_second_id(child_product_import_second_id)
                 .product_second_id(child_product_second_id)
                 .product_unit_second_id(child_product_unit_second_id)
                 .product_unit_name_category(child_product_unit_name_category)

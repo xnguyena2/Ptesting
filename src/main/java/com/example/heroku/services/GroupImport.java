@@ -105,7 +105,7 @@ public class GroupImport {
     }
 
     private Mono<ProductImport> saveProductImportItem(ProductImport productImport) {
-        return productImportRepository.inertOrUpdate(productImport.getGroup_id(), productImport.getGroup_import_second_id(), productImport.getProduct_import_second_id(),
+        return productImportRepository.inertOrUpdate(productImport.getGroup_id(), productImport.getGroup_import_second_id(),
                 productImport.getProduct_second_id(), productImport.getProduct_unit_second_id(),
                 productImport.getProduct_unit_name_category(), productImport.getPrice(), productImport.getAmount(),
                 productImport.getNote(), productImport.getType(), productImport.getStatus(), productImport.getCreateat());

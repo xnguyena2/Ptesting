@@ -21,8 +21,6 @@ public class ProductImport extends BaseEntity {
 
     private String group_import_second_id;
 
-    private String product_import_second_id;
-
     private String product_second_id;
 
     private String product_unit_second_id;
@@ -43,9 +41,6 @@ public class ProductImport extends BaseEntity {
 
 
     public ProductImport AutoFill() {
-        if(product_import_second_id == null || product_import_second_id.isEmpty()){
-            product_import_second_id = Util.getInstance().GenerateID();
-        }
         return (ProductImport) super.AutoFillIfNull();
     }
 

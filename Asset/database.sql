@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS notification_relate_user_device (id SERIAL PRIMARY KE
 CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, provider_id VARCHAR, name VARCHAR, config TEXT, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS group_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, supplier_id VARCHAR, total_price float8, total_amount INTEGER, payment float8, discount_amount float8, additional_fee float8, note TEXT, images VARCHAR, type VARCHAR, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, product_import_second_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_unit_name_category VARCHAR, price float8, amount INTEGER, note TEXT, type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_unit_name_category VARCHAR, price float8, amount INTEGER, note TEXT, type VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, domain_url VARCHAR, status VARCHAR, store_type VARCHAR, createat TIMESTAMP);
 
@@ -59,7 +59,7 @@ CREATE INDEX product_unit_index ON product_unit(product_unit_second_id);
 CREATE INDEX product_unit_sku_index ON product_unit(sku);
 CREATE INDEX product_unit_upc_index ON product_unit(upc);
 CREATE INDEX group_import_index ON group_import(group_import_second_id);
-CREATE INDEX product_import_index ON product_import(product_import_second_id);
+CREATE INDEX product_import_index ON product_import(group_import_second_id);
 CREATE INDEX product_import_product_second_id_index ON product_import(product_second_id);
 CREATE INDEX product_import_product_unit_second_id_index ON product_import(product_unit_second_id);
 CREATE INDEX user_device_index ON user_device(device_id);
@@ -99,7 +99,7 @@ ALTER TABLE user_fcm ADD CONSTRAINT UQ_user_fcm_device_id UNIQUE(group_id, devic
 ALTER TABLE voucher ADD CONSTRAINT UQ_voucher UNIQUE(group_id, voucher_second_id);
 ALTER TABLE voucher_relate_user_device ADD CONSTRAINT UQ_voucher_relate_user_device UNIQUE(group_id, voucher_second_id, device_id);
 ALTER TABLE group_import ADD CONSTRAINT UQ_group_import_second_id UNIQUE(group_id, group_import_second_id);
-ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(group_id, group_import_second_id, product_import_second_id);
+ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(group_id, group_import_second_id, product_second_id, product_unit_second_id);
 ALTER TABLE user_device ADD CONSTRAINT UQ_user_device UNIQUE(group_id, device_id);
 ALTER TABLE store ADD CONSTRAINT UQ_store UNIQUE(group_id);
 ALTER TABLE store ADD CONSTRAINT UQ_domain_url UNIQUE(domain_url);
