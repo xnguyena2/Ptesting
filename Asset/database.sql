@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users_info (id SERIAL PRIMARY KEY, group_id VARCHAR N
 CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, tokens TSVECTOR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, visible_web BOOL, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number INTEGER, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number INTEGER, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, imgid VARCHAR, tag VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, categorys VARCHAR, config TEXT, createat TIMESTAMP);
@@ -846,6 +846,92 @@ $$;
 CREATE OR REPLACE TRIGGER trigger_on_delete_group_import AFTER DELETE ON group_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_delete_group_import();
 CREATE OR REPLACE TRIGGER trigger_on_update_group_import AFTER UPDATE ON group_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_update_group_import();
 CREATE OR REPLACE TRIGGER trigger_on_insert_group_import AFTER INSERT ON group_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_insert_group_import();
+
+
+
+
+
+
+
+
+CREATE OR REPLACE FUNCTION trigger_on_delete_product_unit()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+--  delete all payment_transaction belong to user_package_detail
+    DELETE FROM payment_transaction WHERE group_id = OLD.group_id AND action_id = OLD.group_import_second_id AND action_id IS NOT NULL;
+
+	RETURN OLD;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION trigger_on_update_product_unit()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+    IF NEW.type <> 'IMPORT' AND NEW.type <> 'EXPORT'
+    THEN
+	    RETURN NEW;
+    END IF;
+
+    IF OLD.status = 'RETURN'
+    THEN
+	    RAISE EXCEPTION 'can not update on RETURN!';
+    END IF;
+
+--  update payment transaction
+    IF NEW.status = 'RETURN'
+    THEN
+        DELETE FROM payment_transaction WHERE group_id = NEW.group_id AND action_id = NEW.group_import_second_id AND action_id IS NOT NULL;
+    ELSEIF NEW.payment - OLD.payment > 0 AND NEW.status <> 'RETURN'
+    THEN
+
+        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
+            VALUES ( NEW.group_id, gen_random_uuid(), NEW.supplier_id, NEW.group_import_second_id, NEW.group_import_second_id, 'PAYMENT_WAREHOUSE', CASE WHEN NEW.type = 'IMPORT' THEN 'OUTCOME' ELSE 'INCOME' END, NEW.payment - OLD.payment, NEW.type, NULL, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.group_import_second_id), 'CREATE', NOW() );
+
+    END IF;
+
+	RETURN NEW;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION trigger_on_insert_product_unit()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+    IF NEW.type <> 'IMPORT' AND NEW.type <> 'EXPORT'
+    THEN
+	    RETURN NEW;
+    END IF;
+
+--  add to payment transaction
+    IF NEW.payment > 0 AND NEW.status <> 'RETURN'
+    THEN
+
+        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
+            VALUES ( NEW.group_id, gen_random_uuid(), NEW.supplier_id, NEW.group_import_second_id, NEW.group_import_second_id, 'PAYMENT_WAREHOUSE', CASE WHEN NEW.type = 'IMPORT' THEN 'OUTCOME' ELSE 'INCOME' END, NEW.payment, NEW.type, NULL, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.group_import_second_id), 'CREATE', NOW() );
+
+    END IF;
+
+
+	RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE TRIGGER trigger_on_delete_product_unit AFTER DELETE ON group_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_delete_product_unit();
+CREATE OR REPLACE TRIGGER trigger_on_update_product_unit AFTER UPDATE ON group_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_update_product_unit();
+CREATE OR REPLACE TRIGGER trigger_on_insert_product_unit AFTER INSERT ON group_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_insert_product_unit();
 
 
 

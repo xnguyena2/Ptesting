@@ -57,6 +57,10 @@ public class ProductUnit extends BaseEntity {
 
     private boolean enable_warehouse;
 
+    private String arg_action_id;
+
+    private String arg_action_type;
+
     private Status status;
 
     //update ProductJoinWithProductUnit
