@@ -877,7 +877,7 @@ CREATE OR REPLACE FUNCTION trigger_on_update_product_unit()
 $$
 BEGIN
 
-    IF NEW.arg_action_id IS NULL
+    IF NEW.arg_action_id IS NULL OR OLD.inventory_number = NEW.inventory_number
     THEN
 	    RETURN NEW;
     END IF;
@@ -904,8 +904,8 @@ BEGIN
     END IF;
 
     INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
-    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, 'set inventory to:' || NEW.inventory_number, 'UPDATE_NUMBER', 'DONE', NOW() )
-    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - OLD.inventory_number, note = 'update inventory from:' || OLD.inventory_number || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW();
+    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number, 'set inventory to:' || NEW.inventory_number, 'UPDATE_NUMBER', 'DONE', NOW() )
+    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - inventory_number, note = 'update inventory from:' || inventory_number || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW() WHERE inventory_number <> NEW.inventory_number;
 
 	RETURN NEW;
 END;
