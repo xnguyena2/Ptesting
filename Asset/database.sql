@@ -552,7 +552,7 @@ DECLARE
 BEGIN
 
 --  return should update status not insert
-    IF NEW.status = 'RETURN'
+    IF NEW.status = 'RETURN' OR NEW.type = 'UPDATE_NUMBER' OR NEW.type = 'DELETE_PRODUCT'
     THEN
 	    RETURN NEW;
     END IF;
@@ -699,7 +699,7 @@ BEGIN
     END IF;
 
 
-    IF OLD.amount = NEW.amount AND NEW.status <> 'RETURN'
+    IF OLD.amount = NEW.amount AND NEW.status <> 'RETURN' OR NEW.type = 'UPDATE_NUMBER' OR NEW.type = 'DELETE_PRODUCT'
     THEN
 	    RETURN NEW;
     END IF;
@@ -849,11 +849,6 @@ CREATE OR REPLACE TRIGGER trigger_on_insert_group_import AFTER INSERT ON group_i
 
 
 
-
-
-
-
-
 CREATE OR REPLACE FUNCTION trigger_on_delete_product_unit()
   RETURNS TRIGGER
   LANGUAGE PLPGSQL
@@ -861,8 +856,14 @@ CREATE OR REPLACE FUNCTION trigger_on_delete_product_unit()
 $$
 BEGIN
 
---  delete all payment_transaction belong to user_package_detail
-    DELETE FROM payment_transaction WHERE group_id = OLD.group_id AND action_id = OLD.group_import_second_id AND action_id IS NOT NULL;
+    IF NEW.arg_action_id IS NULL
+    THEN
+	    RETURN OLD;
+    END IF;
+
+    INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
+    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number, 'delete product', 'DELETE_PRODUCT', 'DONE', NOW() )
+    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number, note = 'delete product', type = 'DELETE_PRODUCT', status = 'DONE', createat = NOW();
 
 	RETURN OLD;
 END;
@@ -876,27 +877,14 @@ CREATE OR REPLACE FUNCTION trigger_on_update_product_unit()
 $$
 BEGIN
 
-    IF NEW.type <> 'IMPORT' AND NEW.type <> 'EXPORT'
+    IF NEW.arg_action_id IS NULL
     THEN
 	    RETURN NEW;
     END IF;
 
-    IF OLD.status = 'RETURN'
-    THEN
-	    RAISE EXCEPTION 'can not update on RETURN!';
-    END IF;
-
---  update payment transaction
-    IF NEW.status = 'RETURN'
-    THEN
-        DELETE FROM payment_transaction WHERE group_id = NEW.group_id AND action_id = NEW.group_import_second_id AND action_id IS NOT NULL;
-    ELSEIF NEW.payment - OLD.payment > 0 AND NEW.status <> 'RETURN'
-    THEN
-
-        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
-            VALUES ( NEW.group_id, gen_random_uuid(), NEW.supplier_id, NEW.group_import_second_id, NEW.group_import_second_id, 'PAYMENT_WAREHOUSE', CASE WHEN NEW.type = 'IMPORT' THEN 'OUTCOME' ELSE 'INCOME' END, NEW.payment - OLD.payment, NEW.type, NULL, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.group_import_second_id), 'CREATE', NOW() );
-
-    END IF;
+    INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
+    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, 'update inventory from:' || OLD.inventory_number || ' to: ' || NEW.inventory_number, 'UPDATE_NUMBER', 'DONE', NOW() )
+    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - OLD.inventory_number, note = 'update inventory from:' || OLD.inventory_number || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW();
 
 	RETURN NEW;
 END;
@@ -910,28 +898,22 @@ CREATE OR REPLACE FUNCTION trigger_on_insert_product_unit()
 $$
 BEGIN
 
-    IF NEW.type <> 'IMPORT' AND NEW.type <> 'EXPORT'
+    IF NEW.arg_action_id IS NULL
     THEN
 	    RETURN NEW;
     END IF;
 
---  add to payment transaction
-    IF NEW.payment > 0 AND NEW.status <> 'RETURN'
-    THEN
-
-        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
-            VALUES ( NEW.group_id, gen_random_uuid(), NEW.supplier_id, NEW.group_import_second_id, NEW.group_import_second_id, 'PAYMENT_WAREHOUSE', CASE WHEN NEW.type = 'IMPORT' THEN 'OUTCOME' ELSE 'INCOME' END, NEW.payment, NEW.type, NULL, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.group_import_second_id), 'CREATE', NOW() );
-
-    END IF;
-
+    INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
+    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, 'set inventory to:' || NEW.inventory_number, 'UPDATE_NUMBER', 'DONE', NOW() )
+    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - OLD.inventory_number, note = 'update inventory from:' || OLD.inventory_number || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW();
 
 	RETURN NEW;
 END;
 $$;
 
-CREATE OR REPLACE TRIGGER trigger_on_delete_product_unit AFTER DELETE ON group_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_delete_product_unit();
-CREATE OR REPLACE TRIGGER trigger_on_update_product_unit AFTER UPDATE ON group_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_update_product_unit();
-CREATE OR REPLACE TRIGGER trigger_on_insert_product_unit AFTER INSERT ON group_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_insert_product_unit();
+CREATE OR REPLACE TRIGGER trigger_on_delete_product_unit AFTER DELETE ON product_unit FOR EACH ROW EXECUTE PROCEDURE trigger_on_delete_product_unit();
+CREATE OR REPLACE TRIGGER trigger_on_update_product_unit AFTER UPDATE ON product_unit FOR EACH ROW EXECUTE PROCEDURE trigger_on_update_product_unit();
+CREATE OR REPLACE TRIGGER trigger_on_insert_product_unit AFTER INSERT ON product_unit FOR EACH ROW EXECUTE PROCEDURE trigger_on_insert_product_unit();
 
 
 

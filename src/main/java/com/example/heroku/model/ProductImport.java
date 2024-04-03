@@ -49,6 +49,7 @@ public class ProductImport extends BaseEntity {
     public enum ImportType {
         UN_KNOW("UN_KNOW"),
         UPDATE_NUMBER("UPDATE_NUMBER"),
+        DELETE_PRODUCT("DELETE_PRODUCT"),
         IMPORT("IMPORT"),
         EXPORT("EXPORT");
 
