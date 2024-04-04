@@ -2,11 +2,16 @@ package com.example.heroku.controller;
 
 import com.example.heroku.model.Users;
 import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.permission.WrapPermissionAction;
 import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
-import com.example.heroku.services.ProductImport;
+import com.example.heroku.request.warehouse.GroupImportWithItem;
+import com.example.heroku.request.warehouse.SearchImportQuery;
+import com.example.heroku.response.Format;
+import com.example.heroku.services.GroupImport;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -19,52 +24,126 @@ import javax.validation.Valid;
 public class ProductImportController {
 
     @Autowired
-    ProductImport productImport;
+    GroupImport groupImport;
 
 
-//    @PostMapping("/admin/create")
-//    @CrossOrigin(origins = Util.HOST_URL)
-//    public Mono<com.example.heroku.model.ProductImport> addProductImportInfo(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid com.example.heroku.model.ProductImport newRecord) {
-//        System.out.println("add or update product record: " + newRecord.getProduct_name());
-//        return WrapPermissionGroupWithPrincipalAction.<com.example.heroku.model.ProductImport>builder()
-//                .principal(principal)
-//                .subject(newRecord::getProduct_id)
-//                .monoAction(() -> productImport.addNewRecord(newRecord))
-//                .build().toMono();
-//    }
-
-    @PostMapping("/admin/getbyproductid")
+    @PostMapping("/admin/create")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<com.example.heroku.model.ProductImport> getbyproductid(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
-        System.out.println("getbyproductid: " + query.GetFilterTxt());
-        return WrapPermissionAction.<com.example.heroku.model.ProductImport>builder()
+    public Mono<ResponseEntity<Format>> addProductImportInfo(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid GroupImportWithItem groupImportWithItem) {
+        System.out.println("add or update product warehouse: " + groupImportWithItem.getType() + ", group: " + groupImportWithItem.getGroup_id());
+        return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<Format>>builder()
+                .principal(principal)
+                .subject(groupImportWithItem::getGroup_id)
+                .monoAction(() -> groupImport.SaveGroupImport(groupImportWithItem))
+                .build().toMono();
+    }
+
+    @PostMapping("/admin/getallworking")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<GroupImportWithItem> getAllWorking(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
+        System.out.println("get warehouse allworking of group: " + query.getGroup_id());
+        return WrapPermissionAction.<GroupImportWithItem>builder()
                 .principal(principal)
                 .query(query)
-                .fluxAction(q -> productImport.getByProductID(q))
+                .fluxAction(q -> groupImport.GetAllWorking(q))
                 .build()
                 .toFlux();
     }
 
-    @PostMapping("/admin/getall")
+    @PostMapping("/admin/getallworkingofproduct")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<com.example.heroku.model.ProductImport> getAll(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
-        System.out.println("getall: " + query.GetFilterTxt());
-        return WrapPermissionAction.<com.example.heroku.model.ProductImport>builder()
+    public Flux<GroupImportWithItem> GetAllWorkingOfProduct(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchImportQuery query) {
+        System.out.println("get warehouse allworking of product: " + query.getProduct_second_id() + ", group: " + query.getGroup_id());
+        return WrapPermissionAction.<GroupImportWithItem>builder()
                 .principal(principal)
-                .query(query)
-                .fluxAction(q -> productImport.getALL(q))
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> groupImport.GetAllWorkingOfProduct(query))
                 .build()
                 .toFlux();
     }
 
-//    @DeleteMapping("/admin/delete/{groupid}/{id}")
-//    @CrossOrigin(origins = Util.HOST_URL)
-//    public Mono<com.example.heroku.model.ProductImport> delete(@AuthenticationPrincipal Mono<Users> principal, @PathVariable("groupid") String groupid, @PathVariable("id") String id) {
-//        System.out.println("delete record: " + id);
-//        return WrapPermissionGroupWithPrincipalAction.<com.example.heroku.model.ProductImport>builder()
-//                .principal(principal)
-//                .subject(() -> groupid)
-//                .monoAction(() -> productImport.deleteRecord(groupid, id))
-//                .build().toMono();
-//    }
+    @PostMapping("/admin/getallworkingbytype")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<GroupImportWithItem> GetAllWorkingByType(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchImportQuery query) {
+        System.out.println("get warehouse allworking by type: " + query.getType() + ", group: " + query.getGroup_id());
+        return WrapPermissionAction.<GroupImportWithItem>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> groupImport.GetAllWorkingAndType(query))
+                .build()
+                .toFlux();
+    }
+
+    @PostMapping("/admin/getallworkingbytypeofproduct")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<GroupImportWithItem> GetAllWorkingByTypeOfProduct(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchImportQuery query) {
+        System.out.println("get warehouse allworking by type: " + query.getType() + ", product: " + query.getProduct_second_id() + ", group: " + query.getGroup_id());
+        return WrapPermissionAction.<GroupImportWithItem>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> groupImport.GetAllWorkingOfProductAndType(query))
+                .build()
+                .toFlux();
+    }
+
+    @PostMapping("/admin/getallworkingbetween")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<GroupImportWithItem> GetAllWorkingBetween(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchImportQuery query) {
+        System.out.println("get warehouse allworking between from: " + query.getFrom() + ", to: " + query.getTo() + ", group: " + query.getGroup_id());
+        return WrapPermissionAction.<GroupImportWithItem>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> groupImport.GetAllWorkingBetween(query))
+                .build()
+                .toFlux();
+    }
+
+    @PostMapping("/admin/getallworkingbetweenbytype")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<GroupImportWithItem> GetAllWorkingBetweenByType(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchImportQuery query) {
+        System.out.println("get warehouse allworking between from: " + query.getFrom() + ", to: " + query.getTo() + ", type: " + query.getType() + ", group: " + query.getGroup_id());
+        return WrapPermissionAction.<GroupImportWithItem>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> groupImport.GetAllWorkingBetweenAndType(query))
+                .build()
+                .toFlux();
+    }
+
+    @PostMapping("/admin/getallworkingbetweenbytypeofproduct")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<GroupImportWithItem> GetAllWorkingBetweenByTypeOfProduct(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchImportQuery query) {
+        System.out.println("get warehouse allworking between from: " + query.getFrom() + ", to: " + query.getTo() + ", type: " + query.getType() + ", product: " + query.getProduct_second_id() + ", group: " + query.getGroup_id());
+        return WrapPermissionAction.<GroupImportWithItem>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> groupImport.GetAllWorkingOfProductBetweenAndType(query))
+                .build()
+                .toFlux();
+    }
+
+    @PostMapping("/admin/getallworkingbetweenofproduct")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<GroupImportWithItem> GetAllWorkingBetweenOfProduct(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchImportQuery query) {
+        System.out.println("get warehouse allworking between from: " + query.getFrom() + ", to: " + query.getTo() + ", product: " + query.getProduct_second_id() + ", group: " + query.getGroup_id());
+        return WrapPermissionAction.<GroupImportWithItem>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> groupImport.GetAllWorkingOfProductBetween(query))
+                .build()
+                .toFlux();
+    }
+
+
+    @PostMapping("/admin/return")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<Format>> Return(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
+        System.out.println("return : " + idContainer.getId() + ", group: " + idContainer.getGroup_id());
+        return WrapPermissionAction.<ResponseEntity<Format>>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(idContainer.getGroup_id()).build())
+                .monoAction(q -> groupImport.Return(idContainer))
+                .build()
+                .toMono();
+    }
 }
