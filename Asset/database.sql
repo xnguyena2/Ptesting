@@ -593,6 +593,7 @@ BEGIN
     _inventory_number_new = CASE
                         WHEN NEW.type = 'IMPORT' THEN _inventory_number + NEW.amount
                         WHEN NEW.type = 'EXPORT' THEN _inventory_number - NEW.amount
+                        WHEN NEW.type = 'CHECK_WAREHOUSE' THEN NEW.amount
                         ELSE -1
                        END;
 
@@ -663,6 +664,7 @@ BEGIN
                         WHEN OLD.type = 'IMPORT' THEN _inventory_number - OLD.amount
                         WHEN OLD.type = 'EXPORT' THEN _inventory_number + OLD.amount
                         WHEN OLD.type = 'UPDATE_NUMBER' THEN 0
+                        WHEN OLD.type = 'CHECK_WAREHOUSE' THEN 0
                         ELSE -1
                        END;
 
@@ -739,6 +741,8 @@ BEGIN
                         WHEN NEW.type = 'IMPORT' AND NEW.status = 'RETURN' THEN _inventory_number - NEW.amount
                         WHEN NEW.type = 'EXPORT' AND NEW.status <> 'RETURN' THEN _inventory_number - NEW.amount + OLD.amount
                         WHEN NEW.type = 'EXPORT' AND NEW.status = 'RETURN' THEN _inventory_number + NEW.amount
+                        WHEN NEW.type = 'CHECK_WAREHOUSE' AND NEW.status <> 'RETURN' THEN NEW.amount
+                        WHEN NEW.type = 'CHECK_WAREHOUSE' AND NEW.status = 'RETURN' THEN 0
                         ELSE -1
                        END;
 

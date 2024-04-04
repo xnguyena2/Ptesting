@@ -52,6 +52,8 @@ public class ProductImport extends BaseEntity {
         DELETE_PRODUCT("DELETE_PRODUCT"),
         SELLING("SELLING"),
         SELLING_RETURN("SELLING_RETURN"),
+
+        CHECK_WAREHOUSE("CHECK_WAREHOUSE"),
         IMPORT("IMPORT"),
         EXPORT("EXPORT");
 

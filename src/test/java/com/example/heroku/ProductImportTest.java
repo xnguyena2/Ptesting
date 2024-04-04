@@ -739,6 +739,118 @@ public class ProductImportTest {
 
         groupImport.Return(IDContainer.builder().group_id(group).id("1").build()).block();
 
+
+        groupImport.SaveGroupImport(
+                        GroupImportWithItem.builder()
+                                .group_id(group)
+                                .group_import_second_id("4")
+                                .supplier_id("supplier")
+                                .total_price(23)
+                                .total_amount(32)
+                                .discount_amount(12)
+                                .additional_fee(10)
+                                .note("note")
+                                .images("images")
+                                .type(ProductImport.ImportType.CHECK_WAREHOUSE)
+                                .items(
+                                        new ProductImport[]{
+                                                ProductImport.builder()
+                                                        .product_second_id("123")
+                                                        .product_unit_second_id(beerUnit1ID.get())
+                                                        .product_unit_name_category("lon")
+                                                        .price(27)
+                                                        .amount(387)
+                                                        .note("note1")
+                                                        .type(ProductImport.ImportType.EXPORT)
+                                                        .build(),
+                                                ProductImport.builder()
+                                                        .product_second_id("123")
+                                                        .product_unit_second_id(beerUnit2ID.get())
+                                                        .product_unit_name_category("thung")
+                                                        .price(50)
+                                                        .amount(687)
+                                                        .note("note2")
+                                                        .type(ProductImport.ImportType.EXPORT)
+                                                        .build()
+                                        }
+                                )
+                                .build()
+                )
+                .block();
+
+        this.beerAPI.GetBeerByID(group, "123")
+                .map(BeerSubmitData::GetBeerInfo)
+                .as(StepVerifier::create)
+                .consumeNextWith(beerInfo -> {
+                    assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
+                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    Flux.just(beerInfo.getProductUnit())
+                            .sort(Comparator.comparing(com.example.heroku.model.ProductUnit::getName))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerUnit -> {
+                                if (beerUnit.getName().equals("lon")) {
+                                    assertThat(beerUnit.getInventory_number()).isEqualTo(387);
+                                    assertThat(beerUnit.getBuy_price()).isEqualTo(40);
+                                } else {
+                                    assertThat(beerUnit.getInventory_number()).isEqualTo(687);
+                                    assertThat(beerUnit.getBuy_price()).isEqualTo(20);
+                                }
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                if (beerUnit.getName().equals("lon")) {
+                                    assertThat(beerUnit.getInventory_number()).isEqualTo(387);
+                                    assertThat(beerUnit.getBuy_price()).isEqualTo(40);
+                                } else {
+                                    assertThat(beerUnit.getInventory_number()).isEqualTo(687);
+                                    assertThat(beerUnit.getBuy_price()).isEqualTo(20);
+                                }
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+
+        groupImport.Return(IDContainer.builder().group_id(group).id("4").build()).block();
+
+
+        groupImport.SaveGroupImport(
+                        GroupImportWithItem.builder()
+                                .group_id(group)
+                                .group_import_second_id("5")
+                                .supplier_id("supplier")
+                                .total_price(23)
+                                .total_amount(32)
+                                .discount_amount(12)
+                                .additional_fee(10)
+                                .note("note")
+                                .images("images")
+                                .type(ProductImport.ImportType.CHECK_WAREHOUSE)
+                                .items(
+                                        new ProductImport[]{
+                                                ProductImport.builder()
+                                                        .product_second_id("123")
+                                                        .product_unit_second_id(beerUnit1ID.get())
+                                                        .product_unit_name_category("lon")
+                                                        .price(27)
+                                                        .amount(543)
+                                                        .note("note1")
+                                                        .type(ProductImport.ImportType.EXPORT)
+                                                        .build(),
+                                                ProductImport.builder()
+                                                        .product_second_id("123")
+                                                        .product_unit_second_id(beerUnit2ID.get())
+                                                        .product_unit_name_category("thung")
+                                                        .price(50)
+                                                        .amount(345)
+                                                        .note("note2")
+                                                        .type(ProductImport.ImportType.EXPORT)
+                                                        .build()
+                                        }
+                                )
+                                .build()
+                )
+                .block();
+
         this.beerAPI.GetBeerByID(group, "123")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
