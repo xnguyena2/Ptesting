@@ -329,7 +329,9 @@ BEGIN
 
 	UPDATE product_unit
     SET
-    	inventory_number = product_unit.inventory_number - NEW.number_unit
+    	inventory_number = product_unit.inventory_number - NEW.number_unit,
+    	arg_action_id = NEW.package_second_id,
+    	arg_action_type = 'SELLING'
     WHERE NEW.status <> 'RETURN' AND NEW.status <> 'CANCEL' AND NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
 
 	RETURN NEW;
@@ -351,7 +353,9 @@ BEGIN
 
 	UPDATE product_unit
     SET
-    	inventory_number = product_unit.inventory_number + OLD.number_unit
+    	inventory_number = product_unit.inventory_number + OLD.number_unit,
+    	arg_action_id = OLD.package_second_id,
+    	arg_action_type = 'SELLING_RETURN'
     WHERE OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
 
 	RETURN OLD;
@@ -402,7 +406,9 @@ BEGIN
 
 	UPDATE product_unit
     SET
-    	inventory_number = _inventory_number_new
+    	inventory_number = _inventory_number_new,
+        arg_action_id = NEW.package_second_id,
+        arg_action_type = CASE WHEN (NEW.status = 'RETURN' OR NEW.status = 'CANCEL') THEN 'SELLING_RETURN' ELSE 'SELLING' END
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
 
 	RETURN NEW;
@@ -435,6 +441,10 @@ BEGIN
 
 --  delete all payment_transaction belong to user_package_detail
     DELETE FROM payment_transaction WHERE group_id = OLD.group_id AND (package_second_id = OLD.package_second_id OR action_id = OLD.package_second_id) AND package_second_id IS NOT NULL;
+
+    UPDATE group_import
+    SET status = 'RETURN'
+    WHERE group_id = OLD.group_id AND group_import_second_id = OLD.package_second_id;
 
     IF OLD.status <> 'DONE'
     THEN
@@ -483,6 +493,11 @@ BEGIN
     ELSEIF (OLD.status <> 'CANCEL' AND OLD.status <> 'RETURN') AND (NEW.status = 'CANCEL' OR NEW.status = 'RETURN')
     THEN
         DELETE FROM payment_transaction WHERE group_id = NEW.group_id AND (package_second_id = NEW.package_second_id OR action_id = NEW.package_second_id) AND package_second_id IS NOT NULL AND action_id IS NOT NULL;
+
+        UPDATE group_import
+        SET status = 'RETURN'
+        WHERE group_id = NEW.group_id AND group_import_second_id = NEW.package_second_id;
+
     ELSEIF NEW.payment - OLD.payment > 0 AND (NEW.status <> 'CANCEL' OR NEW.status <> 'RETURN')
     THEN
 
@@ -552,7 +567,7 @@ DECLARE
 BEGIN
 
 --  return should update status not insert
-    IF NEW.status = 'RETURN' OR NEW.type = 'UPDATE_NUMBER' OR NEW.type = 'DELETE_PRODUCT'
+    IF NEW.status = 'RETURN' OR NEW.type = 'UPDATE_NUMBER' OR NEW.type = 'DELETE_PRODUCT' OR NEW.type = 'SELLING' OR NEW.type = 'SELLING_RETURN'
     THEN
 	    RETURN NEW;
     END IF;
@@ -578,13 +593,12 @@ BEGIN
     _inventory_number_new = CASE
                         WHEN NEW.type = 'IMPORT' THEN _inventory_number + NEW.amount
                         WHEN NEW.type = 'EXPORT' THEN _inventory_number - NEW.amount
-                        WHEN NEW.type = 'UPDATE_NUMBER' THEN NEW.amount
                         ELSE -1
                        END;
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION 'unknow import type :-1';
+	    RAISE EXCEPTION '_inventory_number_new = -1';
     END IF;
 
 
@@ -603,7 +617,9 @@ BEGIN
 	UPDATE product_unit
     SET
     	inventory_number = _inventory_number_new,
-    	buy_price = _buy_price_new
+    	buy_price = _buy_price_new,
+        arg_action_id = NULL,
+        arg_action_type = NULL
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
 
 	RETURN NEW;
@@ -652,7 +668,7 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION 'unknow import type :-1';
+	    RAISE EXCEPTION '_inventory_number_new = -1';
     END IF;
 
 
@@ -671,7 +687,9 @@ BEGIN
 	UPDATE product_unit
     SET
     	inventory_number = _inventory_number_new,
-        buy_price = _buy_price_new
+        buy_price = _buy_price_new,
+        arg_action_id = NULL,
+        arg_action_type = NULL
     WHERE OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
 
 	RETURN OLD;
@@ -695,11 +713,11 @@ BEGIN
 
     IF OLD.status = 'RETURN'
     THEN
-	    RAISE EXCEPTION 'can not update on RETURN!';
+	    RETURN NEW;
     END IF;
 
 
-    IF OLD.amount = NEW.amount AND NEW.status <> 'RETURN' OR NEW.type = 'UPDATE_NUMBER' OR NEW.type = 'DELETE_PRODUCT'
+    IF OLD.amount = NEW.amount AND NEW.status <> 'RETURN' OR NEW.type = 'UPDATE_NUMBER' OR NEW.type = 'DELETE_PRODUCT' OR NEW.type = 'SELLING' OR NEW.type = 'SELLING_RETURN'
     THEN
 	    RETURN NEW;
     END IF;
@@ -721,13 +739,12 @@ BEGIN
                         WHEN NEW.type = 'IMPORT' AND NEW.status = 'RETURN' THEN _inventory_number - NEW.amount
                         WHEN NEW.type = 'EXPORT' AND NEW.status <> 'RETURN' THEN _inventory_number - NEW.amount + OLD.amount
                         WHEN NEW.type = 'EXPORT' AND NEW.status = 'RETURN' THEN _inventory_number + NEW.amount
-                        WHEN NEW.type = 'UPDATE_NUMBER' THEN NEW.amount
                         ELSE -1
                        END;
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION 'unknow import type :-1';
+	    RAISE EXCEPTION '_inventory_number_new = -1';
     END IF;
 
 
@@ -751,7 +768,9 @@ BEGIN
 	UPDATE product_unit
     SET
     	inventory_number = _inventory_number_new,
-        buy_price = _buy_price_new
+        buy_price = _buy_price_new,
+        arg_action_id = NULL,
+        arg_action_type = NULL
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
 
 
@@ -856,14 +875,14 @@ CREATE OR REPLACE FUNCTION trigger_on_delete_product_unit()
 $$
 BEGIN
 
-    IF NEW.arg_action_id IS NULL
+    IF OLD.arg_action_id IS NULL OR OLD.enable_warehouse <> TRUE
     THEN
 	    RETURN OLD;
     END IF;
 
     INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
-    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number, 'delete product', 'DELETE_PRODUCT', 'DONE', NOW() )
-    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number, note = 'delete product', type = 'DELETE_PRODUCT', status = 'DONE', createat = NOW();
+    VALUES ( OLD.group_id, OLD.arg_action_id, OLD.product_second_id, OLD.product_unit_second_id, OLD.name, OLD.buy_price, OLD.inventory_number, 'DELETE PRODUCT', 'DELETE_PRODUCT', 'DONE', NOW() )
+    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = OLD.name, price = OLD.buy_price, amount = OLD.inventory_number, note = 'DELETE PRODUCT', type = 'DELETE_PRODUCT', status = 'DONE', createat = NOW();
 
 	RETURN OLD;
 END;
@@ -875,16 +894,37 @@ CREATE OR REPLACE FUNCTION trigger_on_update_product_unit()
   LANGUAGE PLPGSQL
   AS
 $$
+DECLARE
+   _note VARCHAR;
+   _type VARCHAR;
+   _status VARCHAR;
+   _price float8;
 BEGIN
 
-    IF NEW.arg_action_id IS NULL OR OLD.inventory_number = NEW.inventory_number
+    IF NEW.arg_action_id IS NULL OR OLD.inventory_number = NEW.inventory_number OR NEW.enable_warehouse <> TRUE
     THEN
 	    RETURN NEW;
     END IF;
 
+    _note = CASE
+    WHEN NEW.arg_action_type = 'SELLING' THEN 'SELLING: ' || (NEW.inventory_number - OLD.inventory_number)
+    WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'RETURN: ' || (NEW.inventory_number - OLD.inventory_number)
+    ELSE 'update inventory from:' || OLD.inventory_number || ' to: ' || NEW.inventory_number
+    END;
+
+    _type = CASE
+    WHEN NEW.arg_action_type = 'SELLING' THEN 'SELLING'
+    WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'SELLING_RETURN'
+    ELSE 'UPDATE_NUMBER'
+    END;
+
+    _status =CASE
+    WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'RETURN'
+    ELSE 'DONE' END;
+
     INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
-    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, 'update inventory from:' || OLD.inventory_number || ' to: ' || NEW.inventory_number, 'UPDATE_NUMBER', 'DONE', NOW() )
-    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - OLD.inventory_number, note = 'update inventory from:' || OLD.inventory_number || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW();
+    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, _note, 'UPDATE_NUMBER', 'DONE', NOW() )
+    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - OLD.inventory_number, note = _note, type = _type, status = _status, createat = NOW();
 
 	RETURN NEW;
 END;
@@ -898,14 +938,19 @@ CREATE OR REPLACE FUNCTION trigger_on_insert_product_unit()
 $$
 BEGIN
 
-    IF NEW.arg_action_id IS NULL
+    IF NEW.enable_warehouse <> TRUE
     THEN
 	    RETURN NEW;
     END IF;
 
+    IF NEW.arg_action_id IS NULL
+    THEN
+	    RAISE EXCEPTION 'arg_action_id null!';
+    END IF;
+
     INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
     VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number, 'set inventory to:' || NEW.inventory_number, 'UPDATE_NUMBER', 'DONE', NOW() )
-    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - inventory_number, note = 'update inventory from:' || inventory_number || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW() WHERE inventory_number <> NEW.inventory_number;
+    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - product_import.amount, note = 'update inventory from: ' || product_import.amount || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW() WHERE (product_import.amount <> NEW.inventory_number AND NEW.arg_action_type = 'UPDATE_NUMBER') OR NEW.arg_action_type <> 'UPDATE_NUMBER';
 
 	RETURN NEW;
 END;
@@ -916,4 +961,34 @@ CREATE OR REPLACE TRIGGER trigger_on_update_product_unit AFTER UPDATE ON product
 CREATE OR REPLACE TRIGGER trigger_on_insert_product_unit AFTER INSERT ON product_unit FOR EACH ROW EXECUTE PROCEDURE trigger_on_insert_product_unit();
 
 
+
+
+CREATE OR REPLACE FUNCTION create_group_import_for_product_import(_group_id VARCHAR, _group_import_second_id VARCHAR, _type VARCHAR, _status VARCHAR)
+  RETURNS VOID
+  LANGUAGE PLPGSQL
+  AS
+$$
+DECLARE
+   _amount INTEGER;
+   _price float8;
+BEGIN
+
+    SELECT SUM(amount), SUM(price * amount)
+    INTO _amount, _price
+    FROM product_import
+    WHERE product_import.group_id = _group_id AND product_import.group_import_second_id = _group_import_second_id;
+
+
+    IF _amount = 0 OR _amount IS NULL
+    THEN
+	    RETURN;
+    END IF;
+
+    INSERT INTO group_import( group_id, group_import_second_id, total_price, total_amount, type, status, createat )
+    VALUES ( _group_id, _group_import_second_id, _price, _amount, _type, _status, NOW() )
+    ON CONFLICT (group_id, group_import_second_id) DO UPDATE SET total_price = _price, total_amount = _amount, type = _type, status = _status, createat = NOW();
+
+	RETURN;
+END;
+$$;
 

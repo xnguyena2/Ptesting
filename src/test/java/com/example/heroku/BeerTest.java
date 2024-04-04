@@ -65,6 +65,7 @@ public class BeerTest {
                         .builder()
                         .productUnit(new ProductUnit[]{
                                 ProductUnit.builder().product_second_id("123").name("thung").group_id(group)
+                                        .product_unit_second_id("adsfasdfasdfasdf")
                                         .upc("343434")
                                         .sku("76767676")
                                         .wholesale_number(34)
@@ -76,6 +77,7 @@ public class BeerTest {
                                         .enable_warehouse(true)
                                         .build(),
                                 ProductUnit.builder().product_second_id("123").name("lon").group_id(group)
+                                        .product_unit_second_id("retertghdfghsdgdfgasf")
                                         .upc("3434345")
                                         .sku("767676767")
                                         .wholesale_number(43)

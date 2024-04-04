@@ -50,6 +50,8 @@ public class ProductImport extends BaseEntity {
         UN_KNOW("UN_KNOW"),
         UPDATE_NUMBER("UPDATE_NUMBER"),
         DELETE_PRODUCT("DELETE_PRODUCT"),
+        SELLING("SELLING"),
+        SELLING_RETURN("SELLING_RETURN"),
         IMPORT("IMPORT"),
         EXPORT("EXPORT");
 

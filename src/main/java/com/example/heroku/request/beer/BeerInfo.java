@@ -1,7 +1,9 @@
 package com.example.heroku.request.beer;
 
 import com.example.heroku.model.Product;
+import com.example.heroku.model.ProductImport;
 import com.example.heroku.model.ProductUnit;
+import com.example.heroku.util.Util;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +19,18 @@ public class BeerInfo {
     private Product product;
 
     private ProductUnit[] productUnit;
+
+    public ProductUnit[] getProductUnitPrepareForInventory(String actionID) {
+        if(actionID == null || actionID.isEmpty()){
+            actionID = Util.getInstance().GenerateID();
+        }
+        for (ProductUnit unit :
+                productUnit) {
+            unit.setArg_action_id(actionID);
+            unit.setArg_action_type(ProductImport.ImportType.UPDATE_NUMBER.getName());
+        }
+        return productUnit;
+    }
 
     public BeerInfo SetBeerUnit(List<ProductUnit> productUnitList) {
         productUnit = new ProductUnit[productUnitList.size()];

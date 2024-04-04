@@ -22,6 +22,9 @@ public interface GroupImportRepository extends ReactiveCrudRepository<GroupImpor
                                     @Param("images") String images, @Param("type") ProductImport.ImportType type,
                                     @Param("status") ProductImport.Status status, @Param("createat") Timestamp createat);
 
+    @Query(value = "SELECT create_group_import_for_product_import(:group_id, :group_import_second_id, :type, :status)")
+    Mono<GroupImport> createGroupImportForEmpty(@Param("group_id") String group_id, @Param("group_import_second_id") String groupImportID, @Param("type") String type, @Param("status") String status);
+
     @Query(value = "SELECT * FROM group_import WHERE group_import.group_id = :group_id AND group_import.group_import_second_id = :id")
     Mono<GroupImport> getByID(@Param("group_id") String group_id, @Param("id") String groupImportID);
 

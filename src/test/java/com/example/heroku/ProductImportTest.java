@@ -185,6 +185,11 @@ public class ProductImportTest {
                 .sort(Comparator.comparing(GroupImportWithItem::getCreateat))
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(888);
+
+                })
+                .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
                     assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
                     assertThat(productImport.getTotal_price()).isEqualTo(23);
@@ -283,6 +288,11 @@ public class ProductImportTest {
         groupImport.GetAllWorking(SearchQuery.builder().page(0).size(100).filter("10").group_id(group).build())
                 .sort(Comparator.comparing(GroupImportWithItem::getCreateat))
                 .as(StepVerifier::create)
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(888);
+
+                })
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
                     assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
@@ -384,6 +394,11 @@ public class ProductImportTest {
                 .sort(Comparator.comparing(GroupImportWithItem::getCreateat))
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(888);
+
+                })
+                .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
                     assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
                     assertThat(productImport.getTotal_price()).isEqualTo(23);
@@ -462,6 +477,11 @@ public class ProductImportTest {
                         .page(0).size(100).group_id(group).build())
                 .sort(Comparator.comparing(GroupImportWithItem::getCreateat))
                 .as(StepVerifier::create)
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(888);
+
+                })
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
                     assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
