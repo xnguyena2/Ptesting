@@ -642,7 +642,7 @@ DECLARE
 BEGIN
 
 
-    IF OLD.type = 'UN_KNOW' OR OLD.type IS NULL OR OLD.status = 'RETURN'
+    IF OLD.type = 'UN_KNOW' OR OLD.type IS NULL OR OLD.status = 'RETURN' OR (OLD.amount = 0 AND OLD.type = 'UPDATE_NUMBER')
     THEN
 	    RETURN OLD;
     END IF;
@@ -950,7 +950,7 @@ BEGIN
 
     INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
     VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number, 'set inventory to:' || NEW.inventory_number, 'UPDATE_NUMBER', 'DONE', NOW() )
-    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - product_import.amount, note = 'update inventory from: ' || product_import.amount || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW() WHERE (product_import.amount <> NEW.inventory_number AND NEW.arg_action_type = 'UPDATE_NUMBER') OR NEW.arg_action_type <> 'UPDATE_NUMBER';
+    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - product_import.amount, note = 'update inventory from: ' || product_import.amount || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW() WHERE product_import.amount <> NEW.inventory_number OR NEW.arg_action_type <> product_import.type;
 
 	RETURN NEW;
 END;
@@ -987,6 +987,9 @@ BEGIN
     INSERT INTO group_import( group_id, group_import_second_id, total_price, total_amount, type, status, createat )
     VALUES ( _group_id, _group_import_second_id, _price, _amount, _type, _status, NOW() )
     ON CONFLICT (group_id, group_import_second_id) DO UPDATE SET total_price = _price, total_amount = _amount, type = _type, status = _status, createat = NOW();
+
+    DELETE FROM product_import
+    WHERE amount = 0;
 
 	RETURN;
 END;
