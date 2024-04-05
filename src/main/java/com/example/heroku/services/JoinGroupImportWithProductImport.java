@@ -54,7 +54,11 @@ public class JoinGroupImportWithProductImport {
         return flattenResult(this.joinGroupImportWithProductImportRepository.getGroupByProductIfNotStatusBetween(query.getGroup_id(), query.getProduct_second_id(), query.getProduct_unit_second_id(), query.getFrom(), query.getTo(), ProductImport.Status.RETURN, query.getPage(), query.getSize()));
     }
 
+    public Flux<GroupImportWithItem> GetByGroupImportID(SearchImportQuery query) {
+        return flattenResult(this.joinGroupImportWithProductImportRepository.getByGroupID(query.getGroup_id(), query.getGroup_import_second_id()));
+    }
+
     public Flux<GroupImportWithItem> GetAllGroupImport(SearchQuery query) {
-        return flattenResult(this.joinGroupImportWithProductImportRepository.getAllProduct(query.getGroup_id(), query.getPage(), query.getSize()));
+        return flattenResult(this.joinGroupImportWithProductImportRepository.getAll(query.getGroup_id(), query.getPage(), query.getSize()));
     }
 }

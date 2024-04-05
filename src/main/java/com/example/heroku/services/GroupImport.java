@@ -93,6 +93,10 @@ public class GroupImport {
         return joinGroupImportWithProductImport.GetAllNotReturnOfProductBetween(query);
     }
 
+    public Flux<GroupImportWithItem> GetByGroupImportID(SearchImportQuery query) {
+        return joinGroupImportWithProductImport.GetByGroupImportID(query);
+    }
+
     private Mono<GroupImportWithItem> saveGroupDetail(GroupImportWithItem productPackage) {
         return saveGroup(productPackage.AutoFill())
                 .then(Mono.just(productPackage));

@@ -134,6 +134,18 @@ public class ProductImportController {
                 .toFlux();
     }
 
+    @PostMapping("/admin/getbygroupimportid")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<GroupImportWithItem> GetByGroupImportID(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchImportQuery query) {
+        System.out.println("get by group import ID: " + query.getGroup_id() + ", ID: " + query.getGroup_import_second_id());
+        return WrapPermissionAction.<GroupImportWithItem>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> groupImport.GetByGroupImportID(query))
+                .build()
+                .toFlux();
+    }
+
 
     @PostMapping("/admin/return")
     @CrossOrigin(origins = Util.HOST_URL)
