@@ -26,10 +26,6 @@ public class GroupImportWithItem extends GroupImport {
         return GroupImportWithItem.builder().build();
     }
 
-    public GroupImport getGroupImport() {
-        return this;
-    }
-
     public boolean isEmpty() {
         return items == null;
     }
