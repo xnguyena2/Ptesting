@@ -1,7 +1,6 @@
 package com.example.heroku.services;
 
 import com.example.heroku.model.ProductImport;
-import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.repository.GroupImportRepository;
 import com.example.heroku.model.repository.ProductImportRepository;
 import com.example.heroku.request.beer.SearchQuery;
@@ -30,6 +29,9 @@ public class GroupImport {
     @Autowired
     JoinGroupImportWithProductImport joinGroupImportWithProductImport;
 
+    @Autowired
+    com.example.heroku.services.Buyer buyer;
+
 
     public Mono<ResponseEntity<Format>> SaveGroupImport(GroupImportWithItem groupImportWithItem) {
 
@@ -37,6 +39,7 @@ public class GroupImport {
             return Mono.just(badRequest().body(Format.builder().response("groupimport empty").build()));
         return
                 Mono.just(groupImportWithItem)
+                        .flatMap(this::saveSuplier)
                         .flatMap(this::saveGroupDetail)
                         .flatMap(groupImport -> productImportRepository.deleteByGroupID(groupImport.getGroup_id(), groupImport.getGroup_import_second_id())
                                 .then(Mono.just(groupImport))
@@ -102,8 +105,23 @@ public class GroupImport {
                 .then(Mono.just(productPackage));
     }
 
+    Mono<GroupImportWithItem> saveSuplier(GroupImportWithItem groupImportWithItem) {
+        if (groupImportWithItem.getSupplier_id() == null || groupImportWithItem.getSupplier_id().isEmpty()) {
+            return Mono.just(groupImportWithItem);
+        }
+
+        com.example.heroku.model.Buyer buyerInfo = com.example.heroku.model.Buyer.builder()
+                .group_id(groupImportWithItem.getGroup_id())
+                .device_id(groupImportWithItem.getSupplier_id())
+                .phone_number(groupImportWithItem.getSupplier_phone())
+                .reciver_fullname(groupImportWithItem.getSupplier_name())
+                .build();
+        buyerInfo.AutoFill(groupImportWithItem.getGroup_id());
+        return buyer.insertOrUpdate(buyerInfo, 0, 0, 0, 0, 0).then(Mono.just(groupImportWithItem));
+    }
+
     private Mono<com.example.heroku.model.GroupImport> saveGroup(com.example.heroku.model.GroupImport groupImport) {
-        return groupImportRepository.inertOrUpdate(groupImport.getGroup_id(), groupImport.getGroup_import_second_id(), groupImport.getSupplier_id(),
+        return groupImportRepository.inertOrUpdate(groupImport.getGroup_id(), groupImport.getGroup_import_second_id(), groupImport.getSupplier_id(), groupImport.getSupplier_name(), groupImport.getSupplier_phone(),
                 groupImport.getTotal_price(), groupImport.getTotal_amount(), groupImport.getPayment(), groupImport.getDiscount_amount(), groupImport.getAdditional_fee(),
                 groupImport.getNote(), groupImport.getImages(), groupImport.getType(), groupImport.getStatus(), groupImport.getCreateat());
     }

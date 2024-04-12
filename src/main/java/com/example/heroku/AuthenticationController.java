@@ -78,7 +78,7 @@ public class AuthenticationController {
     @PostMapping("/signin")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity> signin(@Valid @RequestBody Mono<AuthenticationRequest> authRequest) {
-
+        System.out.println("request signin!!");
         try {
             return authRequest
                     .flatMap(login -> this.authenticationManager

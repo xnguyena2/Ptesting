@@ -24,6 +24,10 @@ public class GroupImport extends BaseEntity {
 
     private String supplier_id;
 
+    private String supplier_name;
+
+    private String supplier_phone;
+
     private float total_price;
 
     private int total_amount;
@@ -48,6 +52,8 @@ public class GroupImport extends BaseEntity {
         super.copy(g);
         group_import_second_id = g.group_import_second_id;
         supplier_id = g.supplier_id;
+        supplier_phone = g.supplier_phone;
+        supplier_name = g.supplier_name;
         total_price = g.total_price;
         total_amount = g.total_amount;
         payment = g.payment;
