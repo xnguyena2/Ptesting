@@ -3,6 +3,8 @@ package com.example.heroku.services;
 import com.example.heroku.model.ProductImport;
 import com.example.heroku.model.repository.GroupImportRepository;
 import com.example.heroku.model.repository.ProductImportRepository;
+import com.example.heroku.model.repository.StatisticWareHouseIncomeOutcomeRepository;
+import com.example.heroku.model.statistics.WareHouseIncomeOutCome;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.warehouse.GroupImportWithItem;
@@ -31,6 +33,9 @@ public class GroupImport {
 
     @Autowired
     com.example.heroku.services.Buyer buyer;
+
+    @Autowired
+    StatisticWareHouseIncomeOutcomeRepository statisticWareHouseIncomeOutcomeRepository;
 
 
     public Mono<ResponseEntity<Format>> SaveGroupImport(GroupImportWithItem groupImportWithItem) {
@@ -98,6 +103,10 @@ public class GroupImport {
 
     public Flux<GroupImportWithItem> GetByGroupImportID(SearchImportQuery query) {
         return joinGroupImportWithProductImport.GetByGroupImportID(query);
+    }
+
+    public Mono<WareHouseIncomeOutCome> GetWareHouseStatictisBetween(SearchImportQuery query){
+        return statisticWareHouseIncomeOutcomeRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), ProductImport.Status.RETURN);
     }
 
     private Mono<GroupImportWithItem> saveGroupDetail(GroupImportWithItem productPackage) {

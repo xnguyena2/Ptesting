@@ -1,6 +1,7 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.Users;
+import com.example.heroku.model.statistics.WareHouseIncomeOutCome;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.permission.WrapPermissionAction;
@@ -144,6 +145,18 @@ public class ProductImportController {
                 .fluxAction(q -> groupImport.GetByGroupImportID(query))
                 .build()
                 .toFlux();
+    }
+
+    @PostMapping("/admin/getstatisticwarehouse")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<WareHouseIncomeOutCome> GetStaticsicWarehouse(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchImportQuery query) {
+        System.out.println("get statictis by group import ID: " + query.getGroup_id() + ", from: " + query.getFrom());
+        return WrapPermissionAction.<WareHouseIncomeOutCome>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .monoAction(q -> groupImport.GetWareHouseStatictisBetween(query))
+                .build()
+                .toMono();
     }
 
 

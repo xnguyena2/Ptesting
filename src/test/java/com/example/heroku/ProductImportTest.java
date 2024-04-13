@@ -481,6 +481,26 @@ public class ProductImportTest {
 
 
 
+        groupImport.GetWareHouseStatictisBetween(SearchImportQuery.builder()
+                        .group_import_second_id("1")
+                        .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00"))
+                        .page(0).size(100).group_id(group).build())
+                .as(StepVerifier::create)
+                .consumeNextWith(wareHouseIncomeOutCome -> {
+                    assertThat(wareHouseIncomeOutCome.getExport_price_inside()).isEqualTo(0);
+                    assertThat(wareHouseIncomeOutCome.getExport_price_outside()).isEqualTo(0);
+                    assertThat(wareHouseIncomeOutCome.getImport_price_inside()).isEqualTo(23.0f);
+                    assertThat(wareHouseIncomeOutCome.getImport_price_outside()).isEqualTo(0);
+                    assertThat(wareHouseIncomeOutCome.getExport_amount_inside()).isEqualTo(0);
+                    assertThat(wareHouseIncomeOutCome.getExport_amount_outside()).isEqualTo(0);
+                    assertThat(wareHouseIncomeOutCome.getImport_amount_inside()).isEqualTo(32);
+                    assertThat(wareHouseIncomeOutCome.getImport_amount_outside()).isEqualTo(0);
+
+                })
+                .verifyComplete();
+
+
+
         groupImport.GetAllWorkingOfProductBetweenAndType(SearchImportQuery.builder()
                         .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00"))
                         .type(ProductImport.ImportType.IMPORT)
