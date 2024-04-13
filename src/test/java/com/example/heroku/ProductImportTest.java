@@ -71,6 +71,7 @@ public class ProductImportTest {
                         .total_amount(32)
                         .payment(666)
                         .discount_amount(12)
+                        .discount_percent(10)
                         .additional_fee(10)
                         .note("note")
                         .images("images")
@@ -110,6 +111,7 @@ public class ProductImportTest {
                                 .total_amount(32)
                                 .payment(665)
                                 .discount_amount(12)
+                                .discount_percent(10)
                                 .additional_fee(10)
                                 .note("note")
                                 .images("images")
@@ -149,6 +151,7 @@ public class ProductImportTest {
                                 .total_amount(32)
                                 .payment(654)
                                 .discount_amount(12)
+                                .discount_percent(10)
                                 .additional_fee(10)
                                 .note("note")
                                 .images("images")
@@ -196,6 +199,7 @@ public class ProductImportTest {
                     assertThat(productImport.getPayment()).isEqualTo(654);
                     assertThat(productImport.getTotal_amount()).isEqualTo(32);
                     assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getDiscount_percent()).isEqualTo(10);
                     assertThat(productImport.getAdditional_fee()).isEqualTo(10);
                     assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
@@ -248,6 +252,7 @@ public class ProductImportTest {
                     assertThat(productImport.getPayment()).isEqualTo(654);
                     assertThat(productImport.getTotal_amount()).isEqualTo(32);
                     assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getDiscount_percent()).isEqualTo(10);
                     assertThat(productImport.getAdditional_fee()).isEqualTo(10);
                     assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
@@ -300,6 +305,7 @@ public class ProductImportTest {
                     assertThat(productImport.getPayment()).isEqualTo(654);
                     assertThat(productImport.getTotal_amount()).isEqualTo(32);
                     assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getDiscount_percent()).isEqualTo(10);
                     assertThat(productImport.getAdditional_fee()).isEqualTo(10);
                     assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
@@ -347,6 +353,7 @@ public class ProductImportTest {
                     assertThat(productImport.getPayment()).isEqualTo(654);
                     assertThat(productImport.getTotal_amount()).isEqualTo(32);
                     assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getDiscount_percent()).isEqualTo(10);
                     assertThat(productImport.getAdditional_fee()).isEqualTo(10);
                     assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
@@ -405,6 +412,7 @@ public class ProductImportTest {
                     assertThat(productImport.getPayment()).isEqualTo(654);
                     assertThat(productImport.getTotal_amount()).isEqualTo(32);
                     assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getDiscount_percent()).isEqualTo(10);
                     assertThat(productImport.getAdditional_fee()).isEqualTo(10);
                     assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
@@ -442,6 +450,7 @@ public class ProductImportTest {
                     assertThat(productImport.getPayment()).isEqualTo(654);
                     assertThat(productImport.getTotal_amount()).isEqualTo(32);
                     assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getDiscount_percent()).isEqualTo(10);
                     assertThat(productImport.getAdditional_fee()).isEqualTo(10);
                     assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
@@ -516,6 +525,7 @@ public class ProductImportTest {
                     assertThat(productImport.getPayment()).isEqualTo(654);
                     assertThat(productImport.getTotal_amount()).isEqualTo(32);
                     assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getDiscount_percent()).isEqualTo(10);
                     assertThat(productImport.getAdditional_fee()).isEqualTo(10);
                     assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
@@ -560,6 +570,7 @@ public class ProductImportTest {
                     assertThat(productImport.getPayment()).isEqualTo(654);
                     assertThat(productImport.getTotal_amount()).isEqualTo(32);
                     assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getDiscount_percent()).isEqualTo(10);
                     assertThat(productImport.getAdditional_fee()).isEqualTo(10);
                     assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
@@ -597,6 +608,7 @@ public class ProductImportTest {
                     assertThat(productImport.getPayment()).isEqualTo(654);
                     assertThat(productImport.getTotal_amount()).isEqualTo(32);
                     assertThat(productImport.getDiscount_amount()).isEqualTo(12);
+                    assertThat(productImport.getDiscount_percent()).isEqualTo(10);
                     assertThat(productImport.getAdditional_fee()).isEqualTo(10);
                     assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");

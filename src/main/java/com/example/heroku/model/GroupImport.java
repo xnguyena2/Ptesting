@@ -36,6 +36,8 @@ public class GroupImport extends BaseEntity {
 
     private float discount_amount;
 
+    private float discount_percent;
+
     private float additional_fee;
 
     private String note;
@@ -58,6 +60,7 @@ public class GroupImport extends BaseEntity {
         total_amount = g.total_amount;
         payment = g.payment;
         discount_amount = g.discount_amount;
+        discount_percent = g.discount_percent;
         additional_fee = g.additional_fee;
         note = g.note;
         images = g.images;

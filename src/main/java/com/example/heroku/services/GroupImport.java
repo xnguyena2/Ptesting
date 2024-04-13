@@ -131,7 +131,8 @@ public class GroupImport {
 
     private Mono<com.example.heroku.model.GroupImport> saveGroup(com.example.heroku.model.GroupImport groupImport) {
         return groupImportRepository.inertOrUpdate(groupImport.getGroup_id(), groupImport.getGroup_import_second_id(), groupImport.getSupplier_id(), groupImport.getSupplier_name(), groupImport.getSupplier_phone(),
-                groupImport.getTotal_price(), groupImport.getTotal_amount(), groupImport.getPayment(), groupImport.getDiscount_amount(), groupImport.getAdditional_fee(),
+                groupImport.getTotal_price(), groupImport.getTotal_amount(), groupImport.getPayment(),
+                groupImport.getDiscount_amount(), groupImport.getDiscount_percent(), groupImport.getAdditional_fee(),
                 groupImport.getNote(), groupImport.getImages(), groupImport.getType(), groupImport.getStatus(), groupImport.getCreateat());
     }
 

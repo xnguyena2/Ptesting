@@ -13,12 +13,12 @@ import java.sql.Timestamp;
 public interface GroupImportRepository extends ReactiveCrudRepository<GroupImport, Long> {
 
 
-    @Query(value = "INSERT INTO group_import( group_id, group_import_second_id, supplier_id, supplier_name, supplier_phone, total_price, total_amount, payment, discount_amount, additional_fee, note, images, type, status, createat ) VALUES ( :group_id, :group_import_second_id, :supplier_id, :supplier_name, :supplier_phone, :total_price, :total_amount, :payment, :discount_amount, :additional_fee, :note, :images, :type, :status, :createat ) ON CONFLICT (group_id, group_import_second_id) DO UPDATE SET supplier_id = :supplier_id, supplier_name = :supplier_name, supplier_phone = :supplier_phone, total_price = :total_price, total_amount = :total_amount, payment = :payment, discount_amount = :discount_amount, additional_fee = :additional_fee, note = :note, images = :images, type = :type, status = :status, createat = :createat ")
+    @Query(value = "INSERT INTO group_import( group_id, group_import_second_id, supplier_id, supplier_name, supplier_phone, total_price, total_amount, payment, discount_amount, discount_percent, additional_fee, note, images, type, status, createat ) VALUES ( :group_id, :group_import_second_id, :supplier_id, :supplier_name, :supplier_phone, :total_price, :total_amount, :payment, :discount_amount, :discount_percent, :additional_fee, :note, :images, :type, :status, :createat ) ON CONFLICT (group_id, group_import_second_id) DO UPDATE SET supplier_id = :supplier_id, supplier_name = :supplier_name, supplier_phone = :supplier_phone, total_price = :total_price, total_amount = :total_amount, payment = :payment, discount_amount = :discount_amount, discount_percent = :discount_percent, additional_fee = :additional_fee, note = :note, images = :images, type = :type, status = :status, createat = :createat ")
     Mono<GroupImport> inertOrUpdate(@Param("group_id") String group_id, @Param("group_import_second_id") String group_import_second_id,
                                     @Param("supplier_id") String supplier_id, @Param("supplier_name") String supplier_name, @Param("supplier_phone") String supplier_phone,
                                     @Param("total_price") float total_price,
                                     @Param("total_amount") int total_amount, @Param("payment") float payment,
-                                    @Param("discount_amount") float discount_amount,
+                                    @Param("discount_amount") float discount_amount, @Param("discount_percent") float discount_percent,
                                     @Param("additional_fee") float additional_fee, @Param("note") String note,
                                     @Param("images") String images, @Param("type") ProductImport.ImportType type,
                                     @Param("status") ProductImport.Status status, @Param("createat") Timestamp createat);
