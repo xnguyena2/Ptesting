@@ -43,6 +43,7 @@ DROP TABLE IF EXISTS shipping_provider;
 DROP TABLE IF EXISTS product_unit;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS product_import;
+DROP TABLE IF EXISTS group_import;
 
 DROP TABLE IF EXISTS store;
 

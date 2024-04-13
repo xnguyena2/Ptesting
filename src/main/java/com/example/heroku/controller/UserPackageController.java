@@ -50,7 +50,7 @@ public class UserPackageController {
     @PostMapping("/updatenotcheck")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> addOrUpdatePackageWithoutCheck(@RequestBody @Valid ProductPackage productPackage) {
-        System.out.println("save package without check: " + productPackage.getPackage_second_id());
+        System.out.println("++ save package without check: " + productPackage.getPackage_second_id() + ", group: " + productPackage.getGroup_id());
         return userPackageAPI.SavePackageWithoutCheck(productPackage);
     }
 
@@ -136,7 +136,7 @@ public class UserPackageController {
     @PostMapping("/return")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> returnPackage(@RequestBody @Valid PackageID packageID) {
-        System.out.println("return package: " + packageID.getPackage_id());
+        System.out.println("-- return package: " + packageID.getPackage_id() + ", group: " + packageID.getGroup_id());
         return userPackageAPI.ReturnPackage(packageID);
     }
 

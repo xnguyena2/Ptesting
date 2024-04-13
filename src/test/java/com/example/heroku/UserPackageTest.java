@@ -2125,6 +2125,32 @@ public class UserPackageTest {
                 .group_id(group)
                 .package_second_id("save_pack").build()).block();
 
+        // check product inventory
+        this.beerAPI.GetBeerByID(group, "123")
+                .map(BeerSubmitData::GetBeerInfo)
+                .as(StepVerifier::create)
+                .consumeNextWith(beerInfo -> {
+                    Flux.just(beerInfo.getProductUnit())
+                            .sort(Comparator.comparing(com.example.heroku.model.ProductUnit::getName))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerUnit -> {
+                                if (beerUnit.getName().equals("lon")) {
+                                    assertThat(beerUnit.getInventory_number()).isEqualTo(543 - 106 - 3);
+                                } else {
+                                    assertThat(beerUnit.getInventory_number()).isEqualTo(345 - 12 - 4);
+                                }
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                if (beerUnit.getName().equals("lon")) {
+                                    assertThat(beerUnit.getInventory_number()).isEqualTo(543 - 106 - 3);
+                                } else {
+                                    assertThat(beerUnit.getInventory_number()).isEqualTo(345 - 12 - 4);
+                                }
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+
         userPackageAPI.ReturnPackage(PackageID.builder().group_id(group).package_id("save_pack").build()).block();
 
 

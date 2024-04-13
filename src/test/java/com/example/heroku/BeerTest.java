@@ -65,6 +65,7 @@ public class BeerTest {
                         .builder()
                         .productUnit(new ProductUnit[]{
                                 ProductUnit.builder().product_second_id("123").name("thung").group_id(group)
+                                        .product_unit_second_id("adsfasdfasdfasdf")
                                         .upc("343434")
                                         .sku("76767676")
                                         .wholesale_number(34)
@@ -72,9 +73,11 @@ public class BeerTest {
                                         .promotional_price(234)
                                         .inventory_number(345)
                                         .visible(true)
-                                        .enable_warehouse(false)
+                                        .buy_price(20)
+                                        .enable_warehouse(true)
                                         .build(),
                                 ProductUnit.builder().product_second_id("123").name("lon").group_id(group)
+                                        .product_unit_second_id("retertghdfghsdgdfgasf")
                                         .upc("3434345")
                                         .sku("767676767")
                                         .wholesale_number(43)
@@ -82,6 +85,7 @@ public class BeerTest {
                                         .promotional_price(432)
                                         .inventory_number(543)
                                         .visible(false)
+                                        .buy_price(40)
                                         .enable_warehouse(true)
                                         .build()
                         })
@@ -309,7 +313,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(345);
                                 assertThat(beerUnit.isVisible()).isEqualTo(true);
-                                assertThat(beerUnit.isEnable_warehouse()).isEqualTo(false);
+                                assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .verifyComplete();

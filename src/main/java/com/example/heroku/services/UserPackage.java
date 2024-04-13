@@ -1,12 +1,13 @@
 package com.example.heroku.services;
 
+import com.example.heroku.model.ProductImport;
 import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.joinwith.UserPackageDetailJoinWithUserPackage;
+import com.example.heroku.model.repository.GroupImportRepository;
 import com.example.heroku.model.repository.JoinUserPackageDetailWithUserPackgeRepository;
 import com.example.heroku.model.repository.UserPackageDetailRepository;
 import com.example.heroku.model.repository.UserPackageRepository;
 import com.example.heroku.request.beer.*;
-import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.Format;
@@ -39,6 +40,9 @@ public class UserPackage {
     @Autowired
     JoinUserPackageDetailWithUserPackgeRepository joinUserPackageDetailWithUserPackgeRepository;
 
+    @Autowired
+    GroupImportRepository groupImportRepository;
+
     public Mono<ResponseEntity<Format>> AddProductToPackage(ProductPackage productPackage) {
 
         if (productPackage.isEmpty())
@@ -53,6 +57,7 @@ public class UserPackage {
                                                 userPackage.getNumber_unit(), userPackage.getStatus())
 
                                 )
+                                .then(groupImportRepository.createGroupImportForEmpty(productPackage.getGroup_id(), productPackage.getPackage_second_id(), ProductImport.ImportType.SELLING.getName(), ProductImport.Status.DONE.getName()))
                                 .then(Mono.just(ok(Format.builder().response("done").build())))
                         );
     }
@@ -71,9 +76,13 @@ public class UserPackage {
                         .flatMap(productPackage1 -> userPackageRepository.DeleteProductByPackageID(productPackage1.getGroup_id(), productPackage1.getPackage_second_id())
                                 .then(Mono.just(productPackage1))
                         )
-                        .filter(productPackage1 -> productPackage1.getUserPackage() != null)
+                        .filter(productPackage1 -> !productPackage1.isEmpty())
                         .flatMapMany(productPackage1 -> Flux.just(productPackage1.getUserPackage()))
                         .flatMap(this::savePackageItem)
+                        .then(groupImportRepository.createGroupImportForEmpty(productPackage.getGroup_id(), productPackage.getPackage_second_id(),
+                                productPackage.getStatus() == UserPackageDetail.Status.CANCEL ? ProductImport.ImportType.SELLING_RETURN.getName() : ProductImport.ImportType.SELLING.getName(),
+                                productPackage.getStatus() == UserPackageDetail.Status.CANCEL ? ProductImport.Status.RETURN.getName() : ProductImport.Status.DONE.getName()
+                        ))
                         .then(Mono.just(ok(Format.builder().response("done").build())));
     }
 
@@ -92,22 +101,18 @@ public class UserPackage {
                         .flatMap(productPackage1 -> userPackageRepository.DeleteProductByPackageID(productPackage1.getGroup_id(), productPackage1.getPackage_second_id())
                                 .then(Mono.just(productPackage1))
                         )
-                        .filter(productPackage1 -> productPackage1.getUserPackage() != null)
+                        .filter(productPackage1 -> !productPackage1.isEmpty())
                         .flatMapMany(productPackage1 -> Flux.just(productPackage1.getUserPackage()))
                         .flatMap(this::savePackageItemWithoutCheck)
+                        .then(groupImportRepository.createGroupImportForEmpty(productPackage.getGroup_id(), productPackage.getPackage_second_id(),
+                                productPackage.getStatus() == UserPackageDetail.Status.CANCEL || productPackage.getStatus() == UserPackageDetail.Status.RETURN ? ProductImport.ImportType.SELLING_RETURN.getName() : ProductImport.ImportType.SELLING.getName(),
+                                productPackage.getStatus() == UserPackageDetail.Status.CANCEL || productPackage.getStatus() == UserPackageDetail.Status.RETURN ? ProductImport.Status.RETURN.getName() : ProductImport.Status.DONE.getName()
+                        ))
                         .then(Mono.just(ok(Format.builder().response("done").build())));
     }
 
     Mono<ProductPackage> savePackageDetail(ProductPackage productPackage) {
-        UserPackageDetail detail = productPackage;
-        if (productPackage.getPackage_second_id() == null) {
-            detail = null;
-        }
-        productPackage.AutoFill();
-        if (detail == null) {
-            detail = productPackage.getUserPackageDetail();
-        }
-        return savePackageDetail(detail)
+        return savePackageDetailToRepo(productPackage.AutoFill())
                 .then(Mono.just(productPackage));
     }
 
@@ -144,14 +149,15 @@ public class UserPackage {
         return Mono.just(productPackage);
     }
 
-    Mono<UserPackageDetail> savePackageDetail(UserPackageDetail detail) {
+    Mono<UserPackageDetail> savePackageDetailToRepo(UserPackageDetail detail) {
         return userPackageDetailRepository.InsertOrUpdate(detail.getGroup_id(), detail.getDevice_id(), detail.getStaff_id(), detail.getPackage_second_id(),
-                detail.getPackage_type(), detail.getVoucher(),
-                detail.getArea_id(), detail.getArea_name(), detail.getTable_id(), detail.getTable_name(),
-                detail.getPrice(), detail.getPayment(), detail.getDiscount_amount(), detail.getDiscount_percent(),
-                detail.getDiscount_promotional(), detail.getDiscount_by_point(), detail.getAdditional_fee(), detail.getAdditional_config(),
-                detail.getShip_price(), detail.getCost(), detail.getProfit(),
-                detail.getPoint(), detail.getNote(), detail.getImage(), detail.getProgress(), detail.getStatus(), detail.getCreateat());
+                        detail.getPackage_type(), detail.getVoucher(),
+                        detail.getArea_id(), detail.getArea_name(), detail.getTable_id(), detail.getTable_name(),
+                        detail.getPrice(), detail.getPayment(), detail.getDiscount_amount(), detail.getDiscount_percent(),
+                        detail.getDiscount_promotional(), detail.getDiscount_by_point(), detail.getAdditional_fee(), detail.getAdditional_config(),
+                        detail.getShip_price(), detail.getCost(), detail.getProfit(),
+                        detail.getPoint(), detail.getNote(), detail.getImage(), detail.getProgress(), detail.getStatus(), detail.getCreateat())
+                .then(Mono.just(detail));
     }
 
     Mono<com.example.heroku.model.UserPackage> savePackageItem(com.example.heroku.model.UserPackage userPackage) {

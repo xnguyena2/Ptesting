@@ -58,6 +58,8 @@ public class ProductJoinWithProductUnit {
     private float child_weight;
     private boolean child_visible;
     private boolean child_enable_warehouse;
+    private String child_arg_action_id;
+    private String child_arg_action_type;
     private ProductUnit.Status child_status;
 
 
@@ -103,6 +105,8 @@ public class ProductJoinWithProductUnit {
                 .weight(child_weight)
                 .visible(child_visible)
                 .enable_warehouse(child_enable_warehouse)
+                .arg_action_id(child_arg_action_id)
+                .arg_action_type(child_arg_action_type)
                 .status(child_status)
                 .build();
     }

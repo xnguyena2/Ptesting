@@ -72,7 +72,7 @@ public class ApplicationTest extends TestConfig {
     UsersInfo usersInfo;
 
     @Autowired
-    ProductImport productImport;
+    GroupImport groupImport;
 
     @Autowired
     UserFCMS fcmServices;
@@ -150,7 +150,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void ProductImport(){
-        ProductImportTest.builder().productImport(productImport).group(mainGroup).build().Test();
+//        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).group(mainGroup).build().Test();
     }
 
     @Test
@@ -173,6 +173,7 @@ public class ApplicationTest extends TestConfig {
     public void testUserAddBeerToPackage() {
         BeerTest.builder().beerAPI(beerAPI).group(mainGroup).build().saveBeerTest();
         UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(mainGroup).buyer(buyer).statisticServices(statisticServices).build().TestUserPackage();
+        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).group(mainGroup).build().Test();
     }
 
     @Test
@@ -283,7 +284,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void ProductImport2(){
-        ProductImportTest.builder().productImport(productImport).group(anotherGroup).build().Test();
+        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).group(anotherGroup).build().Test();
     }
 
     @Test

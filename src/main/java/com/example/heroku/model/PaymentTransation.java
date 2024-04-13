@@ -61,6 +61,7 @@ public class PaymentTransation extends BaseEntity {
 
     public enum ActionType {
         PAYMENT_ORDER("PAYMENT_ORDER"),
+        PAYMENT_WAREHOUSE("PAYMENT_WAREHOUSE"),
         USER_PROPOSE("USER_PROPOSE");
 
 

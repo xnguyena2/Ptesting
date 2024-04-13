@@ -1,5 +1,5 @@
 
-CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, username VARCHAR, password VARCHAR, active BOOL, roles VARCHAR, createby VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, username VARCHAR, password VARCHAR, active BOOL, roles VARCHAR, createby VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, register_code VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS users_info (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, username VARCHAR, user_fullname VARCHAR, phone VARCHAR, title VARCHAR, roles VARCHAR, createat TIMESTAMP);
 
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users_info (id SERIAL PRIMARY KEY, group_id VARCHAR N
 CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, tokens TSVECTOR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, visible_web BOOL, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number INTEGER, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number INTEGER, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, imgid VARCHAR, tag VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, categorys VARCHAR, config TEXT, createat TIMESTAMP);
@@ -33,7 +33,8 @@ CREATE TABLE IF NOT EXISTS notification (id SERIAL PRIMARY KEY, group_id VARCHAR
 CREATE TABLE IF NOT EXISTS notification_relate_user_device (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, notification_second_id VARCHAR, user_device_id VARCHAR, createat TIMESTAMP, status VARCHAR);
 CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, provider_id VARCHAR, name VARCHAR, config TEXT, createat TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_import_second_id VARCHAR, product_id VARCHAR, product_name VARCHAR, price float8, amount float8, detail TEXT, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS group_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, supplier_id VARCHAR, supplier_name VARCHAR, supplier_phone VARCHAR, total_price float8, total_amount INTEGER, payment float8, discount_amount float8, additional_fee float8, note TEXT, images VARCHAR, type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_unit_name_category VARCHAR, price float8, amount INTEGER, note TEXT, type VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, domain_url VARCHAR, status VARCHAR, store_type VARCHAR, createat TIMESTAMP);
 
@@ -57,7 +58,10 @@ CREATE INDEX product_detail_index ON product(detail);
 CREATE INDEX product_unit_index ON product_unit(product_unit_second_id);
 CREATE INDEX product_unit_sku_index ON product_unit(sku);
 CREATE INDEX product_unit_upc_index ON product_unit(upc);
-CREATE INDEX product_import_index ON product_import(product_import_second_id);
+CREATE INDEX group_import_index ON group_import(group_import_second_id);
+CREATE INDEX product_import_index ON product_import(group_import_second_id);
+CREATE INDEX product_import_product_second_id_index ON product_import(product_second_id);
+CREATE INDEX product_import_product_unit_second_id_index ON product_import(product_unit_second_id);
 CREATE INDEX user_device_index ON user_device(device_id);
 CREATE INDEX user_package_detail_index ON user_package_detail(package_second_id);
 CREATE INDEX user_package_index ON user_package(package_second_id);
@@ -94,7 +98,8 @@ ALTER TABLE search_token ADD CONSTRAINT UQ_search_token_product_second_id UNIQUE
 ALTER TABLE user_fcm ADD CONSTRAINT UQ_user_fcm_device_id UNIQUE(group_id, device_id);
 ALTER TABLE voucher ADD CONSTRAINT UQ_voucher UNIQUE(group_id, voucher_second_id);
 ALTER TABLE voucher_relate_user_device ADD CONSTRAINT UQ_voucher_relate_user_device UNIQUE(group_id, voucher_second_id, device_id);
-ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(group_id, product_import_second_id);
+ALTER TABLE group_import ADD CONSTRAINT UQ_group_import_second_id UNIQUE(group_id, group_import_second_id);
+ALTER TABLE product_import ADD CONSTRAINT UQ_product_import_second_id UNIQUE(group_id, group_import_second_id, product_second_id, product_unit_second_id);
 ALTER TABLE user_device ADD CONSTRAINT UQ_user_device UNIQUE(group_id, device_id);
 ALTER TABLE store ADD CONSTRAINT UQ_store UNIQUE(group_id);
 ALTER TABLE store ADD CONSTRAINT UQ_domain_url UNIQUE(domain_url);
@@ -232,6 +237,7 @@ begin
     DELETE FROM product_unit WHERE group_id = by_group_id;
     DELETE FROM product WHERE group_id = by_group_id;
     DELETE FROM product_import WHERE group_id = by_group_id;
+    DELETE FROM group_import WHERE group_id = by_group_id;
 
     DELETE FROM store WHERE group_id = by_group_id;
 
@@ -323,7 +329,9 @@ BEGIN
 
 	UPDATE product_unit
     SET
-    	inventory_number = product_unit.inventory_number - NEW.number_unit
+    	inventory_number = product_unit.inventory_number - NEW.number_unit,
+    	arg_action_id = NEW.package_second_id,
+    	arg_action_type = 'SELLING'
     WHERE NEW.status <> 'RETURN' AND NEW.status <> 'CANCEL' AND NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
 
 	RETURN NEW;
@@ -338,14 +346,16 @@ CREATE OR REPLACE FUNCTION increase_product_unit_inventory()
 $$
 BEGIN
 
-    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    IF OLD.status = 'WEB_TEMP' OR OLD.status = 'WEB_SUBMIT'
     THEN
 	    RETURN OLD;
     END IF;
 
 	UPDATE product_unit
     SET
-    	inventory_number = product_unit.inventory_number + OLD.number_unit
+    	inventory_number = product_unit.inventory_number + OLD.number_unit,
+    	arg_action_id = OLD.package_second_id,
+    	arg_action_type = 'SELLING_RETURN'
     WHERE OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
 
 	RETURN OLD;
@@ -396,7 +406,9 @@ BEGIN
 
 	UPDATE product_unit
     SET
-    	inventory_number = _inventory_number_new
+    	inventory_number = _inventory_number_new,
+        arg_action_id = NEW.package_second_id,
+        arg_action_type = CASE WHEN (NEW.status = 'RETURN' OR NEW.status = 'CANCEL') THEN 'SELLING_RETURN' ELSE 'SELLING' END
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
 
 	RETURN NEW;
@@ -417,6 +429,11 @@ CREATE OR REPLACE FUNCTION delete_user_package_detail_decrese_buyer()
 $$
 BEGIN
 
+    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    THEN
+	    RETURN OLD;
+    END IF;
+
 
 --  reset table
     UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = OLD.group_id AND package_second_id = OLD.package_second_id;
@@ -424,6 +441,10 @@ BEGIN
 
 --  delete all payment_transaction belong to user_package_detail
     DELETE FROM payment_transaction WHERE group_id = OLD.group_id AND (package_second_id = OLD.package_second_id OR action_id = OLD.package_second_id) AND package_second_id IS NOT NULL;
+
+    UPDATE group_import
+    SET status = 'RETURN'
+    WHERE group_id = OLD.group_id AND group_import_second_id = OLD.package_second_id;
 
     IF OLD.status <> 'DONE'
     THEN
@@ -451,6 +472,11 @@ CREATE OR REPLACE FUNCTION trigger_on_update_user_package_detail()
 $$
 BEGIN
 
+    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    THEN
+	    RETURN NEW;
+    END IF;
+
 --  set table for user_packge_detail
     IF OLD.table_id <> NEW.table_id
     THEN
@@ -460,11 +486,6 @@ BEGIN
 
     END IF;
 
-    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
-    THEN
-	    RETURN NEW;
-    END IF;
-
 --  update payment transaction
     IF (OLD.status = 'CANCEL' OR OLD.status = 'RETURN') AND (NEW.status <> 'CANCEL' AND NEW.status <> 'RETURN')
     THEN
@@ -472,6 +493,11 @@ BEGIN
     ELSEIF (OLD.status <> 'CANCEL' AND OLD.status <> 'RETURN') AND (NEW.status = 'CANCEL' OR NEW.status = 'RETURN')
     THEN
         DELETE FROM payment_transaction WHERE group_id = NEW.group_id AND (package_second_id = NEW.package_second_id OR action_id = NEW.package_second_id) AND package_second_id IS NOT NULL AND action_id IS NOT NULL;
+
+        UPDATE group_import
+        SET status = 'RETURN'
+        WHERE group_id = NEW.group_id AND group_import_second_id = NEW.package_second_id;
+
     ELSEIF NEW.payment - OLD.payment > 0 AND (NEW.status <> 'CANCEL' OR NEW.status <> 'RETURN')
     THEN
 
@@ -492,6 +518,11 @@ CREATE OR REPLACE FUNCTION trigger_on_insert_user_package_detail()
 $$
 BEGIN
 
+    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
+    THEN
+	    RETURN NEW;
+    END IF;
+
 --  set table for user_packge_detail
     IF NEW.table_id IS NOT NULL
     THEN
@@ -499,11 +530,6 @@ BEGIN
         UPDATE table_detail SET package_second_id = NULL WHERE table_detail.group_id = NEW.group_id AND package_second_id = NEW.package_second_id;
         UPDATE table_detail SET package_second_id = NEW.package_second_id, createat = NOW() WHERE table_detail.group_id = NEW.group_id AND table_detail.table_id = NEW.table_id;
 
-    END IF;
-
-    IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
-    THEN
-	    RETURN NEW;
     END IF;
 
 --  add to payment transaction
@@ -523,4 +549,458 @@ $$;
 CREATE OR REPLACE TRIGGER delete_user_package_detail_decrese_buyer AFTER DELETE ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE delete_user_package_detail_decrese_buyer();
 CREATE OR REPLACE TRIGGER trigger_on_update_user_package_detail AFTER UPDATE ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE trigger_on_update_user_package_detail();
 CREATE OR REPLACE TRIGGER trigger_on_insert_user_package_detail AFTER INSERT ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE trigger_on_insert_user_package_detail();
+
+
+
+
+CREATE OR REPLACE FUNCTION trigger_on_insert_product_import()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+DECLARE
+   _inventory_number INTEGER;
+   _inventory_number_new INTEGER;
+   _buy_price float8;
+   _buy_price_new float8;
+   _enable_warehouse BOOL;
+BEGIN
+
+--  return should update status not insert
+    IF NEW.status = 'RETURN' OR NEW.type = 'UPDATE_NUMBER' OR NEW.type = 'DELETE_PRODUCT' OR NEW.type = 'SELLING' OR NEW.type = 'SELLING_RETURN'
+    THEN
+	    RETURN NEW;
+    END IF;
+
+    SELECT enable_warehouse, inventory_number, buy_price
+    INTO _enable_warehouse, _inventory_number, _buy_price
+    FROM product_unit
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
+
+
+    IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
+    THEN
+	    RAISE EXCEPTION 'product not enable warehouse';
+    END IF;
+
+
+    IF NEW.type = 'UN_KNOW' OR NEW.type IS NULL
+    THEN
+	    RAISE EXCEPTION 'unknow import type';
+    END IF;
+
+
+    _inventory_number_new = CASE
+                        WHEN NEW.type = 'IMPORT' THEN _inventory_number + NEW.amount
+                        WHEN NEW.type = 'EXPORT' THEN _inventory_number - NEW.amount
+                        WHEN NEW.type = 'CHECK_WAREHOUSE' THEN NEW.amount
+                        ELSE -1
+                       END;
+
+    IF _inventory_number_new = -1
+    THEN
+	    RAISE EXCEPTION '_inventory_number_new = -1';
+    END IF;
+
+
+    IF _inventory_number_new < 0
+    THEN
+	    RAISE EXCEPTION 'inventory_number_new small than 0!';
+    END IF;
+
+    _buy_price_new = _buy_price;
+
+    IF _inventory_number_new > 0 AND NEW.type = 'IMPORT'
+    THEN
+        _buy_price_new = (_buy_price * _inventory_number + NEW.amount * NEW.price) / _inventory_number_new;
+    END IF;
+
+	UPDATE product_unit
+    SET
+    	inventory_number = _inventory_number_new,
+    	buy_price = _buy_price_new,
+        arg_action_id = NULL,
+        arg_action_type = NULL
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
+
+	RETURN NEW;
+END;
+$$;
+
+
+
+CREATE OR REPLACE FUNCTION trigger_on_delete_product_import()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+DECLARE
+   _inventory_number INTEGER;
+   _inventory_number_new INTEGER;
+   _buy_price float8;
+   _buy_price_new float8;
+   _enable_warehouse BOOL;
+BEGIN
+
+
+    IF OLD.type = 'UN_KNOW' OR OLD.type IS NULL OR OLD.status = 'RETURN' OR (OLD.amount = 0 AND OLD.type = 'UPDATE_NUMBER')
+    THEN
+	    RETURN OLD;
+    END IF;
+
+    SELECT enable_warehouse, inventory_number, buy_price
+    INTO _enable_warehouse, _inventory_number, _buy_price
+    FROM product_unit
+    WHERE OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id;
+
+
+    IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
+    THEN
+	    RETURN OLD;
+    END IF;
+
+
+    _inventory_number_new = CASE
+                        WHEN OLD.type = 'IMPORT' THEN _inventory_number - OLD.amount
+                        WHEN OLD.type = 'EXPORT' THEN _inventory_number + OLD.amount
+                        WHEN OLD.type = 'UPDATE_NUMBER' THEN 0
+                        WHEN OLD.type = 'CHECK_WAREHOUSE' THEN 0
+                        ELSE -1
+                       END;
+
+    IF _inventory_number_new = -1
+    THEN
+	    RAISE EXCEPTION '_inventory_number_new = -1';
+    END IF;
+
+
+    IF _inventory_number_new < 0
+    THEN
+	    RAISE EXCEPTION 'inventory_number_new small than 0!';
+    END IF;
+
+    _buy_price_new = _buy_price;
+
+    IF _inventory_number_new > 0 AND OLD.type = 'IMPORT'
+    THEN
+        _buy_price_new = (_buy_price * _inventory_number - OLD.amount * OLD.price) / _inventory_number_new;
+    END IF;
+
+	UPDATE product_unit
+    SET
+    	inventory_number = _inventory_number_new,
+        buy_price = _buy_price_new,
+        arg_action_id = NULL,
+        arg_action_type = NULL
+    WHERE OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
+
+	RETURN OLD;
+END;
+$$;
+
+
+
+CREATE OR REPLACE FUNCTION trigger_on_update_product_import()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+DECLARE
+   _inventory_number INTEGER;
+   _inventory_number_new INTEGER;
+   _buy_price float8;
+   _buy_price_new float8;
+   _enable_warehouse BOOL;
+BEGIN
+
+    IF OLD.status = 'RETURN'
+    THEN
+	    RETURN NEW;
+    END IF;
+
+
+    IF OLD.amount = NEW.amount AND NEW.status <> 'RETURN' OR NEW.type = 'UPDATE_NUMBER' OR NEW.type = 'DELETE_PRODUCT' OR NEW.type = 'SELLING' OR NEW.type = 'SELLING_RETURN'
+    THEN
+	    RETURN NEW;
+    END IF;
+
+    SELECT enable_warehouse, inventory_number, buy_price
+    INTO _enable_warehouse, _inventory_number, _buy_price
+    FROM product_unit
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
+
+
+    IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
+    THEN
+	    RAISE EXCEPTION 'product not enable warehouse';
+    END IF;
+
+
+    _inventory_number_new = CASE
+                        WHEN NEW.type = 'IMPORT' AND NEW.status <> 'RETURN' THEN _inventory_number + NEW.amount - OLD.amount
+                        WHEN NEW.type = 'IMPORT' AND NEW.status = 'RETURN' THEN _inventory_number - NEW.amount
+                        WHEN NEW.type = 'EXPORT' AND NEW.status <> 'RETURN' THEN _inventory_number - NEW.amount + OLD.amount
+                        WHEN NEW.type = 'EXPORT' AND NEW.status = 'RETURN' THEN _inventory_number + NEW.amount
+                        WHEN NEW.type = 'CHECK_WAREHOUSE' AND NEW.status <> 'RETURN' THEN NEW.amount
+                        WHEN NEW.type = 'CHECK_WAREHOUSE' AND NEW.status = 'RETURN' THEN 0
+                        ELSE -1
+                       END;
+
+    IF _inventory_number_new = -1
+    THEN
+	    RAISE EXCEPTION '_inventory_number_new = -1';
+    END IF;
+
+
+    IF _inventory_number_new < 0
+    THEN
+	    RAISE EXCEPTION 'inventory_number_new small than 0!';
+    END IF;
+
+    _buy_price_new = _buy_price;
+
+    IF _inventory_number_new > 0 AND NEW.type = 'IMPORT'
+    THEN
+        IF NEW.status <> 'RETURN'
+        THEN
+            _buy_price_new = (_buy_price * _inventory_number + (NEW.amount - OLD.amount) * NEW.price) / _inventory_number_new;
+        ELSE
+            _buy_price_new = (_buy_price * _inventory_number - NEW.amount * NEW.price) / _inventory_number_new;
+        END IF;
+    END IF;
+
+	UPDATE product_unit
+    SET
+    	inventory_number = _inventory_number_new,
+        buy_price = _buy_price_new,
+        arg_action_id = NULL,
+        arg_action_type = NULL
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
+
+
+	RETURN NEW;
+END;
+$$;
+
+
+CREATE OR REPLACE TRIGGER trigger_on_delete_product_import AFTER DELETE ON product_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_delete_product_import();
+CREATE OR REPLACE TRIGGER trigger_on_update_product_import AFTER UPDATE ON product_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_update_product_import();
+CREATE OR REPLACE TRIGGER trigger_on_insert_product_import AFTER INSERT ON product_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_insert_product_import();
+
+
+
+
+
+CREATE OR REPLACE FUNCTION trigger_on_delete_group_import()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+--  delete all payment_transaction belong to user_package_detail
+    DELETE FROM payment_transaction WHERE group_id = OLD.group_id AND action_id = OLD.group_import_second_id AND action_id IS NOT NULL;
+
+	RETURN OLD;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION trigger_on_update_group_import()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+    IF NEW.type <> 'IMPORT' AND NEW.type <> 'EXPORT'
+    THEN
+	    RETURN NEW;
+    END IF;
+
+    IF OLD.status = 'RETURN'
+    THEN
+	    RAISE EXCEPTION 'can not update on RETURN!';
+    END IF;
+
+--  update payment transaction
+    IF NEW.status = 'RETURN'
+    THEN
+        DELETE FROM payment_transaction WHERE group_id = NEW.group_id AND action_id = NEW.group_import_second_id AND action_id IS NOT NULL;
+    ELSEIF NEW.payment - OLD.payment > 0 AND NEW.status <> 'RETURN'
+    THEN
+
+        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
+            VALUES ( NEW.group_id, gen_random_uuid(), NEW.supplier_id, NEW.group_import_second_id, NEW.group_import_second_id, 'PAYMENT_WAREHOUSE', CASE WHEN NEW.type = 'IMPORT' THEN 'OUTCOME' ELSE 'INCOME' END, NEW.payment - OLD.payment, NEW.type, NULL, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.group_import_second_id), 'CREATE', NOW() );
+
+    END IF;
+
+	RETURN NEW;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION trigger_on_insert_group_import()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+    IF NEW.type <> 'IMPORT' AND NEW.type <> 'EXPORT'
+    THEN
+	    RETURN NEW;
+    END IF;
+
+--  add to payment transaction
+    IF NEW.payment > 0 AND NEW.status <> 'RETURN'
+    THEN
+
+        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
+            VALUES ( NEW.group_id, gen_random_uuid(), NEW.supplier_id, NEW.group_import_second_id, NEW.group_import_second_id, 'PAYMENT_WAREHOUSE', CASE WHEN NEW.type = 'IMPORT' THEN 'OUTCOME' ELSE 'INCOME' END, NEW.payment, NEW.type, NULL, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.group_import_second_id), 'CREATE', NOW() );
+
+    END IF;
+
+
+	RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE TRIGGER trigger_on_delete_group_import AFTER DELETE ON group_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_delete_group_import();
+CREATE OR REPLACE TRIGGER trigger_on_update_group_import AFTER UPDATE ON group_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_update_group_import();
+CREATE OR REPLACE TRIGGER trigger_on_insert_group_import AFTER INSERT ON group_import FOR EACH ROW EXECUTE PROCEDURE trigger_on_insert_group_import();
+
+
+
+CREATE OR REPLACE FUNCTION trigger_on_delete_product_unit()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+    IF OLD.arg_action_id IS NULL OR OLD.enable_warehouse <> TRUE
+    THEN
+	    RETURN OLD;
+    END IF;
+
+    INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
+    VALUES ( OLD.group_id, OLD.arg_action_id, OLD.product_second_id, OLD.product_unit_second_id, OLD.name, OLD.buy_price, OLD.inventory_number, 'DELETE PRODUCT', 'DELETE_PRODUCT', 'DONE', NOW() )
+    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id)
+    DO UPDATE SET product_unit_name_category = OLD.name, price = OLD.buy_price, amount = OLD.inventory_number, note = 'DELETE PRODUCT', type = 'DELETE_PRODUCT', status = 'DONE', createat = NOW();
+
+	RETURN OLD;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION trigger_on_update_product_unit()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+DECLARE
+   _note VARCHAR;
+   _type VARCHAR;
+   _status VARCHAR;
+   _price float8;
+BEGIN
+
+    IF NEW.arg_action_id IS NULL OR OLD.inventory_number = NEW.inventory_number OR NEW.enable_warehouse <> TRUE
+    THEN
+	    RETURN NEW;
+    END IF;
+
+    _note = CASE
+    WHEN NEW.arg_action_type = 'SELLING' THEN 'SELLING: ' || (NEW.inventory_number - OLD.inventory_number)
+    WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'RETURN: ' || (NEW.inventory_number - OLD.inventory_number)
+    ELSE 'update inventory from:' || OLD.inventory_number || ' to: ' || NEW.inventory_number
+    END;
+
+    _type = CASE
+    WHEN NEW.arg_action_type = 'SELLING' THEN 'SELLING'
+    WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'SELLING_RETURN'
+    ELSE 'UPDATE_NUMBER'
+    END;
+
+    _status =CASE
+    WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'RETURN'
+    ELSE 'DONE' END;
+
+    INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
+    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, _note, 'UPDATE_NUMBER', 'DONE', NOW() )
+    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id)
+    DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - OLD.inventory_number, note = _note, type = _type, status = _status, createat = NOW();
+
+	RETURN NEW;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION trigger_on_insert_product_unit()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+    IF NEW.enable_warehouse <> TRUE
+    THEN
+	    RETURN NEW;
+    END IF;
+
+    IF NEW.arg_action_id IS NULL
+    THEN
+	    RAISE EXCEPTION 'arg_action_id null!';
+    END IF;
+
+    INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
+    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number, 'set inventory to:' || NEW.inventory_number, 'UPDATE_NUMBER', 'DONE', NOW() )
+    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id)
+    DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - product_import.amount, note = 'update inventory from: ' || product_import.amount || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW()
+    WHERE product_import.amount <> NEW.inventory_number OR NEW.arg_action_type <> product_import.type;
+
+	RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE TRIGGER trigger_on_delete_product_unit AFTER DELETE ON product_unit FOR EACH ROW EXECUTE PROCEDURE trigger_on_delete_product_unit();
+CREATE OR REPLACE TRIGGER trigger_on_update_product_unit AFTER UPDATE ON product_unit FOR EACH ROW EXECUTE PROCEDURE trigger_on_update_product_unit();
+CREATE OR REPLACE TRIGGER trigger_on_insert_product_unit AFTER INSERT ON product_unit FOR EACH ROW EXECUTE PROCEDURE trigger_on_insert_product_unit();
+
+
+
+
+CREATE OR REPLACE FUNCTION create_group_import_for_product_import(_group_id VARCHAR, _group_import_second_id VARCHAR, _type VARCHAR, _status VARCHAR)
+  RETURNS VOID
+  LANGUAGE PLPGSQL
+  AS
+$$
+DECLARE
+   _amount INTEGER;
+   _price float8;
+BEGIN
+
+--  clean all zero
+    DELETE FROM product_import
+    WHERE group_id = _group_id AND group_import_second_id = _group_import_second_id AND amount = 0;
+
+    SELECT SUM(amount), SUM(price * amount)
+    INTO _amount, _price
+    FROM product_import
+    WHERE product_import.group_id = _group_id AND product_import.group_import_second_id = _group_import_second_id;
+
+
+    IF _amount = 0 OR _amount IS NULL
+    THEN
+	    RETURN;
+    END IF;
+
+    INSERT INTO group_import( group_id, group_import_second_id, total_price, total_amount, type, status, createat )
+    VALUES ( _group_id, _group_import_second_id, _price, _amount, _type, _status, NOW() )
+    ON CONFLICT (group_id, group_import_second_id) DO UPDATE SET total_price = _price, total_amount = _amount, type = _type, status = _status, createat = NOW();
+
+	RETURN;
+END;
+$$;
 

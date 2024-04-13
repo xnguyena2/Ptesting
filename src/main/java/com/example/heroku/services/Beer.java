@@ -1,8 +1,8 @@
 package com.example.heroku.services;
 
 import com.example.heroku.model.Product;
+import com.example.heroku.model.ProductImport;
 import com.example.heroku.model.ProductUnit;
-import com.example.heroku.model.joinwith.ProductJoinWithProductUnit;
 import com.example.heroku.model.repository.*;
 import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
@@ -45,8 +45,12 @@ public class Beer {
     @Autowired
     JoinProductWithProductUnit joinProductWithProductUnit;
 
+    @Autowired
+    GroupImportRepository groupImportRepository;
+
     public Mono<BeerSubmitData> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
         info.CorrectData();
+        String actionID = Util.getInstance().GenerateID();
         return Mono.just(info.getProduct())
                 .flatMap(product ->
                         this.beerRepository.saveProduct(product.getGroup_id(), product.getProduct_second_id(),
@@ -60,18 +64,14 @@ public class Beer {
                                 product.getTokens(), product.getCreateat())
                         .then(Mono.just(product))
                 )
-                .flatMap(product -> this.beerUnitRepository.deleteByBeerId(product.getGroup_id(), product.getProduct_second_id()))
-                .thenMany(Flux.just(info.getProductUnit())
-                                .flatMap(beerUnit -> this.beerUnitRepository.save(beerUnit)
-//                                this.beerUnitRepository.saveProductUnit(beerUnit.getGroup_id(), beerUnit.getProduct_second_id(), beerUnit.getProduct_unit_second_id(),
-//                                                beerUnit.getName(), beerUnit.getPrice(),
-//                                                beerUnit.getDiscount(), beerUnit.getDate_expire(),
-//                                                beerUnit.getVolumetric(), beerUnit.getWeight(),
-//                                                beerUnit.getStatus() == null ? null : beerUnit.getStatus().getName(), beerUnit.getCreateat()
-//                                        )
-//                                        .then(Mono.just(beerUnit))
-                                )
+                .flatMap(product -> this.beerUnitRepository.setActionID(product.getGroup_id(), product.getProduct_second_id(), actionID, ProductImport.ImportType.DELETE_PRODUCT.getName())
+                        .then(Mono.just(product))
                 )
+                .flatMap(product -> this.beerUnitRepository.deleteByBeerId(product.getGroup_id(), product.getProduct_second_id()))
+                .thenMany(Flux.just(info.getProductUnitPrepareForInventory(actionID))
+                        .flatMap(beerUnit -> this.beerUnitRepository.save(beerUnit))
+                )
+                .then(groupImportRepository.createGroupImportForEmpty(info.getProduct().getGroup_id(), actionID, ProductImport.ImportType.UPDATE_NUMBER.getName(), ProductImport.Status.DONE.getName()))
                 .then(Mono.just(BeerSubmitData.FromProductInfo(info)));
     }
 

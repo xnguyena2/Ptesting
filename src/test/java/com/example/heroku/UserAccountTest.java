@@ -46,6 +46,18 @@ public class UserAccountTest {
                 .title("giam doc")
                 .roles_in_group("r1,r2")
                 .roles(Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
+                .register_code("hello code")
+                .build()).block();
+
+        this.userAccount.createAccount(adminName, UpdatePassword.builder()
+                .username("phong test")
+                .newpassword("phong test pass")
+                .group_id(group)
+                .phone_number("121")
+                .title("giam doc")
+                .roles_in_group("r1,r2")
+                .roles(Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
+                .register_code("hello code")
                 .build()).block();
 
         this.userAccount.createAccount(adminName, UpdatePassword.builder()

@@ -36,29 +36,36 @@ public class UserAccount {
     PasswordEncoder passwordEncoder;
 
     public Mono<Users> createAccount(String createBy, UpdatePassword newAccount) {
-        return this.userRepository.save(Users.builder()
-                        .group_id(newAccount.getGroup_id())
-                        .username(newAccount.getUsername())
-                        .password(this.passwordEncoder.encode(newAccount.getNewpassword()))
-                        .roles(Collections.singletonList(Util.ROLE.get(newAccount.getRoles().get(0)).getName()))
-                        .createat(Util.getInstance().Now())
-                        .status(Users.Status.ACTIVE)
-                        .active(true)
-                        .createby(createBy)
-                        .phone_number(newAccount.getPhone_number())
-                        .build().AutoFill())
-                .flatMap(users ->
-                        usersInfo.createUserInfo(com.example.heroku.model.UsersInfo.builder()
-                                        .username(users.getUsername())
-                                        .phone(users.getPhone_number_clean())
-                                        .group_id(users.getGroup_id())
-                                        .title(newAccount.getTitle())
-                                        .roles(newAccount.getRoles_in_group())
-                                        .user_fullname(newAccount.getFull_name())
-                                        .build())
-                                .then(Mono.just(users))
-                )
-                .map(Users::Clean);
+        return
+                this.userRepository.getRegisteredAccountInTime(newAccount.getGroup_id(), newAccount.getUsername(), newAccount.getRegister_code())
+                        .switchIfEmpty(
+                                this.userRepository.save(Users.builder()
+                                        .group_id(newAccount.getGroup_id())
+                                        .username(newAccount.getUsername())
+                                        .password(this.passwordEncoder.encode(newAccount.getNewpassword()))
+                                        .roles(Collections.singletonList(Util.ROLE.get(newAccount.getRoles().get(0)).getName()))
+                                        .createat(Util.getInstance().Now())
+                                        .status(Users.Status.ACTIVE)
+                                        .active(true)
+                                        .createby(createBy)
+                                        .phone_number(newAccount.getPhone_number())
+                                        .register_code(newAccount.getRegister_code())
+                                        .build()
+                                        .AutoFill()
+                                )
+                        )
+                        .flatMap(users ->
+                                usersInfo.createUserInfo(com.example.heroku.model.UsersInfo.builder()
+                                                .username(users.getUsername())
+                                                .phone(users.getPhone_number_clean())
+                                                .group_id(users.getGroup_id())
+                                                .title(newAccount.getTitle())
+                                                .roles(newAccount.getRoles_in_group())
+                                                .user_fullname(newAccount.getFull_name())
+                                                .build())
+                                        .then(Mono.just(users))
+                        )
+                        .map(Users::Clean);
     }
 
     public Mono<SearchResult<Users>> getAll(SearchQuery query) {
