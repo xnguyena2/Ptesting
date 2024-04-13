@@ -13,6 +13,9 @@ public interface UserRepository extends ReactiveCrudRepository<Users, Long> {
     @Query(value = "SELECT * FROM users WHERE users.group_id = :group_id")// ORDER BY createat DESC LIMIT :size OFFSET (:page*:size)")
     Flux<Users> findByIdNotNull(@Param("group_id")String group_id, Pageable pageable);
 
+    @Query(value = "SELECT * FROM users WHERE users.group_id = :group_id AND users.username = :username AND users.register_code = :register_code AND EXTRACT(EPOCH FROM (NOW() - createat)) < 180")// ORDER BY createat DESC LIMIT :size OFFSET (:page*:size)")
+    Mono<Users> getRegisteredAccountInTime(@Param("group_id")String group_id, @Param("username") String username, @Param("register_code")String register_code);
+
     //should not edit this function because system using this function
     //@Query(value = "SELECT * FROM USERS WHERE Username = $1")//, nativeQuery = true)
     Mono<Users> findByUsername(String username);

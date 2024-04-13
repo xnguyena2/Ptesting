@@ -19,15 +19,8 @@ public class UsersInfo {
 
     public Mono<com.example.heroku.model.UsersInfo> createUserInfo(@Valid @ModelAttribute com.example.heroku.model.UsersInfo info) {
         return
-                Mono.just(info)
-                        .map(usersInfo ->
-                        {
-                            usersInfoRepository.deleteByUserName(usersInfo.getUsername());
-                            return usersInfo;
-                        })
-                        .flatMap(usersInfo ->
-                                usersInfoRepository.save(usersInfo)
-                        );
+                usersInfoRepository.deleteByUserName(info.getUsername())
+                        .then(usersInfoRepository.save(info));
     }
 
     public Flux<com.example.heroku.model.UsersInfo> getAllUsersInfo(SearchQuery query) {

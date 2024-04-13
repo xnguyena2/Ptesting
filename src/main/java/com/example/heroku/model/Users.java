@@ -35,6 +35,8 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
 
     protected String phone_number_clean;
 
+    protected String register_code;
+
     private Status status;
 
 
