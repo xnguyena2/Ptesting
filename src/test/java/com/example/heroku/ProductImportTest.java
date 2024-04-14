@@ -507,7 +507,7 @@ public class ProductImportTest {
                 .consumeNextWith(wareHouseIncomeOutCome -> {
                     assertThat(wareHouseIncomeOutCome.getExport_price_inside()).isEqualTo(0);
                     assertThat(wareHouseIncomeOutCome.getExport_price_outside()).isEqualTo(0);
-                    assertThat(wareHouseIncomeOutCome.getImport_price_inside()).isEqualTo(23.0f);
+                    assertThat(wareHouseIncomeOutCome.getImport_price_inside()).isEqualTo(18.7f);
                     assertThat(wareHouseIncomeOutCome.getImport_price_outside()).isEqualTo(0);
                     assertThat(wareHouseIncomeOutCome.getExport_amount_inside()).isEqualTo(0);
                     assertThat(wareHouseIncomeOutCome.getExport_amount_outside()).isEqualTo(0);

@@ -74,7 +74,7 @@ public class Beer {
 
     public Mono<String> UpdateProductUnitWareHouseSetting(ProductUnitUpdate productUnitUpdate) {
         String actionID = Util.getInstance().GenerateID();
-        return beerUnitRepository.updateInventoryAndEnableWarehouse(productUnitUpdate.getGroup_id(), productUnitUpdate.getProduct_second_id(), productUnitUpdate.getProduct_unit_second_id(), productUnitUpdate.getInventory_number(), productUnitUpdate.isEnable_warehouse(),
+        return beerUnitRepository.updateInventoryAndEnableWarehouse(productUnitUpdate.getGroup_id(), productUnitUpdate.getProduct_second_id(), productUnitUpdate.getProduct_unit_second_id(), productUnitUpdate.getInventory_number(), productUnitUpdate.isEnable_warehouse(), productUnitUpdate.getStatus(),
                         actionID, ProductImport.ImportType.UPDATE_NUMBER.getName())
                 .then(groupImportRepository.createGroupImportForEmpty(productUnitUpdate.getGroup_id(), actionID, ProductImport.ImportType.UPDATE_NUMBER.getName(), ProductImport.Status.DONE.getName()))
                 .then(Mono.just(actionID));

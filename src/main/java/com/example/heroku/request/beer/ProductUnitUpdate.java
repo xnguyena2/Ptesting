@@ -1,5 +1,6 @@
 package com.example.heroku.request.beer;
 
+import com.example.heroku.model.ProductUnit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,4 +17,5 @@ public class ProductUnitUpdate {
 
     private int inventory_number;
     private boolean enable_warehouse;
+    private ProductUnit.Status status;
 }

@@ -289,6 +289,7 @@ public class BeerTest {
                         .product_second_id("123")
                         .product_unit_second_id(beerUnit1231ID.get())
                         .enable_warehouse(false)
+                        .status(ProductUnit.Status.AVARIABLE)
                         .inventory_number(111)
                 .build()).block();
 
@@ -312,6 +313,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getWholesale_price()).isEqualTo(3321);
                                 assertThat(beerUnit.getPromotional_price()).isEqualTo(432);
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(111);
+                                assertThat(beerUnit.getStatus()).isEqualTo(ProductUnit.Status.AVARIABLE);
                                 assertThat(beerUnit.isVisible()).isEqualTo(false);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(false);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
