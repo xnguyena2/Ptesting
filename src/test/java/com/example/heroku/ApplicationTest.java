@@ -139,7 +139,7 @@ public class ApplicationTest extends TestConfig {
     @Test
     @Order(3)
     public void BeerTest() {
-//        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).build().saveBeerTest();
+//        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).groupImport(groupImport).build().saveBeerTest();
     }
 
     @Test
@@ -171,7 +171,7 @@ public class ApplicationTest extends TestConfig {
     @Test
     @Order(4)
     public void testUserAddBeerToPackage() {
-        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).build().saveBeerTest();
+        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).groupImport(groupImport).build().saveBeerTest();
         UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(mainGroup).buyer(buyer).statisticServices(statisticServices).build().TestUserPackage();
         ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).group(mainGroup).build().Test();
     }
@@ -200,7 +200,7 @@ public class ApplicationTest extends TestConfig {
     @Order(5)
     public void testBootStrapData() {
 
-        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).build().saveBeerTest();
+        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).groupImport(groupImport).build().saveBeerTest();
 
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).testWithMainGroup(true).build().DeviceConfigTestWithoutImage();
 
@@ -224,7 +224,7 @@ public class ApplicationTest extends TestConfig {
     @Test
     public void testGenerateBeer() throws InterruptedException {
         ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).build().ImageTest(listImg);
-        BeerTest.builder().beerAPI(beerAPI).build().saveBeerTest();
+        BeerTest.builder().beerAPI(beerAPI).groupImport(groupImport).build().saveBeerTest();
         BeerTest.builder().beerAPI(beerAPI).build().createPeerTest();
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).build().BootStrapDataLarge();
     }
@@ -266,7 +266,7 @@ public class ApplicationTest extends TestConfig {
     @Test
     @Order(6)
     public void BeerTest2() {
-        BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).build().saveBeerTest();
+        BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).groupImport(groupImport).build().saveBeerTest();
         UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).buyer(buyer).statisticServices(statisticServices).build().TestUserPackage();
     }
 
@@ -326,7 +326,7 @@ public class ApplicationTest extends TestConfig {
     @Order(8)
     public void testBootStrapData2() {
 
-        BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).build().saveBeerTest();
+        BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).groupImport(groupImport).build().saveBeerTest();
 
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(anotherGroup).build().DeviceConfigTestWithoutImage();
 
