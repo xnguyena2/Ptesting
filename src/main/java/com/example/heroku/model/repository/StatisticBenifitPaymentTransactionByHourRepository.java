@@ -1,6 +1,5 @@
 package com.example.heroku.model.repository;
 
-import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.statistics.BenifitByDateHour;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;

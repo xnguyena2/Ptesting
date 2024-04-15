@@ -3,6 +3,8 @@ package com.example.heroku.services;
 import com.example.heroku.model.ProductImport;
 import com.example.heroku.model.repository.GroupImportRepository;
 import com.example.heroku.model.repository.ProductImportRepository;
+import com.example.heroku.model.repository.StatisticWareHouseIncomeOutcomeRepository;
+import com.example.heroku.model.statistics.WareHouseIncomeOutCome;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.warehouse.GroupImportWithItem;
@@ -31,6 +33,9 @@ public class GroupImport {
 
     @Autowired
     com.example.heroku.services.Buyer buyer;
+
+    @Autowired
+    StatisticWareHouseIncomeOutcomeRepository statisticWareHouseIncomeOutcomeRepository;
 
 
     public Mono<ResponseEntity<Format>> SaveGroupImport(GroupImportWithItem groupImportWithItem) {
@@ -100,6 +105,10 @@ public class GroupImport {
         return joinGroupImportWithProductImport.GetByGroupImportID(query);
     }
 
+    public Mono<WareHouseIncomeOutCome> GetWareHouseStatictisBetween(SearchImportQuery query){
+        return statisticWareHouseIncomeOutcomeRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), ProductImport.Status.RETURN);
+    }
+
     private Mono<GroupImportWithItem> saveGroupDetail(GroupImportWithItem productPackage) {
         return saveGroup(productPackage.AutoFill())
                 .then(Mono.just(productPackage));
@@ -122,7 +131,8 @@ public class GroupImport {
 
     private Mono<com.example.heroku.model.GroupImport> saveGroup(com.example.heroku.model.GroupImport groupImport) {
         return groupImportRepository.inertOrUpdate(groupImport.getGroup_id(), groupImport.getGroup_import_second_id(), groupImport.getSupplier_id(), groupImport.getSupplier_name(), groupImport.getSupplier_phone(),
-                groupImport.getTotal_price(), groupImport.getTotal_amount(), groupImport.getPayment(), groupImport.getDiscount_amount(), groupImport.getAdditional_fee(),
+                groupImport.getTotal_price(), groupImport.getTotal_amount(), groupImport.getPayment(),
+                groupImport.getDiscount_amount(), groupImport.getDiscount_percent(), groupImport.getAdditional_fee(), groupImport.getProgress(),
                 groupImport.getNote(), groupImport.getImages(), groupImport.getType(), groupImport.getStatus(), groupImport.getCreateat());
     }
 

@@ -4,10 +4,7 @@ import com.example.heroku.model.Product;
 import com.example.heroku.model.ProductImport;
 import com.example.heroku.model.ProductUnit;
 import com.example.heroku.model.repository.*;
-import com.example.heroku.request.beer.BeerInfo;
-import com.example.heroku.request.beer.BeerSubmitData;
-import com.example.heroku.request.beer.SearchQuery;
-import com.example.heroku.request.beer.SearchResult;
+import com.example.heroku.request.beer.*;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +70,14 @@ public class Beer {
                 )
                 .then(groupImportRepository.createGroupImportForEmpty(info.getProduct().getGroup_id(), actionID, ProductImport.ImportType.UPDATE_NUMBER.getName(), ProductImport.Status.DONE.getName()))
                 .then(Mono.just(BeerSubmitData.FromProductInfo(info)));
+    }
+
+    public Mono<String> UpdateProductUnitWareHouseSetting(ProductUnitUpdate productUnitUpdate) {
+        String actionID = Util.getInstance().GenerateID();
+        return beerUnitRepository.updateInventoryAndEnableWarehouse(productUnitUpdate.getGroup_id(), productUnitUpdate.getProduct_second_id(), productUnitUpdate.getProduct_unit_second_id(), productUnitUpdate.getInventory_number(), productUnitUpdate.isEnable_warehouse(), productUnitUpdate.getStatus(),
+                        actionID, ProductImport.ImportType.UPDATE_NUMBER.getName())
+                .then(groupImportRepository.createGroupImportForEmpty(productUnitUpdate.getGroup_id(), actionID, ProductImport.ImportType.UPDATE_NUMBER.getName(), ProductImport.Status.DONE.getName()))
+                .then(Mono.just(actionID));
     }
 
     public Mono<Product> DeleteBeerByID(String groupID, String id) {

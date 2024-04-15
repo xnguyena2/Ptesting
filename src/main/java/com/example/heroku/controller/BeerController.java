@@ -1,17 +1,12 @@
 package com.example.heroku.controller;
 
-import com.example.heroku.model.Product;
-import com.example.heroku.model.ProductUnit;
 import com.example.heroku.model.Image;
+import com.example.heroku.model.Product;
 import com.example.heroku.model.Users;
-import com.example.heroku.request.beer.BeerInfo;
-import com.example.heroku.request.beer.BeerSubmitData;
-import com.example.heroku.request.beer.SearchQuery;
-import com.example.heroku.request.beer.SearchResult;
+import com.example.heroku.request.beer.*;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.permission.WrapPermissionAction;
 import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
-import com.example.heroku.response.BuyerData;
 import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,6 +88,17 @@ public class BeerController {
                 .principal(principal)
                 .subject(beerInfo::getGroup_id)
                 .monoAction(() -> beerAPI.CreateBeer(beerInf))
+                .build().toMono();
+    }
+
+    @PostMapping("/admin/updateinventoryproductunit")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<String> updateInventoryProductUnit(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid ProductUnitUpdate productUnitUpdate) {
+        System.out.println("update beer unit: " + productUnitUpdate.getProduct_unit_second_id() + ", enable_warehouse: " + productUnitUpdate.isEnable_warehouse() + ", inventory: " + productUnitUpdate.getInventory_number() + ", group_id: " + productUnitUpdate.getGroup_id());
+        return WrapPermissionGroupWithPrincipalAction.<String>builder()
+                .principal(principal)
+                .subject(productUnitUpdate::getGroup_id)
+                .monoAction(() -> beerAPI.UpdateProductUnitWareHouseSetting(productUnitUpdate))
                 .build().toMono();
     }
 

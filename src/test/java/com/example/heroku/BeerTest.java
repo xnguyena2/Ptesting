@@ -4,7 +4,9 @@ import com.example.heroku.model.Product;
 import com.example.heroku.model.ProductUnit;
 import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
+import com.example.heroku.request.beer.ProductUnitUpdate;
 import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.datetime.NgbDateStruct;
 import com.example.heroku.util.Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +30,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BeerTest {
 
     com.example.heroku.services.Beer beerAPI;
+
+    com.example.heroku.services.GroupImport groupImport;
 
     String group;
 
@@ -279,6 +283,67 @@ public class BeerTest {
                     assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
                 })
                 .verifyComplete();
+
+        String firstID = this.beerAPI.UpdateProductUnitWareHouseSetting(ProductUnitUpdate.builder()
+                        .group_id(group)
+                        .product_second_id("123")
+                        .product_unit_second_id(beerUnit1231ID.get())
+                        .enable_warehouse(false)
+                        .status(ProductUnit.Status.AVARIABLE)
+                        .inventory_number(111)
+                .build()).block();
+
+        this.beerAPI.GetBeerByID(group, "123")
+                .map(BeerSubmitData::GetBeerInfo)
+                .as(StepVerifier::create)
+                .consumeNextWith(beerInfo -> {
+                    assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
+                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
+                    assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
+                    assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    Flux.just(beerInfo.getProductUnit())
+                            .sort(Comparator.comparing(ProductUnit::getName))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("lon");
+                                assertThat(beerUnit.getUpc()).isEqualTo("3434345");
+                                assertThat(beerUnit.getSku()).isEqualTo("767676767");
+                                assertThat(beerUnit.getWholesale_number()).isEqualTo(43);
+                                assertThat(beerUnit.getWholesale_price()).isEqualTo(3321);
+                                assertThat(beerUnit.getPromotional_price()).isEqualTo(432);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(111);
+                                assertThat(beerUnit.getStatus()).isEqualTo(ProductUnit.Status.AVARIABLE);
+                                assertThat(beerUnit.isVisible()).isEqualTo(false);
+                                assertThat(beerUnit.isEnable_warehouse()).isEqualTo(false);
+                                assertThat(beerUnit.getDate_expire()).isEqualTo(null);
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("thung");
+                                assertThat(beerUnit.getUpc()).isEqualTo("343434");
+                                assertThat(beerUnit.getSku()).isEqualTo("76767676");
+                                assertThat(beerUnit.getWholesale_number()).isEqualTo(34);
+                                assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
+                                assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.isVisible()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
+                                assertThat(beerUnit.getDate_expire()).isEqualTo(null);
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+
+        String secondID = this.beerAPI.UpdateProductUnitWareHouseSetting(ProductUnitUpdate.builder()
+                .group_id(group)
+                .product_second_id("123")
+                .product_unit_second_id(beerUnit1231ID.get())
+                .enable_warehouse(true)
+                .inventory_number(543)
+                .build()).block();
+
+        this.groupImport.Return(IDContainer.builder().group_id(group).id(firstID).build()).block();
+        this.groupImport.Return(IDContainer.builder().group_id(group).id(secondID).build()).block();
 
         this.beerAPI.GetBeerByID(group, "123")
                 .map(BeerSubmitData::GetBeerInfo)
