@@ -66,7 +66,7 @@ public class Storage implements IImageService {
 
         Bucket bucket = getBucket();
 
-        String name = generateFileName(file.getOriginalFilename());
+        String name = "img/" + generateFileName(file.getOriginalFilename());
 
         bucket.create(name, file.getBytes(), file.getContentType());
 
@@ -80,7 +80,7 @@ public class Storage implements IImageService {
 
         Bucket bucket = getBucket();
 
-        String name = generateFileName(originalFileName);
+        String name = "img/" + generateFileName(originalFileName);
 
         bucket.create(name, bytes);
 
@@ -103,13 +103,13 @@ public class Storage implements IImageService {
             contentType = "video/quicktime";
         }
 
-        String name = generateFileName(originalFileName);
+        String name = "img/" + generateFileName(originalFileName);
 
         System.out.println(" File : " + originalFileName);
         System.out.println(" basefilename : " + name);
 
 
-        bucket.create("img/" + name, inputStream, contentType);
+        bucket.create(name, inputStream, contentType);
 
         System.out.println(" File : " + originalFileName + " uploaded: photoId = " + name);
 
@@ -125,7 +125,7 @@ public class Storage implements IImageService {
     @Override
     public void delete(String name) throws IOException {
 
-        Bucket bucket = StorageClient.getInstance().bucket();
+        Bucket bucket = getBucket();
 
         if (!StringUtils.hasLength(name)) {
             throw new IOException("invalid file name");

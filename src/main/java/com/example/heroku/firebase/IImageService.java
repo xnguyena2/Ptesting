@@ -28,7 +28,7 @@ public interface IImageService {
     }
 
     default String generateFileName(String originalFileName) {
-        return UUID.randomUUID() + getExtension(originalFileName);
+        return UUID.randomUUID() + "."+ getExtension(originalFileName);
     }
 
     default byte[] getByteArrays(BufferedImage bufferedImage, String format) throws IOException {
