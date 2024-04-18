@@ -38,8 +38,8 @@ public class Image {
     private Storage fireBaseStorage;
 
 
-    private IImageService getStoreServices(){
-        if(fireBaseStorage.isEnable()){
+    private IImageService getStoreServices(boolean mustFireBase) {
+        if (mustFireBase || fireBaseStorage.isEnable()) {
             return fireBaseStorage;
         }
         return flickrLib;
@@ -56,7 +56,7 @@ public class Image {
                 .flatMap(initialStream -> {
                     String[] info = null;//Util.getInstance().GenerateID();
                     try {
-                        info = getStoreServices().save(initialStream, fileName.get());
+                        info = getStoreServices(false).save(initialStream, fileName.get());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -78,14 +78,15 @@ public class Image {
         return Mono.just(img).flatMap(info ->
                 {
                     try {
-                        getStoreServices().delete(info.getId());
-                        return this.imageRepository.deleteImage(img.getGroup_id(), info.getId())
-                                .map(deleted ->
-                                        ok(Format.builder().build().setResponse(deleted.getId()))
-                                );
+                        String id = info.getId();
+                        getStoreServices(id.startsWith("img")).delete(id);
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
+                    return this.imageRepository.deleteImage(img.getGroup_id(), info.getId())
+                            .map(deleted ->
+                                    ok(Format.builder().build().setResponse(deleted.getId()))
+                            );
                 }
         );
     }
@@ -98,7 +99,7 @@ public class Image {
         return this.imageRepository.findAll()
                 .map(image -> {
                     try {
-                        getStoreServices().delete(image.getImgid());
+                        getStoreServices(false).delete(image.getImgid());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -115,7 +116,7 @@ public class Image {
         return imageRepository.findByGroupID(groupID)
                 .map(image -> {
                     try {
-                        getStoreServices().delete(image.getImgid());
+                        getStoreServices(false).delete(image.getImgid());
                         return true;
                     } catch (IOException e) {
                         throw new RuntimeException(e);
