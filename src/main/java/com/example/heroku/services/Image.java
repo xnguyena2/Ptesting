@@ -101,7 +101,7 @@ public class Image {
                     try {
                         getStoreServices(false).delete(image.getImgid());
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
                     return image;
                 })
@@ -119,7 +119,8 @@ public class Image {
                         getStoreServices(false).delete(image.getImgid());
                         return true;
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
+                        return false;
                     }
                 });
     }
