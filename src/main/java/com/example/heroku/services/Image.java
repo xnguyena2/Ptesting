@@ -1,5 +1,7 @@
 package com.example.heroku.services;
 
+import com.example.heroku.firebase.IImageService;
+import com.example.heroku.firebase.Storage;
 import com.example.heroku.model.Product;
 import com.example.heroku.model.repository.ImageRepository;
 import com.example.heroku.photo.FlickrLib;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
 import java.io.SequenceInputStream;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -31,6 +34,17 @@ public class Image {
     @Autowired
     private FlickrLib flickrLib;
 
+    @Autowired
+    private Storage fireBaseStorage;
+
+
+    private IImageService getStoreServices(){
+        if(fireBaseStorage.isEnable()){
+            return fireBaseStorage;
+        }
+        return flickrLib;
+    }
+
 
     public Mono<ResponseEntity<com.example.heroku.model.Image>> Upload(Flux<FilePart> file, String category, String groupID, String tag) {
         AtomicReference<String> fileName = new AtomicReference<>();
@@ -41,7 +55,11 @@ public class Image {
                 .reduce(SequenceInputStream::new)
                 .flatMap(initialStream -> {
                     String[] info = null;//Util.getInstance().GenerateID();
-                    info = flickrLib.uploadfile(initialStream, fileName.get());
+                    try {
+                        info = getStoreServices().save(initialStream, fileName.get());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     return this.imageRepository.save(com.example.heroku.model.Image.builder()
                             .imgid(info[0])
                             .thumbnail(info[1])
@@ -59,11 +77,15 @@ public class Image {
     public Mono<ResponseEntity<Format>> Delete(IDContainer img) {
         return Mono.just(img).flatMap(info ->
                 {
-                    flickrLib.DeleteImage(info.getId());
-                    return this.imageRepository.deleteImage(img.getGroup_id(), info.getId())
-                            .map(deleted ->
-                                    ok(Format.builder().build().setResponse(deleted.getId()))
-                            );
+                    try {
+                        getStoreServices().delete(info.getId());
+                        return this.imageRepository.deleteImage(img.getGroup_id(), info.getId())
+                                .map(deleted ->
+                                        ok(Format.builder().build().setResponse(deleted.getId()))
+                                );
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
         );
     }
@@ -75,7 +97,11 @@ public class Image {
     public Mono<Void> DeleteAll() {
         return this.imageRepository.findAll()
                 .map(image -> {
-                    flickrLib.DeleteImage(image.getImgid());
+                    try {
+                        getStoreServices().delete(image.getImgid());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     return image;
                 })
                 .then(this.imageRepository.deleteAll()
@@ -87,6 +113,13 @@ public class Image {
 
     public Flux<Boolean> JustDeleteImageFromFlickByGroupID(String groupID) {
         return imageRepository.findByGroupID(groupID)
-                .map(image -> flickrLib.DeleteImage(image.getImgid()));
+                .map(image -> {
+                    try {
+                        getStoreServices().delete(image.getImgid());
+                        return true;
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 }

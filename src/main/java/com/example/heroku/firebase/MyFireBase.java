@@ -11,9 +11,11 @@ import com.google.firebase.messaging.Notification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,13 +32,13 @@ public class MyFireBase {
 
     private boolean isAuthSuccess = false;
 
-    @PostConstruct
-    public void init() throws FlickrException {
+    @EventListener
+    public void init(ApplicationReadyEvent event) throws FlickrException {
         this.auth();
     }
 
     private void auth() {
-        if (firebaseCredential == null || firebaseCredential.equals("")) {
+        if (!StringUtils.hasLength(firebaseCredential)) {
             isAuthSuccess = false;
             return;
         }

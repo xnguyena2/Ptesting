@@ -1,5 +1,6 @@
 package com.example.heroku.photo;
 
+import com.example.heroku.firebase.IImageService;
 import com.flickr4java.flickr.Flickr;
 import com.flickr4java.flickr.FlickrException;
 import com.flickr4java.flickr.REST;
@@ -21,8 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -32,7 +36,7 @@ import java.util.List;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class FlickrLib {
+public class FlickrLib implements IImageService {
 
     @Value("${photo.flickr.key}")
     private String flickKey;
@@ -101,7 +105,7 @@ public class FlickrLib {
         System.out.println(" AuthToken: " + auth.getToken() + " tokenSecret: " + auth.getTokenSecret());
     }
 
-    public String[] uploadfile(InputStream in, String filename) {
+    private String[] uploadfile(InputStream in, String filename) {
         RequestContext rc = RequestContext.getRequestContext();
         try {
             rc.setAuth(this.auth);
@@ -216,7 +220,7 @@ public class FlickrLib {
         }
     }
 
-    public boolean DeleteImage(String id){
+    private boolean DeleteImage(String id){
         RequestContext rc = RequestContext.getRequestContext();
         rc.setAuth(this.auth);
         PhotosInterface photos = flickr.getPhotosInterface();
@@ -269,5 +273,35 @@ public class FlickrLib {
                 fname[i] = '_';
         }
         return new String(fname);
+    }
+
+    @Override
+    public boolean isEnable() {
+        return false;
+    }
+
+    @Override
+    public String getImageUrl(String name) {
+        return null;
+    }
+
+    @Override
+    public String save(MultipartFile file) throws IOException {
+        return null;
+    }
+
+    @Override
+    public String save(BufferedImage bufferedImage, String originalFileName) throws IOException {
+        return null;
+    }
+
+    @Override
+    public String[] save(InputStream inputStream, String originalFileName) throws IOException {
+        return uploadfile(inputStream, originalFileName);
+    }
+
+    @Override
+    public void delete(String name) throws IOException {
+        DeleteImage(name);
     }
 }

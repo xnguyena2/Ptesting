@@ -61,6 +61,8 @@ dependencies {
 	//compile "javax.xml.bind:jaxb-api"
 
 	implementation 'com.google.firebase:firebase-admin:9.2.0'
+	implementation 'com.google.cloud:google-cloud-storage'
+//	implementation 'com.google.api-client:google-api-client'
 
 	compileOnly "org.projectlombok:lombok:$gradle.ext.lombokV"
 	annotationProcessor "org.projectlombok:lombok:$gradle.ext.lombokV"
