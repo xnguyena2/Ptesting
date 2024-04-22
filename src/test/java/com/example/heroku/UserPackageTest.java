@@ -11,6 +11,7 @@ import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.beer.ProductPackgeWithTransaction;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
+import com.example.heroku.request.client.UserPackageID;
 import com.example.heroku.response.BuyerData;
 import com.example.heroku.response.PackageDataResponse;
 import com.example.heroku.response.ProductInPackageResponse;
@@ -423,6 +424,29 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(9);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .verifyComplete();
+
+        userPackageAPI.GetByStatusBetween(UserPackageID.builder().group_id(group).product_second_id("123")
+                        .product_unit_second_id(beerUnit1ID.get())
+                        .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00"))
+                        .status(UserPackageDetail.Status.CREATE)
+                        .page(0)
+                        .size(100)
+                        .build())
+                .sort(Comparator.comparing(com.example.heroku.model.UserPackage::getDevice_id))
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(100);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(106);
                 })
                 .verifyComplete();
 

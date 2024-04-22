@@ -10,6 +10,7 @@ import com.example.heroku.model.repository.UserPackageRepository;
 import com.example.heroku.request.beer.*;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
+import com.example.heroku.request.client.UserPackageID;
 import com.example.heroku.response.Format;
 import com.example.heroku.response.PackageDataResponse;
 import com.example.heroku.response.ProductInPackageResponse;
@@ -367,5 +368,10 @@ public class UserPackage {
     public Flux<com.example.heroku.model.UserPackage> DeleteByUserID(UserID userID, UserPackageDetail.Status status) {
         return userPackageDetailRepository.DeleteByUserID(userID.getGroup_id(), userID.getId(), status)
                 .thenMany(userPackageRepository.DeleteProductByUserID(userID.getGroup_id(), userID.getId(), status));
+    }
+
+    public Flux<com.example.heroku.model.UserPackage> GetByStatusBetween(UserPackageID userPackageID){
+        return userPackageRepository.GetByStatusBetween(userPackageID.getGroup_id(), userPackageID.getProduct_second_id(), userPackageID.getProduct_unit_second_id(),
+                userPackageID.getFrom(), userPackageID.getTo(), userPackageID.getStatus(), userPackageID.getPage(), userPackageID.getSize());
     }
 }

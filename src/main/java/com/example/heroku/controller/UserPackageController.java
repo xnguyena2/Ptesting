@@ -6,6 +6,7 @@ import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.beer.ProductPackgeWithTransaction;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
+import com.example.heroku.request.client.UserPackageID;
 import com.example.heroku.response.Format;
 import com.example.heroku.response.PackageDataResponse;
 import com.example.heroku.response.ProductInPackageResponse;
@@ -153,5 +154,12 @@ public class UserPackageController {
     public Flux<com.example.heroku.model.UserPackage> clean(@RequestBody @Valid UserID userID) {
         System.out.println("clean all package with device_id: " + userID.getId());
         return userPackageAPI.DeleteByUserID(userID, UserPackageDetail.Status.WEB_TEMP);
+    }
+
+    @PostMapping("/getbystatusbetween")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<com.example.heroku.model.UserPackage> getStatictisByStatusBetween(@RequestBody @Valid UserPackageID userPackageID) {
+        System.out.println("get statictis of group: " + userPackageID.getGroup_id() + ", product: " + userPackageID.getProduct_second_id() + ", unit: " + userPackageID.getProduct_unit_second_id() + ", from: " + userPackageID.getFrom() + ", to: " + userPackageID.getTo());
+        return userPackageAPI.GetByStatusBetween(userPackageID);
     }
 }
