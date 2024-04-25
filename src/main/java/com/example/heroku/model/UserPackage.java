@@ -25,7 +25,7 @@ public class UserPackage extends BaseEntity {
 
     private String product_unit_second_id;
 
-    private int number_unit;
+    private float number_unit;
 
     private float price;
 

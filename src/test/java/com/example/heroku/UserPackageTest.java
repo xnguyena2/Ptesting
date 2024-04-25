@@ -307,7 +307,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
 
                     assertThat(listItem.size()).isEqualTo(2);
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -333,7 +333,7 @@ public class UserPackageTest {
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -374,7 +374,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(1);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("456");
@@ -393,7 +393,7 @@ public class UserPackageTest {
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -409,7 +409,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
 
                     assertThat(listItem.size()).isEqualTo(2);
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -460,7 +460,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(1);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("456");
@@ -479,7 +479,7 @@ public class UserPackageTest {
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -488,7 +488,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(1);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -522,7 +522,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -550,7 +550,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -612,7 +612,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -688,7 +688,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -767,7 +767,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -802,7 +802,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -923,7 +923,7 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -978,7 +978,7 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1027,7 +1027,7 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1058,7 +1058,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -1075,7 +1075,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1121,7 +1121,7 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1152,7 +1152,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -1169,7 +1169,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1215,7 +1215,7 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1246,7 +1246,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -1263,7 +1263,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1309,7 +1309,7 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1340,7 +1340,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -1357,7 +1357,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1705,7 +1705,7 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1736,7 +1736,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -1753,7 +1753,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1801,7 +1801,7 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1832,7 +1832,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -1849,7 +1849,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1895,7 +1895,7 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -2075,7 +2075,7 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -2123,7 +2123,7 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -2210,7 +2210,7 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
                     assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -2247,7 +2247,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -2264,7 +2264,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -2298,7 +2298,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -2315,7 +2315,7 @@ public class UserPackageTest {
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -2405,7 +2405,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
@@ -2426,7 +2426,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    listItem.sort(Comparator.comparingInt(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })

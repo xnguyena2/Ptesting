@@ -29,7 +29,7 @@ public class ProductImport extends BaseEntity {
 
     private float price;
 
-    private int amount;
+    private float amount;
 
     private String note;
 

@@ -16,7 +16,7 @@ public interface ProductImportRepository extends ReactiveCrudRepository<ProductI
     Mono<ProductImport> inertOrUpdate(@Param("group_id") String group_id, @Param("group_import_second_id") String group_import_second_id,
                                       @Param("product_second_id") String product_second_id, @Param("product_unit_second_id") String product_unit_second_id,
                                       @Param("product_unit_name_category") String product_unit_name_category,
-                                      @Param("price") float price, @Param("amount") int amount,
+                                      @Param("price") float price, @Param("amount") float amount,
                                       @Param("note") String note, @Param("type") ProductImport.ImportType type,
                                       @Param("status") ProductImport.Status status, @Param("createat") Timestamp createat);
 

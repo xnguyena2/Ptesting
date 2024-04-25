@@ -30,7 +30,7 @@ public class GroupImportJoinProductImport extends GroupImport {
     private String child_product_unit_second_id;
     private String child_product_unit_name_category;
     private float child_price;
-    private int child_amount;
+    private float child_amount;
     private String child_note;
     private ProductImport.ImportType child_type;
     private ProductImport.Status child_status;

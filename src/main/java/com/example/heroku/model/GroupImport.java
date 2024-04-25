@@ -30,7 +30,7 @@ public class GroupImport extends BaseEntity {
 
     private float total_price;
 
-    private int total_amount;
+    private float total_amount;
 
     private float payment;
 
