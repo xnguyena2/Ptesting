@@ -38,8 +38,11 @@ public class Image {
     private Storage fireBaseStorage;
 
 
-    private IImageService getStoreServices(boolean mustFireBase) {
-        if (mustFireBase || fireBaseStorage.isEnable()) {
+    private IImageService getStoreServices(boolean mustFlick) {
+        if (mustFlick) {
+            return flickrLib;
+        }
+        if (fireBaseStorage.isEnable()) {
             return fireBaseStorage;
         }
         return flickrLib;
@@ -79,7 +82,7 @@ public class Image {
                 {
                     try {
                         String id = info.getId();
-                        getStoreServices(id.startsWith("img")).delete(id);
+                        getStoreServices(!id.startsWith("img")).delete(id);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
