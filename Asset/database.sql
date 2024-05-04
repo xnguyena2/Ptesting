@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCH
 
 CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, domain_url VARCHAR, status VARCHAR, store_type VARCHAR, createat TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS buyer (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, total_price float8, real_price float8, ship_price float8, discount float8, point INTEGER, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS buyer (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, total_price float8, real_price float8, ship_price float8, discount float8, point INTEGER, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS payment_transaction (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, transaction_second_id VARCHAR NOT NULL, device_id VARCHAR, package_second_id VARCHAR, action_id VARCHAR, action_type VARCHAR, transaction_type VARCHAR, amount float8, category VARCHAR, money_source VARCHAR, note VARCHAR, status VARCHAR, createat TIMESTAMP);
 
@@ -69,6 +69,7 @@ CREATE INDEX store_index ON store(group_id);
 CREATE INDEX store_domain_url_index ON store(domain_url);
 CREATE INDEX buyer_index ON buyer(device_id);
 CREATE INDEX buyer_phone_number_clean_index ON buyer(phone_number_clean);
+CREATE INDEX buyer_meta_search_index ON buyer(meta_search);
 CREATE INDEX voucher_index ON voucher(voucher_second_id);
 CREATE INDEX voucher_relate_user_device_index ON voucher_relate_user_device(voucher_second_id);
 CREATE INDEX voucher_relate_product_index ON voucher_relate_product(voucher_second_id);
@@ -261,8 +262,8 @@ $$
 BEGIN
 
 	INSERT INTO
-    	buyer (group_id , device_id, reciver_address, region_id, district_id, ward_id, reciver_fullname, phone_number, phone_number_clean, total_price, real_price, ship_price, discount, point, status, createat)
-    VALUES(NEW.group_id, NEW.user_device_id, NEW.reciver_address, NEW.region_id, NEW.district_id, NEW.ward_id, NEW.reciver_fullname, NEW.phone_number, NEW.phone_number_clean, NEW.total_price, NEW.real_price, NEW.ship_price, NEW.discount, 0, NULL, NOW()) ON CONFLICT (group_id, device_id) DO
+    	buyer (group_id , device_id, reciver_address, region_id, district_id, ward_id, reciver_fullname, phone_number, phone_number_clean, meta_search, total_price, real_price, ship_price, discount, point, status, createat)
+    VALUES(NEW.group_id, NEW.user_device_id, NEW.reciver_address, NEW.region_id, NEW.district_id, NEW.ward_id, NEW.reciver_fullname, NEW.phone_number, NEW.phone_number_clean, NEW.phone_number_clean || NEW.reciver_fullname, NEW.total_price, NEW.real_price, NEW.ship_price, NEW.discount, 0, NULL, NOW()) ON CONFLICT (group_id, device_id) DO
     UPDATE
     SET
     	total_price = buyer.total_price + NEW.total_price,
