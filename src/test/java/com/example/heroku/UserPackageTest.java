@@ -5,10 +5,7 @@ import com.example.heroku.model.PaymentTransation;
 import com.example.heroku.model.ProductUnit;
 import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.statistics.*;
-import com.example.heroku.request.beer.ProductPackage;
-import com.example.heroku.request.beer.BeerSubmitData;
-import com.example.heroku.request.beer.PackageItemRemove;
-import com.example.heroku.request.beer.ProductPackgeWithTransaction;
+import com.example.heroku.request.beer.*;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.request.client.UserPackageID;
@@ -163,6 +160,7 @@ public class UserPackageTest {
                 .voucher("voucher_1d")
                 .package_type("deliver")
                 .progress("{}")
+                .meta_search("hello meta search")
                 .status(UserPackageDetail.Status.CREATE)
                 .createat(Util.getInstance().Now())
                 .product_units(new com.example.heroku.model.UserPackage[]{
@@ -227,6 +225,7 @@ public class UserPackageTest {
                 .voucher("voucher_1d")
                 .package_type("deliver")
                 .progress("{}")
+                .meta_search("hello meta search")
                 .status(UserPackageDetail.Status.CREATE)
                 .product_units(new com.example.heroku.model.UserPackage[]{
                         com.example.heroku.model.UserPackage.builder()
@@ -573,6 +572,7 @@ public class UserPackageTest {
                 .voucher("voucher_1d")
                 .package_type("deliver")
                 .progress("{}")
+                .meta_search("hello meta search")
                 .status(UserPackageDetail.Status.CREATE)
                 .product_units(new com.example.heroku.model.UserPackage[]{
                         com.example.heroku.model.UserPackage.builder()
@@ -609,6 +609,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDiscount_by_point()).isEqualTo(98);
                     assertThat(userPackage.getAdditional_fee()).isEqualTo(87);
                     assertThat(userPackage.getAdditional_config()).isEqualTo("additional_config");
+                    assertThat(userPackage.getMeta_search()).isEqualTo("hello meta search");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(2);
 
@@ -646,6 +647,7 @@ public class UserPackageTest {
                 .voucher("voucher_1d")
                 .package_type("deliver")
                 .progress("{}")
+                .meta_search("hello meta search")
                 .status(UserPackageDetail.Status.CREATE)
                 .product_units(new com.example.heroku.model.UserPackage[]{
                         com.example.heroku.model.UserPackage.builder()
@@ -734,6 +736,7 @@ public class UserPackageTest {
                 .voucher("voucher_1d")
                 .package_type("deliver")
                 .progress("{}")
+                .meta_search("hello meta search")
                 .status(UserPackageDetail.Status.CREATE)
                 .product_units(new com.example.heroku.model.UserPackage[]{
                         com.example.heroku.model.UserPackage.builder()
@@ -856,6 +859,7 @@ public class UserPackageTest {
                 .cost(444)
                 .profit(7878)
                 .staff_id("nguyen_phong")
+                .meta_search("hello meta search")
                 .buyer(Buyer.builder()
                         .phone_number(" +84 0 229292 22")
                         .reciver_fullname("test create package")
@@ -1646,6 +1650,7 @@ public class UserPackageTest {
                 .profit(7878)
                 .staff_id("nguyen_phong")
                 .point(-77)
+                .meta_search("hello meta search")
                 .buyer(Buyer.builder()
                         .phone_number(" +84 0 229292 22")
                         .reciver_fullname("test create package")
@@ -1962,6 +1967,7 @@ public class UserPackageTest {
                 .cost(444)
                 .profit(7878)
                 .staff_id("nguyen_phong")
+                .meta_search("hello meta search")
                 .buyer(Buyer.builder()
                         .phone_number(" +84 0 229292 22")
                         .reciver_fullname("test create package")
@@ -2334,6 +2340,57 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
+
+        userPackageAPI.SearchWorkingPackageByGroupByJoinWith(SearchQuery.builder().query("hello met").group_id(group).page(0).size(10000).build())
+                .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+
+                    assertThat(listItem.size()).isEqualTo(0);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    assertThat(listItem.size()).isEqualTo(2);
+
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+
+                    ProductInPackageResponse item = listItem.get(0);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(106);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(1);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(12);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .verifyComplete();
+
         buyer.FindByDeviceID(group, "0022929222")
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
@@ -2412,7 +2469,28 @@ public class UserPackageTest {
                 .verifyComplete();
 
 
-        userPackageAPI.GetWorkingPackageByJoinWithByGroupAfterID(UserID.builder().group_id(group).id("1000").page(0).size(10000).build())
+        userPackageAPI.GetWorkingPackageByGroupByJoinWith(UserID.builder().group_id(group).id("1000").page(0).size(10000).build())
+                .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
+                    List<ProductInPackageResponse> listItem = userPackage.getItems();
+                    listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
+
+                    assertThat(listItem.size()).isEqualTo(0);
+                })
+                .verifyComplete();
+
+
+        userPackageAPI.SearchWorkingPackageByGroupByJoinWith(SearchQuery.builder().group_id(group).query("hello met").filter("1000").page(0).size(10000).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {

@@ -69,6 +69,8 @@ public class UserPackageDetail  extends BaseEntity {
 
     private String progress;
 
+    private String meta_search;
+
     private Status status;
 
 //    update UserPackageDetailJoinWithUserPackage
@@ -105,6 +107,7 @@ public class UserPackageDetail  extends BaseEntity {
         note = s.note;
         image = s.image;
         progress = s.progress;
+        meta_search = s.meta_search;
         status = s.status;
     }
 
