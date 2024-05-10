@@ -47,6 +47,7 @@ public class UserPackageDetailJoinWithUserPackage {
     private String note;
     private String image;
     private String progress;
+    private String meta_search;
     private UserPackageDetail.Status status;
 
 
@@ -60,7 +61,7 @@ public class UserPackageDetailJoinWithUserPackage {
     private String child_device_id;
     private String child_product_second_id;
     private String child_product_unit_second_id;
-    private int child_number_unit;
+    private float child_number_unit;
     private float child_price;
     private float child_buy_price;
     private float child_discount_amount;
@@ -103,6 +104,7 @@ public class UserPackageDetailJoinWithUserPackage {
                 .note(note)
                 .image(image)
                 .progress(progress)
+                .meta_search(meta_search)
                 .status(status)
                 .build();
     }

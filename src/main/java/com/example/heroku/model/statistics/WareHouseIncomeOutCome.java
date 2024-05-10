@@ -10,9 +10,9 @@ public class WareHouseIncomeOutCome {
     private float import_price_inside;
     private float import_price_outside;
 
-    private int export_amount_inside;
-    private int export_amount_outside;
+    private float export_amount_inside;
+    private float export_amount_outside;
 
-    private int import_amount_inside;
-    private int import_amount_outside;
+    private float import_amount_inside;
+    private float import_amount_outside;
 }

@@ -157,7 +157,8 @@ public class UserPackage {
                         detail.getPrice(), detail.getPayment(), detail.getDiscount_amount(), detail.getDiscount_percent(),
                         detail.getDiscount_promotional(), detail.getDiscount_by_point(), detail.getAdditional_fee(), detail.getAdditional_config(),
                         detail.getShip_price(), detail.getCost(), detail.getProfit(),
-                        detail.getPoint(), detail.getNote(), detail.getImage(), detail.getProgress(), detail.getStatus(), detail.getCreateat())
+                        detail.getPoint(), detail.getNote(), detail.getImage(), detail.getProgress(), detail.getMeta_search(),
+                        detail.getStatus(), detail.getCreateat())
                 .then(Mono.just(detail));
     }
 
@@ -234,16 +235,19 @@ public class UserPackage {
     public Flux<PackageDataResponse> GetWorkingPackageByGroupByJoinWith(UserID userID) {
         if (userID.getId() == null || userID.getId().isEmpty())
             return GetPackageJoinByGrouAndStatus(userID, UserPackageDetail.Status.CREATE, UserPackageDetail.Status.DONE);
-        return GetWorkingPackageByJoinWithByGroupAfterID(userID);
+        return GetPackageJoinByGrouAndStatusAfterID(userID, UserPackageDetail.Status.CREATE, UserPackageDetail.Status.DONE);
+    }
+
+    public Flux<PackageDataResponse> SearchWorkingPackageByGroupByJoinWith(SearchQuery searchQuery) {
+        searchQuery.setQuery("%" + searchQuery.getQuery() + "%");
+        if (searchQuery.GetFilterTxt() == null || searchQuery.GetFilterTxt().isEmpty())
+            return SearchPackageJoinByGrouAndStatus(searchQuery, UserPackageDetail.Status.CREATE, UserPackageDetail.Status.DONE);
+        return SearchPackageJoinByGrouAndStatusAfterID(searchQuery, UserPackageDetail.Status.CREATE, UserPackageDetail.Status.DONE);
     }
 
     @Deprecated
     public Flux<PackageDataResponse> GetWorkingPackageByGroupAfterID(UserID userID) {
         return GetPackageByGrouAndStatusAfterID(userID, UserPackageDetail.Status.CREATE, UserPackageDetail.Status.DONE);
-    }
-
-    public Flux<PackageDataResponse> GetWorkingPackageByJoinWithByGroupAfterID(UserID userID) {
-        return GetPackageJoinByGrouAndStatusAfterID(userID, UserPackageDetail.Status.CREATE, UserPackageDetail.Status.DONE);
     }
 
     public Flux<PackageDataResponse> GetPackageByGroupAndStatus(UserID userID, UserPackageDetail.Status status) {
@@ -282,6 +286,21 @@ public class UserPackage {
     public Flux<PackageDataResponse> GetPackageJoinByGrouAndStatusAfterID(UserID userID, UserPackageDetail.Status status, UserPackageDetail.Status or_status) {
         int id = Integer.parseInt(userID.getId());
         return joinUserPackageDetailWithUserPackgeRepository.getUserPackgeDetailAndPackageItemAferID(userID.getGroup_id(), status, or_status, id, userID.getPage(), userID.getSize())
+                .groupBy(UserPackageDetailJoinWithUserPackage::getPackage_second_id)
+                .flatMap(groupedFlux -> groupedFlux.collectList().map(UserPackageDetailJoinWithUserPackage::GeneratePackageData))
+                .flatMap(this::fillProductAndBuyer);
+    }
+
+    public Flux<PackageDataResponse> SearchPackageJoinByGrouAndStatus(SearchQuery searchQuery, UserPackageDetail.Status status, UserPackageDetail.Status or_status) {
+        return joinUserPackageDetailWithUserPackgeRepository.searchUserPackgeDetailAndPackageItem(searchQuery.getGroup_id(), searchQuery.getQuery(), status, or_status, searchQuery.getPage(), searchQuery.getSize())
+                .groupBy(UserPackageDetailJoinWithUserPackage::getPackage_second_id)
+                .flatMap(groupedFlux -> groupedFlux.collectList().map(UserPackageDetailJoinWithUserPackage::GeneratePackageData))
+                .flatMap(this::fillProductAndBuyer);
+    }
+
+    public Flux<PackageDataResponse> SearchPackageJoinByGrouAndStatusAfterID(SearchQuery searchQuery, UserPackageDetail.Status status, UserPackageDetail.Status or_status) {
+        int id = Integer.parseInt(searchQuery.GetFilterTxt());
+        return joinUserPackageDetailWithUserPackgeRepository.searchUserPackgeDetailAndPackageItemAferID(searchQuery.getGroup_id(), searchQuery.getQuery(), status, or_status, id, searchQuery.getPage(), searchQuery.getSize())
                 .groupBy(UserPackageDetailJoinWithUserPackage::getPackage_second_id)
                 .flatMap(groupedFlux -> groupedFlux.collectList().map(UserPackageDetailJoinWithUserPackage::GeneratePackageData))
                 .flatMap(this::fillProductAndBuyer);

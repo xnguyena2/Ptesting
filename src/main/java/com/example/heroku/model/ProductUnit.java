@@ -37,7 +37,7 @@ public class ProductUnit extends BaseEntity {
 
     private float promotional_price;
 
-    private int inventory_number;
+    private float inventory_number;
 
     private int wholesale_number;
 

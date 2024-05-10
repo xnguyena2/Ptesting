@@ -48,7 +48,7 @@ public class ProductJoinWithProductUnit {
     private String child_upc;
     private float child_price;
     private float child_promotional_price;
-    private int child_inventory_number;
+    private float child_inventory_number;
     private int child_wholesale_number;
     private float child_wholesale_price;
     private float child_buy_price;

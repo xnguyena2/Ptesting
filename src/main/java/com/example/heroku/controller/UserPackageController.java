@@ -4,6 +4,7 @@ import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.beer.ProductPackgeWithTransaction;
+import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.request.client.UserPackageID;
@@ -115,6 +116,14 @@ public class UserPackageController {
     public Flux<PackageDataResponse> getWorkingByGroup(@RequestBody @Valid UserID userID) {
         System.out.println("Get all working package by group: " + userID.getGroup_id());
         return userPackageAPI.GetWorkingPackageByGroupByJoinWith(userID);//.GetWorkingPackageByGroup(userID);
+    }
+
+
+    @PostMapping("/searchwokingbygroup")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<PackageDataResponse> getWorkingByGroup(@RequestBody @Valid SearchQuery searchQuery) {
+        System.out.println("Search all working package by group: " + searchQuery.getGroup_id());
+        return userPackageAPI.SearchWorkingPackageByGroupByJoinWith(searchQuery);//.GetWorkingPackageByGroup(userID);
     }
 
 

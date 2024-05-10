@@ -44,7 +44,18 @@ public class Buyer extends BaseEntity {
 
     private int point;
 
+    private String meta_search;
+
     private ActiveStatus status;
+
+
+    public Buyer updateMetaSearch() {
+        meta_search = phone_number_clean;
+        if (reciver_fullname != null) {
+            meta_search += " " + Util.getInstance().RemoveAccent(reciver_fullname);
+        }
+        return this;
+    }
 
     public static Buyer CreateUnknowBuyer() {
         return Buyer.builder()

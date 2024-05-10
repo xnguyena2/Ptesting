@@ -158,7 +158,7 @@ public class BeerSubmitData {
         private float wholesale_price;
         private int wholesale_number;
         private float promotional_price;
-        private int inventory_number;
+        private float inventory_number;
         private float buy_price;
         private float discount;
         private NgbDateStruct dateExpir;

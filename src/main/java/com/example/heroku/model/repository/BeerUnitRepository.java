@@ -18,7 +18,7 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, 
                                       @Param("product_unit_second_id") String product_unit_second_id, @Param("name") String name,
                                       @Param("sku") String sku, @Param("upc") String upc,
                                       @Param("price") float price, @Param("wholesale_price") float wholesale_price, @Param("wholesale_number") int wholesale_number,
-                                      @Param("promotional_price") float promotional_price, @Param("inventory_number") int inventory_number,
+                                      @Param("promotional_price") float promotional_price, @Param("inventory_number") float inventory_number,
                                       @Param("buy_price") float buy_price, @Param("discount") float discount,
                                       @Param("date_expire") Timestamp date_expire, @Param("volumetric") float volumetric,
                                       @Param("weight") float weight,
@@ -33,7 +33,7 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, 
     Flux<ProductUnit> setActionID(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id, @Param("arg_action_id")String arg_action_id, @Param("arg_action_type")String arg_action_type);
 
     @Query(value = "UPDATE product_unit SET inventory_number = :inventory_number, enable_warehouse = :enable_warehouse, status = :status, arg_action_id = :arg_action_id, arg_action_type = :arg_action_type WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :product_second_id AND product_unit.product_unit_second_id = :product_unit_second_id")
-    Mono<ProductUnit> updateInventoryAndEnableWarehouse(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id, @Param("product_unit_second_id")String product_unit_second_id, @Param("inventory_number") int inventory_number, @Param("enable_warehouse") boolean enable_warehouse, @Param("status") ProductUnit.Status status,
+    Mono<ProductUnit> updateInventoryAndEnableWarehouse(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id, @Param("product_unit_second_id")String product_unit_second_id, @Param("inventory_number") float inventory_number, @Param("enable_warehouse") boolean enable_warehouse, @Param("status") ProductUnit.Status status,
                                                         @Param("arg_action_id")String arg_action_id, @Param("arg_action_type")String arg_action_type);
 
     @Query(value = "SELECT * FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :product_second_id")

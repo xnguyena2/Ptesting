@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users_info (id SERIAL PRIMARY KEY, group_id VARCHAR N
 CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, tokens TSVECTOR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, visible_web BOOL, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number INTEGER, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, imgid VARCHAR, tag VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, categorys VARCHAR, config TEXT, createat TIMESTAMP);
@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS user_fcm (id SERIAL PRIMARY KEY, group_id VARCHAR NOT
 CREATE TABLE IF NOT EXISTS user_address (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, address_id VARCHAR, device_id VARCHAR, reciver_fullname VARCHAR, phone_number VARCHAR, house_number VARCHAR, region INTEGER, district INTEGER, ward INTEGER, status VARCHAR, createat TIMESTAMP);
 
 
-CREATE TABLE IF NOT EXISTS user_package_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, staff_id VARCHAR, package_type VARCHAR, area_id VARCHAR, area_name VARCHAR, table_id VARCHAR, table_name VARCHAR, voucher VARCHAR, price float8, payment float8, discount_amount float8, discount_percent float8, discount_promotional float8, discount_by_point float8, additional_fee float8, additional_config VARCHAR, ship_price float8, cost float8, profit float8, point INTEGER, note VARCHAR, image VARCHAR, progress VARCHAR, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS user_package (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, number_unit INTEGER, buy_price float8, price float8, discount_amount float8, discount_percent float8, discount_promotional float8, note VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS user_package_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, staff_id VARCHAR, package_type VARCHAR, area_id VARCHAR, area_name VARCHAR, table_id VARCHAR, table_name VARCHAR, voucher VARCHAR, price float8, payment float8, discount_amount float8, discount_percent float8, discount_promotional float8, discount_by_point float8, additional_fee float8, additional_config VARCHAR, ship_price float8, cost float8, profit float8, point INTEGER, note VARCHAR, image VARCHAR, progress VARCHAR, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS user_package (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, number_unit float8, buy_price float8, price float8, discount_amount float8, discount_percent float8, discount_promotional float8, note VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 
 CREATE TABLE IF NOT EXISTS voucher (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, voucher_second_id VARCHAR, detail VARCHAR, discount float8, amount float8, reuse INTEGER, for_all_product BOOLEAN, for_all_user BOOLEAN, package_voucher BOOLEAN, date_expire TIMESTAMP, status VARCHAR, createat TIMESTAMP);
@@ -33,12 +33,12 @@ CREATE TABLE IF NOT EXISTS notification (id SERIAL PRIMARY KEY, group_id VARCHAR
 CREATE TABLE IF NOT EXISTS notification_relate_user_device (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, notification_second_id VARCHAR, user_device_id VARCHAR, createat TIMESTAMP, status VARCHAR);
 CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, provider_id VARCHAR, name VARCHAR, config TEXT, createat TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS group_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, supplier_id VARCHAR, supplier_name VARCHAR, supplier_phone VARCHAR, total_price float8, total_amount INTEGER, payment float8, discount_amount float8, discount_percent float8, additional_fee float8, progress VARCHAR, note TEXT, images VARCHAR, type VARCHAR, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_unit_name_category VARCHAR, price float8, amount INTEGER, note TEXT, type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS group_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, supplier_id VARCHAR, supplier_name VARCHAR, supplier_phone VARCHAR, total_price float8, total_amount float8, payment float8, discount_amount float8, discount_percent float8, additional_fee float8, progress VARCHAR, note TEXT, images VARCHAR, type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_unit_name_category VARCHAR, price float8, amount float8, note TEXT, type VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, domain_url VARCHAR, status VARCHAR, store_type VARCHAR, createat TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS buyer (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, total_price float8, real_price float8, ship_price float8, discount float8, point INTEGER, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS buyer (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, total_price float8, real_price float8, ship_price float8, discount float8, point INTEGER, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS payment_transaction (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, transaction_second_id VARCHAR NOT NULL, device_id VARCHAR, package_second_id VARCHAR, action_id VARCHAR, action_type VARCHAR, transaction_type VARCHAR, amount float8, category VARCHAR, money_source VARCHAR, note VARCHAR, status VARCHAR, createat TIMESTAMP);
 
@@ -64,11 +64,13 @@ CREATE INDEX product_import_product_second_id_index ON product_import(product_se
 CREATE INDEX product_import_product_unit_second_id_index ON product_import(product_unit_second_id);
 CREATE INDEX user_device_index ON user_device(device_id);
 CREATE INDEX user_package_detail_index ON user_package_detail(package_second_id);
+CREATE INDEX user_package_detail_meta_search_index ON user_package_detail(meta_search);
 CREATE INDEX user_package_index ON user_package(package_second_id);
 CREATE INDEX store_index ON store(group_id);
 CREATE INDEX store_domain_url_index ON store(domain_url);
 CREATE INDEX buyer_index ON buyer(device_id);
 CREATE INDEX buyer_phone_number_clean_index ON buyer(phone_number_clean);
+CREATE INDEX buyer_meta_search_index ON buyer(meta_search);
 CREATE INDEX voucher_index ON voucher(voucher_second_id);
 CREATE INDEX voucher_relate_user_device_index ON voucher_relate_user_device(voucher_second_id);
 CREATE INDEX voucher_relate_product_index ON voucher_relate_product(voucher_second_id);
@@ -261,8 +263,8 @@ $$
 BEGIN
 
 	INSERT INTO
-    	buyer (group_id , device_id, reciver_address, region_id, district_id, ward_id, reciver_fullname, phone_number, phone_number_clean, total_price, real_price, ship_price, discount, point, status, createat)
-    VALUES(NEW.group_id, NEW.user_device_id, NEW.reciver_address, NEW.region_id, NEW.district_id, NEW.ward_id, NEW.reciver_fullname, NEW.phone_number, NEW.phone_number_clean, NEW.total_price, NEW.real_price, NEW.ship_price, NEW.discount, 0, NULL, NOW()) ON CONFLICT (group_id, device_id) DO
+    	buyer (group_id , device_id, reciver_address, region_id, district_id, ward_id, reciver_fullname, phone_number, phone_number_clean, meta_search, total_price, real_price, ship_price, discount, point, status, createat)
+    VALUES(NEW.group_id, NEW.user_device_id, NEW.reciver_address, NEW.region_id, NEW.district_id, NEW.ward_id, NEW.reciver_fullname, NEW.phone_number, NEW.phone_number_clean, NEW.phone_number_clean || NEW.reciver_fullname, NEW.total_price, NEW.real_price, NEW.ship_price, NEW.discount, 0, NULL, NOW()) ON CONFLICT (group_id, device_id) DO
     UPDATE
     SET
     	total_price = buyer.total_price + NEW.total_price,
@@ -301,7 +303,7 @@ CREATE OR REPLACE FUNCTION decrese_product_unit_inventory()
   AS
 $$
 DECLARE
-   _inventory_number INTEGER;
+   _inventory_number float8;
    _enable_warehouse BOOL;
 BEGIN
 
@@ -369,8 +371,8 @@ CREATE OR REPLACE FUNCTION update_product_unit_inventory()
   AS
 $$
 DECLARE
-   _inventory_number INTEGER;
-   _inventory_number_new INTEGER;
+   _inventory_number float8;
+   _inventory_number_new float8;
    _enable_warehouse BOOL;
 BEGIN
 
@@ -559,8 +561,8 @@ CREATE OR REPLACE FUNCTION trigger_on_insert_product_import()
   AS
 $$
 DECLARE
-   _inventory_number INTEGER;
-   _inventory_number_new INTEGER;
+   _inventory_number float8;
+   _inventory_number_new float8;
    _buy_price float8;
    _buy_price_new float8;
    _enable_warehouse BOOL;
@@ -635,8 +637,8 @@ CREATE OR REPLACE FUNCTION trigger_on_delete_product_import()
   AS
 $$
 DECLARE
-   _inventory_number INTEGER;
-   _inventory_number_new INTEGER;
+   _inventory_number float8;
+   _inventory_number_new float8;
    _buy_price float8;
    _buy_price_new float8;
    _enable_warehouse BOOL;
@@ -706,8 +708,8 @@ CREATE OR REPLACE FUNCTION trigger_on_update_product_import()
   AS
 $$
 DECLARE
-   _inventory_number INTEGER;
-   _inventory_number_new INTEGER;
+   _inventory_number float8;
+   _inventory_number_new float8;
    _buy_price float8;
    _buy_price_new float8;
    _enable_warehouse BOOL;
@@ -977,7 +979,7 @@ CREATE OR REPLACE FUNCTION create_group_import_for_product_import(_group_id VARC
   AS
 $$
 DECLARE
-   _amount INTEGER;
+   _amount float8;
    _price float8;
 BEGIN
 

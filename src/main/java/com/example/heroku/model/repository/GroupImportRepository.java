@@ -17,7 +17,7 @@ public interface GroupImportRepository extends ReactiveCrudRepository<GroupImpor
     Mono<GroupImport> inertOrUpdate(@Param("group_id") String group_id, @Param("group_import_second_id") String group_import_second_id,
                                     @Param("supplier_id") String supplier_id, @Param("supplier_name") String supplier_name, @Param("supplier_phone") String supplier_phone,
                                     @Param("total_price") float total_price,
-                                    @Param("total_amount") int total_amount, @Param("payment") float payment,
+                                    @Param("total_amount") float total_amount, @Param("payment") float payment,
                                     @Param("discount_amount") float discount_amount, @Param("discount_percent") float discount_percent,
                                     @Param("additional_fee") float additional_fee, @Param("progress") String progress, @Param("note") String note,
                                     @Param("images") String images, @Param("type") ProductImport.ImportType type,

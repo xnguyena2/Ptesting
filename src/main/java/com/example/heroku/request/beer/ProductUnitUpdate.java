@@ -15,7 +15,7 @@ public class ProductUnitUpdate {
     private String product_second_id;
     private String product_unit_second_id;
 
-    private int inventory_number;
+    private float inventory_number;
     private boolean enable_warehouse;
     private ProductUnit.Status status;
 }
