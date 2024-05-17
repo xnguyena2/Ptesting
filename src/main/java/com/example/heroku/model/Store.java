@@ -31,6 +31,9 @@ public class Store extends BaseEntity {
 
     private StoreType store_type;
 
+    private String payment_status;
+
+
     public Store AutoFill(String groupID) {
         super.AutoFill();
         this.group_id = groupID;
