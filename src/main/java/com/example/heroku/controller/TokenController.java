@@ -1,20 +1,16 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.jwt.JwtTokenProvider;
-import com.example.heroku.model.Image;
 import com.example.heroku.model.Tokens;
 import com.example.heroku.model.Users;
+import com.example.heroku.model.repository.UserRepository;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
 import com.example.heroku.status.ActiveStatus;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -30,6 +26,23 @@ public class TokenController {
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    UserRepository userRepository;
+
+
+    @PostMapping("/createwithoutpermission")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<Tokens> createTokenWithoutPermission(@RequestBody @Valid IDContainer idContainer) {
+        return userRepository.findByUsername(idContainer.getId())
+                .map(u -> {
+                            u.setPassword(u.getPassword().trim());
+                            return u.parseauthorities();
+                        }
+                )
+                .map(this.jwtTokenProvider::createToken)
+                .flatMap(s -> tokens.createToken(idContainer.getGroup_id(), idContainer.getId(), s));
+    }
 
 
     @PostMapping("/create")
