@@ -111,6 +111,46 @@ public class UserAccountTest {
                 })
                 .verifyComplete();
 
+        userAccount.getAllUserClean(SearchQuery.builder().page(0).size(100).group_id(group).build())
+                .sort(Comparator.comparing(com.example.heroku.model.joinwith.UserJoinUserInfo::getUsername))
+                .as(StepVerifier::create)
+                .consumeNextWith(usersInfo -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(usersInfo));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(usersInfo.getUsername()).isEqualTo("binhdiepquin");
+                    assertThat(usersInfo.getUser_fullname()).isEqualTo(null);
+                    assertThat(usersInfo.getPhone()).isEqualTo(null);
+                    assertThat(usersInfo.getTitle()).isEqualTo(null);
+                    assertThat(usersInfo.getClient_roles()).isEqualTo(null);
+                })
+                .consumeNextWith(usersInfo -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(usersInfo));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(usersInfo.getUsername()).isEqualTo("phong test");
+                    assertThat(usersInfo.getUser_fullname()).isEqualTo(null);
+                    assertThat(usersInfo.getPhone()).isEqualTo("121");
+                    assertThat(usersInfo.getTitle()).isEqualTo("giam doc");
+                    assertThat(usersInfo.getClient_roles()).isEqualTo("r1,r2");
+                })
+                .consumeNextWith(usersInfo -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(usersInfo));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(usersInfo.getUser_fullname()).isEqualTo("pong");
+                    assertThat(usersInfo.getPhone()).isEqualTo("121");
+                    assertThat(usersInfo.getTitle()).isEqualTo("giam doc");
+                    assertThat(usersInfo.getClient_roles()).isEqualTo("r1,r2");
+                })
+                .verifyComplete();
+
         this.userAccount.getAll(SearchQuery.builder().page(0).size(100).group_id(group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
@@ -134,6 +174,19 @@ public class UserAccountTest {
                                 assertThat(users.getUsername()).isEqualTo("pong test");
                             })
                             .verifyComplete();
+                })
+                .verifyComplete();
+
+        this.userAccount.getUserClean("phong test")
+                .as(StepVerifier::create)
+                .consumeNextWith(resultWithCount -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(resultWithCount.getUsername()).isEqualTo("phong test");
+                    assertThat(resultWithCount.getPassword()).isEqualTo(null);
                 })
                 .verifyComplete();
 
@@ -278,6 +331,19 @@ public class UserAccountTest {
                                 assertThat(users.getUsername()).isEqualTo("phong test2");
                             })
                             .verifyComplete();
+                })
+                .verifyComplete();
+
+        this.userAccount.getUserClean("phong test2")
+                .as(StepVerifier::create)
+                .consumeNextWith(resultWithCount -> {
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    assertThat(resultWithCount.getUsername()).isEqualTo("phong test2");
+                    assertThat(resultWithCount.getPassword()).isEqualTo(null);
                 })
                 .verifyComplete();
 

@@ -1,6 +1,7 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.Users;
+import com.example.heroku.model.joinwith.UserJoinUserInfo;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.beer.SearchResult;
 import com.example.heroku.request.permission.WrapPermissionAction;
@@ -8,6 +9,7 @@ import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -29,5 +31,17 @@ public class AccountController {
                 .monoAction(q -> userAccount.getAll(q))
                 .build()
                 .toMono();
+    }
+
+    @PostMapping("/admin/getallclean")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<UserJoinUserInfo> getAllClean(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
+        System.out.println("Get all account!");
+        return WrapPermissionAction.<UserJoinUserInfo>builder()
+                .principal(principal)
+                .query(query)
+                .fluxAction(q -> userAccount.getAllUserClean(q))
+                .build()
+                .toFlux();
     }
 }
