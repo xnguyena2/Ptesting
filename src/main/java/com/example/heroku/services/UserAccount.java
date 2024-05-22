@@ -1,6 +1,8 @@
 package com.example.heroku.services;
 
 import com.example.heroku.model.Users;
+import com.example.heroku.model.joinwith.UserJoinUserInfo;
+import com.example.heroku.model.repository.JoinUsersWithUsersInfoRepository;
 import com.example.heroku.model.repository.ResultWithCountRepository;
 import com.example.heroku.model.repository.UserRepository;
 import com.example.heroku.request.beer.SearchQuery;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
@@ -31,6 +34,9 @@ public class UserAccount {
 
     @Autowired
     private UsersInfo usersInfo;
+
+    @Autowired
+    JoinUsersWithUsersInfoRepository joinUsersWithUsersInfoRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -96,8 +102,12 @@ public class UserAccount {
         return userRepository.findByUsername(username);
     }
 
-    public Mono<Users> getUserClean(String username) {
-        return getUser(username).map(Users::Clean);
+    public Mono<UserJoinUserInfo> getUserClean(String username) {
+        return joinUsersWithUsersInfoRepository.findByUserName(username).map(UserJoinUserInfo::Clean);
+    }
+
+    public Flux<UserJoinUserInfo> getAllUserClean(SearchQuery searchQuery) {
+        return joinUsersWithUsersInfoRepository.getAllUserFullInfo(searchQuery.getGroup_id(), searchQuery.getPage(), searchQuery.getSize()).map(UserJoinUserInfo::Clean);
     }
 
     public Mono<ResponseEntity> deleteAccount(Mono<Users> principal, UpdatePassword update) {

@@ -4,6 +4,7 @@ package com.example.heroku;
 import com.example.heroku.jwt.JwtTokenProvider;
 import com.example.heroku.model.Tokens;
 import com.example.heroku.model.Users;
+import com.example.heroku.model.joinwith.UserJoinUserInfo;
 import com.example.heroku.request.data.AuthenticationRequest;
 import com.example.heroku.request.data.UpdatePassword;
 import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
@@ -213,7 +214,7 @@ public class AuthenticationController {
 
     @GetMapping("/account/info")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<Users> getAccountInfo(@AuthenticationPrincipal Mono<Users> principal) {
+    public Mono<UserJoinUserInfo> getAccountInfo(@AuthenticationPrincipal Mono<Users> principal) {
         return principal.flatMap(users -> userServices.getUserClean(users.getUsername()));
     }
 
