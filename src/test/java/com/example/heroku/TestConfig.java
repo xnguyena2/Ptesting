@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "JWT_TIME_EXPIRE=3600000",
         "INIT_ADMIN_NAME=binhdiepquin",
         "INIT_ADMIN_PASSWORD=binhdiepquin123",
-        "INIT_ADMIN_STORE=trumbien_store",
+        "INIT_ADMIN_STORE=trumbien_store_binhdiepquin",
         "LOGS_LEVEL=INFO",
         "THYMELEFT=HTML",
         "RUN_MODE=dev",
