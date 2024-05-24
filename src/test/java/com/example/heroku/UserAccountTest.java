@@ -218,7 +218,7 @@ public class UserAccountTest {
                 })
                 .verifyComplete();
 
-        this.userAccount.deleteAccount(Mono.just(Users.builder().username(adminName).build()), UpdatePassword.builder().username("phong test").build()).block();
+        this.userAccount.deleteAccount(Mono.just(Users.builder().username(adminName).group_id(group).build()), UpdatePassword.builder().username("phong test").build()).block();
 
         this.userAccount.getUser("phong test")
                 .as(StepVerifier::create)
@@ -282,7 +282,7 @@ public class UserAccountTest {
                 })
                 .verifyComplete();
 
-        this.userAccount.deleteAccount(Mono.just(Users.builder().username(adminName).build()), UpdatePassword.builder().username("pong test").build()).block();
+        this.userAccount.deleteAccount(Mono.just(Users.builder().username(adminName).group_id(group).build()), UpdatePassword.builder().username("pong test").build()).block();
 
         this.userAccount.getAll(SearchQuery.builder().page(0).size(100).group_id(group).build())
                 .as(StepVerifier::create)
@@ -375,7 +375,7 @@ public class UserAccountTest {
                 })
                 .verifyComplete();
 
-        this.userAccount.deleteAccount(Mono.just(Users.builder().username(adminName).build()), UpdatePassword.builder().username("phong test2").build()).block();
+        this.userAccount.deleteAccount(Mono.just(Users.builder().username(adminName).group_id(group).build()), UpdatePassword.builder().username("phong test2").build()).block();
 
         this.userAccount.getUser("phong test2")
                 .as(StepVerifier::create)
