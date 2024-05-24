@@ -114,7 +114,12 @@ public class UserAccount {
 
         return principal
                 .flatMap(authentication ->
-                        userRepository.isPermissionAllow(authentication.getUsername(), update.getUsername())
+                        {
+                            if (authentication.getGroup_id().endsWith("_" + authentication.getUsername()) && !authentication.getUsername().equals(update.getUsername())) {
+                                return Mono.just(true);
+                            }
+                            return userRepository.isPermissionAllow(authentication.getUsername(), update.getUsername());
+                        }
                 )
                 .filter(x -> x)
                 .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned2")))
