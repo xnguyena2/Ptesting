@@ -89,6 +89,27 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    private String createToken(String userName, Collection<? extends GrantedAuthority> authorities, String groupID, long validityInMs) {
+        Claims claims = Jwts.claims().setSubject(userName);
+        if (!authorities.isEmpty()) {
+            claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority).collect(joining(",")));
+        }
+
+        if (groupID != null) {
+            claims.put(GROUP_ID_KEY, groupID);
+        }
+
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + validityInMs);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(this.secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public String createToken(UserDetails user){
 
         String groupID = null;
@@ -99,6 +120,18 @@ public class JwtTokenProvider {
         String username = user.getUsername();
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
         return createToken(username, authorities, groupID);
+    }
+
+    public String createToken(UserDetails user, long validityInMs){
+
+        String groupID = null;
+        if (user instanceof Users) {
+            groupID = ((Users) user).getGroup_id();
+        }
+
+        String username = user.getUsername();
+        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+        return createToken(username, authorities, groupID, validityInMs);
     }
 
     public String createToken(Authentication authentication) {

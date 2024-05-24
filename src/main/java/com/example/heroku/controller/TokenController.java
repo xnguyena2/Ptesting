@@ -6,6 +6,7 @@ import com.example.heroku.model.Users;
 import com.example.heroku.model.repository.UserRepository;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.carousel.IDContainer;
+import com.example.heroku.request.client.TokenID;
 import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
 import com.example.heroku.status.ActiveStatus;
 import com.example.heroku.util.Util;
@@ -47,9 +48,9 @@ public class TokenController {
 
     @PostMapping("/admin/create")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<Tokens> createTokenForStaff(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
+    public Mono<Tokens> createTokenForStaff(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid TokenID tokenID) {
 
-        return userRepository.findByUsername(idContainer.getId())
+        return userRepository.findByUsername(tokenID.getId())
                 .map(u -> {
                             u.setPassword(u.getPassword().trim());
                             return u.parseauthorities();
@@ -58,8 +59,8 @@ public class TokenController {
                 .flatMap(users -> WrapPermissionGroupWithPrincipalAction.<Tokens>builder()
                         .principal(principal)
                         .subject(users::getGroup_id)
-                        .monoAction(() -> Mono.just(jwtTokenProvider.createToken(users))
-                                .flatMap(s -> tokens.createToken(users.getGroup_id(), idContainer.getId(), s))
+                        .monoAction(() -> Mono.just(jwtTokenProvider.createToken(users, tokenID.getTime_life_mili_secs()))
+                                .flatMap(s -> tokens.createToken(users.getGroup_id(), tokenID.getId(), s))
                         )
                         .build().toMono()
                 );
