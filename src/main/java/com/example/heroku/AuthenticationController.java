@@ -227,6 +227,11 @@ public class AuthenticationController {
         Util.ROLE role = Util.ROLE.get(newAccount.getRoles().get(0));
         Util.ROLE creatorRole = getRole(principal);
 
+        //we must allow only admin can create user because this can got hack, because before create user it delete anyway
+//        if (!principal.getGroup_id().endsWith("_" + principal.getUsername())) {
+//            throw new AccessDeniedException("you not admin!!");
+//        }
+
         if (role == null || creatorRole == null) {
             throw new AccessDeniedException("403 creator or new account role is null!!");
         }
@@ -242,7 +247,7 @@ public class AuthenticationController {
         return WrapPermissionGroupWithPrincipalAction.<Users>builder()
                 .principal(Mono.just(principal))
                 .subject(newAccount::getGroup_id)
-                .monoAction(() -> userServices.createAccount(principal.getUsername(), newAccount))
+                .monoAction(() -> userServices.createAccountByAdmin(principal.getUsername(), newAccount))
                 .build().toMono();
     }
 
