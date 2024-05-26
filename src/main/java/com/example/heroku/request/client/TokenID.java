@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class TokenID {
     private String group_id;
-    private String id;
+    private String user_id;
+    private String token_id;
     private long time_life_mili_secs;
 }

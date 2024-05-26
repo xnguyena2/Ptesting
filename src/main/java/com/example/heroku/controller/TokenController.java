@@ -50,7 +50,7 @@ public class TokenController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> createTokenForStaff(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid TokenID tokenID) {
 
-        return userRepository.findByUsername(tokenID.getId())
+        return userRepository.findByUsername(tokenID.getUser_id())
                 .map(u -> {
                             u.setPassword(u.getPassword().trim());
                             return u.parseauthorities();
@@ -60,7 +60,7 @@ public class TokenController {
                         .principal(principal)
                         .subject(users::getGroup_id)
                         .monoAction(() -> Mono.just(jwtTokenProvider.createToken(users, tokenID.getTime_life_mili_secs()))
-                                .flatMap(s -> tokens.createToken(users.getGroup_id(), tokenID.getId(), s))
+                                .flatMap(s -> tokens.createToken(users.getGroup_id(), tokenID.getToken_id(), s))
                         )
                         .build().toMono()
                 );
