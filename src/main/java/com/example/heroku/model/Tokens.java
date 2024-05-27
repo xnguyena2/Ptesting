@@ -25,6 +25,10 @@ public class Tokens extends BaseEntity {
 
     private String token;
 
+    private String username;
+
+    private long expire;
+
     private ActiveStatus status;
 
     public Tokens AutoFill() {

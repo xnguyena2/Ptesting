@@ -19,10 +19,12 @@ public class Tokens {
     TokensRepository tokensRepository;
 
 
-    public Mono<com.example.heroku.model.Tokens> createToken(String groupID, String tokenID, String token) {
+    public Mono<com.example.heroku.model.Tokens> createToken(String groupID, String tokenID, String token, String username, long expired) {
         com.example.heroku.model.Tokens tokens = com.example.heroku.model.Tokens.builder()
                 .token_second_id(tokenID)
                 .token(token)
+                .username(username)
+                .expire(expired)
                 .status(ActiveStatus.ACTIVE)
                 .build();
         tokens.AutoFill(groupID);
@@ -37,6 +39,10 @@ public class Tokens {
         return this.tokensRepository.findByIdNotNull(query.getGroup_id(), query.getPage(), query.getSize());
     }
 
+    public Flux<com.example.heroku.model.Tokens> getAllTokenByUserID(SearchQuery query) {
+        return this.tokensRepository.getByUserID(query.getGroup_id(), query.getQuery());
+    }
+
     public Mono<com.example.heroku.model.Tokens> changeTokensStatus(String groupID, String tokenID, String status) {
         return this.tokensRepository.updateStatus(groupID, tokenID, ActiveStatus.get(status));
     }
@@ -47,6 +53,10 @@ public class Tokens {
 
     public Mono<com.example.heroku.model.Tokens> deleteByID(String gorupID, String id) {
         return this.tokensRepository.deleteByID(gorupID, id);
+    }
+
+    public Mono<com.example.heroku.model.Tokens> deleteByUserID(String gorupID, String id) {
+        return this.tokensRepository.deleteByUserID(gorupID, id);
     }
 
     public Mono<Boolean> isCorrectStatus(String token, ActiveStatus status) {

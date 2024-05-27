@@ -42,7 +42,7 @@ public class TokenController {
                         }
                 )
                 .map(this.jwtTokenProvider::createToken)
-                .flatMap(s -> tokens.createToken(idContainer.getGroup_id(), idContainer.getId(), s));
+                .flatMap(s -> tokens.createToken(idContainer.getGroup_id(), idContainer.getId(), s, idContainer.getId(), 0));
     }
 
 
@@ -50,7 +50,7 @@ public class TokenController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> createTokenForStaff(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid TokenID tokenID) {
 
-        return userRepository.findByUsername(tokenID.getId())
+        return userRepository.findByUsername(tokenID.getUser_id())
                 .map(u -> {
                             u.setPassword(u.getPassword().trim());
                             return u.parseauthorities();
@@ -60,7 +60,7 @@ public class TokenController {
                         .principal(principal)
                         .subject(users::getGroup_id)
                         .monoAction(() -> Mono.just(jwtTokenProvider.createToken(users, tokenID.getTime_life_mili_secs()))
-                                .flatMap(s -> tokens.createToken(users.getGroup_id(), tokenID.getId(), s))
+                                .flatMap(s -> tokens.createToken(users.getGroup_id(), tokenID.getToken_id(), s, tokenID.getUser_id(), tokenID.getTime_life_mili_secs()))
                         )
                         .build().toMono()
                 );
@@ -75,8 +75,10 @@ public class TokenController {
                 .principal(principal)
                 .subject(idContainer::getGroup_id)
                 .monoAction(() -> principal
-                        .map(this.jwtTokenProvider::createToken)
-                        .flatMap(s -> tokens.createToken(idContainer.getGroup_id(), idContainer.getId(), s))
+                        .flatMap(users -> Mono.just(this.jwtTokenProvider.createToken(users))
+                                .flatMap(s -> tokens.createToken(idContainer.getGroup_id(), idContainer.getId(), s, users.getUsername(), 0)
+                                )
+                        )
                 )
                 .build().toMono();
     }
@@ -94,6 +96,18 @@ public class TokenController {
     }
 
 
+    @PostMapping("/deletebyuser")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<Tokens> deleteTokenByUser(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
+
+        return WrapPermissionGroupWithPrincipalAction.<Tokens>builder()
+                .principal(principal)
+                .subject(idContainer::getGroup_id)
+                .monoAction(() -> principal.flatMap(users -> tokens.deleteByUserID(users.getGroup_id(), users.getUsername())))
+                .build().toMono();
+    }
+
+
     @PostMapping("/markinvalid")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> invalidToken(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
@@ -105,10 +119,16 @@ public class TokenController {
                 .build().toMono();
     }
 
-    @PostMapping("/getall/{groupid}")
+    @PostMapping("/getall")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<Tokens> getAllToken(@RequestBody @Valid SearchQuery query) {
+    public Flux<Tokens> getAllToken(@AuthenticationPrincipal Users principal, @RequestBody @Valid SearchQuery query) {
         return tokens.getAllToken(query);
+    }
+
+    @PostMapping("/getallbyuser")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<Tokens> getAllTokenByUserID(@AuthenticationPrincipal Users principal, @RequestBody @Valid SearchQuery query) {
+        return tokens.getAllTokenByUserID(query);
     }
 
     @GetMapping("/get/{tokenid}")

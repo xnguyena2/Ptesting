@@ -19,46 +19,65 @@ public class TokenTest {
     String group;
 
     public void test() {
-        tokens.createToken(group,group+"token_1", group+"ttttttt").block();
-        tokens.createToken(group,group+"token_2", "aaaaaaa").block();
-        tokens.createToken(group,group+"token_3", "bbbbbbb").block();
+        tokens.createToken(group, group + "token_1", group + "ttttttt", "user1", 0).block();
+        tokens.createToken(group, group + "token_2", "aaaaaaa", "user2", 10).block();
+        tokens.createToken(group, group + "token_3", "bbbbbbb", "user2", 10).block();
         tokens.getAllToken(SearchQuery.builder().group_id(group).page(0).size(1000).build())
                 .sort(Comparator.comparing(com.example.heroku.model.Tokens::getToken_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(tokens -> {
                     assertThat(tokens.getGroup_id()).isEqualTo(group);
-                    assertThat(tokens.getToken_second_id()).isEqualTo(group+"token_1");
-                    assertThat(tokens.getToken()).isEqualTo(group+"ttttttt");
+                    assertThat(tokens.getToken_second_id()).isEqualTo(group + "token_1");
+                    assertThat(tokens.getToken()).isEqualTo(group + "ttttttt");
+                    assertThat(tokens.getExpire()).isEqualTo(0);
                     assertThat(tokens.getStatus()).isEqualTo(ActiveStatus.ACTIVE);
                 })
                 .consumeNextWith(tokens -> {
                     assertThat(tokens.getGroup_id()).isEqualTo(group);
-                    assertThat(tokens.getToken_second_id()).isEqualTo(group+"token_2");
+                    assertThat(tokens.getToken_second_id()).isEqualTo(group + "token_2");
+                    assertThat(tokens.getToken()).isEqualTo("aaaaaaa");
+                    assertThat(tokens.getExpire()).isEqualTo(10);
+                    assertThat(tokens.getStatus()).isEqualTo(ActiveStatus.ACTIVE);
+                })
+                .consumeNextWith(tokens -> {
+                    assertThat(tokens.getGroup_id()).isEqualTo(group);
+                    assertThat(tokens.getToken_second_id()).isEqualTo(group + "token_3");
+                    assertThat(tokens.getToken()).isEqualTo("bbbbbbb");
+                    assertThat(tokens.getExpire()).isEqualTo(10);
+                    assertThat(tokens.getStatus()).isEqualTo(ActiveStatus.ACTIVE);
+                })
+                .verifyComplete();
+        tokens.getAllTokenByUserID(SearchQuery.builder().group_id(group).query("user2").page(0).size(1000).build())
+                .sort(Comparator.comparing(com.example.heroku.model.Tokens::getToken_second_id))
+                .as(StepVerifier::create)
+                .consumeNextWith(tokens -> {
+                    assertThat(tokens.getGroup_id()).isEqualTo(group);
+                    assertThat(tokens.getToken_second_id()).isEqualTo(group + "token_2");
                     assertThat(tokens.getToken()).isEqualTo("aaaaaaa");
                     assertThat(tokens.getStatus()).isEqualTo(ActiveStatus.ACTIVE);
                 })
                 .consumeNextWith(tokens -> {
                     assertThat(tokens.getGroup_id()).isEqualTo(group);
-                    assertThat(tokens.getToken_second_id()).isEqualTo(group+"token_3");
+                    assertThat(tokens.getToken_second_id()).isEqualTo(group + "token_3");
                     assertThat(tokens.getToken()).isEqualTo("bbbbbbb");
                     assertThat(tokens.getStatus()).isEqualTo(ActiveStatus.ACTIVE);
                 })
                 .verifyComplete();
-        tokens.changeTokensStatus(group, group+"token_2", ActiveStatus.DE_ACTIVE.toString()).block();
-        tokens.getToken(group+"token_2")
+        tokens.changeTokensStatus(group, group + "token_2", ActiveStatus.DE_ACTIVE.toString()).block();
+        tokens.getToken(group + "token_2")
                 .as(StepVerifier::create)
                 .consumeNextWith(tokens -> {
                     assertThat(tokens.getGroup_id()).isEqualTo(group);
-                    assertThat(tokens.getToken_second_id()).isEqualTo(group+"token_2");
+                    assertThat(tokens.getToken_second_id()).isEqualTo(group + "token_2");
                     assertThat(tokens.getToken()).isEqualTo("aaaaaaa");
                     assertThat(tokens.getStatus()).isEqualTo(ActiveStatus.DE_ACTIVE);
                 })
                 .verifyComplete();
-        tokens.deleteByID(group, group+"token_3").block();
-        tokens.getToken(group+"token_3")
+        tokens.deleteByID(group, group + "token_3").block();
+        tokens.getToken(group + "token_3")
                 .as(StepVerifier::create)
                 .verifyComplete();
-        tokens.isCorrectStatus(group+"ttttttt", ActiveStatus.ACTIVE)
+        tokens.isCorrectStatus(group + "ttttttt", ActiveStatus.ACTIVE)
                 .as(StepVerifier::create)
                 .consumeNextWith(status -> {
                     assertThat(status).isEqualTo(Boolean.TRUE);
@@ -69,16 +88,21 @@ public class TokenTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(tokens -> {
                     assertThat(tokens.getGroup_id()).isEqualTo(group);
-                    assertThat(tokens.getToken_second_id()).isEqualTo(group+"token_1");
-                    assertThat(tokens.getToken()).isEqualTo(group+"ttttttt");
+                    assertThat(tokens.getToken_second_id()).isEqualTo(group + "token_1");
+                    assertThat(tokens.getToken()).isEqualTo(group + "ttttttt");
                     assertThat(tokens.getStatus()).isEqualTo(ActiveStatus.ACTIVE);
                 })
                 .consumeNextWith(tokens -> {
                     assertThat(tokens.getGroup_id()).isEqualTo(group);
-                    assertThat(tokens.getToken_second_id()).isEqualTo(group+"token_2");
+                    assertThat(tokens.getToken_second_id()).isEqualTo(group + "token_2");
                     assertThat(tokens.getToken()).isEqualTo("aaaaaaa");
                     assertThat(tokens.getStatus()).isEqualTo(ActiveStatus.DE_ACTIVE);
                 })
+                .verifyComplete();
+        tokens.deleteByUserID(group, "user2").block();
+        tokens.getAllTokenByUserID(SearchQuery.builder().group_id(group).query("user2").page(0).size(1000).build())
+                .sort(Comparator.comparing(com.example.heroku.model.Tokens::getToken_second_id))
+                .as(StepVerifier::create)
                 .verifyComplete();
         tokens.deleteAllToken(group).block();
         tokens.getAllToken(SearchQuery.builder().group_id(group).page(0).size(1000).build())
