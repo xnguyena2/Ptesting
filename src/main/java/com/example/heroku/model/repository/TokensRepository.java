@@ -18,6 +18,9 @@ public interface TokensRepository extends ReactiveCrudRepository<Tokens, Long> {
     @Query(value = "SELECT * FROM tokens WHERE tokens.token_second_id = :token_second_id")
     Mono<Tokens> getById(@Param("token_second_id")String token_second_id);
 
+    @Query(value = "SELECT * FROM tokens WHERE tokens.group_id = :group_id AND tokens.username = :username")
+    Flux<Tokens> getByUserID(@Param("group_id")String group_id, @Param("username")String username);
+
     @Query(value = "UPDATE tokens SET status = :status WHERE tokens.group_id = :group_id AND tokens.token_second_id = :token_second_id")
     Mono<Tokens> updateStatus(@Param("group_id")String group_id, @Param("token_second_id") String token_second_id, @Param("status") ActiveStatus status);
 
@@ -26,6 +29,9 @@ public interface TokensRepository extends ReactiveCrudRepository<Tokens, Long> {
 
     @Query(value = "DELETE FROM tokens WHERE tokens.group_id = :group_id AND tokens.token_second_id = :token_second_id")
     Mono<Tokens> deleteByID(@Param("group_id")String group_id, @Param("token_second_id")String token_second_id);
+
+    @Query(value = "DELETE FROM tokens WHERE tokens.group_id = :group_id AND tokens.username = :username")
+    Mono<Tokens> deleteByUserID(@Param("group_id")String group_id, @Param("username")String username);
 
     @Query(value = "SELECT EXISTS(SELECT 1 FROM tokens WHERE token = :token AND status = :status)")
     Mono<Boolean> isTokenMatchStatus(@Param("token")String token, @Param("status") ActiveStatus status);

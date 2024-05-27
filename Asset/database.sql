@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS payment_transaction (id SERIAL PRIMARY KEY, group_id 
 CREATE TABLE IF NOT EXISTS table_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, area_id VARCHAR, table_id VARCHAR, table_name VARCHAR, package_second_id VARCHAR, detail VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS area (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, area_id VARCHAR, area_name VARCHAR, detail VARCHAR, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS tokens (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, token_second_id VARCHAR, token VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS tokens (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, token_second_id VARCHAR, username VARCHAR, expire BIGINT, token VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS delete_request (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, delete_request_id VARCHAR, user_id VARCHAR, status VARCHAR, createat TIMESTAMP);
 
