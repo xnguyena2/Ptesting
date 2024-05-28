@@ -103,7 +103,7 @@ public class TokenController {
         return WrapPermissionGroupWithPrincipalAction.<Tokens>builder()
                 .principal(principal)
                 .subject(idContainer::getGroup_id)
-                .monoAction(() -> principal.flatMap(users -> tokens.deleteByUserID(users.getGroup_id(), users.getUsername())))
+                .monoAction(() -> principal.flatMap(users -> tokens.deleteByUserID(idContainer.getGroup_id(), idContainer.getId())))
                 .build().toMono();
     }
 
