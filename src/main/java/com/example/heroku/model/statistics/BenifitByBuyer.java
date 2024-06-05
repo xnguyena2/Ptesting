@@ -6,6 +6,7 @@ import lombok.Data;
 public class BenifitByBuyer {
     private String id;
     private String name;
+    private String phone;
     private float revenue;
     private float profit;
     private int count;
