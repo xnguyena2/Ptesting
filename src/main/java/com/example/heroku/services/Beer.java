@@ -114,9 +114,14 @@ public class Beer {
                 .flatMap(this::CoverToSubmitData);
     }
 
+    @Deprecated
     public Flux<BeerSubmitData> GetAllBeerByJoinFirst(SearchQuery query) {
         return this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHide(query)
                 .flatMap(this::_setImg4SubmitData);
+    }
+
+    public Flux<BeerSubmitData> GetAllBeerByJoinFirstWithoutImage(SearchQuery query) {
+        return this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHide(query);
     }
 
     public Flux<BeerSubmitData> GetAllBeerByJoinFirstForWeb(SearchQuery query) {
