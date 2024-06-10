@@ -105,8 +105,8 @@ public class Beer {
     }
 
     public Mono<BeerSubmitData> GetBeerByIDWithUnit(String  groupID, String productID, String productUnitID) {
-        return beerRepository.findBySecondID(groupID, productID)
-                .flatMap(product -> CoverToSubmitDataWithUnitID(product, productUnitID));
+        return this.joinProductWithProductUnit.GetProductAndUnit(groupID, productID, productUnitID)
+                .flatMap(this::_setImg4SubmitData);
     }
 
     public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {
@@ -216,11 +216,7 @@ public class Beer {
                                                 .map(beerSubmitData::SetBeerUnit)
                                 )
                 )
-                .flatMap(beerSubmitData ->
-                        imageRepository.findByCategory(beerSubmitData.getGroup_id(), beerSubmitData.getBeerSecondID())
-                                .map(beerSubmitData::AddImage)
-                                .then(Mono.just(beerSubmitData))
-                );
+                .flatMap(this::_setImg4SubmitData);
     }
 
     private Mono<BeerSubmitData> _setImg4SubmitData(BeerSubmitData beerSubmitData) {
@@ -243,11 +239,7 @@ public class Beer {
                                                 .map(beerSubmitData::SetBeerUnit)
                                 )
                 )
-                .flatMap(beerSubmitData ->
-                        imageRepository.findByCategory(beerSubmitData.getGroup_id(), beerSubmitData.getBeerSecondID())
-                                .map(beerSubmitData::AddImage)
-                                .then(Mono.just(beerSubmitData))
-                );
+                .flatMap(this::_setImg4SubmitData);
     }
 
     public Mono<SearchResult<BeerSubmitData>> AdminCountSearchBeer(SearchQuery query) {

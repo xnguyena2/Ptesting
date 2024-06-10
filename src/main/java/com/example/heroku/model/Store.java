@@ -31,6 +31,10 @@ public class Store extends BaseEntity {
 
     private StoreType store_type;
 
+    private float each_month;
+    private float half_year;
+    private float each_year;
+
     private String payment_status;
 
 
