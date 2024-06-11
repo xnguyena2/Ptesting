@@ -1589,6 +1589,7 @@ public class UserPackageTest {
                 .consumeNextWith(data -> {
                     assertThat(data.getName()).isEqualTo(null);
                     assertThat(data.getId()).isEqualTo(null);
+                    assertThat(data.getPhone()).isEqualTo(null);
                     assertThat(data.getCount()).isEqualTo(2);
                     assertThat(data.getRevenue()).isEqualTo(0.0f);// 7*3*(1-0.1) - 19
                     assertThat(data.getProfit()).isEqualTo(0.0f);// 7*3*(1-0.1) - 19
@@ -1596,6 +1597,7 @@ public class UserPackageTest {
                 .consumeNextWith(data -> {
                     assertThat(data.getName()).isEqualTo(null);
                     assertThat(data.getId()).isEqualTo("nguyen_phong");
+                    assertThat(data.getPhone()).isEqualTo(null);
                     assertThat(data.getCount()).isEqualTo(1);
                     assertThat(data.getRevenue()).isEqualTo(7868.0f);// 7*3*(1-0.1) - 19
                     assertThat(data.getProfit()).isEqualTo(7878.0f);// 7*3*(1-0.1) - 19
