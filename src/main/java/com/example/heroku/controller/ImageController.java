@@ -59,12 +59,8 @@ public class ImageController {
 
     @GetMapping("/{groupid}/{id}/img/all")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<Image> getIMGbyIDWihtoutPermission(@AuthenticationPrincipal Mono<Users> principal, @PathVariable("groupid") String groupid, @PathVariable("id") String categoryID) {
-        return WrapPermissionGroupWithPrincipalAction.<Image>builder()
-                .principal(principal)
-                .subject(() -> groupid)
-                .fluxAction(() -> imageAPI.GetAll(groupid, categoryID))
-                .build().toFlux();
+    public Flux<Image> getIMGbyIDWihtoutPermission(@PathVariable("groupid") String groupid, @PathVariable("id") String categoryID) {
+        return imageAPI.GetAll(groupid, categoryID);
     }
 
     //--------------------end manage image-----------------
