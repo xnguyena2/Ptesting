@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -131,6 +132,11 @@ public class BeerSubmitData {
             this.images = new ArrayList<>();
         }
         this.images.add(image);
+        return this;
+    }
+
+    public BeerSubmitData SetImg(Map<String, List<Image>> mapImg) {
+        this.images = mapImg.get(beerSecondID);
         return this;
     }
 
