@@ -17,7 +17,9 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class Beer {
@@ -114,14 +116,21 @@ public class Beer {
                 .flatMap(this::CoverToSubmitData);
     }
 
-    @Deprecated
     public Flux<BeerSubmitData> GetAllBeerByJoinFirst(SearchQuery query) {
-        return this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHide(query)
-                .flatMap(this::_setImg4SubmitData);
-    }
-
-    public Flux<BeerSubmitData> GetAllBeerByJoinFirstWithoutImage(SearchQuery query) {
-        return this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHide(query);
+        Map<String, List<com.example.heroku.model.Image>> imgMap = new HashMap<>();
+        return Mono.just(imgMap).flatMap(stringListMap ->
+                imageRepository.getAllOfProduct(query.getGroup_id())
+                        .groupBy(com.example.heroku.model.Image::getCategory)
+                        .flatMap(stringImageGroupedFlux ->
+                                stringImageGroupedFlux.collectList().map(images -> {
+                                    stringListMap.put(images.get(0).getCategory(), images);
+                                    return 0;
+                                })
+                        ).then(Mono.just(stringListMap))
+        ).flatMapMany(mapMono ->
+                this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHide(query)
+                        .map(beerSubmitData -> beerSubmitData.SetImg(mapMono))
+        );
     }
 
     public Flux<BeerSubmitData> GetAllBeerByJoinFirstForWeb(SearchQuery query) {
