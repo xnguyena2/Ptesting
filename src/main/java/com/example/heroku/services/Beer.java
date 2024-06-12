@@ -3,6 +3,7 @@ package com.example.heroku.services;
 import com.example.heroku.model.Product;
 import com.example.heroku.model.ProductImport;
 import com.example.heroku.model.ProductUnit;
+import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.repository.*;
 import com.example.heroku.request.beer.*;
 import com.example.heroku.request.carousel.IDContainer;
@@ -101,6 +102,34 @@ public class Beer {
                 );
     }
 
+    public Mono<Map<String, List<com.example.heroku.model.Image>>> GetListImgOfProductOfPackage(String group_id, UserPackageDetail.Status status, UserPackageDetail.Status or_status, int page, int size) {
+        Map<String, List<com.example.heroku.model.Image>> imgMap = new HashMap<>();
+        return Mono.just(imgMap).flatMap(stringListMap ->
+                imageRepository.getAllOfProductByPackage(group_id, status, or_status, page, size)
+                        .groupBy(com.example.heroku.model.Image::getCategory)
+                        .flatMap(stringImageGroupedFlux ->
+                                stringImageGroupedFlux.collectList().map(images -> {
+                                    stringListMap.put(images.get(0).getCategory(), images);
+                                    return 0;
+                                })
+                        ).then(Mono.just(stringListMap))
+        );
+    }
+
+    public Mono<Map<String, List<com.example.heroku.model.Image>>> GetListImgOfProductOfPackageAfterID(String group_id, UserPackageDetail.Status status, UserPackageDetail.Status or_status, int id, int page, int size) {
+        Map<String, List<com.example.heroku.model.Image>> imgMap = new HashMap<>();
+        return Mono.just(imgMap).flatMap(stringListMap ->
+                imageRepository.getAllOfProductByPackageAferID(group_id, status, or_status, id, page, size)
+                        .groupBy(com.example.heroku.model.Image::getCategory)
+                        .flatMap(stringImageGroupedFlux ->
+                                stringImageGroupedFlux.collectList().map(images -> {
+                                    stringListMap.put(images.get(0).getCategory(), images);
+                                    return 0;
+                                })
+                        ).then(Mono.just(stringListMap))
+        );
+    }
+
     public Mono<BeerSubmitData> GetBeerByID(String  groupID, String id) {
         return beerRepository.findBySecondID(groupID, id)
                 .flatMap(this::CoverToSubmitData);
@@ -109,6 +138,11 @@ public class Beer {
     public Mono<BeerSubmitData> GetBeerByIDWithUnit(String  groupID, String productID, String productUnitID) {
         return this.joinProductWithProductUnit.GetProductAndUnit(groupID, productID, productUnitID)
                 .flatMap(this::_setImg4SubmitData);
+    }
+
+    public Mono<BeerSubmitData> GetBeerByIDWithUnit(String  groupID, String productID, String productUnitID, Map<String, List<com.example.heroku.model.Image>> mapImg) {
+        return this.joinProductWithProductUnit.GetProductAndUnit(groupID, productID, productUnitID)
+                .map(beerSubmitData -> beerSubmitData.SetImg(mapImg));
     }
 
     public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {
