@@ -1,5 +1,6 @@
 package com.example.heroku.controller;
 
+import com.example.heroku.client.payment.PaymentValid;
 import com.example.heroku.model.Users;
 import com.example.heroku.model.statistics.*;
 import com.example.heroku.request.beer.SearchQuery;
@@ -8,6 +9,7 @@ import com.example.heroku.request.permission.WrapPermissionAction;
 import com.example.heroku.response.BenifitOfOrderAndPaymentTransactionByDate;
 import com.example.heroku.response.BenifitOfOrderAndPaymentTransactionByHour;
 import com.example.heroku.services.StatisticServices;
+import com.example.heroku.services.Store;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +24,9 @@ import javax.validation.Valid;
 public class StatisticPackageOrderDetailController {
     @Autowired
     StatisticServices statisticServices;
+
+    @Autowired
+    Store store;
 
     @PostMapping("/admin/getfinalbenifitbydate")
     @CrossOrigin(origins = Util.HOST_URL)
@@ -54,7 +59,17 @@ public class StatisticPackageOrderDetailController {
         return WrapPermissionAction.<BenifitByDate>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
-                .fluxAction(q -> statisticServices.getPackageStatictis(query))
+                .fluxAction(q -> PaymentValid.<BenifitByDate>builder()
+                        .subject(q::getGroup_id)
+                        .store(store)
+                        .fluxAction(() ->
+                                statisticServices.getPackageStatictis(query)
+                        )
+                        .filterAction(value -> {
+                            value.setProfit(0);
+                            return value;
+                        })
+                        .build().toFluxFilter())
                 .build()
                 .toFlux();
     }
@@ -90,7 +105,17 @@ public class StatisticPackageOrderDetailController {
         return WrapPermissionAction.<BenifitByProduct>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
-                .fluxAction(q -> statisticServices.getProductBenifitStatictis(query))
+                .fluxAction(q -> PaymentValid.<BenifitByProduct>builder()
+                        .subject(q::getGroup_id)
+                        .store(store)
+                        .fluxAction(() ->
+                                statisticServices.getProductBenifitStatictis(query)
+                        )
+                        .filterAction(value -> {
+                            value.setProfit(0);
+                            return value;
+                        })
+                        .build().toFluxFilter())
                 .build()
                 .toFlux();
     }
@@ -126,7 +151,17 @@ public class StatisticPackageOrderDetailController {
         return WrapPermissionAction.<BenifitByOrder>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
-                .fluxAction(q -> statisticServices.getOrderBenifitStatictis(query))
+                .fluxAction(q -> PaymentValid.<BenifitByOrder>builder()
+                        .subject(q::getGroup_id)
+                        .store(store)
+                        .fluxAction(() ->
+                                statisticServices.getOrderBenifitStatictis(query)
+                        )
+                        .filterAction(value -> {
+                            value.setProfit(0);
+                            return value;
+                        })
+                        .build().toFluxFilter())
                 .build()
                 .toFlux();
     }
