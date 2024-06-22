@@ -100,6 +100,7 @@ public class BeerTest {
                                 .product_second_id("123")
                                 .group_id(group)
                                 .visible_web(true)
+                                .product_type(Product.ProductType.PRODUCT)
                                 .build()
                                 .AutoFill()
                         )
@@ -301,6 +302,7 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
+                    assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))

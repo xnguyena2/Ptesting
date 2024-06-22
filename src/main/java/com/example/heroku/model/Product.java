@@ -14,7 +14,7 @@ import java.util.Map;
 @Entity
 @Table(name="product")
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product extends BaseEntity {
@@ -34,6 +34,8 @@ public class Product extends BaseEntity {
     private Status status;
 
     private boolean visible_web;
+
+    private ProductType product_type;
 
     //update ProductJoinWithProductUnit
     //update BeerSubmitData
@@ -112,6 +114,49 @@ public class Product extends BaseEntity {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return AVARIABLE;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
+    }
+
+    public enum ProductType {
+        PRODUCT("PRODUCT"),
+        COMBO("COMBO"),
+        MATERIAL("MATERIAL");
+
+
+        private String name;
+
+        ProductType(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        private static final Map<String, ProductType> lookup = new HashMap<>();
+
+        static {
+            for (ProductType sts : ProductType.values()) {
+                lookup.put(sts.getName(), sts);
+            }
+        }
+
+        public static ProductType get(String text) {
+            try {
+                ProductType val = lookup.get(text);
+                if (val == null) {
+                    return PRODUCT;
+                }
+                return val;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return PRODUCT;
             }
         }
 
