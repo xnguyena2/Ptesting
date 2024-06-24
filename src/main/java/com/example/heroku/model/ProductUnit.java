@@ -57,6 +57,8 @@ public class ProductUnit extends BaseEntity {
 
     private boolean enable_warehouse;
 
+    private Product.ProductType product_type;
+
     private String arg_action_id;
 
     private String arg_action_type;

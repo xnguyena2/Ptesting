@@ -79,6 +79,7 @@ public class BeerTest {
                                         .visible(true)
                                         .buy_price(20)
                                         .enable_warehouse(true)
+                                        .product_type(Product.ProductType.PRODUCT)
                                         .build(),
                                 ProductUnit.builder().product_second_id("123").name("lon").group_id(group)
                                         .product_unit_second_id("retertghdfghsdgdfgasf")
@@ -318,6 +319,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getStatus()).isEqualTo(ProductUnit.Status.AVARIABLE);
                                 assertThat(beerUnit.isVisible()).isEqualTo(false);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(false);
+                                assertThat(beerUnit.getProduct_type()).isEqualTo(null);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .consumeNextWith(beerUnit -> {
@@ -330,6 +332,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(345);
                                 assertThat(beerUnit.isVisible()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
+                                assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                             })
                             .verifyComplete();

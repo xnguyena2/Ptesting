@@ -1,5 +1,6 @@
 package com.example.heroku.model.repository;
 
+import com.example.heroku.model.Product;
 import com.example.heroku.model.ProductUnit;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,6 +24,7 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, 
                                       @Param("date_expire") Timestamp date_expire, @Param("volumetric") float volumetric,
                                       @Param("weight") float weight,
                                       @Param("visible") boolean visible, @Param("enable_warehouse") boolean enable_warehouse,
+                                      @Param("product_type") Product.ProductType product_type,
                                       @Param("arg_action_id") String arg_action_id, @Param("arg_action_type") String arg_action_type,
                                       @Param("status") ProductUnit.Status status,
                                       @Param("createat") Timestamp createat);

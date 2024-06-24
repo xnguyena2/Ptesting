@@ -56,6 +56,7 @@ public class BeerSubmitData {
                     .product_unit_second_id(beerUnit.beer_unit_second_id)
                     .visible(beerUnit.visible)
                     .enable_warehouse((beerUnit.enable_warehouse))
+                    .product_type(beerUnit.product_type)
                     .arg_action_id(beerUnit.getArg_action_id())
                     .arg_action_type(beerUnit.getArg_action_type())
                     .status(ProductUnit.Status.get(beerUnit.status))
@@ -122,6 +123,7 @@ public class BeerSubmitData {
                     .beer_unit_second_id(item.getProduct_unit_second_id())
                     .visible(item.isVisible())
                     .enable_warehouse(item.isEnable_warehouse())
+                    .product_type(item.getProduct_type())
                     .arg_action_id(item.getArg_action_id())
                     .arg_action_type(item.getArg_action_type())
                     .status(item.GetStatusNuable().toString())
@@ -176,6 +178,7 @@ public class BeerSubmitData {
         private String beer_unit_second_id;
         private boolean visible;
         private boolean enable_warehouse;
+        private Product.ProductType product_type;
         private String arg_action_id;
         private String arg_action_type;
         private String status;
