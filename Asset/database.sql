@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR
 
 CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, visible_web BOOL, product_type VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, product_type VARCHAR, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_combo_item (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, item_product_second_id VARCHAR, item_product_unit_second_id VARCHAR, unit_number float8, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, imgid VARCHAR, tag VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, categorys VARCHAR, config TEXT, createat TIMESTAMP);
@@ -96,6 +97,7 @@ ALTER TABLE product ADD CONSTRAINT UQ_product_second_id UNIQUE(group_id, product
 ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_second_id UNIQUE(group_id, product_second_id, product_unit_second_id);
 ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_sku UNIQUE(group_id, sku);
 ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_upc UNIQUE(group_id, upc);
+ALTER TABLE product_combo_item ADD CONSTRAINT UQ_product_combo_item UNIQUE(group_id, product_second_id, product_unit_second_id, item_product_second_id, item_product_unit_second_id);
 ALTER TABLE search_token ADD CONSTRAINT UQ_search_token_product_second_id UNIQUE(group_id, product_second_id);
 ALTER TABLE user_fcm ADD CONSTRAINT UQ_user_fcm_device_id UNIQUE(group_id, device_id);
 ALTER TABLE voucher ADD CONSTRAINT UQ_voucher UNIQUE(group_id, voucher_second_id);
@@ -116,6 +118,7 @@ ALTER TABLE tokens ADD CONSTRAINT UQ_tokens UNIQUE(token_second_id);
 ALTER TABLE delete_request ADD CONSTRAINT UQ_delete_request UNIQUE(user_id);
 
 ALTER TABLE product_unit ADD CONSTRAINT FK_product_unit FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
+ALTER TABLE product_combo_item ADD CONSTRAINT FK_product_combo_item FOREIGN KEY(group_id, product_second_id, product_unit_second_id) REFERENCES product_unit(group_id, product_second_id, product_unit_second_id) ON DELETE CASCADE;
 ALTER TABLE search_token ADD CONSTRAINT FK_search_token FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
 ALTER TABLE user_package ADD CONSTRAINT FK_user_package FOREIGN KEY(group_id, package_second_id) REFERENCES user_package_detail(group_id, package_second_id) ON DELETE CASCADE;
 ALTER TABLE voucher_relate_user_device ADD CONSTRAINT FK_voucher_relate_user_device FOREIGN KEY(group_id, voucher_second_id) REFERENCES voucher(group_id, voucher_second_id) ON DELETE CASCADE;
@@ -236,6 +239,7 @@ begin
     DELETE FROM notification_relate_user_device WHERE group_id = by_group_id;
     DELETE FROM shipping_provider WHERE group_id = by_group_id;
 
+    DELETE FROM product_combo_item WHERE group_id = by_group_id;
     DELETE FROM product_unit WHERE group_id = by_group_id;
     DELETE FROM product WHERE group_id = by_group_id;
     DELETE FROM product_import WHERE group_id = by_group_id;
