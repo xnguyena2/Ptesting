@@ -2,6 +2,7 @@ package com.example.heroku.request.beer;
 
 import com.example.heroku.model.Product;
 import com.example.heroku.model.Image;
+import com.example.heroku.model.ProductComboItem;
 import com.example.heroku.model.ProductUnit;
 import com.example.heroku.request.datetime.NgbDateStruct;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,7 @@ public class BeerSubmitData {
     private Product.ProductType product_type;
     private List<Image> images;
     private BeerUnit[] listUnit;
+    private ProductComboItem[] listComboItem;
 
     public BeerInfo GetBeerInfo() {
 
@@ -81,6 +83,7 @@ public class BeerSubmitData {
                                 .product_type(this.product_type)
                                 .build()
                 )
+                .listComboItem(listComboItem)
                 .build()
                 .SetBeerUnit(listMapedUnit);
     }

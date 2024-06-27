@@ -48,6 +48,9 @@ public class Beer {
     @Autowired
     GroupImportRepository groupImportRepository;
 
+    @Autowired
+    ProductComboItemRepository productComboItemRepository;
+
     public Mono<BeerSubmitData> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
         info.CorrectData();
         String actionID = Util.getInstance().GenerateID();
@@ -71,6 +74,19 @@ public class Beer {
                 .thenMany(Flux.just(info.getProductUnitPrepareForInventory(actionID))
                         .flatMap(beerUnit -> this.beerUnitRepository.save(beerUnit))
                 )
+                .then(Mono.just(info.getProduct()).flatMap(beerInfo -> {
+                    if (beerInfo.getProduct_type() == Product.ProductType.COMBO) {
+                        return productComboItemRepository.deleteByProductID(beerInfo.getGroup_id(), beerInfo.getProduct_second_id())
+                                .then(Mono.just(info).flatMap(beerInfo1 -> {
+                                            if (beerInfo1.getListComboItem() != null && beerInfo1.getListComboItem().length > 0) {
+                                                return productComboItemRepository.saveAll(Flux.just(info.getListComboItem())).then(Mono.just(beerInfo));
+                                            }
+                                            return Mono.just(beerInfo);
+                                        }
+                                ));
+                    }
+                    return Mono.just(beerInfo);
+                }))
                 .then(groupImportRepository.createGroupImportForEmpty(info.getProduct().getGroup_id(), actionID, ProductImport.ImportType.UPDATE_NUMBER.getName(), ProductImport.Status.DONE.getName()))
                 .then(Mono.just(BeerSubmitData.FromProductInfo(info)));
     }

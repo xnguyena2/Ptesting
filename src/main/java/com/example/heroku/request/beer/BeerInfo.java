@@ -1,6 +1,7 @@
 package com.example.heroku.request.beer;
 
 import com.example.heroku.model.Product;
+import com.example.heroku.model.ProductComboItem;
 import com.example.heroku.model.ProductImport;
 import com.example.heroku.model.ProductUnit;
 import com.example.heroku.util.Util;
@@ -19,6 +20,8 @@ public class BeerInfo {
     private Product product;
 
     private ProductUnit[] productUnit;
+
+    private ProductComboItem[] listComboItem;
 
     public ProductUnit[] getProductUnitPrepareForInventory(String actionID) {
         if(actionID == null || actionID.isEmpty()){
