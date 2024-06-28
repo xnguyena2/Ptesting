@@ -218,20 +218,10 @@ public class BeerTest {
                                 .product_second_id("456")
                                 .unit_category_config("hello i am config")
                                 .group_id(group)
-                                .product_type(Product.ProductType.COMBO)
                                 .visible_web(true)
                                 .build()
                                 .AutoFill()
                         )
-                        .listComboItem(new ProductComboItem[]{
-                                ProductComboItem.builder()
-                                        .product_unit_second_id(beerUnit4561ID.get())
-                                        .item_product_second_id("123")
-                                        .item_product_unit_second_id("retertghdfghsdgdfgasf")
-                                        .unit_number(2.5f)
-                                        .build(),
-                                ProductComboItem.builder().build(),
-                        })
                         .build()
         )
                 .as(StepVerifier::create)
@@ -249,6 +239,70 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
+
+
+        beerAPI.CreateBeer(
+                        BeerInfo
+                                .builder()
+                                .productUnit(new ProductUnit[]{
+                                        ProductUnit
+                                                .builder()
+                                                .product_unit_second_id("combo1")
+                                                .product_second_id("combo")
+                                                .price(10)
+                                                .weight(0.3f)
+                                                .discount(10)
+                                                .date_expire(Timestamp.valueOf("2021-03-31 20:45:00"))
+                                                .name("thung")
+                                                .product_type(Product.ProductType.COMBO)
+                                                .group_id(group)
+                                                .build(),
+                                        ProductUnit
+                                                .builder()
+                                                .product_unit_second_id("combo2")
+                                                .product_second_id("combo")
+                                                .price(10)
+                                                .weight(0.3f)
+                                                .discount(10)
+                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .name("lon")
+                                                .group_id(group)
+                                                .build()
+                                })
+                                .product(Product
+                                        .builder()
+                                        .category(Category.CRAB.getName())
+                                        .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
+                                                "- bia thơm ngon\n" +
+                                                "- bia nhập ngoại\n" +
+                                                "- bia sản xuất từ hà lan")
+                                        .name("beer tiger")
+                                        .product_second_id("combo")
+                                        .unit_category_config("hello i am config")
+                                        .group_id(group)
+                                        .product_type(Product.ProductType.COMBO)
+                                        .visible_web(true)
+                                        .build()
+                                        .AutoFill()
+                                )
+                                .listComboItem(new ProductComboItem[]{
+                                        ProductComboItem.builder()
+                                                .product_unit_second_id("combo1")
+                                                .item_product_second_id("123")
+                                                .item_product_unit_second_id("retertghdfghsdgdfgasf")
+                                                .unit_number(2.5f)
+                                                .build(),
+                                        ProductComboItem.builder().build(),
+                                        ProductComboItem.builder()
+                                                .product_unit_second_id("combo1")
+                                                .item_product_second_id("456")
+                                                .item_product_unit_second_id(beerUnit4561ID.get())
+                                                .unit_number(0.5f)
+                                                .build(),
+                                        ProductComboItem.builder().build(),
+                                })
+                                .build()
+                ).block();
 
         beerAPI.CreateBeer(
                         BeerInfo
@@ -414,6 +468,39 @@ public class BeerTest {
                             "- bia nhap ngoai\n" +
                             "- bia san xuat tu ha lan");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    Flux.just(beerInfo.getProductUnit())
+                            .sort(Comparator.comparing(ProductUnit::getName))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("lon");
+                                assertThat(beerUnit.getSku()).isEqualTo(null);
+                                assertThat(beerUnit.getUpc()).isEqualTo(null);
+                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(new Timestamp(new Date().getTime())));
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("thung");
+                                assertThat(beerUnit.getSku()).isEqualTo(null);
+                                assertThat(beerUnit.getUpc()).isEqualTo(null);
+                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(Timestamp.valueOf("2021-03-31 20:45:00")));
+                                assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), new Timestamp(new Date().getTime())) >= 0).isEqualTo(false);
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+
+        this.beerAPI.GetBeerByID(group, "combo")
+                .map(BeerSubmitData::GetBeerInfo)
+                .as(StepVerifier::create)
+                .consumeNextWith(beerInfo -> {
+                    assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("combo");
+                    assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
+                    assertThat(beerInfo.getProduct().getUnit_category_config()).isEqualTo("hello i am config");
+                    assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger day la beer tiger co non do con cao nen chu y khi su dung:\n" +
+                            "- bia thom ngon\n" +
+                            "- bia nhap ngoai\n" +
+                            "- bia san xuat tu ha lan");
+                    assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
                     assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.COMBO);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
@@ -436,7 +523,8 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.GetAllCompoItem(IDContainer.builder().group_id(group).id("456").build())
+        this.beerAPI.GetAllCompoItem(IDContainer.builder().group_id(group).id("combo").build())
+                .sort(Comparator.comparing(ProductUnit::getName))
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getGroup_id()).isEqualTo(group);
@@ -445,6 +533,14 @@ public class BeerTest {
                     assertThat(beerInfo.getName()).isEqualTo("lon");
                     assertThat(beerInfo.getProduct_second_id()).isEqualTo("123");
                     assertThat(beerInfo.getProduct_unit_second_id()).isEqualTo("retertghdfghsdgdfgasf");
+                })
+                .consumeNextWith(beerInfo -> {
+                    assertThat(beerInfo.getGroup_id()).isEqualTo(group);
+                    assertThat(beerInfo.getProduct_name()).isEqualTo("beer tiger");
+                    assertThat(beerInfo.getUnit_number()).isEqualTo(0.5f);
+                    assertThat(beerInfo.getName()).isEqualTo("thung");
+                    assertThat(beerInfo.getProduct_second_id()).isEqualTo("456");
+                    assertThat(beerInfo.getProduct_unit_second_id()).isEqualTo(beerUnit4561ID.get());
                 })
                 .verifyComplete();
 
@@ -459,12 +555,16 @@ public class BeerTest {
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
-                        assertThat(resultWithCount.getCount()).isEqualTo(1);
+                        assertThat(resultWithCount.getCount()).isEqualTo(2);
                         Mono.just(resultWithCount.getResult())
                                 .flatMapMany(Flux::fromIterable)
+                                .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                                 .as(StepVerifier::create)
                                 .consumeNextWith(beerSubmitData -> {
                                     assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                                })
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                                 })
                                 .verifyComplete();
                     })
@@ -479,12 +579,16 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    assertThat(resultWithCount.getCount()).isEqualTo(2);
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .verifyComplete();
                 })
@@ -498,12 +602,16 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    assertThat(resultWithCount.getCount()).isEqualTo(2);
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .verifyComplete();
                 })
@@ -517,7 +625,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(3);
+                    assertThat(resultWithCount.getCount()).isEqualTo(4);
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -527,6 +635,9 @@ public class BeerTest {
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
@@ -543,7 +654,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(3);
+                    assertThat(resultWithCount.getCount()).isEqualTo(4);
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -553,6 +664,9 @@ public class BeerTest {
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
@@ -569,7 +683,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(3);
+                    assertThat(resultWithCount.getCount()).isEqualTo(4);
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -579,6 +693,9 @@ public class BeerTest {
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
@@ -595,7 +712,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(3);
+                    assertThat(resultWithCount.getCount()).isEqualTo(4);
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -605,6 +722,9 @@ public class BeerTest {
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
@@ -621,7 +741,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(3);
+                    assertThat(resultWithCount.getCount()).isEqualTo(4);
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -631,6 +751,9 @@ public class BeerTest {
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
@@ -647,12 +770,16 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    assertThat(resultWithCount.getCount()).isEqualTo(2);
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .verifyComplete();
                 })
@@ -668,12 +795,16 @@ public class BeerTest {
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
-                        assertThat(resultWithCount.getCount()).isEqualTo(1);
+                        assertThat(resultWithCount.getCount()).isEqualTo(2);
                         Mono.just(resultWithCount.getResult())
                                 .flatMapMany(Flux::fromIterable)
+                                .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                                 .as(StepVerifier::create)
                                 .consumeNextWith(beerSubmitData -> {
                                     assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                                })
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                                 })
                                 .verifyComplete();
                     })
@@ -688,12 +819,16 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    assertThat(resultWithCount.getCount()).isEqualTo(2);
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .verifyComplete();
                 })
@@ -707,13 +842,17 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    assertThat(resultWithCount.getCount()).isEqualTo(2);
                     
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .verifyComplete();
                 })
@@ -727,13 +866,17 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    assertThat(resultWithCount.getCount()).isEqualTo(2);
                     
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .verifyComplete();
                 })
@@ -747,13 +890,17 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    assertThat(resultWithCount.getCount()).isEqualTo(2);
                     
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .verifyComplete();
                 })
@@ -767,13 +914,17 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    assertThat(resultWithCount.getCount()).isEqualTo(2);
                     
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .verifyComplete();
                 })
@@ -787,13 +938,17 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    assertThat(resultWithCount.getCount()).isEqualTo(2);
                     
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .verifyComplete();
                 })
@@ -807,13 +962,17 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    assertThat(resultWithCount.getCount()).isEqualTo(2);
                     
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .verifyComplete();
                 })
@@ -827,13 +986,17 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    assertThat(resultWithCount.getCount()).isEqualTo(2);
                     
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .verifyComplete();
                 })
@@ -847,13 +1010,17 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(1);
+                    assertThat(resultWithCount.getCount()).isEqualTo(2);
                     
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
+                            .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .verifyComplete();
                 })
@@ -869,7 +1036,7 @@ public class BeerTest {
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
-                        assertThat(resultWithCount.getCount()).isEqualTo(2);
+                        assertThat(resultWithCount.getCount()).isEqualTo(3);
 
                         Mono.just(resultWithCount.getResult())
                                 .flatMapMany(Flux::fromIterable)
@@ -877,6 +1044,9 @@ public class BeerTest {
                                 .as(StepVerifier::create)
                                 .consumeNextWith(beerSubmitData -> {
                                     assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                                })
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                                 })
                                 .consumeNextWith(beerSubmitData -> {
                                     assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("hide");
@@ -897,7 +1067,7 @@ public class BeerTest {
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
-                        assertThat(resultWithCount.getCount()).isEqualTo(2);
+                        assertThat(resultWithCount.getCount()).isEqualTo(3);
 
                         Mono.just(resultWithCount.getResult())
                                 .flatMapMany(Flux::fromIterable)
@@ -905,6 +1075,9 @@ public class BeerTest {
                                 .as(StepVerifier::create)
                                 .consumeNextWith(beerSubmitData -> {
                                     assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                                })
+                                .consumeNextWith(beerSubmitData -> {
+                                    assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                                 })
                                 .consumeNextWith(beerSubmitData -> {
                                     assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("hide");
@@ -922,7 +1095,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(2);
+                    assertThat(resultWithCount.getCount()).isEqualTo(3);
                     
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
@@ -930,6 +1103,9 @@ public class BeerTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("hide");
@@ -947,7 +1123,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(resultWithCount.getCount()).isEqualTo(2);
+                    assertThat(resultWithCount.getCount()).isEqualTo(3);
 
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
@@ -955,6 +1131,9 @@ public class BeerTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("hide");
@@ -975,6 +1154,10 @@ public class BeerTest {
                     assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                 })
                 .consumeNextWith(beerInfo -> {
+                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("combo");
+                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                })
+                .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
                     assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                 })
@@ -989,7 +1172,7 @@ public class BeerTest {
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
-                        assertThat(searchResult.getCount()).isEqualTo(3);
+                        assertThat(searchResult.getCount()).isEqualTo(4);
 
                         Mono.just(searchResult.getResult())
                                 .flatMapMany(Flux::fromIterable)
@@ -1001,6 +1184,10 @@ public class BeerTest {
                                 })
                                 .consumeNextWith(beerInfo -> {
                                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("combo");
                                     assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                                 })
                                 .consumeNextWith(beerInfo -> {
@@ -1021,7 +1208,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
+                    assertThat(searchResult.getCount()).isEqualTo(4);
                     
 
                     Mono.just(searchResult.getResult())
@@ -1037,6 +1224,10 @@ public class BeerTest {
                                 assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                             })
                             .consumeNextWith(beerInfo -> {
+                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("combo");
+                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                            })
+                            .consumeNextWith(beerInfo -> {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
                                 assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                             })
@@ -1044,7 +1235,7 @@ public class BeerTest {
                 })
                 .verifyComplete();
 
-        this.beerAPI.AdminCountGetAllBeer(SearchQuery.builder().page(0).size(3).filter(SearchQuery.Filter.NAME_ASC.getName()).group_id(group).build())
+        this.beerAPI.AdminCountGetAllBeer(SearchQuery.builder().page(0).size(4).filter(SearchQuery.Filter.NAME_ASC.getName()).group_id(group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1052,7 +1243,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(searchResult.getCount()).isEqualTo(4);
+                    assertThat(searchResult.getCount()).isEqualTo(5);
 
 
                     Mono.just(searchResult.getResult())
@@ -1065,6 +1256,10 @@ public class BeerTest {
                             })
                             .consumeNextWith(beerInfo -> {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                            })
+                            .consumeNextWith(beerInfo -> {
+                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("combo");
                                 assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                             })
                             .consumeNextWith(beerInfo -> {
@@ -1088,7 +1283,7 @@ public class BeerTest {
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
-                        assertThat(searchResult.getCount()).isEqualTo(4);
+                        assertThat(searchResult.getCount()).isEqualTo(5);
 
 
                         Mono.just(searchResult.getResult())
@@ -1101,6 +1296,10 @@ public class BeerTest {
                                 })
                                 .consumeNextWith(beerInfo -> {
                                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("combo");
                                     assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                                 })
                                 .consumeNextWith(beerInfo -> {
@@ -1124,7 +1323,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(searchResult.getCount()).isEqualTo(4);
+                    assertThat(searchResult.getCount()).isEqualTo(5);
                     
 
                     Mono.just(searchResult.getResult())
@@ -1137,6 +1336,10 @@ public class BeerTest {
                             })
                             .consumeNextWith(beerInfo -> {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                            })
+                            .consumeNextWith(beerInfo -> {
+                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("combo");
                                 assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                             })
                             .consumeNextWith(beerInfo -> {
@@ -1159,7 +1362,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(searchResult.getCount()).isEqualTo(3);
+                    assertThat(searchResult.getCount()).isEqualTo(4);
                     
 
                     Mono.just(searchResult.getResult())
@@ -1172,6 +1375,10 @@ public class BeerTest {
                             })
                             .consumeNextWith(beerInfo -> {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                            })
+                            .consumeNextWith(beerInfo -> {
+                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("combo");
                                 assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                             })
                             .consumeNextWith(beerInfo -> {
@@ -1235,7 +1442,7 @@ public class BeerTest {
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
-                        assertThat(searchResult.getCount()).isEqualTo(3);
+                        assertThat(searchResult.getCount()).isEqualTo(4);
 
 
                         Mono.just(searchResult.getResult())
@@ -1251,6 +1458,10 @@ public class BeerTest {
                                     assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                                 })
                                 .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("combo");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
                                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("sold_out");
                                     assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                                 })
@@ -1259,7 +1470,7 @@ public class BeerTest {
                     .verifyComplete();
         }
 
-        this.beerAPI.AdminCountGetAllBeerByCategory(SearchQuery.builder().page(0).size(2).filter(SearchQuery.Filter.SOLD_NUM.getName()).query(Category.CRAB.getName()).group_id(group).build())
+        this.beerAPI.AdminCountGetAllBeerByCategory(SearchQuery.builder().page(0).size(3).filter(SearchQuery.Filter.SOLD_NUM.getName()).query(Category.CRAB.getName()).group_id(group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
@@ -1267,7 +1478,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(searchResult.getCount()).isEqualTo(4);
+                    assertThat(searchResult.getCount()).isEqualTo(5);
 
 
                     Mono.just(searchResult.getResult())
@@ -1280,6 +1491,10 @@ public class BeerTest {
                             })
                             .consumeNextWith(beerInfo -> {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                            })
+                            .consumeNextWith(beerInfo -> {
+                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("combo");
                                 assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                             })
 //                            .consumeNextWith(beerInfo -> {
@@ -1304,7 +1519,7 @@ public class BeerTest {
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
-                        assertThat(searchResult.getCount()).isEqualTo(4);
+                        assertThat(searchResult.getCount()).isEqualTo(5);
 
 
                         Mono.just(searchResult.getResult())
@@ -1317,6 +1532,10 @@ public class BeerTest {
                                 })
                                 .consumeNextWith(beerInfo -> {
                                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                                })
+                                .consumeNextWith(beerInfo -> {
+                                    assertThat(beerInfo.getBeerSecondID()).isEqualTo("combo");
                                     assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                                 })
                                 .consumeNextWith(beerInfo -> {
@@ -1340,7 +1559,7 @@ public class BeerTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat(searchResult.getCount()).isEqualTo(4);
+                    assertThat(searchResult.getCount()).isEqualTo(5);
                     
 
                     Mono.just(searchResult.getResult())
@@ -1353,6 +1572,10 @@ public class BeerTest {
                             })
                             .consumeNextWith(beerInfo -> {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
+                                assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                            })
+                            .consumeNextWith(beerInfo -> {
+                                assertThat(beerInfo.getBeerSecondID()).isEqualTo("combo");
                                 assertThat(beerInfo.getListUnit().length).isEqualTo(2);
                             })
                             .consumeNextWith(beerInfo -> {
