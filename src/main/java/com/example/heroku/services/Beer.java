@@ -1,10 +1,10 @@
 package com.example.heroku.services;
 
-import com.example.heroku.model.Product;
+import com.example.heroku.model.*;
 import com.example.heroku.model.ProductImport;
-import com.example.heroku.model.ProductUnit;
-import com.example.heroku.model.UserPackageDetail;
+import com.example.heroku.model.joinwith.ComboItemJoinProductUnitAndProduct;
 import com.example.heroku.model.repository.*;
+import com.example.heroku.model.repository.join.ComboItemJoinProductUnitAndProductRepository;
 import com.example.heroku.request.beer.*;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.util.Util;
@@ -51,6 +51,9 @@ public class Beer {
     @Autowired
     ProductComboItemRepository productComboItemRepository;
 
+    @Autowired
+    ComboItemJoinProductUnitAndProductRepository comboItemJoinProductUnitAndProductRepository;
+
     public Mono<BeerSubmitData> CreateBeer(@Valid @ModelAttribute BeerInfo info) {
         info.CorrectData();
         String actionID = Util.getInstance().GenerateID();
@@ -79,7 +82,7 @@ public class Beer {
                         return productComboItemRepository.deleteByProductID(beerInfo.getGroup_id(), beerInfo.getProduct_second_id())
                                 .then(Mono.just(info).flatMap(beerInfo1 -> {
                                             if (beerInfo1.getListComboItem() != null && beerInfo1.getListComboItem().length > 0) {
-                                                return productComboItemRepository.saveAll(Flux.just(info.getListComboItem())).then(Mono.just(beerInfo));
+                                                return productComboItemRepository.saveAll(Flux.just(info.getListComboItem()).map(productComboItem -> productComboItem.AutoFill(beerInfo1.getProduct().getGroup_id(), beerInfo1.getProduct().getProduct_second_id()))).then(Mono.just(beerInfo));
                                             }
                                             return Mono.just(beerInfo);
                                         }
@@ -89,6 +92,10 @@ public class Beer {
                 }))
                 .then(groupImportRepository.createGroupImportForEmpty(info.getProduct().getGroup_id(), actionID, ProductImport.ImportType.UPDATE_NUMBER.getName(), ProductImport.Status.DONE.getName()))
                 .then(Mono.just(BeerSubmitData.FromProductInfo(info)));
+    }
+
+    public Flux<ComboItemJoinProductUnitAndProduct> GetAllCompoItem(IDContainer idContainer) {
+        return comboItemJoinProductUnitAndProductRepository.findByProductID(idContainer.getGroup_id(), idContainer.getId());
     }
 
     public Mono<String> UpdateProductUnitWareHouseSetting(ProductUnitUpdate productUnitUpdate) {

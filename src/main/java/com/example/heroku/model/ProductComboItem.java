@@ -29,7 +29,9 @@ public class ProductComboItem extends BaseEntity {
 
     private float unit_number;
 
-    public ProductComboItem AutoFill(){
+    public ProductComboItem AutoFill(String groupID, String product_second_id) {
+        setGroup_id(groupID);
+        setProduct_second_id(product_second_id);
         super.AutoFill();
         return this;
     }

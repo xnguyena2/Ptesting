@@ -3,6 +3,7 @@ package com.example.heroku.controller;
 import com.example.heroku.model.Image;
 import com.example.heroku.model.Product;
 import com.example.heroku.model.Users;
+import com.example.heroku.model.joinwith.ComboItemJoinProductUnitAndProduct;
 import com.example.heroku.request.beer.*;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.permission.WrapPermissionAction;
@@ -89,6 +90,17 @@ public class BeerController {
                 .subject(beerInfo::getGroup_id)
                 .monoAction(() -> beerAPI.CreateBeer(beerInf))
                 .build().toMono();
+    }
+
+    @PostMapping("/admin/getcomboitem")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<ComboItemJoinProductUnitAndProduct> getComboItem(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
+        System.out.println("get combo item of beer: " + idContainer.getId());
+        return WrapPermissionGroupWithPrincipalAction.<ComboItemJoinProductUnitAndProduct>builder()
+                .principal(principal)
+                .subject(idContainer::getGroup_id)
+                .fluxAction(() -> beerAPI.GetAllCompoItem(idContainer))
+                .build().toFlux();
     }
 
     @PostMapping("/admin/updateinventoryproductunit")

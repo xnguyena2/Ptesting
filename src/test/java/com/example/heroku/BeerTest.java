@@ -1,6 +1,7 @@
 package com.example.heroku;
 
 import com.example.heroku.model.Product;
+import com.example.heroku.model.ProductComboItem;
 import com.example.heroku.model.ProductUnit;
 import com.example.heroku.request.beer.BeerInfo;
 import com.example.heroku.request.beer.BeerSubmitData;
@@ -217,10 +218,20 @@ public class BeerTest {
                                 .product_second_id("456")
                                 .unit_category_config("hello i am config")
                                 .group_id(group)
+                                .product_type(Product.ProductType.COMBO)
                                 .visible_web(true)
                                 .build()
                                 .AutoFill()
                         )
+                        .listComboItem(new ProductComboItem[]{
+                                ProductComboItem.builder()
+                                        .product_unit_second_id(beerUnit4561ID.get())
+                                        .item_product_second_id("123")
+                                        .item_product_unit_second_id("retertghdfghsdgdfgasf")
+                                        .unit_number(2.5f)
+                                        .build(),
+                                ProductComboItem.builder().build(),
+                        })
                         .build()
         )
                 .as(StepVerifier::create)
@@ -359,6 +370,7 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
                             .as(StepVerifier::create)
@@ -402,6 +414,7 @@ public class BeerTest {
                             "- bia nhap ngoai\n" +
                             "- bia san xuat tu ha lan");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
+                    assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.COMBO);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
@@ -420,6 +433,18 @@ public class BeerTest {
                                 assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), new Timestamp(new Date().getTime())) >= 0).isEqualTo(false);
                             })
                             .verifyComplete();
+                })
+                .verifyComplete();
+
+        this.beerAPI.GetAllCompoItem(IDContainer.builder().group_id(group).id("456").build())
+                .as(StepVerifier::create)
+                .consumeNextWith(beerInfo -> {
+                    assertThat(beerInfo.getGroup_id()).isEqualTo(group);
+                    assertThat(beerInfo.getProduct_name()).isEqualTo("beer tiger");
+                    assertThat(beerInfo.getUnit_number()).isEqualTo(2.5f);
+                    assertThat(beerInfo.getName()).isEqualTo("lon");
+                    assertThat(beerInfo.getProduct_second_id()).isEqualTo("123");
+                    assertThat(beerInfo.getProduct_unit_second_id()).isEqualTo("retertghdfghsdgdfgasf");
                 })
                 .verifyComplete();
 
