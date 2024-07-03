@@ -586,7 +586,12 @@ public class UserPackageTest {
                                 .product_unit_second_id(beerUnit2ID.get())
                                 .discount_promotional(45)
                                 .number_unit(9)
-                                .build()
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("combo")
+                                .product_unit_second_id("combo1")
+                                .number_unit(3)
+                                .build(),
                 })
                 .build();
         userPackageAPI.SavePackageWithoutCheck(productPackage)
@@ -611,7 +616,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getAdditional_config()).isEqualTo("additional_config");
                     assertThat(userPackage.getMeta_search()).isEqualTo("hello meta search");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 

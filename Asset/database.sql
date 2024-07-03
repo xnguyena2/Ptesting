@@ -1103,7 +1103,7 @@ BEGIN
     LOOP
         UPDATE product_unit
         SET
-            inventory_number = product_unit.inventory_number - unit_number * _item_num,
+            inventory_number = product_unit.inventory_number - _item.unit_number * _item_num,
             arg_action_id = _arg_action_id,
             arg_action_type = _arg_action_type
         WHERE group_id = _item.group_id AND product_second_id = _item.product_second_id AND product_unit_second_id = _item.product_unit_second_id;
