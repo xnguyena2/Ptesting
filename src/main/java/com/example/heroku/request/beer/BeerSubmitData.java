@@ -2,6 +2,7 @@ package com.example.heroku.request.beer;
 
 import com.example.heroku.model.Product;
 import com.example.heroku.model.Image;
+import com.example.heroku.model.ProductComboItem;
 import com.example.heroku.model.ProductUnit;
 import com.example.heroku.request.datetime.NgbDateStruct;
 import lombok.AllArgsConstructor;
@@ -30,8 +31,10 @@ public class BeerSubmitData {
     private String unit_category_config;
     private String status;
     private boolean visible_web;
+    private Product.ProductType product_type;
     private List<Image> images;
     private BeerUnit[] listUnit;
+    private ProductComboItem[] listComboItem;
 
     public BeerInfo GetBeerInfo() {
 
@@ -55,6 +58,7 @@ public class BeerSubmitData {
                     .product_unit_second_id(beerUnit.beer_unit_second_id)
                     .visible(beerUnit.visible)
                     .enable_warehouse((beerUnit.enable_warehouse))
+                    .product_type(beerUnit.product_type)
                     .arg_action_id(beerUnit.getArg_action_id())
                     .arg_action_type(beerUnit.getArg_action_type())
                     .status(ProductUnit.Status.get(beerUnit.status))
@@ -76,8 +80,10 @@ public class BeerSubmitData {
                                 .status(Product.Status.get(this.status))
                                 .meta_search(this.meta_search)
                                 .visible_web(this.visible_web)
+                                .product_type(this.product_type)
                                 .build()
                 )
+                .listComboItem(listComboItem)
                 .build()
                 .SetBeerUnit(listMapedUnit);
     }
@@ -93,6 +99,7 @@ public class BeerSubmitData {
                 .status(product.GetStatusNuable().getName())
                 .meta_search(product.getMeta_search())
                 .visible_web(product.isVisible_web())
+                .product_type(product.getProduct_type())
                 .build();
     }
 
@@ -119,6 +126,7 @@ public class BeerSubmitData {
                     .beer_unit_second_id(item.getProduct_unit_second_id())
                     .visible(item.isVisible())
                     .enable_warehouse(item.isEnable_warehouse())
+                    .product_type(item.getProduct_type())
                     .arg_action_id(item.getArg_action_id())
                     .arg_action_type(item.getArg_action_type())
                     .status(item.GetStatusNuable().toString())
@@ -173,6 +181,7 @@ public class BeerSubmitData {
         private String beer_unit_second_id;
         private boolean visible;
         private boolean enable_warehouse;
+        private Product.ProductType product_type;
         private String arg_action_id;
         private String arg_action_type;
         private String status;

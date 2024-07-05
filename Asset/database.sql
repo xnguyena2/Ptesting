@@ -6,8 +6,9 @@ CREATE TABLE IF NOT EXISTS users_info (id SERIAL PRIMARY KEY, group_id VARCHAR N
 
 CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, tokens TSVECTOR, createat TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, visible_web BOOL, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, visible_web BOOL, product_type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, product_type VARCHAR, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_combo_item (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, item_product_second_id VARCHAR, item_product_unit_second_id VARCHAR, unit_number float8, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, imgid VARCHAR, tag VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, categorys VARCHAR, config TEXT, createat TIMESTAMP);
@@ -96,6 +97,7 @@ ALTER TABLE product ADD CONSTRAINT UQ_product_second_id UNIQUE(group_id, product
 ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_second_id UNIQUE(group_id, product_second_id, product_unit_second_id);
 ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_sku UNIQUE(group_id, sku);
 ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_upc UNIQUE(group_id, upc);
+ALTER TABLE product_combo_item ADD CONSTRAINT UQ_product_combo_item UNIQUE(group_id, product_second_id, product_unit_second_id, item_product_second_id, item_product_unit_second_id);
 ALTER TABLE search_token ADD CONSTRAINT UQ_search_token_product_second_id UNIQUE(group_id, product_second_id);
 ALTER TABLE user_fcm ADD CONSTRAINT UQ_user_fcm_device_id UNIQUE(group_id, device_id);
 ALTER TABLE voucher ADD CONSTRAINT UQ_voucher UNIQUE(group_id, voucher_second_id);
@@ -116,6 +118,7 @@ ALTER TABLE tokens ADD CONSTRAINT UQ_tokens UNIQUE(token_second_id);
 ALTER TABLE delete_request ADD CONSTRAINT UQ_delete_request UNIQUE(user_id);
 
 ALTER TABLE product_unit ADD CONSTRAINT FK_product_unit FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
+ALTER TABLE product_combo_item ADD CONSTRAINT FK_product_combo_item FOREIGN KEY(group_id, product_second_id, product_unit_second_id) REFERENCES product_unit(group_id, product_second_id, product_unit_second_id) ON DELETE CASCADE;
 ALTER TABLE search_token ADD CONSTRAINT FK_search_token FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
 ALTER TABLE user_package ADD CONSTRAINT FK_user_package FOREIGN KEY(group_id, package_second_id) REFERENCES user_package_detail(group_id, package_second_id) ON DELETE CASCADE;
 ALTER TABLE voucher_relate_user_device ADD CONSTRAINT FK_voucher_relate_user_device FOREIGN KEY(group_id, voucher_second_id) REFERENCES voucher(group_id, voucher_second_id) ON DELETE CASCADE;
@@ -236,6 +239,7 @@ begin
     DELETE FROM notification_relate_user_device WHERE group_id = by_group_id;
     DELETE FROM shipping_provider WHERE group_id = by_group_id;
 
+    DELETE FROM product_combo_item WHERE group_id = by_group_id;
     DELETE FROM product_unit WHERE group_id = by_group_id;
     DELETE FROM product WHERE group_id = by_group_id;
     DELETE FROM product_import WHERE group_id = by_group_id;
@@ -305,6 +309,7 @@ $$
 DECLARE
    _inventory_number float8;
    _enable_warehouse BOOL;
+   _product_type VARCHAR;
 BEGIN
 
     IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
@@ -313,10 +318,18 @@ BEGIN
     END IF;
 
 
-    SELECT enable_warehouse, inventory_number
-    INTO _enable_warehouse, _inventory_number
+    SELECT enable_warehouse, inventory_number, product_type
+    INTO _enable_warehouse, _inventory_number, _product_type
     FROM product_unit
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
+
+
+    IF _product_type = 'COMBO'
+    THEN
+        PERFORM change_inventory_combo_item(NEW.group_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.number_unit, NEW.package_second_id, 'SELLING');
+	    RETURN NEW;
+    END IF;
+
 
     IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
@@ -326,7 +339,7 @@ BEGIN
     IF _inventory_number < NEW.number_unit
     THEN
 --        PERFORM delete_all_data_belong_user_package_detail(NEW.group_id, NEW.package_second_id);
-	    RAISE EXCEPTION 'inventory_number small than number_unit';
+	    RAISE EXCEPTION 'inventory_number small than number_unit, product_unit_second_id: %' , NEW.product_unit_second_id;
     END IF;
 
 	UPDATE product_unit
@@ -346,10 +359,25 @@ CREATE OR REPLACE FUNCTION increase_product_unit_inventory()
   LANGUAGE PLPGSQL
   AS
 $$
+DECLARE
+   _product_type VARCHAR;
 BEGIN
 
     IF OLD.status = 'WEB_TEMP' OR OLD.status = 'WEB_SUBMIT'
     THEN
+	    RETURN OLD;
+    END IF;
+
+
+    SELECT product_type
+    INTO _product_type
+    FROM product_unit
+    WHERE OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id;
+
+
+    IF OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND _product_type = 'COMBO'
+    THEN
+        PERFORM change_inventory_combo_item(OLD.group_id, OLD.product_second_id, OLD.product_unit_second_id, -OLD.number_unit, OLD.package_second_id, 'SELLING_RETURN');
 	    RETURN OLD;
     END IF;
 
@@ -374,6 +402,7 @@ DECLARE
    _inventory_number float8;
    _inventory_number_new float8;
    _enable_warehouse BOOL;
+   _product_type VARCHAR;
 BEGIN
 
 
@@ -383,10 +412,19 @@ BEGIN
     END IF;
 
     
-    SELECT enable_warehouse, inventory_number
-    INTO _enable_warehouse, _inventory_number
+    SELECT enable_warehouse, inventory_number, product_type
+    INTO _enable_warehouse, _inventory_number, _product_type
     FROM product_unit
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
+
+
+
+    IF _product_type = 'COMBO'
+    THEN
+        PERFORM update_inventory_combo_item(NEW.group_id, NEW.product_second_id, NEW.product_unit_second_id, OLD.number_unit, NEW.number_unit, NEW.package_second_id, OLD.status, NEW.status);
+	    RETURN NEW;
+    END IF;
+
 
     IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
@@ -403,7 +441,7 @@ BEGIN
     IF _inventory_number_new < 0
     THEN
 --        PERFORM delete_all_data_belong_user_package_detail(NEW.group_id, NEW.package_second_id);
-	    RAISE EXCEPTION 'inventory_number_new small than number_unit';
+	    RAISE EXCEPTION 'inventory_number_new small than number_unit, product_unit_second_id: %' , NEW.product_unit_second_id;
     END IF;
 
 	UPDATE product_unit
@@ -607,7 +645,7 @@ BEGIN
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'inventory_number_new small than 0!';
+	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %' , NEW.product_unit_second_id;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -678,7 +716,7 @@ BEGIN
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'inventory_number_new small than 0!';
+	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %' , OLD.product_unit_second_id;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -756,7 +794,7 @@ BEGIN
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'inventory_number_new small than 0!';
+	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %' , NEW.product_unit_second_id;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -1005,4 +1043,76 @@ BEGIN
 	RETURN;
 END;
 $$;
+
+
+
+
+CREATE OR REPLACE FUNCTION update_inventory_combo_item(_group_id VARCHAR, _product_second_id VARCHAR, _product_unit_second_id VARCHAR, _old_item_num float8, _new_item_num float8, _arg_action_id VARCHAR, _old_status VARCHAR, _new_status VARCHAR)
+  RETURNS VOID
+  LANGUAGE PLPGSQL
+  AS
+$$
+DECLARE
+   _item_num float8;
+   _arg_action_type VARCHAR;
+BEGIN
+
+    _item_num = CASE
+                WHEN _old_status <> 'RETURN' AND _old_status <> 'CANCEL' AND _new_status <> 'RETURN' AND _new_status <> 'CANCEL' THEN - (_old_item_num - _new_item_num)
+                WHEN _old_status <> _new_status AND _old_status <> 'RETURN' AND _old_status <> 'CANCEL' AND (_new_status = 'RETURN' OR _new_status = 'CANCEL') THEN - _old_item_num
+                WHEN _old_status <> _new_status AND (_old_status = 'RETURN' OR _old_status = 'CANCEL') AND _new_status <> 'RETURN' AND _new_status = 'CANCEL' THEN _old_item_num
+--                        WHEN (_old_status = 'RETURN' OR _old_status <> 'CANCEL') AND (_new_status = 'RETURN' OR _new_status <> 'CANCEL') THEN ???
+                ELSE 0
+               END;
+
+    _arg_action_type = CASE WHEN (_new_status = 'RETURN' OR _new_status = 'CANCEL') THEN 'SELLING_RETURN' ELSE 'SELLING' END;
+
+    PERFORM change_inventory_combo_item(_group_id, _product_second_id, _product_unit_second_id, _item_num, _arg_action_id, _arg_action_type);
+
+	RETURN;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION change_inventory_combo_item(_group_id VARCHAR, _product_second_id VARCHAR, _product_unit_second_id VARCHAR, _item_num float8, _arg_action_id VARCHAR, _arg_action_type VARCHAR)
+  RETURNS VOID
+  LANGUAGE PLPGSQL
+  AS
+$$
+DECLARE
+   _item RECORD;
+BEGIN
+
+--  check if all item enough inventory_number
+    IF EXISTS(SELECT * FROM
+     (SELECT * FROM product_combo_item WHERE group_id = _group_id AND product_second_id = _product_second_id AND product_unit_second_id = _product_unit_second_id) AS product_combo_item
+    INNER JOIN
+     (SELECT * FROM product_unit WHERE group_id = _group_id AND enable_warehouse = TRUE) AS product_unit
+    ON product_combo_item.item_product_second_id = product_unit.product_second_id AND product_combo_item.item_product_unit_second_id = product_unit.product_unit_second_id
+    WHERE product_combo_item.unit_number * _item_num > product_unit.inventory_number)
+    THEN
+	    RAISE EXCEPTION 'inventory_number small than number_unit, product_unit_second_id: %' , _product_unit_second_id;
+    END IF;
+
+    FOR _item IN
+     SELECT product_unit.*, product_combo_item.unit_number AS unit_number FROM
+      (SELECT * FROM product_combo_item WHERE group_id = _group_id AND product_second_id = _product_second_id AND product_unit_second_id = _product_unit_second_id) AS product_combo_item
+     INNER JOIN
+      (SELECT * FROM product_unit WHERE group_id = _group_id AND enable_warehouse = TRUE) AS product_unit
+     ON product_combo_item.item_product_second_id = product_unit.product_second_id AND product_combo_item.item_product_unit_second_id = product_unit.product_unit_second_id
+    LOOP
+        UPDATE product_unit
+        SET
+            inventory_number = product_unit.inventory_number - _item.unit_number * _item_num,
+            arg_action_id = _arg_action_id,
+            arg_action_type = _arg_action_type
+        WHERE group_id = _item.group_id AND product_second_id = _item.product_second_id AND product_unit_second_id = _item.product_unit_second_id;
+
+    END LOOP;
+	RETURN;
+END;
+$$;
+
+
+
 

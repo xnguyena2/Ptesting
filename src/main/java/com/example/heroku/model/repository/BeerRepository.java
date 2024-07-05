@@ -14,11 +14,12 @@ import java.sql.Timestamp;
 
 public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
 
-    @Query(value = "INSERT INTO product( group_id, product_second_id, name, detail, category, unit_category_config, meta_search, visible_web, status, createat ) VALUES ( :group_id, :product_second_id, :name, :detail, :category, :unit_category_config, :meta_search, :visible_web, :status, :createat ) ON CONFLICT (group_id, product_second_id) DO UPDATE SET name = :name, detail = :detail, category = :category, unit_category_config = :unit_category_config, meta_search = :meta_search, visible_web = :visible_web, status = :status, createat = :createat")
+    @Query(value = "INSERT INTO product( group_id, product_second_id, name, detail, category, unit_category_config, meta_search, visible_web, product_type, status, createat ) VALUES ( :group_id, :product_second_id, :name, :detail, :category, :unit_category_config, :meta_search, :visible_web, :product_type, :status, :createat ) ON CONFLICT (group_id, product_second_id) DO UPDATE SET name = :name, detail = :detail, category = :category, unit_category_config = :unit_category_config, meta_search = :meta_search, visible_web = :visible_web, product_type = :product_type, status = :status, createat = :createat")
     Mono<Product> saveProduct(@Param("group_id") String group_id, @Param("product_second_id") String product_second_id,
                               @Param("name") String name, @Param("detail") String detail,
                               @Param("category") String category, @Param("unit_category_config") String unit_category_config,
                               @Param("meta_search") String meta_search, @Param("visible_web") boolean visible_web,
+                              @Param("product_type") Product.ProductType product_type,
                               @Param("status") Product.Status status, @Param("createat") Timestamp createat);
 
 

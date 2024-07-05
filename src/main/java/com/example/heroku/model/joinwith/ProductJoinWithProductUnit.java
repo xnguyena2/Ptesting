@@ -3,37 +3,20 @@ package com.example.heroku.model.joinwith;
 import com.example.heroku.model.Product;
 import com.example.heroku.model.ProductUnit;
 import com.example.heroku.request.beer.BeerSubmitData;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
+@SuperBuilder(toBuilder = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductJoinWithProductUnit {
-
-    //Product
-
-
-    protected Long id;
-    protected String group_id;
-    protected Timestamp createat;
-    private String product_second_id;
-    private String name;
-    private String detail;
-    private String meta_search;
-    private String category;
-    private String unit_category_config;
-    private Product.Status status;
-    private boolean visible_web;
-
-
+public class ProductJoinWithProductUnit extends Product {
 
     // ProductUnit
 
@@ -58,29 +41,18 @@ public class ProductJoinWithProductUnit {
     private float child_weight;
     private boolean child_visible;
     private boolean child_enable_warehouse;
+    private ProductType child_product_type;
     private String child_arg_action_id;
     private String child_arg_action_type;
     private ProductUnit.Status child_status;
 
 
     public String getID() {
-        return product_second_id;
+        return getProduct_second_id();
     }
 
     public Product getParent() {
-        return Product.builder()
-                .id(id)
-                .group_id(group_id)
-                .createat(createat)
-                .product_second_id(product_second_id)
-                .name(name)
-                .detail(detail)
-                .meta_search(meta_search)
-                .category(category)
-                .unit_category_config(unit_category_config)
-                .visible_web(visible_web)
-                .status(status)
-                .build();
+        return super.toBuilder().build();
     }
 
     public ProductUnit getChild() {
@@ -105,6 +77,7 @@ public class ProductJoinWithProductUnit {
                 .weight(child_weight)
                 .visible(child_visible)
                 .enable_warehouse(child_enable_warehouse)
+                .product_type(child_product_type)
                 .arg_action_id(child_arg_action_id)
                 .arg_action_type(child_arg_action_type)
                 .status(child_status)

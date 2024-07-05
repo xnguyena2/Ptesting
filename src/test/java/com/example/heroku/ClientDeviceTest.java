@@ -31,7 +31,7 @@ public class ClientDeviceTest {
                         e.printStackTrace();
                     }
                     assertThat((long) bootStrapData.getCarousel().size()).isEqualTo(4);
-                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(3);
+                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(4);
                     if(testWithMainGroup) {
                         Store store = bootStrapData.getStore();
                         assertThat(store.getName()).isEqualTo("shop ban chuoi");
@@ -50,6 +50,9 @@ public class ClientDeviceTest {
                                 assertThat(beerSubmitData.getImages().size()).isEqualTo(4);
                             })
                             .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
                             })
                             .verifyComplete();
@@ -66,7 +69,7 @@ public class ClientDeviceTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(3);
+                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(4);
                     if(testWithMainGroup) {
                         Store store = bootStrapData.getStore();
                         assertThat(store.getName()).isEqualTo("shop ban chuoi");
@@ -82,6 +85,9 @@ public class ClientDeviceTest {
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
@@ -108,7 +114,7 @@ public class ClientDeviceTest {
                         assertThat(store.getTime_open()).isEqualTo("all time");
                     }
                     assertThat((long) bootStrapData.getCarousel().size()).isEqualTo(0);
-                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(3);
+                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(4);
                     assertThat(bootStrapData.getBenifit().getRevenue()).isEqualTo(0);
                     Flux.just(bootStrapData.getProducts().toArray(new BeerSubmitData[0]))
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -119,6 +125,9 @@ public class ClientDeviceTest {
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
                                 assertThat(beerSubmitData.getImages().size()).isEqualTo(4);
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
@@ -144,7 +153,7 @@ public class ClientDeviceTest {
                         assertThat(store.getAddress()).isEqualTo("123 abc");
                         assertThat(store.getTime_open()).isEqualTo("all time");
                     }
-                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(3);
+                    assertThat((long) bootStrapData.getProducts().size()).isEqualTo(4);
                     assertThat(bootStrapData.getBenifit().getRevenue()).isEqualTo(0);
                     Flux.just(bootStrapData.getProducts().toArray(new BeerSubmitData[0]))
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -154,6 +163,9 @@ public class ClientDeviceTest {
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("456");
+                            })
+                            .consumeNextWith(beerSubmitData -> {
+                                assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("combo");
                             })
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("sold_out");
