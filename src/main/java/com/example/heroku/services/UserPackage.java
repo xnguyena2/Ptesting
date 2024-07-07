@@ -230,9 +230,38 @@ public class UserPackage {
                 .flatMap(this::fillPackageItem);
     }
 
+    public Flux<PackageDataResponse> GetMyPackageWorking(UserID userID) {
+        long id = userID.getAfter_id();
+        if (id > 0) {
+            return GetPackageWorkingOfDeviceAfterID(userID);
+        }
+        return GetPackageWorkingOfDevice(userID);
+    }
+
+
+    private Flux<PackageDataResponse> GetPackageWorkingOfDevice(UserID userID) {
+        return userPackageDetailRepository.GetDevicePackageDetailStatus(userID.getGroup_id(), userID.getId(), UserPackageDetail.Status.DONE, UserPackageDetail.Status.CREATE, userID.getPage(), userID.getSize())
+                .map(PackageDataResponse::new)
+                .flatMap(this::fillPackageItem);
+    }
+
+
+    private Flux<PackageDataResponse> GetPackageWorkingOfDeviceAfterID(UserID userID) {
+        return userPackageDetailRepository.GetDevicePackageDetailStatusAfterID(userID.getGroup_id(), userID.getId(), UserPackageDetail.Status.DONE, UserPackageDetail.Status.CREATE, userID.getAfter_id(), userID.getPage(), userID.getSize())
+                .map(PackageDataResponse::new)
+                .flatMap(this::fillPackageItem);
+    }
+
 
     public Flux<PackageDataResponse> GetMyPackageOfStatus(UserID userID, UserPackageDetail.Status status) {
         return userPackageDetailRepository.GetDevicePackageDetailByStatus(userID.getGroup_id(), userID.getId(), status, userID.getPage(), userID.getSize())
+                .map(PackageDataResponse::new)
+                .flatMap(this::fillPackageItem);
+    }
+
+
+    public Flux<PackageDataResponse> GetMyPackageOfStatusAfterID(UserID userID, UserPackageDetail.Status status) {
+        return userPackageDetailRepository.GetDevicePackageDetailByStatusAfterID(userID.getGroup_id(), userID.getId(), status, userID.getAfter_id(), userID.getPage(), userID.getSize())
                 .map(PackageDataResponse::new)
                 .flatMap(this::fillPackageItem);
     }
@@ -305,7 +334,7 @@ public class UserPackage {
     }
 
     public Flux<PackageDataResponse> GetPackageJoinByGrouAndStatusAfterID(UserID userID, UserPackageDetail.Status status, UserPackageDetail.Status or_status) {
-        int id = Integer.parseInt(userID.getId());
+        long id = Long.parseLong(userID.getId());
         return beerAPI.GetListImgOfProductOfPackageAfterID(userID.getGroup_id(), status, or_status, id, userID.getPage(), userID.getSize())
                 .flatMapMany(stringListMap ->
                         joinUserPackageDetailWithUserPackgeRepository.getUserPackgeDetailAndPackageItemAferID(userID.getGroup_id(), status, or_status, id, userID.getPage(), userID.getSize())

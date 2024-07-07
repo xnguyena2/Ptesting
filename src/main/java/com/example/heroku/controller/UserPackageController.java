@@ -79,6 +79,25 @@ public class UserPackageController {
     }
 
 
+    @PostMapping("/getmyworkiung")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<PackageDataResponse> getMyWorking(@RequestBody @Valid UserID userID) {
+        System.out.println("Get all my working package: " + userID.getId());
+        return userPackageAPI.GetMyPackageWorking(userID);
+    }
+
+
+    @PostMapping("/getmypackageprocessing")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<PackageDataResponse> getMyPackage(@RequestBody @Valid UserID userID) {
+        System.out.println("Get all my package by status: " + userID.getId());
+        if (userID.getAfter_id() > 0) {
+            return userPackageAPI.GetMyPackageOfStatusAfterID(userID, UserPackageDetail.Status.CREATE);
+        }
+        return userPackageAPI.GetMyPackageOfStatus(userID, UserPackageDetail.Status.CREATE);
+    }
+
+
     @PostMapping("/getbydeviceforweb")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<PackageDataResponse> getAllOfWeb(@RequestBody @Valid UserID packageID) {

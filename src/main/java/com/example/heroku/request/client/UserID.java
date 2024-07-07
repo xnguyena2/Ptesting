@@ -11,4 +11,5 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class UserID extends BaseID {
     private String id;
+    private long after_id;
 }
