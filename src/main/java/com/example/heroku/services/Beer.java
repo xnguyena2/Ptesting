@@ -139,7 +139,7 @@ public class Beer {
         );
     }
 
-    public Mono<Map<String, List<com.example.heroku.model.Image>>> GetListImgOfProductOfPackageAfterID(String group_id, UserPackageDetail.Status status, UserPackageDetail.Status or_status, int id, int page, int size) {
+    public Mono<Map<String, List<com.example.heroku.model.Image>>> GetListImgOfProductOfPackageAfterID(String group_id, UserPackageDetail.Status status, UserPackageDetail.Status or_status, long id, int page, int size) {
         Map<String, List<com.example.heroku.model.Image>> imgMap = new HashMap<>();
         return Mono.just(imgMap).flatMap(stringListMap ->
                 imageRepository.getAllOfProductByPackageAferID(group_id, status, or_status, id, page, size)
