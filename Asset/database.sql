@@ -967,10 +967,12 @@ BEGIN
     WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'RETURN'
     ELSE 'DONE' END;
 
+--  sum all amount for combo and material
+
     INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
     VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, _note, 'UPDATE_NUMBER', 'DONE', NOW() )
     ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id)
-    DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - OLD.inventory_number, note = _note, type = _type, status = _status, createat = NOW();
+    DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = product_import.amount + NEW.inventory_number - OLD.inventory_number, note = _note, type = _type, status = _status, createat = NOW();
 
 	RETURN NEW;
 END;
