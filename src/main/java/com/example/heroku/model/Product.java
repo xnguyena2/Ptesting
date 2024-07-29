@@ -37,6 +37,10 @@ public class Product extends BaseEntity {
 
     private ProductType product_type;
 
+    private String default_group_unit_naname;
+
+    private String number_group_unit_config;
+
     //update ProductJoinWithProductUnit
     //update BeerSubmitData
 

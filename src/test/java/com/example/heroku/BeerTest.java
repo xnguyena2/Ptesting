@@ -78,6 +78,9 @@ public class BeerTest {
                                         .promotional_price(234)
                                         .inventory_number(345)
                                         .visible(true)
+                                        .group_unit_number(2.3f)
+                                        .group_unit_id("ggggg")
+                                        .group_unit_naname("Block")
                                         .buy_price(20)
                                         .enable_warehouse(true)
                                         .product_type(Product.ProductType.PRODUCT)
@@ -102,6 +105,8 @@ public class BeerTest {
                                 .product_second_id("123")
                                 .group_id(group)
                                 .visible_web(true)
+                                .default_group_unit_naname("default")
+                                .number_group_unit_config("number")
                                 .product_type(Product.ProductType.PRODUCT)
                                 .build()
                                 .AutoFill()
@@ -425,6 +430,8 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
+                    assertThat(beerInfo.getProduct().getDefault_group_unit_naname()).isEqualTo("default");
+                    assertThat(beerInfo.getProduct().getNumber_group_unit_config()).isEqualTo("number");
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
                             .as(StepVerifier::create)
@@ -451,6 +458,9 @@ public class BeerTest {
                                 assertThat(beerUnit.isVisible()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
+                                assertThat(beerUnit.getGroup_unit_naname()).isEqualTo("Block");
+                                assertThat(beerUnit.getGroup_unit_number()).isEqualTo(2.3f);
+                                assertThat(beerUnit.getGroup_unit_id()).isEqualTo("ggggg");
                             })
                             .verifyComplete();
                 })

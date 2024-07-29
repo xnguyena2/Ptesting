@@ -62,7 +62,9 @@ public class Beer {
                         this.beerRepository.saveProduct(product.getGroup_id(), product.getProduct_second_id(),
                                 product.getName(), product.getDetail(),
                                 product.getCategory(), product.getUnit_category_config(),
-                                product.getMeta_search(), product.isVisible_web(), product.getProduct_type(),
+                                product.getMeta_search(), product.isVisible_web(),
+                                product.getDefault_group_unit_naname(), product.getNumber_group_unit_config(),
+                                product.getProduct_type(),
                                 product.getStatus(), product.getCreateat()
                         ).then(Mono.just(product))
                 )
