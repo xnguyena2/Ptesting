@@ -41,6 +41,9 @@ public class ProductJoinWithProductUnit extends Product {
     private float child_weight;
     private boolean child_visible;
     private boolean child_enable_warehouse;
+    private String child_group_unit_id;
+    private String child_group_unit_naname;
+    private float child_group_unit_number;
     private ProductType child_product_type;
     private String child_arg_action_id;
     private String child_arg_action_type;
@@ -77,6 +80,9 @@ public class ProductJoinWithProductUnit extends Product {
                 .weight(child_weight)
                 .visible(child_visible)
                 .enable_warehouse(child_enable_warehouse)
+                .group_unit_id(child_group_unit_id)
+                .group_unit_naname(child_group_unit_naname)
+                .group_unit_number(child_group_unit_number)
                 .product_type(child_product_type)
                 .arg_action_id(child_arg_action_id)
                 .arg_action_type(child_arg_action_type)

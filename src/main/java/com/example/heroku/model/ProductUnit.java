@@ -63,6 +63,12 @@ public class ProductUnit extends BaseEntity {
 
     private String arg_action_type;
 
+    private String group_unit_naname;
+
+    private String group_unit_id;
+
+    private float group_unit_number;
+
     private Status status;
 
     //update ProductJoinWithProductUnit
