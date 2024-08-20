@@ -2,8 +2,8 @@ package com.example.heroku.controller;
 
 import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.Users;
-import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.PackageItemRemove;
+import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.ProductPackgeWithTransaction;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.PackageID;
@@ -11,7 +11,6 @@ import com.example.heroku.request.client.UserID;
 import com.example.heroku.request.client.UserPackageID;
 import com.example.heroku.response.Format;
 import com.example.heroku.response.PackageDataResponse;
-import com.example.heroku.response.ProductInPackageResponse;
 import com.example.heroku.services.UserPackage;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,13 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 
+
 @RestController
 @RequestMapping("/package")
 public class UserPackageController {
+
+    @Autowired
+    com.example.heroku.services.UserAccount userAccount;
 
     @Autowired
     UserPackage userPackageAPI;
@@ -55,7 +58,13 @@ public class UserPackageController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> addOrUpdatePackageWithoutCheck(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid ProductPackage productPackage) {
         System.out.println("++ save package without check: " + productPackage.getPackage_second_id() + ", group: " + productPackage.getGroup_id());
-        return userPackageAPI.SavePackageWithoutCheck(productPackage);
+        return principal.flatMap(users -> userAccount.getUser(users.getUsername()))
+                .flatMap(users -> {
+                    if (!users.isActive()) {
+                        return Mono.just(org.springframework.http.ResponseEntity.badRequest().body(Format.builder().response("user not active!").build()));
+                    }
+                    return userPackageAPI.SavePackageWithoutCheck(productPackage);
+                });
     }
 
     @PostMapping("/admin/delete")
