@@ -1,6 +1,7 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.UserPackageDetail;
+import com.example.heroku.model.Users;
 import com.example.heroku.request.beer.ProductPackage;
 import com.example.heroku.request.beer.PackageItemRemove;
 import com.example.heroku.request.beer.ProductPackgeWithTransaction;
@@ -15,6 +16,7 @@ import com.example.heroku.services.UserPackage;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -51,7 +53,7 @@ public class UserPackageController {
 
     @PostMapping("/updatenotcheck")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity<Format>> addOrUpdatePackageWithoutCheck(@RequestBody @Valid ProductPackage productPackage) {
+    public Mono<ResponseEntity<Format>> addOrUpdatePackageWithoutCheck(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid ProductPackage productPackage) {
         System.out.println("++ save package without check: " + productPackage.getPackage_second_id() + ", group: " + productPackage.getGroup_id());
         return userPackageAPI.SavePackageWithoutCheck(productPackage);
     }
