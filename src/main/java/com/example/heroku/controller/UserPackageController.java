@@ -11,6 +11,7 @@ import com.example.heroku.request.client.UserID;
 import com.example.heroku.request.client.UserPackageID;
 import com.example.heroku.response.Format;
 import com.example.heroku.response.PackageDataResponse;
+import com.example.heroku.services.UserPackageDetailCounterServices;
 import com.example.heroku.services.UserPackage;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class UserPackageController {
 
     @Autowired
     UserPackage userPackageAPI;
+
+    @Autowired
+    UserPackageDetailCounterServices userPackageDetailCounterServices;
 
     @PostMapping("/add")
     @CrossOrigin(origins = Util.HOST_URL)
@@ -138,6 +142,20 @@ public class UserPackageController {
     public Flux<PackageDataResponse> getByGroup(@RequestBody @Valid UserID userID) {
         System.out.println("Get all package by group: " + userID.getGroup_id());
         return userPackageAPI.GetPackageByGroup(userID);
+    }
+
+
+    @PostMapping("/getbygrouponlywithbuyer")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<PackageDataResponse> getByGroupOnlyBuyer(@RequestBody @Valid UserID userID) {
+        System.out.println("Get all package by group only with buyer data: " + userID.getGroup_id());
+        return userPackageAPI.GetPackageByGroupOnlyBuyerData(userID);
+    }
+
+    @GetMapping("/countprocessingandweb/{groupid}")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<com.example.heroku.response.CounterUserPackageDetailNumberOfProcessingAndWeb> getProcessingAndWebCounter(@PathVariable("groupid") String groupID) {
+        return  userPackageDetailCounterServices.count(groupID);
     }
 
 

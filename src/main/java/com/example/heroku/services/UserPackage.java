@@ -12,6 +12,7 @@ import com.example.heroku.request.beer.*;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.request.client.UserPackageID;
+import com.example.heroku.response.BuyerData;
 import com.example.heroku.response.Format;
 import com.example.heroku.response.PackageDataResponse;
 import com.example.heroku.response.ProductInPackageResponse;
@@ -270,6 +271,42 @@ public class UserPackage {
         return userPackageDetailRepository.GetAllPackageDetail(userID.getGroup_id(), userID.getPage(), userID.getSize())
                 .map(PackageDataResponse::new)
                 .flatMap(this::fillPackageItem);
+    }
+
+    public Flux<PackageDataResponse> GetPackageByGroupOnlyBuyerData(UserID userID) {
+        if (userID.getAfter_id() == 0){
+            return GetPackageByGroupAndOnlyBuyer(userID);
+        }
+        return GetPackageByGroupAndOnlyBuyerAfterID(userID);
+    }
+
+    private Flux<PackageDataResponse> GetPackageByGroupAndOnlyBuyer(UserID userID) {
+        return userPackageDetailRepository.GetAllPackageDetail(userID.getGroup_id(), userID.getPage(), userID.getSize())
+                .map(PackageDataResponse::new)
+                .flatMap(packageDataResponse -> {
+                    if (packageDataResponse.getDevice_id() == null || packageDataResponse.getDevice_id().isEmpty()) {
+                        return Mono.just(packageDataResponse);
+                    }
+                    return buyer.FindByDeviceID(packageDataResponse.getGroup_id(), packageDataResponse.getDevice_id())
+                            .switchIfEmpty(Mono.just(new BuyerData()))
+                            .map(packageDataResponse::setBuyer);
+                        }
+                );
+    }
+
+    private Flux<PackageDataResponse> GetPackageByGroupAndOnlyBuyerAfterID(UserID userID) {
+        long id = userID.getAfter_id();
+        return userPackageDetailRepository.GetAllPackageDetailAfterID(userID.getGroup_id(), id, userID.getPage(), userID.getSize())
+                .map(PackageDataResponse::new)
+                .flatMap(packageDataResponse -> {
+                            if (packageDataResponse.getDevice_id() == null || packageDataResponse.getDevice_id().isEmpty()) {
+                                return Mono.just(packageDataResponse);
+                            }
+                            return buyer.FindByDeviceID(packageDataResponse.getGroup_id(), packageDataResponse.getDevice_id())
+                                    .switchIfEmpty(Mono.just(new BuyerData()))
+                                    .map(packageDataResponse::setBuyer);
+                        }
+                );
     }
 
     @Deprecated()

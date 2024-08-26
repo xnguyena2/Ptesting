@@ -12,21 +12,19 @@ import com.example.heroku.request.client.UserPackageID;
 import com.example.heroku.response.BuyerData;
 import com.example.heroku.response.PackageDataResponse;
 import com.example.heroku.response.ProductInPackageResponse;
+import com.example.heroku.services.UserPackageDetailCounterServices;
 import com.example.heroku.services.StatisticServices;
 import com.example.heroku.services.UserPackage;
 import com.example.heroku.util.Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
-import org.assertj.core.api.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -46,6 +44,8 @@ public class UserPackageTest {
     com.example.heroku.services.Buyer buyer;
 
     com.example.heroku.services.Beer beerAPI;
+
+    UserPackageDetailCounterServices userPackageDetailCounterServices;
 
     String group;
 
@@ -1284,6 +1284,106 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(12);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                })
+                .verifyComplete();
+
+
+        userPackageAPI.GetPackageByGroupOnlyBuyerData(UserID.builder().group_id(group).page(0).size(10000).build())
+                .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
+
+                    BuyerData buyer1 = userPackage.getBuyer();
+                    assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(buyer1.getRegion_id()).isEqualTo(294);
+                    assertThat(buyer1.getDistrict_id()).isEqualTo(484);
+                    assertThat(buyer1.getWard_id()).isEqualTo(10379);
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
+
+                })
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
+                })
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
+                })
+                .verifyComplete();
+
+
+        userPackageAPI.GetPackageByGroupOnlyBuyerData(UserID.builder().group_id(group).after_id(10000).page(0).size(10000).build())
+                .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
+
+                    BuyerData buyer1 = userPackage.getBuyer();
+                    assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
+                    assertThat(buyer1.getRegion_id()).isEqualTo(294);
+                    assertThat(buyer1.getDistrict_id()).isEqualTo(484);
+                    assertThat(buyer1.getWard_id()).isEqualTo(10379);
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getRegion())).isEqualTo(Util.getInstance().RemoveAccent("Hồ Chí Minh"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getDistrict())).isEqualTo(Util.getInstance().RemoveAccent("Quận 1"));
+                    assertThat(Util.getInstance().RemoveAccent(buyer1.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
+
+                })
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_iddddd");
+                })
+                .consumeNextWith(userPackage -> {
+
+                    try {
+                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                    assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
+                    assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                 })
                 .verifyComplete();
 
@@ -2864,6 +2964,14 @@ public class UserPackageTest {
                 })
                 .consumeNextWith(data -> {
                     assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit4561ID.get());
+                })
+                .verifyComplete();
+
+        userPackageDetailCounterServices.count(group)
+                .as(StepVerifier::create)
+                .consumeNextWith(data -> {
+                    assertThat(data.getProcessing()).isEqualTo(1);
+                    assertThat(data.getWeb()).isEqualTo(1);
                 })
                 .verifyComplete();
 
