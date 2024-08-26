@@ -1,7 +1,6 @@
 package com.example.heroku;
 
 import com.example.heroku.model.repository.ImageRepository;
-import com.example.heroku.photo.FlickrLib;
 import com.example.heroku.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ApplicationTest extends TestConfig {
@@ -88,6 +86,9 @@ public class ApplicationTest extends TestConfig {
 
     @Autowired
     PaymentTransation paymentTransation;
+
+    @Autowired
+    UserPackageDetailCounterServices userPackageDetailCounterServices;
 
     @Value("${account.admin.username}")
     private String adminName;
@@ -172,7 +173,7 @@ public class ApplicationTest extends TestConfig {
     @Order(4)
     public void testUserAddBeerToPackage() {
         BeerTest.builder().beerAPI(beerAPI).group(mainGroup).groupImport(groupImport).build().saveBeerTest();
-        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(mainGroup).buyer(buyer).statisticServices(statisticServices).build().TestUserPackage();
+        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(mainGroup).buyer(buyer).statisticServices(statisticServices).userPackageDetailCounterServices(userPackageDetailCounterServices).build().TestUserPackage();
         ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).group(mainGroup).build().Test();
     }
 
@@ -267,7 +268,7 @@ public class ApplicationTest extends TestConfig {
     @Order(6)
     public void BeerTest2() {
         BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).groupImport(groupImport).build().saveBeerTest();
-        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).buyer(buyer).statisticServices(statisticServices).build().TestUserPackage();
+        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).buyer(buyer).statisticServices(statisticServices).userPackageDetailCounterServices(userPackageDetailCounterServices).build().TestUserPackage();
     }
 
     @Test
