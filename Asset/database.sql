@@ -48,6 +48,8 @@ CREATE TABLE IF NOT EXISTS area (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NUL
 
 CREATE TABLE IF NOT EXISTS tokens (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, token_second_id VARCHAR, username VARCHAR, expire BIGINT, token VARCHAR, status VARCHAR, createat TIMESTAMP);
 
+CREATE TABLE IF NOT EXISTS debt_transaction (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, transaction_second_id VARCHAR NOT NULL, device_id VARCHAR, action_id VARCHAR, action_type VARCHAR, transaction_type VARCHAR, amount float8, category VARCHAR, money_source VARCHAR, note VARCHAR, status VARCHAR, createat TIMESTAMP);
+
 CREATE TABLE IF NOT EXISTS delete_request (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, delete_request_id VARCHAR, user_id VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE INDEX device_config_index ON device_config(group_id);
@@ -81,6 +83,11 @@ CREATE INDEX payment_transaction_index ON payment_transaction(transaction_second
 CREATE INDEX payment_transaction_action_index ON payment_transaction(action_id);
 CREATE INDEX payment_transaction_createat_index ON payment_transaction(createat);
 CREATE INDEX payment_transaction_group_index ON payment_transaction(group_id);
+CREATE INDEX debt_transaction_index ON debt_transaction(transaction_second_id);
+CREATE INDEX debt_transaction_action_index ON debt_transaction(action_id);
+CREATE INDEX debt_transaction_createat_index ON debt_transaction(createat);
+CREATE INDEX debt_transaction_group_index ON debt_transaction(group_id);
+CREATE INDEX debt_transaction_device_index ON debt_transaction(device_id);
 CREATE INDEX table_detail_index ON table_detail(table_id);
 CREATE INDEX table_detail_area_index ON table_detail(area_id);
 CREATE INDEX area_group_index ON area(group_id);
@@ -112,6 +119,8 @@ ALTER TABLE user_package_detail ADD CONSTRAINT UQ_user_package_detail UNIQUE(gro
 ALTER TABLE user_package ADD CONSTRAINT UQ_user_package UNIQUE(group_id, package_second_id, product_second_id, product_unit_second_id);
 ALTER TABLE payment_transaction ADD CONSTRAINT UQ_payment_transaction UNIQUE(transaction_second_id);
 ALTER TABLE payment_transaction ADD CONSTRAINT UQ_group_payment_transaction UNIQUE(group_id, transaction_second_id);
+ALTER TABLE debt_transaction ADD CONSTRAINT UQ_debt_transaction UNIQUE(transaction_second_id);
+ALTER TABLE debt_transaction ADD CONSTRAINT UQ_group_debt_transaction UNIQUE(group_id, transaction_second_id);
 ALTER TABLE table_detail ADD CONSTRAINT UQ_table_detail UNIQUE(group_id, area_id, table_id);
 ALTER TABLE area ADD CONSTRAINT UQ_area UNIQUE(group_id, area_id);
 ALTER TABLE tokens ADD CONSTRAINT UQ_tokens UNIQUE(token_second_id);
@@ -254,6 +263,8 @@ begin
     DELETE FROM table_detail WHERE group_id = by_group_id;
     DELETE FROM area WHERE group_id = by_group_id;
     DELETE FROM tokens WHERE group_id = by_group_id;
+
+    DELETE FROM debt_transaction WHERE group_id = by_group_id;
 
     RETURN TRUE;
 end;
