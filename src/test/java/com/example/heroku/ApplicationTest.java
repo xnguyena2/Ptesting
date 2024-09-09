@@ -90,6 +90,9 @@ public class ApplicationTest extends TestConfig {
     @Autowired
     UserPackageDetailCounterServices userPackageDetailCounterServices;
 
+    @Autowired
+    DebtTransation debtTransation;
+
     @Value("${account.admin.username}")
     private String adminName;
 
@@ -221,6 +224,12 @@ public class ApplicationTest extends TestConfig {
         PaymentTransactionTest.builder().paymentTransation(paymentTransation).statisticServices(statisticServices).group(mainGroup).build().Test();
     }
 
+    @Test
+    @Order(6)
+    public void testDebtTransaction(){
+        DebtTransactionTest.builder().debtTransation(debtTransation).group(mainGroup).build().Test();
+    }
+
     /*
     @Test
     public void testGenerateBeer() throws InterruptedException {
@@ -345,6 +354,11 @@ public class ApplicationTest extends TestConfig {
     @Test
     public void testPaymentTransaction2(){
         PaymentTransactionTest.builder().paymentTransation(paymentTransation).statisticServices(statisticServices).group(anotherGroup).build().Test();
+    }
+
+    @Test
+    public void testDebtTransaction2(){
+        DebtTransactionTest.builder().debtTransation(debtTransation).group(anotherGroup).build().Test();
     }
 
 }
