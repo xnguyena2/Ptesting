@@ -32,16 +32,16 @@ public interface DebtTransactionRepository extends ReactiveCrudRepository<DebtTr
     @Query(value = "SELECT DISTINCT ON (category) category FROM debt_transaction WHERE debt_transaction.group_id = :group_id")
     Flux<DebtTransation> getAllCategory(@Param("group_id") String group_id);
 
-    @Query(value = "SELECT * FROM debt_transaction WHERE debt_transaction.group_id = :group_id LIMIT :size OFFSET (:page * :size)")
+    @Query(value = "SELECT * FROM debt_transaction WHERE debt_transaction.group_id = :group_id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<DebtTransation> getAllDebt(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size);
 
-    @Query(value = "SELECT * FROM debt_transaction WHERE debt_transaction.group_id = :group_id AND id < :id LIMIT :size OFFSET (:page * :size)")
+    @Query(value = "SELECT * FROM debt_transaction WHERE debt_transaction.group_id = :group_id AND id < :id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<DebtTransation> getAllDebtAfterID(@Param("group_id") String group_id, @Param("id") long id, @Param("page") int page, @Param("size") int size);
 
-    @Query(value = "SELECT * FROM debt_transaction WHERE debt_transaction.group_id = :group_id AND device_id = :device_id LIMIT :size OFFSET (:page * :size)")
+    @Query(value = "SELECT * FROM debt_transaction WHERE debt_transaction.group_id = :group_id AND device_id = :device_id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<DebtTransation> getAllDebtOfBuyer(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("page") int page, @Param("size") int size);
 
-    @Query(value = "SELECT * FROM debt_transaction WHERE debt_transaction.group_id = :group_id AND device_id = :device_id AND id < :id LIMIT :size OFFSET (:page * :size)")
+    @Query(value = "SELECT * FROM debt_transaction WHERE debt_transaction.group_id = :group_id AND device_id = :device_id AND id < :id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<DebtTransation> getAllDebtAfterIDOfBuyer(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("id") long id, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "SELECT * FROM debt_transaction WHERE debt_transaction.group_id = :group_id AND (debt_transaction.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime)")
