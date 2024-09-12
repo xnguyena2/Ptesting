@@ -81,4 +81,15 @@ public class BuyerControler {
         return buyerServices.FindByPhone(searchQuery);
     }
 
+    @PostMapping("/admin/getbyid")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<BuyerData> getByID(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
+        return WrapPermissionGroupWithPrincipalAction.<BuyerData>builder()
+                .principal(principal)
+                .subject(idContainer::getGroup_id)
+                .monoAction(() -> buyerServices.FindByDeviceID(idContainer.getGroup_id(), idContainer.getId()))
+                .build()
+                .toMono();
+    }
+
 }
