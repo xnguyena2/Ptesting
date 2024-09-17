@@ -10,12 +10,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 @TestPropertySource(properties = {
         "FIRE_BASE_TOKEN=",
-        "JDBC_DATABASE_URL=jdbc:postgres://45.119.82.37/sale_management_product",
+        "JDBC_DATABASE_URL=jdbc:postgres://dpg-crkau9l6l47c739me7f0-a.singapore-postgres.render.com/sale_management_dev_0ruk",
         "POSTGRESQL_PORT=5432",
-        "POSTGRESQL_DB=sale_management_product",
-        "POSTGRESQL_HOST=45.119.82.37",
-        "DB_USER_NAME=sale_management_product_user",
-        "DB_PASSWORD=zkloi8e9VoHfuoT2w1BSWHhzlbujFxsT",
+        "POSTGRESQL_DB=sale_management_dev_0ruk",
+        "POSTGRESQL_HOST=dpg-crkau9l6l47c739me7f0-a.singapore-postgres.render.com",
+        "DB_USER_NAME=sale_management_dev_0ruk_user",
+        "DB_PASSWORD=TUcD2VPFAKyvVTOcFOaUhsLLvZuaLT1y",
         "DB_DRIVER=org.postgresql.Driver",
         "POSTGRESQL_POOLSIZE=10",
         "POSTGRESQL_TIMEIDLE=10000",
