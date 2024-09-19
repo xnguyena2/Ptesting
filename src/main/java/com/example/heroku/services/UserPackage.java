@@ -156,7 +156,7 @@ public class UserPackage {
     }
 
     Mono<UserPackageDetail> savePackageDetailToRepo(UserPackageDetail detail) {
-        return userPackageDetailRepository.InsertOrUpdate(detail.getGroup_id(), detail.getDevice_id(), detail.getStaff_id(), detail.getPackage_second_id(),
+        return userPackageDetailRepository.InsertOrUpdate(detail.getGroup_id(), detail.getDevice_id(), detail.getStaff_id(), detail.getStaff_name(), detail.getPackage_second_id(),
                         detail.getPackage_type(), detail.getVoucher(),
                         detail.getArea_id(), detail.getArea_name(), detail.getTable_id(), detail.getTable_name(),
                         detail.getPrice(), detail.getPayment(), detail.getDiscount_amount(), detail.getDiscount_percent(),

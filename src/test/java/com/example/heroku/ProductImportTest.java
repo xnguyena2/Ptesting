@@ -148,6 +148,8 @@ public class ProductImportTest {
                         GroupImportWithItem.builder()
                                 .group_id(group)
                                 .group_import_second_id("1")
+                                .staff_id("staffid")
+                                .staff_name("staffname")
                                 .supplier_id("supplier")
                                 .total_price(23)
                                 .total_amount(32)
@@ -196,8 +198,20 @@ public class ProductImportTest {
 
                 })
                 .consumeNextWith(productImport -> {
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(432);
+
+                })
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(432);
+
+                })
+                .consumeNextWith(productImport -> {
                     assertThat(productImport.getGroup_id()).isEqualTo(group);
                     assertThat(productImport.getGroup_import_second_id()).isEqualTo("1");
+                    assertThat(productImport.getStaff_id()).isEqualTo("staffid");
+                    assertThat(productImport.getStaff_name()).isEqualTo("staffname");
                     assertThat(productImport.getTotal_price()).isEqualTo(23);
                     assertThat(productImport.getPayment()).isEqualTo(654);
                     assertThat(productImport.getTotal_amount()).isEqualTo(32);
@@ -301,6 +315,16 @@ public class ProductImportTest {
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
                     assertThat(productImport.getTotal_amount()).isEqualTo(888);
+
+                })
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(432);
+
+                })
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(432);
 
                 })
                 .consumeNextWith(productImport -> {
@@ -410,6 +434,16 @@ public class ProductImportTest {
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
                     assertThat(productImport.getTotal_amount()).isEqualTo(888);
+
+                })
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(432);
+
+                })
+                .consumeNextWith(productImport -> {
+                    assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(432);
 
                 })
                 .consumeNextWith(productImport -> {

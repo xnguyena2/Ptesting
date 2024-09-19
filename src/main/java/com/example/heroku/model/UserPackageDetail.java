@@ -27,6 +27,8 @@ public class UserPackageDetail  extends BaseEntity {
 
     private String staff_id;
 
+    private String staff_name;
+
     private String package_type;
 
     private String table_id;
@@ -86,6 +88,7 @@ public class UserPackageDetail  extends BaseEntity {
         package_second_id = s.package_second_id;
         device_id = s.device_id;
         staff_id = s.staff_id;
+        staff_name = s.staff_name;
         package_type = s.package_type;
         area_id = s.area_id;
         area_name = s.area_name;
