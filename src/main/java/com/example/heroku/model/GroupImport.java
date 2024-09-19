@@ -22,6 +22,10 @@ public class GroupImport extends BaseEntity {
 
     private String group_import_second_id;
 
+    private String staff_id;
+
+    private String staff_name;
+
     private String supplier_id;
 
     private String supplier_name;
@@ -55,6 +59,8 @@ public class GroupImport extends BaseEntity {
     public void copy(GroupImport g) {
         super.copy(g);
         group_import_second_id = g.group_import_second_id;
+        staff_id = g.staff_id;
+        staff_name = g.staff_name;
         supplier_id = g.supplier_id;
         supplier_phone = g.supplier_phone;
         supplier_name = g.supplier_name;

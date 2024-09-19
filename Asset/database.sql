@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS user_fcm (id SERIAL PRIMARY KEY, group_id VARCHAR NOT
 CREATE TABLE IF NOT EXISTS user_address (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, address_id VARCHAR, device_id VARCHAR, reciver_fullname VARCHAR, phone_number VARCHAR, house_number VARCHAR, region INTEGER, district INTEGER, ward INTEGER, status VARCHAR, createat TIMESTAMP);
 
 
-CREATE TABLE IF NOT EXISTS user_package_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, staff_id VARCHAR, package_type VARCHAR, area_id VARCHAR, area_name VARCHAR, table_id VARCHAR, table_name VARCHAR, voucher VARCHAR, price float8, payment float8, discount_amount float8, discount_percent float8, discount_promotional float8, discount_by_point float8, additional_fee float8, additional_config VARCHAR, ship_price float8, cost float8, profit float8, point INTEGER, note VARCHAR, image VARCHAR, progress VARCHAR, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS user_package_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, staff_id VARCHAR, staff_name VARCHAR, package_type VARCHAR, area_id VARCHAR, area_name VARCHAR, table_id VARCHAR, table_name VARCHAR, voucher VARCHAR, price float8, payment float8, discount_amount float8, discount_percent float8, discount_promotional float8, discount_by_point float8, additional_fee float8, additional_config VARCHAR, ship_price float8, cost float8, profit float8, point INTEGER, note VARCHAR, image VARCHAR, progress VARCHAR, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS user_package (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, number_unit float8, buy_price float8, price float8, discount_amount float8, discount_percent float8, discount_promotional float8, note VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS notification (id SERIAL PRIMARY KEY, group_id VARCHAR
 CREATE TABLE IF NOT EXISTS notification_relate_user_device (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, notification_second_id VARCHAR, user_device_id VARCHAR, createat TIMESTAMP, status VARCHAR);
 CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, provider_id VARCHAR, name VARCHAR, config TEXT, createat TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS group_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, supplier_id VARCHAR, supplier_name VARCHAR, supplier_phone VARCHAR, total_price float8, total_amount float8, payment float8, discount_amount float8, discount_percent float8, additional_fee float8, progress VARCHAR, note TEXT, images VARCHAR, type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS group_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, supplier_id VARCHAR, staff_id VARCHAR, staff_name VARCHAR, supplier_name VARCHAR, supplier_phone VARCHAR, total_price float8, total_amount float8, payment float8, discount_amount float8, discount_percent float8, additional_fee float8, progress VARCHAR, note TEXT, images VARCHAR, type VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_unit_name_category VARCHAR, price float8, amount float8, note TEXT, type VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, domain_url VARCHAR, status VARCHAR, store_type VARCHAR, each_month float8, half_year float8, each_year float8, payment_status VARCHAR, createat TIMESTAMP);
@@ -770,7 +770,7 @@ BEGIN
     END IF;
 
 
-    IF OLD.amount = NEW.amount AND NEW.status <> 'RETURN' OR NEW.type = 'UPDATE_NUMBER' OR NEW.type = 'DELETE_PRODUCT' OR NEW.type = 'SELLING' OR NEW.type = 'SELLING_RETURN'
+    IF NEW.status <> 'RETURN' AND (OLD.amount = NEW.amount OR NEW.type = 'UPDATE_NUMBER') OR NEW.type = 'DELETE_PRODUCT' OR NEW.type = 'SELLING' OR NEW.type = 'SELLING_RETURN'
     THEN
 	    RETURN NEW;
     END IF;
@@ -794,6 +794,7 @@ BEGIN
                         WHEN NEW.type = 'EXPORT' AND NEW.status = 'RETURN' THEN _inventory_number + NEW.amount
                         WHEN NEW.type = 'CHECK_WAREHOUSE' AND NEW.status <> 'RETURN' THEN NEW.amount
                         WHEN NEW.type = 'CHECK_WAREHOUSE' AND NEW.status = 'RETURN' THEN 0
+                        WHEN NEW.type = 'UPDATE_NUMBER' AND NEW.status = 'RETURN' THEN _inventory_number - NEW.amount
                         ELSE -1
                        END;
 
@@ -1032,6 +1033,8 @@ $$
 DECLARE
    _amount float8;
    _price float8;
+   _staff_id VARCHAR;
+   _staff_name VARCHAR;
 BEGIN
 
 --  clean all zero
@@ -1043,15 +1046,20 @@ BEGIN
     FROM product_import
     WHERE product_import.group_id = _group_id AND product_import.group_import_second_id = _group_import_second_id;
 
+    SELECT staff_id, staff_name
+    INTO _staff_id, _staff_name
+    FROM user_package_detail
+    WHERE user_package_detail.group_id = _group_id AND user_package_detail.package_second_id = _group_import_second_id;
+
 
     IF _amount = 0 OR _amount IS NULL
     THEN
 	    RETURN;
     END IF;
 
-    INSERT INTO group_import( group_id, group_import_second_id, total_price, total_amount, type, status, createat )
-    VALUES ( _group_id, _group_import_second_id, _price, _amount, _type, _status, NOW() )
-    ON CONFLICT (group_id, group_import_second_id) DO UPDATE SET total_price = _price, total_amount = _amount, type = _type, status = _status, createat = NOW();
+    INSERT INTO group_import( group_id, group_import_second_id, staff_id, staff_name, total_price, total_amount, type, status, createat )
+    VALUES ( _group_id, _group_import_second_id, _staff_id, _staff_name, _price, _amount, _type, _status, NOW() )
+    ON CONFLICT (group_id, group_import_second_id) DO UPDATE SET staff_id = _staff_id, staff_name = _staff_name, total_price = _price, total_amount = _amount, type = _type, status = _status, createat = NOW();
 
 	RETURN;
 END;

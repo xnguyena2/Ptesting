@@ -26,6 +26,7 @@ public class UserPackageDetailJoinWithUserPackage {
     private String package_second_id;
     private String device_id;
     private String staff_id;
+    private String staff_name;
     private String package_type;
     private String table_id;
     private String table_name;
@@ -83,6 +84,7 @@ public class UserPackageDetailJoinWithUserPackage {
                 .package_second_id(package_second_id)
                 .device_id(device_id)
                 .staff_id(staff_id)
+                .staff_name(staff_name)
                 .package_type(package_type)
                 .table_id(table_id)
                 .table_name(table_name)

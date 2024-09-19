@@ -744,6 +744,8 @@ public class UserPackageTest {
                 .group_id(group)
                 .device_id("save_package")
                 .package_second_id("save_pack")
+                .staff_id("staffid")
+                .staff_name("staffname")
                 .note("note here!!")
                 .image("img.jpeg")
                 .discount_amount(10000)
@@ -793,6 +795,8 @@ public class UserPackageTest {
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("save_package");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(userPackage.getStaff_id()).isEqualTo("staffid");
+                    assertThat(userPackage.getStaff_name()).isEqualTo("staffname");
                     assertThat(userPackage.getNote()).isEqualTo("note here!!");
                     assertThat(userPackage.getDiscount_promotional()).isEqualTo(89);
                     assertThat(userPackage.getDiscount_by_point()).isEqualTo(98);
