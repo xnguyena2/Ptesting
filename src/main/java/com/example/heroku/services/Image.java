@@ -2,13 +2,10 @@ package com.example.heroku.services;
 
 import com.example.heroku.firebase.IImageService;
 import com.example.heroku.firebase.Storage;
-import com.example.heroku.model.Product;
 import com.example.heroku.model.repository.ImageRepository;
-import com.example.heroku.photo.FlickrLib;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
-import com.flickr4java.flickr.FlickrException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +16,6 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.io.SequenceInputStream;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -31,23 +26,9 @@ public class Image {
     @Autowired
     ImageRepository imageRepository;
 
-    @Autowired
-    private FlickrLib flickrLib;
 
     @Autowired
     private Storage fireBaseStorage;
-
-
-    private IImageService getStoreServices(boolean mustFlick) {
-        if (mustFlick) {
-            return flickrLib;
-        }
-        if (fireBaseStorage.isEnable()) {
-            return fireBaseStorage;
-        }
-        return flickrLib;
-    }
-
 
     public Mono<ResponseEntity<com.example.heroku.model.Image>> Upload(Flux<FilePart> file, String category, String groupID, String tag) {
         AtomicReference<String> fileName = new AtomicReference<>();
@@ -59,7 +40,7 @@ public class Image {
                 .flatMap(initialStream -> {
                     String[] info = null;//Util.getInstance().GenerateID();
                     try {
-                        info = getStoreServices(false).save(initialStream, fileName.get());
+                        info = fireBaseStorage.save(initialStream, fileName.get());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -77,12 +58,27 @@ public class Image {
                 .map(ResponseEntity::ok);
     }
 
+    public Mono<ResponseEntity<com.example.heroku.model.Image>> justUploadImg(String groupID, String id, String category, String tag) {
+        return this.imageRepository.save(com.example.heroku.model.Image.builder()
+                        .imgid(id)
+                        .thumbnail(id)
+                        .medium(id)
+                        .large(id)
+                        .category(category)
+                        .tag(tag)
+                        .createat(Util.getInstance().Now())
+                        .group_id(groupID)
+                        .build())
+
+                .map(ResponseEntity::ok);
+    }
+
     public Mono<ResponseEntity<Format>> Delete(IDContainer img) {
         return Mono.just(img).flatMap(info ->
                 {
                     try {
                         String id = info.getId();
-                        getStoreServices(!id.startsWith("img")).delete(id);
+                        fireBaseStorage.delete(id);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -102,8 +98,8 @@ public class Image {
         return this.imageRepository.findAll()
                 .map(image -> {
                     try {
-                        getStoreServices(false).delete(image.getImgid());
-                    } catch (IOException e) {
+                        fireBaseStorage.delete(image.getImgid());
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     return image;
@@ -119,7 +115,7 @@ public class Image {
         return imageRepository.findByGroupID(groupID)
                 .map(image -> {
                     try {
-                        getStoreServices(false).delete(image.getImgid());
+                        fireBaseStorage.delete(image.getImgid());
                         return true;
                     } catch (IOException e) {
                         e.printStackTrace();

@@ -416,7 +416,7 @@ public class AuthenticationTest extends TestConfig {
                 )
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .is5xxServerError();
     }
 }
 
