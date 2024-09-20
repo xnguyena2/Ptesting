@@ -16,12 +16,9 @@
 
 package com.example.heroku;
 
-import com.example.heroku.photo.FlickrLib;
-import com.flickr4java.flickr.FlickrException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -50,10 +47,6 @@ public class HerokuApplication {
     return "index";
   }
 
-  @Bean
-  public FlickrLib singletonFlickrLib() throws FlickrException {
-    return new FlickrLib();
-  }
 
 /*
   @Bean

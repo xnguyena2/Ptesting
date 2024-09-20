@@ -1,6 +1,5 @@
 package com.example.heroku.firebase;
 
-import com.flickr4java.flickr.FlickrException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -33,7 +32,7 @@ public class MyFireBase {
     private boolean isAuthSuccess = false;
 
     @EventListener
-    public void init(ApplicationReadyEvent event) throws FlickrException {
+    public void init(ApplicationReadyEvent event) {
         this.auth();
     }
 

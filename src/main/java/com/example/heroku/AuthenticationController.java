@@ -95,7 +95,7 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/signinwithtoken")
+    @GetMapping("/signinwithtoken/{tokenid}")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity> signinWithToken(@PathVariable("tokenid") String tokenid) {
         System.out.println("request signin with token: " + tokenid);

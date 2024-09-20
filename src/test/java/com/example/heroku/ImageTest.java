@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -119,43 +120,54 @@ public class ImageTest {
     }
 
     public void Run(String[] listImg) {
-        Map<String, FilePartIPL> imgMap = new HashMap<>();
-        FilePartIPL[] imgContent = new FilePartIPL[listImg.length];
-        for (int i = 0; i < imgContent.length; i++) {
-            imgContent[i] = new FilePartIPL(listImg[i]);
-        }
+//        Map<String, FilePartIPL> imgMap = new HashMap<>();
+//        FilePartIPL[] imgContent = new FilePartIPL[listImg.length];
+//        for (int i = 0; i < imgContent.length; i++) {
+//            imgContent[i] = new FilePartIPL(listImg[i]);
+//        }
 
         imageAPI.DeleteAll()
-                .thenMany(Flux.just(imgContent)
-                        .flatMap(img ->
-                                imageAPI.Upload(Flux.just(img), "Carousel", group, null)
-                                        .map(formatResponseEntity -> {
-                                            imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getImgid(), img);
-                                            return formatResponseEntity;
-                                        })
-                        )
-                )
                 .then()
                 .block();
 
-        Flux.just(imgContent)
-                .flatMap(img ->
-                        imageAPI.Upload(Flux.just(img), "456", group, null)
-                                .map(formatResponseEntity -> {
-                                    imgMap.put(Objects.requireNonNull(formatResponseEntity.getBody()).getImgid(), img);
-                                    return formatResponseEntity;
-                                })
-                )
-                .then()
+
+        imageAPI.justUploadImg(group, "Carousel1", "Carousel", null)
+                .map(formatResponseEntity -> formatResponseEntity)
+                .block();
+        imageAPI.justUploadImg(group, "Carousel2", "Carousel", null)
+                .map(formatResponseEntity -> formatResponseEntity)
+                .block();
+        imageAPI.justUploadImg(group, "Carousel3", "Carousel", null)
+                .map(formatResponseEntity -> formatResponseEntity)
+                .block();
+        imageAPI.justUploadImg(group, "Carousel4", "Carousel", null)
+                .map(formatResponseEntity -> formatResponseEntity)
+                .block();
+
+
+        imageAPI.justUploadImg(group, "456", "456", null)
+                .map(formatResponseEntity -> formatResponseEntity)
+                .block();
+        imageAPI.justUploadImg(group, "456", "456", null)
+                .map(formatResponseEntity -> formatResponseEntity)
+                .block();
+        imageAPI.justUploadImg(group, "456", "456", null)
+                .map(formatResponseEntity -> formatResponseEntity)
+                .block();
+        imageAPI.justUploadImg(group, "456", "456", null)
+                .map(formatResponseEntity -> formatResponseEntity)
                 .block();
 
         imageAPI.GetAll(group, "Carousel")
-                .map(image -> new imgMap(image.getImgid(), getImageBytes(image.getLarge())))
+                .sort(Comparator.comparing(com.example.heroku.model.Image::getImgid))
                 .as(StepVerifier::create)
-                .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))
-                .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))
-                .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))
-                .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))
+                .consumeNextWith(image -> assertThat(image.getImgid()).isEqualTo("Carousel1"))
+                .consumeNextWith(image -> assertThat(image.getImgid()).isEqualTo("Carousel2"))
+                .consumeNextWith(image -> assertThat(image.getImgid()).isEqualTo("Carousel3"))
+                .consumeNextWith(image -> assertThat(image.getImgid()).isEqualTo("Carousel4"))
+//                .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))
+//                .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))
+//                .consumeNextWith(image -> assertThat(image.content).isEqualTo(imgMap.get(image.id).getImageContent()))
                 .verifyComplete();
 
     }

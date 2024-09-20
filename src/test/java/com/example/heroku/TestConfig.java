@@ -32,12 +32,12 @@ import org.springframework.test.context.junit4.SpringRunner;
         "LOGS_LEVEL=INFO",
         "THYMELEFT=HTML",
         "RUN_MODE=dev",
-        "FLICKR_KEY=d82298e7cabb6de301b1de5bc018b881",
-        "FLICKR_SECRET=5b4fe60ee0a85084",
-        "FLICKR_AUTH_TOKEN=72157720816792310-6ae700ae55e0f3f6",
-        "FLICKR_TOKEN_SECRET=9a4dee6dbdb7f7be",
-        "FLICKR_USER_NAME=xnguyena28",
-        "FLICKR_NID=194077547@N04"
+        "FLICKR_KEY=8294cbd4c540c0d895ec99bb8b1fcac2",
+        "FLICKR_SECRET=f8fa9dcd4c4642b8",
+        "FLICKR_AUTH_TOKEN=72157718531338752-478e88fe3e96fc70",
+        "FLICKR_TOKEN_SECRET=fdc5a5980651383c",
+        "FLICKR_USER_NAME=xnguyena2",
+        "FLICKR_NID=192362717@N03"
 })
 public class TestConfig {
     @Test

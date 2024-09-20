@@ -1,15 +1,11 @@
 package com.example.heroku.startup;
 
-import com.example.heroku.model.Users;
-import com.example.heroku.model.repository.UserRepository;
-import com.example.heroku.photo.FlickrLib;
 import com.example.heroku.request.data.UpdatePassword;
 import com.example.heroku.request.store.StoreInitData;
 import com.example.heroku.services.Store;
 import com.example.heroku.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -17,15 +13,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
 import java.util.Collections;
-import java.util.Date;
 
 @Component
 @Slf4j
@@ -56,9 +49,6 @@ public class DataInitializer {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private FlickrLib flickrLib;
-
     @EventListener(value = ApplicationReadyEvent.class)
     public void init() throws NoSuchAlgorithmException {
         System.out.println("initializing database...");
@@ -71,7 +61,6 @@ public class DataInitializer {
             imageAPI.DeleteAll().subscribe();
 
             //PhotoLib.getInstance().deleteAll();
-            flickrLib.DeleteAll();
 
             try {
                 String dropSQL = new String(Files.readAllBytes(Paths.get("Asset/drop.sql")));
