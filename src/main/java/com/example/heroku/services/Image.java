@@ -99,7 +99,7 @@ public class Image {
                 .map(image -> {
                     try {
                         fireBaseStorage.delete(image.getImgid());
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     return image;
