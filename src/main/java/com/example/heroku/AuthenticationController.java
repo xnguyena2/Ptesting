@@ -59,6 +59,9 @@ public class AuthenticationController {
     @Autowired
     private DeleteAllData deleteAllData;
 
+    @Autowired
+    private com.example.heroku.services.Tokens tokens;
+
     private ResponseEntity createAuthBearToken(String jwt) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
@@ -90,6 +93,13 @@ public class AuthenticationController {
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
         }
+    }
+
+    @GetMapping("/signinwithtoken")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity> signinWithToken(@PathVariable("tokenid") String tokenid) {
+        System.out.println("request signin with token: " + tokenid);
+        return tokens.getToken(tokenid).map(tokens1 -> createAuthBearToken(tokens1.getToken()));
     }
 
     @PostMapping("/account/create")
