@@ -37,6 +37,7 @@ public class BuyerData extends Buyer {
         setShip_price(b.getShip_price());
         setPoint(b.getPoint());
         setDiscount(b.getDiscount());
+        setMeta_search(b.getMeta_search());
         setStatus(b.getStatus());
 
         try {

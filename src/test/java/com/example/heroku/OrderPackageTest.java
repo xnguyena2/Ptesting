@@ -360,6 +360,21 @@ public class OrderPackageTest extends TestConfig {
                 })
                 .verifyComplete();
 
+        buyer.GetAllDirectWithoutEmpty(SearchQuery.builder().group_id(mainGroup).page(0).size(500).build())
+                .sort(Comparator.comparing(BuyerData::getDiscount))
+                .as(StepVerifier::create)
+                .consumeNextWith(buyerData -> {
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("12345678909");
+                    assertThat(buyerData.getDiscount()).isEqualTo(0);
+                    assertThat(buyerData.getReal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
+                })
+                .consumeNextWith(buyerData -> {
+                    assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
+                    assertThat(buyerData.getDiscount()).isEqualTo(30);
+                    assertThat(buyerData.getReal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
+                })
+                .verifyComplete();
+
         buyer.FindByPhone(SearchQuery.builder().query("Pong P").group_id(mainGroup).page(0).size(500).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
