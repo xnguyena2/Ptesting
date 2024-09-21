@@ -19,7 +19,7 @@ public interface BuyerRepository extends ReactiveCrudRepository<Buyer, Long> {
     @Query(value = "SELECT * FROM buyer WHERE buyer.group_id = :group_id LIMIT :size OFFSET (:page * :size)")
     Flux<Buyer> findByGroupID(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size);
 
-    @Query(value = "SELECT * FROM buyer WHERE buyer.group_id = :group_id AND reciver_fullname <> '' AND phone_number <> '' LIMIT :size OFFSET (:page * :size)")
+    @Query(value = "SELECT * FROM buyer WHERE buyer.group_id = :group_id AND (reciver_fullname <> '' OR phone_number <> '') LIMIT :size OFFSET (:page * :size)")
     Flux<Buyer> findByGroupIDWithoutEmpty(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "SELECT * FROM buyer WHERE buyer.group_id = :group_id AND buyer.device_id = :device_id")
