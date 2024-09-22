@@ -44,7 +44,7 @@ public class BuyerControler {
         return WrapPermissionAction.<BuyerData>builder()
                 .principal(principal)
                 .query(query)
-                .fluxAction(q -> buyerServices.GetAllDirect(q))
+                .fluxAction(q -> buyerServices.GetAllDirectWithoutEmpty(q))
                 .build()
                 .toFlux();
     }

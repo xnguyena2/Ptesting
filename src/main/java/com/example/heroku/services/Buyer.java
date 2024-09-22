@@ -50,6 +50,11 @@ public class Buyer {
                 .map(BuyerData::new);
     }
 
+    public Flux<BuyerData> GetAllDirectWithoutEmpty(SearchQuery query) {
+        return this.buyerRepository.findByGroupIDWithoutEmpty(query.getGroup_id(), query.getPage(), query.getSize())
+                .map(BuyerData::new);
+    }
+
 
     public Flux<BuyerData> FindByPhone(SearchQuery query) {
         String phone = "%" + query.getQuery() + "%";
