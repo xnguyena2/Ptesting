@@ -15,6 +15,7 @@ import com.example.heroku.services.UserPackageDetailCounterServices;
 import com.example.heroku.services.UserPackage;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -67,7 +68,9 @@ public class UserPackageController {
                     if (!users.isActive()) {
                         return Mono.just(org.springframework.http.ResponseEntity.badRequest().body(Format.builder().response("user not active!").build()));
                     }
-                    return userPackageAPI.SavePackageWithoutCheck(productPackage);
+                    return userPackageAPI.SavePackageWithoutCheck(productPackage)
+                            .onErrorResume(throwable -> Mono.just(org.springframework.http.ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                    .body(Format.builder().response(throwable.getMessage()).build())));
                 });
     }
 
