@@ -33,6 +33,13 @@ public class DebtTransactionController {
         return debtTransation.delete(idContainer);
     }
 
+    @DeleteMapping("/deletebyaction")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<com.example.heroku.model.DebtTransation> deleteByActionID(@RequestBody @Valid IDContainer idContainer) {
+        System.out.println("delete debt by action id: " + idContainer.getId());
+        return debtTransation.deleteOfPackgeID(idContainer);
+    }
+
     @GetMapping("/getbypackage")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<com.example.heroku.model.DebtTransation> getByPackageID(@RequestBody @Valid IDContainer idContainer) {

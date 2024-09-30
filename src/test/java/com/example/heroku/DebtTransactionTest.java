@@ -269,7 +269,7 @@ public class DebtTransactionTest {
                 })
                 .verifyComplete();
 
-        debtTransation.getDebtOfAllBuyer(IDContainer.builder().group_id(group).id("iphone").build())
+        debtTransation.getDebtOfAllBuyer(IDContainer.builder().group_id(group).build())
                 .sort(Comparator.comparing(DebtOfBuyer::getIn_come))
                 .as(StepVerifier::create)
                 .consumeNextWith(debtOfBuyer -> {
@@ -282,6 +282,52 @@ public class DebtTransactionTest {
                     assertThat(debtOfBuyer.getGroup_id()).isNull();
                     assertThat(debtOfBuyer.getIn_come()).isEqualTo(55000);
                     assertThat(debtOfBuyer.getOut_come()).isEqualTo(33000);
+                    assertThat(debtOfBuyer.getDevice_id()).isNull();
+                })
+                .verifyComplete();
+
+        debtTransation.deleteOfPackgeID(IDContainer.builder().group_id(group).id("2222").build())
+                .block();
+
+        debtTransation.getAllTransaction(UserID.builder().group_id(group).after_id(1000).page(0).size(10).build())
+                .sort(Comparator.comparing(DebtTransation::getTransaction_second_id))
+                .as(StepVerifier::create)
+                .consumeNextWith(transation -> {
+                    assertThat(transation.getGroup_id()).isEqualTo(group);
+                    assertThat(transation.getTransaction_second_id()).isEqualTo(group+"234");
+                    assertThat(transation.getAction_id()).isNull();
+                    assertThat(transation.getAction_type()).isEqualTo(DebtTransation.ActionType.USER_PROPOSE);
+                    assertThat(transation.getTransaction_type()).isEqualTo(DebtTransation.TType.INCOME);
+                    assertThat(transation.getCategory()).isEqualTo("ban hang");
+                    assertThat(transation.getMoney_source()).isEqualTo("tien mat");
+                    assertThat(transation.getAmount()).isEqualTo(55000);
+                })
+                .consumeNextWith(transation -> {
+                    assertThat(transation.getGroup_id()).isEqualTo(group);
+                    assertThat(transation.getAction_id()).isNull();
+                    assertThat(transation.getAction_type()).isEqualTo(DebtTransation.ActionType.USER_PROPOSE);
+                    assertThat(transation.getTransaction_second_id()).isEqualTo(group+"456");
+                    assertThat(transation.getTransaction_type()).isEqualTo(DebtTransation.TType.OUTCOME);
+                    assertThat(transation.getCategory()).isEqualTo("mua hang");
+                    assertThat(transation.getDevice_id()).isEqualTo("iphone");
+                    assertThat(transation.getMoney_source()).isEqualTo("tien mat");
+                    assertThat(transation.getAmount()).isEqualTo(33000);
+                })
+                .verifyComplete();
+
+        debtTransation.getDebtOfAllBuyer(IDContainer.builder().group_id(group).build())
+                .sort(Comparator.comparing(DebtOfBuyer::getIn_come))
+                .as(StepVerifier::create)
+                .consumeNextWith(debtOfBuyer -> {
+                    assertThat(debtOfBuyer.getGroup_id()).isNull();
+                    assertThat(debtOfBuyer.getIn_come()).isEqualTo(0);
+                    assertThat(debtOfBuyer.getOut_come()).isEqualTo(33000);
+                    assertThat(debtOfBuyer.getDevice_id()).isNull();
+                })
+                .consumeNextWith(debtOfBuyer -> {
+                    assertThat(debtOfBuyer.getGroup_id()).isNull();
+                    assertThat(debtOfBuyer.getIn_come()).isEqualTo(55000);
+                    assertThat(debtOfBuyer.getOut_come()).isEqualTo(0);
                     assertThat(debtOfBuyer.getDevice_id()).isNull();
                 })
                 .verifyComplete();
