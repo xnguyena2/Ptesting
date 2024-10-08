@@ -270,6 +270,22 @@ begin
 end;
 $$;
 
+
+CREATE OR REPLACE FUNCTION delete_depend_payment_and_debt(_group_id VARCHAR, _package_second_id VARCHAR)
+  RETURNS VOID
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+    DELETE FROM payment_transaction WHERE group_id = _group_id AND (package_second_id = _package_second_id OR action_id = _package_second_id) AND package_second_id IS NOT NULL AND action_id IS NOT NULL;
+    DELETE FROM debt_transaction WHERE group_id = _group_id AND action_id = _package_second_id AND action_id IS NOT NULL;
+
+	RETURN;
+END;
+$$;
+
+
 CREATE OR REPLACE FUNCTION add_buyer()
   RETURNS TRIGGER
   LANGUAGE PLPGSQL
@@ -491,7 +507,7 @@ BEGIN
 
 
 --  delete all payment_transaction belong to user_package_detail
-    PERFORM delete_depend_user_package_detail(OLD.group_id, OLD.package_second_id);
+    PERFORM delete_depend_payment_and_debt(OLD.group_id, OLD.package_second_id);
 
     UPDATE group_import
     SET status = 'RETURN'
@@ -544,7 +560,7 @@ BEGIN
     ELSEIF (OLD.status <> 'CANCEL' AND OLD.status <> 'RETURN') AND (NEW.status = 'CANCEL' OR NEW.status = 'RETURN')
     THEN
 
-        PERFORM delete_depend_user_package_detail(NEW.group_id, NEW.package_second_id);
+        PERFORM delete_depend_payment_and_debt(NEW.group_id, NEW.package_second_id);
 
         UPDATE group_import
         SET status = 'RETURN'
@@ -595,21 +611,6 @@ BEGIN
 
 
 	RETURN NEW;
-END;
-$$;
-
-
-CREATE OR REPLACE FUNCTION delete_depend_user_package_detail(_group_id VARCHAR, _package_second_id VARCHAR)
-  RETURNS VOID
-  LANGUAGE PLPGSQL
-  AS
-$$
-BEGIN
-
-    DELETE FROM payment_transaction WHERE group_id = _group_id AND (package_second_id = _package_second_id OR action_id = _package_second_id) AND package_second_id IS NOT NULL AND action_id IS NOT NULL;
-    DELETE FROM debt_transaction WHERE group_id = _group_id AND action_id = _package_second_id AND action_id IS NOT NULL;
-
-	RETURN;
 END;
 $$;
 
@@ -868,7 +869,7 @@ $$
 BEGIN
 
 --  delete all payment_transaction belong to user_package_detail
-    DELETE FROM payment_transaction WHERE group_id = OLD.group_id AND action_id = OLD.group_import_second_id AND action_id IS NOT NULL;
+    PERFORM delete_depend_payment_and_debt(OLD.group_id, OLD.group_import_second_id);
 
 	RETURN OLD;
 END;
@@ -895,7 +896,9 @@ BEGIN
 --  update payment transaction
     IF NEW.status = 'RETURN'
     THEN
-        DELETE FROM payment_transaction WHERE group_id = NEW.group_id AND action_id = NEW.group_import_second_id AND action_id IS NOT NULL;
+
+        PERFORM delete_depend_payment_and_debt(NEW.group_id, NEW.group_import_second_id);
+
     ELSEIF NEW.payment - OLD.payment > 0 AND NEW.status <> 'RETURN'
     THEN
 
