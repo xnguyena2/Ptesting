@@ -712,7 +712,7 @@ DECLARE
 BEGIN
 
 
-    IF OLD.type = 'UN_KNOW' OR OLD.type IS NULL OR OLD.status = 'RETURN' OR (OLD.amount = 0 AND OLD.type = 'UPDATE_NUMBER')
+    IF OLD.type = 'UN_KNOW' OR OLD.type IS NULL OR OLD.status = 'RETURN' OR (OLD.amount = 0 AND (OLD.type = 'UPDATE_NUMBER' OR OLD.type = 'SELLING'))
     THEN
 	    RETURN OLD;
     END IF;
@@ -1002,7 +1002,7 @@ BEGIN
 --  sum all amount for combo and material
 
     INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
-    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, _note, 'UPDATE_NUMBER', 'DONE', NOW() )
+    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, _note, _type, _status, NOW() )
     ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id)
     DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = product_import.amount + NEW.inventory_number - OLD.inventory_number, note = _note, type = _type, status = _status, createat = NOW();
 
