@@ -270,6 +270,22 @@ begin
 end;
 $$;
 
+
+CREATE OR REPLACE FUNCTION delete_depend_payment_and_debt(_group_id VARCHAR, _package_second_id VARCHAR)
+  RETURNS VOID
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+
+    DELETE FROM payment_transaction WHERE group_id = _group_id AND (package_second_id = _package_second_id OR action_id = _package_second_id) AND package_second_id IS NOT NULL AND action_id IS NOT NULL;
+    DELETE FROM debt_transaction WHERE group_id = _group_id AND action_id = _package_second_id AND action_id IS NOT NULL;
+
+	RETURN;
+END;
+$$;
+
+
 CREATE OR REPLACE FUNCTION add_buyer()
   RETURNS TRIGGER
   LANGUAGE PLPGSQL
@@ -491,7 +507,7 @@ BEGIN
 
 
 --  delete all payment_transaction belong to user_package_detail
-    DELETE FROM payment_transaction WHERE group_id = OLD.group_id AND (package_second_id = OLD.package_second_id OR action_id = OLD.package_second_id) AND package_second_id IS NOT NULL;
+    PERFORM delete_depend_payment_and_debt(OLD.group_id, OLD.package_second_id);
 
     UPDATE group_import
     SET status = 'RETURN'
@@ -543,7 +559,8 @@ BEGIN
         INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat ) VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, NEW.package_second_id, 'PAYMENT_ORDER', 'INCOME', NEW.payment, 'SELLING', NULL, CONCAT('REBUY-', NEW.package_second_id), 'CREATE', NOW() );
     ELSEIF (OLD.status <> 'CANCEL' AND OLD.status <> 'RETURN') AND (NEW.status = 'CANCEL' OR NEW.status = 'RETURN')
     THEN
-        DELETE FROM payment_transaction WHERE group_id = NEW.group_id AND (package_second_id = NEW.package_second_id OR action_id = NEW.package_second_id) AND package_second_id IS NOT NULL AND action_id IS NOT NULL;
+
+        PERFORM delete_depend_payment_and_debt(NEW.group_id, NEW.package_second_id);
 
         UPDATE group_import
         SET status = 'RETURN'
@@ -596,6 +613,7 @@ BEGIN
 	RETURN NEW;
 END;
 $$;
+
 
 CREATE OR REPLACE TRIGGER delete_user_package_detail_decrese_buyer AFTER DELETE ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE delete_user_package_detail_decrese_buyer();
 CREATE OR REPLACE TRIGGER trigger_on_update_user_package_detail AFTER UPDATE ON user_package_detail FOR EACH ROW EXECUTE PROCEDURE trigger_on_update_user_package_detail();
@@ -694,7 +712,7 @@ DECLARE
 BEGIN
 
 
-    IF OLD.type = 'UN_KNOW' OR OLD.type IS NULL OR OLD.status = 'RETURN' OR (OLD.amount = 0 AND OLD.type = 'UPDATE_NUMBER')
+    IF OLD.type = 'UN_KNOW' OR OLD.type IS NULL OR OLD.status = 'RETURN' OR (OLD.amount = 0 AND (OLD.type = 'UPDATE_NUMBER' OR OLD.type = 'SELLING'))
     THEN
 	    RETURN OLD;
     END IF;
@@ -851,7 +869,7 @@ $$
 BEGIN
 
 --  delete all payment_transaction belong to user_package_detail
-    DELETE FROM payment_transaction WHERE group_id = OLD.group_id AND action_id = OLD.group_import_second_id AND action_id IS NOT NULL;
+    PERFORM delete_depend_payment_and_debt(OLD.group_id, OLD.group_import_second_id);
 
 	RETURN OLD;
 END;
@@ -878,7 +896,9 @@ BEGIN
 --  update payment transaction
     IF NEW.status = 'RETURN'
     THEN
-        DELETE FROM payment_transaction WHERE group_id = NEW.group_id AND action_id = NEW.group_import_second_id AND action_id IS NOT NULL;
+
+        PERFORM delete_depend_payment_and_debt(NEW.group_id, NEW.group_import_second_id);
+
     ELSEIF NEW.payment - OLD.payment > 0 AND NEW.status <> 'RETURN'
     THEN
 
@@ -982,7 +1002,7 @@ BEGIN
 --  sum all amount for combo and material
 
     INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
-    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, _note, 'UPDATE_NUMBER', 'DONE', NOW() )
+    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, _note, _type, _status, NOW() )
     ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id)
     DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = product_import.amount + NEW.inventory_number - OLD.inventory_number, note = _note, type = _type, status = _status, createat = NOW();
 
