@@ -32,20 +32,6 @@ public class TokenController {
     UserRepository userRepository;
 
 
-    @PostMapping("/createwithoutpermission")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<Tokens> createTokenWithoutPermission(@RequestBody @Valid IDContainer idContainer) {
-        return userRepository.findByUsername(idContainer.getId())
-                .map(u -> {
-                            u.setPassword(u.getPassword().trim());
-                            return u.parseauthorities();
-                        }
-                )
-                .map(this.jwtTokenProvider::createToken)
-                .flatMap(s -> tokens.createToken(idContainer.getGroup_id(), idContainer.getId(), s, idContainer.getId(), 0));
-    }
-
-
     @PostMapping("/admin/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> createTokenForStaff(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid TokenID tokenID) {

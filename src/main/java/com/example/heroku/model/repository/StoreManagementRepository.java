@@ -4,6 +4,7 @@ import com.example.heroku.model.Store;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
@@ -16,6 +17,9 @@ public interface StoreManagementRepository extends ReactiveCrudRepository<Store,
     @Query(value = "SELECT * FROM store WHERE store.group_id = :group_id")
     Mono<Store> getStore(@Param("group_id")String groupID);
 
+    @Query(value = "SELECT * FROM store WHERE LOWER(store.group_id) LIKE :group_id")
+    Flux<Store> findStore(@Param("group_id")String groupID);
+
     @Query(value = "SELECT * FROM store WHERE store.domain_url = :domain_url")
     Mono<Store> getStoreDomainUrl(@Param("domain_url")String domainUrl);
 
@@ -27,6 +31,9 @@ public interface StoreManagementRepository extends ReactiveCrudRepository<Store,
 
     @Query(value = "UPDATE store SET name = :name, time_open = :time_open, address = :address, phone = :phone, domain_url = :domain_url, status = :status, store_type = :store_type WHERE group_id = :group_id")
     Mono<Store> update(@Param("group_id")String groupID, @Param("name")String name, @Param("time_open")String time_open, @Param("address")String address, @Param("phone")String phone, @Param("domain_url")String domain_url, @Param("status")Store.Status status, @Param("store_type")Store.StoreType storeType);
+
+    @Query(value = "UPDATE store SET payment_status = :payment_status WHERE group_id = :group_id")
+    Mono<Store> updatePaymentStatus(@Param("group_id")String groupID, @Param("payment_status")String name);
 
 
 }
