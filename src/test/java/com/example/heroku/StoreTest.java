@@ -72,6 +72,8 @@ public class StoreTest {
                 .status(com.example.heroku.model.Store.Status.CLOSE)
                 .store_type(com.example.heroku.model.Store.StoreType.DONTHAVETABLE)
                 .build()).block();
+        storeServices.updatePaymentStatus(group, "NOT_PAID")
+                        .block();
         storeServices.getStore(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(store -> {
@@ -81,6 +83,22 @@ public class StoreTest {
                     assertThat(store.getName()).isEqualTo("store name4");
                     assertThat(store.getTime_open()).isEqualTo("time open4");
                     assertThat(store.getAddress()).isEqualTo("address4");
+                    assertThat(store.getPayment_status()).isEqualTo("NOT_PAID");
+                    assertThat(store.getStatus()).isEqualTo(com.example.heroku.model.Store.Status.CLOSE);
+                    assertThat(store.getStore_type()).isEqualTo(com.example.heroku.model.Store.StoreType.DONTHAVETABLE);
+
+                })
+                .verifyComplete();
+        storeServices.findStore(group)
+                .as(StepVerifier::create)
+                .consumeNextWith(store -> {
+                    assertThat(store.getGroup_id()).isEqualTo(group);
+                    assertThat(store.getDomain_url()).isEqualTo(group + "hello");
+                    assertThat(store.getPhone()).isEqualTo("12121211213344");
+                    assertThat(store.getName()).isEqualTo("store name4");
+                    assertThat(store.getTime_open()).isEqualTo("time open4");
+                    assertThat(store.getAddress()).isEqualTo("address4");
+                    assertThat(store.getPayment_status()).isEqualTo("NOT_PAID");
                     assertThat(store.getStatus()).isEqualTo(com.example.heroku.model.Store.Status.CLOSE);
                     assertThat(store.getStore_type()).isEqualTo(com.example.heroku.model.Store.StoreType.DONTHAVETABLE);
 

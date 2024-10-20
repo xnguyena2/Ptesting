@@ -6,10 +6,8 @@ import com.example.heroku.request.store.StoreInitData;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import javax.validation.Valid;
 
 @Component
 public class Store {
@@ -28,6 +26,10 @@ public class Store {
         return storeManagementRepository.getStore(groupID);
     }
 
+    public Flux<com.example.heroku.model.Store> findStore(String groupID) {
+        return storeManagementRepository.findStore("%" + groupID.toLowerCase() + "%");
+    }
+
     public Mono<com.example.heroku.model.Store> getStoreDomainUrl(String domain) {
         return storeManagementRepository.getStoreDomainUrl(domain);
     }
@@ -38,6 +40,10 @@ public class Store {
 
     public Mono<com.example.heroku.model.Store> update(com.example.heroku.model.Store store) {
         return storeManagementRepository.update(store.getGroup_id(), store.getName(), store.getTime_open(), store.getAddress(), store.getPhone(), store.getDomain_url(), store.getStatus(), store.getStore_type());
+    }
+
+    public Mono<com.example.heroku.model.Store> updatePaymentStatus(String groupID, String paymentStatus) {
+        return storeManagementRepository.updatePaymentStatus(groupID, paymentStatus);
     }
 
     public Mono<com.example.heroku.model.Store> initialStore(StoreInitData storeInitData) {
