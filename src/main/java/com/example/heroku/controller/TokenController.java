@@ -56,17 +56,20 @@ public class TokenController {
     @PostMapping("/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> createToken(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
-
-        return WrapPermissionGroupWithPrincipalAction.<Tokens>builder()
-                .principal(principal)
-                .subject(idContainer::getGroup_id)
-                .monoAction(() -> principal
-                        .flatMap(users -> Mono.just(this.jwtTokenProvider.createToken(users))
+        return principal.flatMap(users -> userRepository.findByUsername(users.getUsername())
+                        .map(u -> {
+                                    u.setPassword(u.getPassword().trim());
+                                    return u.parseauthorities();
+                                }
+                        ))
+                .flatMap(users -> WrapPermissionGroupWithPrincipalAction.<Tokens>builder()
+                        .principal(principal)
+                        .subject(idContainer::getGroup_id)
+                        .monoAction(() -> Mono.just(this.jwtTokenProvider.createToken(users))
                                 .flatMap(s -> tokens.createToken(idContainer.getGroup_id(), idContainer.getId(), s, users.getUsername(), 0)
                                 )
                         )
-                )
-                .build().toMono();
+                        .build().toMono());
     }
 
 
