@@ -29,6 +29,8 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
 
     private String password;
 
+    private String roles;
+
     private String createby;
 
     protected String phone_number;
@@ -115,9 +117,6 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
         return user.toString();
     }
 
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (user == null) {
@@ -159,8 +158,14 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
     @Builder.Default()
     private boolean active = true;
 
+    public Users setListRoles(List<String> listRoles) {
+        roles = "{" + String.join(",", listRoles) + "}";
+        return this;
+    }
+
     public List<String> getRoles() {
-        return roles.stream().map(x -> x.replace("{","").replace("}","")).collect(Collectors.toList());
+        String[] splitRoles = roles.replace("{", "").replace("}", "").replace(" ", "").split(",");
+        return Arrays.stream(splitRoles).collect(Collectors.toList());
     }
 
     @Override
