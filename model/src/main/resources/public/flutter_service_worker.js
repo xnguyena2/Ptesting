@@ -3,9 +3,9 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"assets/AssetManifest.bin": "23c6d420a9051cddb0720fb2dfda824c",
-"assets/AssetManifest.bin.json": "6284f34e1c40672156bd98dbd70f8c95",
-"assets/AssetManifest.json": "f2fe121c018c0231c2e660c0dca299b4",
+const RESOURCES = {"assets/AssetManifest.bin": "80576aae1c922aae4d5f6ac6a7b9faca",
+"assets/AssetManifest.bin.json": "4c9bf50cecb782459797741835e544b9",
+"assets/AssetManifest.json": "0f19791e2f68c402188b9a4171c23480",
 "assets/assets/icons/androidlogo.png": "b94783b93045da99c3ec234c0fe7136d",
 "assets/assets/icons/logo.png": "051b8eacf244899b2ffcf1ee64bdd30f",
 "assets/assets/icons/shop_logo.png": "ea74298da6d8a2f46ad014fcf261232f",
@@ -49,6 +49,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "23c6d420a9051cddb0720fb2dfda824c
 "assets/assets/svg/bank_card.svg": "b15e7c207c6bdfa5e46433345a53e4bf",
 "assets/assets/svg/barcode.svg": "46c2ab72de6af1079f57c18d724d05c6",
 "assets/assets/svg/barcode_business_tools_information.svg": "c10650fe138ebe1227814896295c5faa",
+"assets/assets/svg/barcode_small.svg": "07e75be1750e7dfe9d2dc121997f1518",
 "assets/assets/svg/book_store.svg": "97e145b4e5d676cd593a49c26d0cef83",
 "assets/assets/svg/boss_scheme.svg": "9ab93c1c9358c9b9f16a2d6c8e1b8e33",
 "assets/assets/svg/buyer.svg": "2095b58f96cab7b33282cf6ff62c7ee5",
@@ -159,6 +160,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "23c6d420a9051cddb0720fb2dfda824c
 "assets/assets/svg/sort_by.svg": "b6341c4cf26ca0004e0ea7bcd5418bdd",
 "assets/assets/svg/stack.svg": "aadee0351e69a7b66f928fcf6cf89add",
 "assets/assets/svg/staff.svg": "54a11fb82a3b125e649d3292e7fd2f93",
+"assets/assets/svg/store.svg": "e0c0b75c2c00d55f763025381d62cd8d",
 "assets/assets/svg/support.svg": "26a1b17a807b1f77941ac18fae39c95e",
 "assets/assets/svg/table.svg": "07031300e35bdda455c84b90db5b3013",
 "assets/assets/svg/table_filled.svg": "73ba5e8912d4f5abebba4fb41c2b4542",
@@ -192,16 +194,16 @@ const RESOURCES = {"assets/AssetManifest.bin": "23c6d420a9051cddb0720fb2dfda824c
 "canvaskit/skwasm.worker.js": "89990e8c92bcb123999aa81f7e203b1c",
 "favicon.png": "358e351d8f55c5af4c44d42cb108f6fa",
 "flutter.js": "f393d3c16b631f36852323de8e583132",
-"flutter_bootstrap.js": "9643643a9f7a846b4bb0a6a448088e32",
+"flutter_bootstrap.js": "cb153aec8055ba9338224db57f92368f",
 "icons/Icon-192.png": "60c831a2491d4b7d618dc5a2033447f9",
 "icons/Icon-512.png": "2d9c79316a49adb98208438b1ad86c61",
 "icons/Icon-maskable-192.png": "60c831a2491d4b7d618dc5a2033447f9",
 "icons/Icon-maskable-512.png": "2d9c79316a49adb98208438b1ad86c61",
 "index.html": "65ddb833a327d08835ffc35efed772d8",
 "/": "65ddb833a327d08835ffc35efed772d8",
-"main.dart.js": "b9d373f42e3782b1ca54539c7bb697d6",
+"main.dart.js": "47724213ad545c9a20f29a57a9afa728",
 "manifest.json": "1bc72327d12e6ddd809a94b9fbaa511f",
-"version.json": "15074293846449e3508dcfbc73bee5f1"};
+"version.json": "4b51234052a07e58fc96072797f1ce10"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
