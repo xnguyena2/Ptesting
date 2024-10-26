@@ -158,6 +158,11 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
     @Builder.Default()
     private boolean active = true;
 
+    public Users setListRoles(List<String> listRoles) {
+        roles = "{" + String.join(",", listRoles) + "}";
+        return this;
+    }
+
     public List<String> getRoles() {
         String[] splitRoles = roles.replace("{", "").replace("}", "").replace(" ", "").split(",");
         return Arrays.stream(splitRoles).collect(Collectors.toList());
