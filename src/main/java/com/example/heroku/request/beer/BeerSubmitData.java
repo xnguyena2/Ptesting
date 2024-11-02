@@ -37,6 +37,7 @@ public class BeerSubmitData {
     private ProductComboItem[] listComboItem;
     private String default_group_unit_naname;
     private String number_group_unit_config;
+    private String warranty;
 
     public BeerInfo GetBeerInfo() {
 
@@ -88,6 +89,7 @@ public class BeerSubmitData {
                                 .product_type(this.product_type)
                                 .default_group_unit_naname(this.default_group_unit_naname)
                                 .number_group_unit_config(this.number_group_unit_config)
+                                .warranty(this.warranty)
                                 .build()
                 )
                 .listComboItem(listComboItem)
@@ -109,6 +111,7 @@ public class BeerSubmitData {
                 .product_type(product.getProduct_type())
                 .default_group_unit_naname(product.getDefault_group_unit_naname())
                 .number_group_unit_config(product.getNumber_group_unit_config())
+                .warranty(product.getWarranty())
                 .build();
     }
 
