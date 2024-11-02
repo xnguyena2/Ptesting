@@ -64,6 +64,7 @@ public class Beer {
                                 product.getCategory(), product.getUnit_category_config(),
                                 product.getMeta_search(), product.isVisible_web(),
                                 product.getDefault_group_unit_naname(), product.getNumber_group_unit_config(),
+                                product.getWarranty(),
                                 product.getProduct_type(),
                                 product.getStatus(), product.getCreateat()
                         ).then(Mono.just(product))

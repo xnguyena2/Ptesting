@@ -41,6 +41,8 @@ public class Product extends BaseEntity {
 
     private String number_group_unit_config;
 
+    private String warranty;
+
     //update ProductJoinWithProductUnit
     //update BeerSubmitData
 

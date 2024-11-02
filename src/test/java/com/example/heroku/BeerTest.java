@@ -107,6 +107,7 @@ public class BeerTest {
                                 .visible_web(true)
                                 .default_group_unit_naname("default")
                                 .number_group_unit_config("number")
+                                .warranty("warranty")
                                 .product_type(Product.ProductType.PRODUCT)
                                 .build()
                                 .AutoFill()
@@ -433,6 +434,7 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                     assertThat(beerInfo.getProduct().getDefault_group_unit_naname()).isEqualTo("default");
                     assertThat(beerInfo.getProduct().getNumber_group_unit_config()).isEqualTo("number");
+                    assertThat(beerInfo.getProduct().getWarranty()).isEqualTo("warranty");
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
                             .as(StepVerifier::create)
@@ -487,6 +489,7 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                     assertThat(beerInfo.getProduct().getDefault_group_unit_naname()).isEqualTo("default");
                     assertThat(beerInfo.getProduct().getNumber_group_unit_config()).isEqualTo("number");
+                    assertThat(beerInfo.getProduct().getWarranty()).isEqualTo("warranty");
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
                             .as(StepVerifier::create)
