@@ -18,7 +18,7 @@ public class Image extends BaseEntity {
 
     private String imgid;
 
-    private  String tag;
+    private String tag;
 
     private String thumbnail;
 
