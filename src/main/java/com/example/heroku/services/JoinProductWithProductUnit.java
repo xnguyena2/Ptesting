@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collections;
+import java.util.*;
 
 @Component
 public class JoinProductWithProductUnit {
@@ -23,12 +23,32 @@ public class JoinProductWithProductUnit {
                 .flatMap(groupedFlux -> groupedFlux.collectList().map(ProductJoinWithProductUnit::GenerateBeerSubmitData));
     }
 
+    private Flux<BeerSubmitData> flattenResultHard(Flux<ProductJoinWithProductUnit> joinResult) {
+        return joinResult.collectList().map(productJoinWithProductUnits -> {
+                    Map<String, java.util.List<ProductJoinWithProductUnit>> productJoinWithProductUnitHashMap = new HashMap<>();
+                    productJoinWithProductUnits.forEach(productJoinWithProductUnit -> {
+                        String key = productJoinWithProductUnit.getProduct_second_id();
+                        if (productJoinWithProductUnitHashMap.containsKey(key)) {
+                            productJoinWithProductUnitHashMap.get(key).add(productJoinWithProductUnit);
+                        } else {
+                            java.util.List<ProductJoinWithProductUnit> newList =  new ArrayList<>();
+                            newList.add(productJoinWithProductUnit);
+                            productJoinWithProductUnitHashMap.put(key, newList);
+                        }
+                    });
+                    return (java.util.List<java.util.List<ProductJoinWithProductUnit>>) new ArrayList<>(productJoinWithProductUnitHashMap.values());
+                })
+                .flatMapMany(Flux::fromIterable)
+//                .flatMapIterable(list -> list)
+                .map(ProductJoinWithProductUnit::GenerateBeerSubmitData);
+    }
+
     private Mono<BeerSubmitData> flattenResult(Mono<ProductJoinWithProductUnit> joinResult) {
         return joinResult.map(productJoinWithProductUnit -> ProductJoinWithProductUnit.GenerateBeerSubmitData(Collections.singletonList(productJoinWithProductUnit)));
     }
 
     public Flux<BeerSubmitData> GetAllBeerByJoinFirstNotHide(SearchQuery query) {
-        return flattenResult(this.joinProductWithProductUnitRepository.getIfProductNotHide(query.getGroup_id(), query.getPage(), query.getSize()));
+        return flattenResultHard(this.joinProductWithProductUnitRepository.getIfProductNotHide(query.getGroup_id(), query.getPage(), query.getSize()));
     }
 
     public Flux<BeerSubmitData> GetAllBeerByJoinFirstNotHideForWeb(SearchQuery query) {
