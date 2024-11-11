@@ -39,7 +39,7 @@ public class ClientDeviceController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<BootStrapData> fullBootStrapData(@PathVariable("groupid") String groupID) {
         System.out.println("Get full bootstrap!: " + groupID);
-        return clientDeviceAPI.adminBootStrapWithoutCarouselData(groupID);
+        return clientDeviceAPI.adminBootStrapWithoutCarouselDataBenifitOfCurrentDate(groupID);
     }
 
     @GetMapping("/bootstrapfullbenifitcurrentdate/{groupid}")
@@ -47,8 +47,6 @@ public class ClientDeviceController {
     public Mono<BootStrapData> fullBootStrapDataBenifitCurrentDate(@AuthenticationPrincipal Mono<Users> principal, @PathVariable("groupid") String groupID) {
         System.out.println("Get full bootstrap and benifit of current date!: " + groupID);
         return clientDeviceAPI.adminBootStrapWithoutCarouselData(groupID);
-        // TODO must fix on large product
-//        return clientDeviceAPI.adminBootStrapWithoutCarouselDataBenifitOfCurrentDate(groupID);
     }
 
     @PostMapping("/admin/register")

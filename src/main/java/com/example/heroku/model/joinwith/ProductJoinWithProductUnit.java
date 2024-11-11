@@ -1,5 +1,6 @@
 package com.example.heroku.model.joinwith;
 
+import com.example.heroku.model.Image;
 import com.example.heroku.model.Product;
 import com.example.heroku.model.ProductUnit;
 import com.example.heroku.request.beer.BeerSubmitData;
@@ -50,6 +51,16 @@ public class ProductJoinWithProductUnit extends Product {
     private ProductUnit.Status child_status;
 
 
+
+    // image of product unit
+    private String imgid;
+    private String tag;
+    private String thumbnail;
+    private String medium;
+    private String large;
+    private String category;
+
+
     public String getID() {
         return getProduct_second_id();
     }
@@ -97,13 +108,29 @@ public class ProductJoinWithProductUnit extends Product {
         ProductJoinWithProductUnit firstElement = listData.get(0);
         BeerSubmitData result = BeerSubmitData.FromBeer(firstElement.getParent());
         List<ProductUnit> productUnitList = new ArrayList<ProductUnit>();
+        List<Image> productUnitImageList = new ArrayList<Image>();
         for (ProductJoinWithProductUnit child : listData) {
             ProductUnit productUnit = child.getChild();
             if (productUnit.getProduct_second_id() == null || productUnit.getProduct_second_id().isEmpty()) {
                 continue;
             }
             productUnitList.add(productUnit);
+
+            if (child.getImgid() == null || child.getImgid().isEmpty()) {
+                continue;
+            }
+            Image img =  Image.builder()
+                    .imgid(child.getImgid())
+                    .tag(child.getTag())
+                    .thumbnail(child.getThumbnail())
+                    .medium(child.getMedium())
+                    .large(child.getLarge())
+                    .category(child.getCategory())
+                    .build();
+
+            productUnitImageList.add(img);
         }
+        result.setImages(productUnitImageList);
         result.SetBeerUnit(productUnitList);
         return result;
     }

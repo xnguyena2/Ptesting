@@ -27,4 +27,6 @@ public class Image extends BaseEntity {
     private String large;
 
     private String category;
+
+    //update ProductJoinWithProductUnit
 }
