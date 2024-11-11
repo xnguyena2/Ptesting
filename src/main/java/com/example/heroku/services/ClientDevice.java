@@ -113,7 +113,7 @@ public class ClientDevice {
                                 .products(new ArrayList<>())
                                 .build())
                 .flatMap(bootStrapData ->
-                        beerAPI.GetAllBeerByJoinFirst(SearchQuery.builder().group_id(groupID).page(0).size(10000).build())
+                        beerAPI.GetAllBeerByJoinWithImageFirst(SearchQuery.builder().group_id(groupID).page(0).size(10000).build())
                                 .map(beerSubmitData ->
                                         bootStrapData.getProducts().add(beerSubmitData)
                                 ).then(

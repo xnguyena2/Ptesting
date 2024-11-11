@@ -163,6 +163,15 @@ public class BeerSubmitData {
         return this;
     }
 
+    public BeerSubmitData SetProductImg(Map<String, Image> mapImg) {
+        Image pImg = mapImg.get(beerSecondID);
+        if (pImg == null) {
+            return this;
+        }
+        this.AddImage(pImg);
+        return this;
+    }
+
     public static BeerSubmitData FromProductInfo(BeerInfo info) {
         BeerSubmitData beerSubmitData = FromBeer(info.getProduct());
         beerSubmitData.SetBeerUnit(Arrays.asList(info.getProductUnit()));
