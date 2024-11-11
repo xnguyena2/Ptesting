@@ -194,18 +194,19 @@ public class Beer {
     }
 
     public Flux<BeerSubmitData> GetAllBeerByJoinWithImageFirst(SearchQuery query) {
-        Map<String, com.example.heroku.model.Image> imgMap = new HashMap<>();
-        return Mono.just(imgMap).flatMap(stringListMap ->
-                imageRepository.getAllOfOnlyForProduct(query.getGroup_id())
-                        .map(img -> {
-                                    stringListMap.put(img.getCategory(), img);
-                                    return 0;
-                                }
-                        ).then(Mono.just(stringListMap))
-        ).flatMapMany(mapMono ->
-                this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHide(query)
-                        .map(beerSubmitData -> beerSubmitData.SetProductImg(mapMono))
-        );
+        return this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHide(query);
+//        Map<String, com.example.heroku.model.Image> imgMap = new HashMap<>();
+//        return Mono.just(imgMap).flatMap(stringListMap ->
+//                imageRepository.getAllOfOnlyForProduct(query.getGroup_id())
+//                        .map(img -> {
+//                                    stringListMap.put(img.getCategory(), img);
+//                                    return 0;
+//                                }
+//                        ).then(Mono.just(stringListMap))
+//        ).flatMapMany(mapMono ->
+//                this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHide(query)
+//                        .map(beerSubmitData -> beerSubmitData.SetProductImg(mapMono))
+//        );
     }
 
     public Flux<BeerSubmitData> GetAllBeerByJoinFirstForWeb(SearchQuery query) {
