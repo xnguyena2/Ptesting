@@ -53,6 +53,9 @@ public class ProductJoinWithProductUnit extends Product {
 
 
     // image of product unit
+    protected Long img_id;
+    protected String img_group_id;
+    protected Timestamp img_createat;
     private String imgid;
     private String tag;
     private String thumbnail;
@@ -120,6 +123,9 @@ public class ProductJoinWithProductUnit extends Product {
                 continue;
             }
             Image img =  Image.builder()
+                    .id(child.getImg_id())
+                    .group_id(child.getImg_group_id())
+                    .createat(child.getImg_createat())
                     .imgid(child.getImgid())
                     .tag(child.getTag())
                     .thumbnail(child.getThumbnail())
