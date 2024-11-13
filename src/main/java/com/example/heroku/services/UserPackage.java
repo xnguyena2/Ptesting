@@ -60,6 +60,7 @@ public class UserPackage {
                         .flatMap(productPackage1 -> Flux.just(productPackage1.getUserPackage())
                                 .flatMap(userPackage ->
                                         userPackageRepository.BuyerHimSelfAddPackage(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
+                                                userPackage.getProduct_name(), userPackage.getProduct_unit_name(), userPackage.getProduct_group_unit_name(),
                                                 userPackage.getNumber_unit(), userPackage.getStatus())
 
                                 )
@@ -169,6 +170,7 @@ public class UserPackage {
 
     Mono<com.example.heroku.model.UserPackage> savePackageItem(com.example.heroku.model.UserPackage userPackage) {
         return userPackageRepository.InsertOrUpdatePackage(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
+                userPackage.getProduct_name(), userPackage.getProduct_unit_name(), userPackage.getProduct_group_unit_name(),
                 userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(),
                 userPackage.getDiscount_amount(), userPackage.getDiscount_percent(), userPackage.getDiscount_promotional(),
                 userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());
@@ -176,6 +178,7 @@ public class UserPackage {
 
     Mono<com.example.heroku.model.UserPackage> savePackageItemWithoutCheck(com.example.heroku.model.UserPackage userPackage) {
         return userPackageRepository.InsertOrUpdatePackageWithoutCheck(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
+                userPackage.getProduct_name(), userPackage.getProduct_unit_name(), userPackage.getProduct_group_unit_name(),
                 userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(),
                 userPackage.getDiscount_amount(), userPackage.getDiscount_percent(), userPackage.getDiscount_promotional(),
                 userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());

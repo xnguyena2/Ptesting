@@ -65,6 +65,7 @@ public class BeerSubmitData {
                     .group_unit_id(beerUnit.group_unit_id)
                     .group_unit_number(beerUnit.group_unit_number)
                     .group_unit_naname(beerUnit.group_unit_naname)
+                    .services_config(beerUnit.services_config)
                     .arg_action_id(beerUnit.getArg_action_id())
                     .arg_action_type(beerUnit.getArg_action_type())
                     .status(ProductUnit.Status.get(beerUnit.status))
@@ -142,6 +143,7 @@ public class BeerSubmitData {
                     .group_unit_id(item.getGroup_unit_id())
                     .group_unit_number(item.getGroup_unit_number())
                     .group_unit_naname(item.getGroup_unit_naname())
+                    .services_config(item.getServices_config())
                     .arg_action_id(item.getArg_action_id())
                     .arg_action_type(item.getArg_action_type())
                     .status(item.GetStatusNuable().toString())
@@ -209,6 +211,7 @@ public class BeerSubmitData {
         private String group_unit_naname;
         private String group_unit_id;
         private float group_unit_number;
+        private String services_config;
         private String arg_action_id;
         private String arg_action_type;
         private String status;
