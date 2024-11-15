@@ -65,6 +65,7 @@ public class UserPackageDetailJoinWithUserPackage {
     private String child_product_name;
     private String child_product_unit_name;
     private String child_product_group_unit_name;
+    private float child_number_services_unit;
     private float child_number_unit;
     private float child_price;
     private float child_buy_price;
@@ -123,6 +124,7 @@ public class UserPackageDetailJoinWithUserPackage {
                 .product_name(child_product_name)
                 .product_unit_name(child_product_unit_name)
                 .product_group_unit_name(child_product_group_unit_name)
+                .number_services_unit(child_number_services_unit)
                 .device_id(device_id)
                 .product_second_id(child_product_second_id)
                 .product_unit_second_id(child_product_unit_second_id)

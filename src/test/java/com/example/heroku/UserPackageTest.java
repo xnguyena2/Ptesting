@@ -202,6 +202,7 @@ public class UserPackageTest {
                                 .product_name("product_name")
                                 .product_unit_name("product_unit_name")
                                 .product_group_unit_name("product_group_unit_name")
+                                .number_services_unit(46)
                                 .number_unit(100)
                                 .build(),
                         com.example.heroku.model.UserPackage.builder()
@@ -716,6 +717,7 @@ public class UserPackageTest {
                     assertThat(item.getProduct_name()).isEqualTo("product_name");
                     assertThat(item.getProduct_unit_name()).isEqualTo("product_unit_name");
                     assertThat(item.getProduct_group_unit_name()).isEqualTo("product_group_unit_name");
+                    assertThat(item.getNumber_services_unit()).isEqualTo(46);
                     assertThat(item.getNumber_unit()).isEqualTo(106);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
@@ -773,6 +775,7 @@ public class UserPackageTest {
                                 .product_name("product_name")
                                 .product_unit_name("product_unit_name")
                                 .product_group_unit_name("product_group_unit_name")
+                                .number_services_unit(46)
                                 .number_unit(100)
                                 .discount_promotional(54)
                                 .build(),
@@ -823,6 +826,7 @@ public class UserPackageTest {
                     assertThat(item.getProduct_name()).isEqualTo("product_name");
                     assertThat(item.getProduct_unit_name()).isEqualTo("product_unit_name");
                     assertThat(item.getProduct_group_unit_name()).isEqualTo("product_group_unit_name");
+                    assertThat(item.getNumber_services_unit()).isEqualTo(46);
                     assertThat(item.getNumber_unit()).isEqualTo(100);
                     assertThat(item.getDiscount_promotional()).isEqualTo(54);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
@@ -950,6 +954,7 @@ public class UserPackageTest {
                                 .product_name("product_name")
                                 .product_unit_name("product_unit_name")
                                 .product_group_unit_name("product_group_unit_name")
+                                .number_services_unit(46)
                                 .number_unit(3)
                                 .build(),
                         com.example.heroku.model.UserPackage.builder()
@@ -986,6 +991,7 @@ public class UserPackageTest {
                     assertThat(item.getProduct_name()).isEqualTo("product_name");
                     assertThat(item.getProduct_unit_name()).isEqualTo("product_unit_name");
                     assertThat(item.getProduct_group_unit_name()).isEqualTo("product_group_unit_name");
+                    assertThat(item.getNumber_services_unit()).isEqualTo(46);
                     assertThat(item.getNumber_unit()).isEqualTo(3);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);

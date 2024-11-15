@@ -31,6 +31,8 @@ public class UserPackage extends BaseEntity {
 
     private String product_group_unit_name;
 
+    private float number_services_unit;
+
     private float number_unit;
 
     private float price;
@@ -59,6 +61,7 @@ public class UserPackage extends BaseEntity {
         this.product_name = s.product_name;
         this.product_unit_name = s.product_unit_name;
         this.product_group_unit_name = s.product_group_unit_name;
+        this.number_services_unit = s.number_services_unit;
         this.number_unit = s.number_unit;
         this.price = s.price;
         this.buy_price = s.buy_price;
