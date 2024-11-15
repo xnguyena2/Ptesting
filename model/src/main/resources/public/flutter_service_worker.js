@@ -3,9 +3,9 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"assets/AssetManifest.bin": "bb3ac542eaa32b6cbb09b4e37dd21c7a",
-"assets/AssetManifest.bin.json": "246d9a6902d2e4eef49f4e4beb8088a3",
-"assets/AssetManifest.json": "be996f0cee583916bff34d6639cf07b0",
+const RESOURCES = {"assets/AssetManifest.bin": "7bae98c2192b08135b2a7031e030fa9e",
+"assets/AssetManifest.bin.json": "afb695cd27f5d62e6e3dc0ed4359f76a",
+"assets/AssetManifest.json": "d7fd7c9166cc08c5277da26c8bdec90e",
 "assets/assets/icons/androidlogo.png": "b94783b93045da99c3ec234c0fe7136d",
 "assets/assets/icons/logo.png": "051b8eacf244899b2ffcf1ee64bdd30f",
 "assets/assets/icons/shop_logo.png": "ea74298da6d8a2f46ad014fcf261232f",
@@ -52,6 +52,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "bb3ac542eaa32b6cbb09b4e37dd21c7a
 "assets/assets/svg/barcode_small.svg": "07e75be1750e7dfe9d2dc121997f1518",
 "assets/assets/svg/book_store.svg": "97e145b4e5d676cd593a49c26d0cef83",
 "assets/assets/svg/boss_scheme.svg": "9ab93c1c9358c9b9f16a2d6c8e1b8e33",
+"assets/assets/svg/browser_website.svg": "6b1717b9ff0c092dc552302e5bc08d0f",
 "assets/assets/svg/buyer.svg": "2095b58f96cab7b33282cf6ff62c7ee5",
 "assets/assets/svg/buyer_group.svg": "f625bc7fee74298fe0644c7b76f120dc",
 "assets/assets/svg/calendar_date.svg": "704d68f76a3acc6c72835576d9c891f7",
@@ -61,6 +62,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "bb3ac542eaa32b6cbb09b4e37dd21c7a
 "assets/assets/svg/cart.svg": "a945a9692308bb48e5e87c9a4a491070",
 "assets/assets/svg/cart_check.svg": "96f5c688624c65deee7e0c21644302cc",
 "assets/assets/svg/cat_face_with_wry_smile.svg": "69dc5d1332f7ae04134803d92b52e542",
+"assets/assets/svg/chart_line_up.svg": "1d419ed088f47c25c41e8f89c1db8178",
 "assets/assets/svg/check.svg": "7a504b99701e2b99a5e6b831c020869c",
 "assets/assets/svg/checked.svg": "aa8bdb3f20b6a16722f38f37e746ace0",
 "assets/assets/svg/check_sheet.svg": "ddd5ce7c0ff5149f1736977a82b87cc4",
@@ -96,6 +98,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "bb3ac542eaa32b6cbb09b4e37dd21c7a
 "assets/assets/svg/guide.svg": "357d591fb97d0840226f22293873ae74",
 "assets/assets/svg/history.svg": "68fd3b0dd914934165b039ae7a4534b5",
 "assets/assets/svg/home_bar.svg": "b98b6f3ce673dc83efa4e3258cc77056",
+"assets/assets/svg/host_hardware.svg": "5d562e4ab2bc18816fd5db8d14c298eb",
 "assets/assets/svg/hotel_man.svg": "18d18363e0b09adda551ec450796061c",
 "assets/assets/svg/import.svg": "82d6ae52d3aaea66d00d5e47fc83b874",
 "assets/assets/svg/import_arrows.svg": "52107d89ca19425aa722435fcd3293d1",
@@ -149,7 +152,10 @@ const RESOURCES = {"assets/AssetManifest.bin": "bb3ac542eaa32b6cbb09b4e37dd21c7a
 "assets/assets/svg/profit_graph.svg": "ef15a2178d075f437cf386e8680a4e7d",
 "assets/assets/svg/qrcode.svg": "d2f22b17ae731544d4f31abe2720ebf2",
 "assets/assets/svg/report.svg": "0c80e0cccf118aedb9c981bb2b56a520",
+"assets/assets/svg/report_ecommerce_money.svg": "d94c08dc0818b919561c77799c228ba7",
 "assets/assets/svg/report_header.svg": "46ea723df6c06dde7944eda03c0f6c81",
+"assets/assets/svg/report_order.svg": "09564f91c20a7c40036ed6530ae9b034",
+"assets/assets/svg/report_warehouse.svg": "a038b8863ae783cfb0cbb19fb2485aa0",
 "assets/assets/svg/sales_amount.svg": "e571d50221365daf79b21f9355903a93",
 "assets/assets/svg/search.svg": "0fa88b282ebb973418c6faaa3c6b8773",
 "assets/assets/svg/send.svg": "fe962baa4185371751dbe85f3e3b3934",
@@ -197,16 +203,16 @@ const RESOURCES = {"assets/AssetManifest.bin": "bb3ac542eaa32b6cbb09b4e37dd21c7a
 "canvaskit/skwasm.worker.js": "89990e8c92bcb123999aa81f7e203b1c",
 "favicon.png": "358e351d8f55c5af4c44d42cb108f6fa",
 "flutter.js": "f393d3c16b631f36852323de8e583132",
-"flutter_bootstrap.js": "13381e7f6b8dfbaa363d11e5e579a9d2",
+"flutter_bootstrap.js": "717098799e6e1b8aeb4fb970845378ea",
 "icons/Icon-192.png": "60c831a2491d4b7d618dc5a2033447f9",
 "icons/Icon-512.png": "2d9c79316a49adb98208438b1ad86c61",
 "icons/Icon-maskable-192.png": "60c831a2491d4b7d618dc5a2033447f9",
 "icons/Icon-maskable-512.png": "2d9c79316a49adb98208438b1ad86c61",
 "index.html": "65ddb833a327d08835ffc35efed772d8",
 "/": "65ddb833a327d08835ffc35efed772d8",
-"main.dart.js": "70800394d98a86f62a17a41c0f08ba45",
+"main.dart.js": "4915f81d472a76d6d4c476e384aa9a3d",
 "manifest.json": "1bc72327d12e6ddd809a94b9fbaa511f",
-"version.json": "3f114f09011dbedcae8af68c0b839ed6"};
+"version.json": "34a7c8b09d4db937071396c4cb6d79f2"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",

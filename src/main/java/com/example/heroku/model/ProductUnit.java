@@ -69,6 +69,8 @@ public class ProductUnit extends BaseEntity {
 
     private float group_unit_number;
 
+    private String services_config;
+
     private Status status;
 
     //update ProductJoinWithProductUnit

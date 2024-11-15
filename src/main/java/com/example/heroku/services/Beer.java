@@ -291,7 +291,7 @@ public class Beer {
                 );
     }
 
-    private Mono<BeerSubmitData> CoverToSubmitData(Product product) {
+    private Mono<BeerSubmitData> CoverToSubmitDataOLD__(Product product) {
         return Mono.just(BeerSubmitData.FromBeer(product))
                 .flatMap(beerSubmitData ->
                         Mono.just(new ArrayList<ProductUnit>())
@@ -308,10 +308,23 @@ public class Beer {
                 .flatMap(this::_setImg4SubmitData);
     }
 
+    private Mono<BeerSubmitData> CoverToSubmitData(Product product) {
+        return Mono.just(BeerSubmitData.FromBeer(product))
+                .flatMap(beerSubmitData ->
+                                this.joinProductWithProductUnit.GetProductAndAllUnit(beerSubmitData.getGroup_id(), beerSubmitData.getBeerSecondID())
+                )
+                .flatMap(this::_setImg4SubmitData);
+    }
+
     private Mono<BeerSubmitData> _setImg4SubmitData(BeerSubmitData beerSubmitData) {
         return imageRepository.findByCategory(beerSubmitData.getGroup_id(), beerSubmitData.getBeerSecondID())
-                .map(beerSubmitData::AddImage)
-                .then(Mono.just(beerSubmitData));
+                .collectList()
+                .map(images -> {
+                    beerSubmitData.setImages(images);
+                    return beerSubmitData;
+                });
+//                .map(beerSubmitData::AddImage)
+//                .then(Mono.just(beerSubmitData));
     }
 
     private Mono<BeerSubmitData> CoverToSubmitDataWithUnitID(Product product, String unitID) {

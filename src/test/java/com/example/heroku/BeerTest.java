@@ -81,6 +81,7 @@ public class BeerTest {
                                         .group_unit_number(2.3f)
                                         .group_unit_id("ggggg")
                                         .group_unit_naname("Block")
+                                        .services_config("services_config")
                                         .buy_price(20)
                                         .enable_warehouse(true)
                                         .product_type(Product.ProductType.PRODUCT)
@@ -462,6 +463,7 @@ public class BeerTest {
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                                 assertThat(beerUnit.getGroup_unit_naname()).isEqualTo("Block");
+                                assertThat(beerUnit.getServices_config()).isEqualTo("services_config");
                                 assertThat(beerUnit.getGroup_unit_number()).isEqualTo(2.3f);
                                 assertThat(beerUnit.getGroup_unit_id()).isEqualTo("ggggg");
                             })
@@ -517,6 +519,7 @@ public class BeerTest {
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
                                 assertThat(beerUnit.getDate_expire()).isEqualTo(null);
                                 assertThat(beerUnit.getGroup_unit_naname()).isEqualTo("Block");
+                                assertThat(beerUnit.getServices_config()).isEqualTo("services_config");
                                 assertThat(beerUnit.getGroup_unit_number()).isEqualTo(2.3f);
                                 assertThat(beerUnit.getGroup_unit_id()).isEqualTo("ggggg");
                             })

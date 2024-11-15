@@ -47,6 +47,11 @@ public class JoinProductWithProductUnit {
         return joinResult.map(productJoinWithProductUnit -> ProductJoinWithProductUnit.GenerateBeerSubmitData(Collections.singletonList(productJoinWithProductUnit)));
     }
 
+    private Mono<BeerSubmitData> flattenResultFor1Product(Flux<ProductJoinWithProductUnit> joinResult) {
+        return joinResult.collectList()
+                .map(ProductJoinWithProductUnit::GenerateBeerSubmitData);
+    }
+
     public Flux<BeerSubmitData> GetAllBeerByJoinFirstNotHide(SearchQuery query) {
         return flattenResultHard(this.joinProductWithProductUnitRepository.getIfProductNotHide(query.getGroup_id(), query.getPage(), query.getSize()));
     }
@@ -57,5 +62,9 @@ public class JoinProductWithProductUnit {
 
     public Mono<BeerSubmitData> GetProductAndUnit(String groupID, String productID, String productUnitID) {
         return flattenResult(this.joinProductWithProductUnitRepository.getProductAndOnly1Unit(groupID, productID, productUnitID));
+    }
+
+    public Mono<BeerSubmitData> GetProductAndAllUnit(String groupID, String productID) {
+        return flattenResultFor1Product(this.joinProductWithProductUnitRepository.getProductAndAllUnit(groupID, productID));
     }
 }
