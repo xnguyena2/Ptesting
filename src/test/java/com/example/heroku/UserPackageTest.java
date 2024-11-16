@@ -1864,7 +1864,7 @@ public class UserPackageTest {
                 .consumeNextWith(data -> {
                     assertThat(data.getProduct_second_id()).isEqualTo("123");
                     assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
-                    assertThat(data.getNumber_unit()).isEqualTo(109);
+                    assertThat(data.getNumber_unit()).isEqualTo(4879);// 106*46 + 3
                     assertThat(data.getProfit()).isEqualTo(-47.1f);// (7*(1 - 0.1) - 19 - 3)*3
                     assertThat(data.getRevenue()).isEqualTo(-38.1f);// (7*(1 - 0.1) - 19)*3
                     assertThat(data.getProduct_name()).isEqualTo("beer tiger");
