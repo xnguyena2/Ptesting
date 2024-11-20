@@ -42,6 +42,7 @@ public class UserPackageDetailJoinWithUserPackage {
     private float additional_fee;
     private String additional_config;
     private float ship_price;
+    private float deliver_ship_price;
     private float cost;
     private float profit;
     private int point;
@@ -104,6 +105,7 @@ public class UserPackageDetailJoinWithUserPackage {
                 .additional_fee(additional_fee)
                 .additional_config(additional_config)
                 .ship_price(ship_price)
+                .deliver_ship_price(deliver_ship_price)
                 .cost(cost)
                 .profit(profit)
                 .point(point)

@@ -163,7 +163,7 @@ public class UserPackage {
                         detail.getArea_id(), detail.getArea_name(), detail.getTable_id(), detail.getTable_name(),
                         detail.getPrice(), detail.getPayment(), detail.getDiscount_amount(), detail.getDiscount_percent(),
                         detail.getDiscount_promotional(), detail.getDiscount_by_point(), detail.getAdditional_fee(), detail.getAdditional_config(),
-                        detail.getShip_price(), detail.getCost(), detail.getProfit(),
+                        detail.getShip_price(), detail.getDeliver_ship_price(), detail.getCost(), detail.getProfit(),
                         detail.getPoint(), detail.getNote(), detail.getImage(), detail.getProgress(), detail.getMeta_search(),
                         detail.getStatus(), detail.getCreateat())
                 .then(Mono.just(detail));

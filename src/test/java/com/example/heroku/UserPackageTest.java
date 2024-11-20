@@ -763,6 +763,7 @@ public class UserPackageTest {
                 .additional_fee(87)
                 .additional_config("additional_config")
                 .ship_price(20000)
+                .deliver_ship_price(33000)
                 .voucher("voucher_1d")
                 .package_type("deliver")
                 .progress("{}")
@@ -810,6 +811,8 @@ public class UserPackageTest {
                     assertThat(userPackage.getStaff_id()).isEqualTo("staffid");
                     assertThat(userPackage.getStaff_name()).isEqualTo("staffname");
                     assertThat(userPackage.getNote()).isEqualTo("note here!!");
+                    assertThat(userPackage.getShip_price()).isEqualTo(20000);
+                    assertThat(userPackage.getDeliver_ship_price()).isEqualTo(33000);
                     assertThat(userPackage.getDiscount_promotional()).isEqualTo(89);
                     assertThat(userPackage.getDiscount_by_point()).isEqualTo(98);
                     assertThat(userPackage.getAdditional_fee()).isEqualTo(87);
