@@ -61,6 +61,7 @@ public class UserPackage {
                                 .flatMap(userPackage ->
                                         userPackageRepository.BuyerHimSelfAddPackage(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
                                                 userPackage.getProduct_name(), userPackage.getProduct_unit_name(), userPackage.getProduct_group_unit_name(),
+                                                userPackage.getNumber_services_unit(),
                                                 userPackage.getNumber_unit(), userPackage.getStatus())
 
                                 )
@@ -162,7 +163,7 @@ public class UserPackage {
                         detail.getArea_id(), detail.getArea_name(), detail.getTable_id(), detail.getTable_name(),
                         detail.getPrice(), detail.getPayment(), detail.getDiscount_amount(), detail.getDiscount_percent(),
                         detail.getDiscount_promotional(), detail.getDiscount_by_point(), detail.getAdditional_fee(), detail.getAdditional_config(),
-                        detail.getShip_price(), detail.getCost(), detail.getProfit(),
+                        detail.getShip_price(), detail.getDeliver_ship_price(), detail.getCost(), detail.getProfit(),
                         detail.getPoint(), detail.getNote(), detail.getImage(), detail.getProgress(), detail.getMeta_search(),
                         detail.getStatus(), detail.getCreateat())
                 .then(Mono.just(detail));
@@ -171,6 +172,7 @@ public class UserPackage {
     Mono<com.example.heroku.model.UserPackage> savePackageItem(com.example.heroku.model.UserPackage userPackage) {
         return userPackageRepository.InsertOrUpdatePackage(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
                 userPackage.getProduct_name(), userPackage.getProduct_unit_name(), userPackage.getProduct_group_unit_name(),
+                userPackage.getNumber_services_unit(),
                 userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(),
                 userPackage.getDiscount_amount(), userPackage.getDiscount_percent(), userPackage.getDiscount_promotional(),
                 userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());
@@ -179,6 +181,7 @@ public class UserPackage {
     Mono<com.example.heroku.model.UserPackage> savePackageItemWithoutCheck(com.example.heroku.model.UserPackage userPackage) {
         return userPackageRepository.InsertOrUpdatePackageWithoutCheck(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
                 userPackage.getProduct_name(), userPackage.getProduct_unit_name(), userPackage.getProduct_group_unit_name(),
+                userPackage.getNumber_services_unit(),
                 userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(),
                 userPackage.getDiscount_amount(), userPackage.getDiscount_percent(), userPackage.getDiscount_promotional(),
                 userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());

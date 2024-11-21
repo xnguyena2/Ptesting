@@ -42,6 +42,7 @@ public class UserPackageDetailJoinWithUserPackage {
     private float additional_fee;
     private String additional_config;
     private float ship_price;
+    private float deliver_ship_price;
     private float cost;
     private float profit;
     private int point;
@@ -65,6 +66,7 @@ public class UserPackageDetailJoinWithUserPackage {
     private String child_product_name;
     private String child_product_unit_name;
     private String child_product_group_unit_name;
+    private float child_number_services_unit;
     private float child_number_unit;
     private float child_price;
     private float child_buy_price;
@@ -103,6 +105,7 @@ public class UserPackageDetailJoinWithUserPackage {
                 .additional_fee(additional_fee)
                 .additional_config(additional_config)
                 .ship_price(ship_price)
+                .deliver_ship_price(deliver_ship_price)
                 .cost(cost)
                 .profit(profit)
                 .point(point)
@@ -123,6 +126,7 @@ public class UserPackageDetailJoinWithUserPackage {
                 .product_name(child_product_name)
                 .product_unit_name(child_product_unit_name)
                 .product_group_unit_name(child_product_group_unit_name)
+                .number_services_unit(child_number_services_unit)
                 .device_id(device_id)
                 .product_second_id(child_product_second_id)
                 .product_unit_second_id(child_product_unit_second_id)
