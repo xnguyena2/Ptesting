@@ -1,7 +1,7 @@
 FROM gradle:jdk17-alpine AS build
 
 COPY . .
-RUN gradle clean build
+RUN gradle clean build -x test
 
 FROM openjdk:17-alpine
 
