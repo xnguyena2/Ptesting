@@ -4,7 +4,6 @@ package com.example.heroku.config;
 import com.example.heroku.jwt.JwtTokenAuthenticationFilter;
 import com.example.heroku.jwt.JwtTokenProvider;
 import com.example.heroku.model.repository.UserRepository;
-import lombok.var;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
