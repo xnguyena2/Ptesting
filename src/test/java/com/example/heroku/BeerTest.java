@@ -391,8 +391,8 @@ public class BeerTest {
                                 assertThat(beerUnit.getStatus()).isEqualTo(ProductUnit.Status.AVARIABLE);
                                 assertThat(beerUnit.isVisible()).isEqualTo(false);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(false);
-                                assertThat(beerUnit.getProduct_type()).isEqualTo(null);
-                                assertThat(beerUnit.getDate_expire()).isEqualTo(null);
+                                assertThat(beerUnit.getProduct_type()).isNull();
+                                assertThat(beerUnit.getDate_expire()).isNull();
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
@@ -405,7 +405,7 @@ public class BeerTest {
                                 assertThat(beerUnit.isVisible()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
                                 assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
-                                assertThat(beerUnit.getDate_expire()).isEqualTo(null);
+                                assertThat(beerUnit.getDate_expire()).isNull();
                             })
                             .verifyComplete();
                 })
@@ -449,7 +449,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(111);
                                 assertThat(beerUnit.isVisible()).isEqualTo(false);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
-                                assertThat(beerUnit.getDate_expire()).isEqualTo(null);
+                                assertThat(beerUnit.getDate_expire()).isNull();
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
@@ -461,7 +461,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(345);
                                 assertThat(beerUnit.isVisible()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
-                                assertThat(beerUnit.getDate_expire()).isEqualTo(null);
+                                assertThat(beerUnit.getDate_expire()).isNull();
                                 assertThat(beerUnit.getGroup_unit_naname()).isEqualTo("Block");
                                 assertThat(beerUnit.getServices_config()).isEqualTo("services_config");
                                 assertThat(beerUnit.getGroup_unit_number()).isEqualTo(2.3f);
@@ -505,7 +505,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(543);
                                 assertThat(beerUnit.isVisible()).isEqualTo(false);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
-                                assertThat(beerUnit.getDate_expire()).isEqualTo(null);
+                                assertThat(beerUnit.getDate_expire()).isNull();
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
@@ -517,7 +517,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(345);
                                 assertThat(beerUnit.isVisible()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
-                                assertThat(beerUnit.getDate_expire()).isEqualTo(null);
+                                assertThat(beerUnit.getDate_expire()).isNull();
                                 assertThat(beerUnit.getGroup_unit_naname()).isEqualTo("Block");
                                 assertThat(beerUnit.getServices_config()).isEqualTo("services_config");
                                 assertThat(beerUnit.getGroup_unit_number()).isEqualTo(2.3f);
@@ -545,14 +545,14 @@ public class BeerTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("lon");
-                                assertThat(beerUnit.getSku()).isEqualTo(null);
-                                assertThat(beerUnit.getUpc()).isEqualTo(null);
+                                assertThat(beerUnit.getSku()).isNull();
+                                assertThat(beerUnit.getUpc()).isNull();
                                 assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(new Timestamp(new Date().getTime())));
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
-                                assertThat(beerUnit.getSku()).isEqualTo(null);
-                                assertThat(beerUnit.getUpc()).isEqualTo(null);
+                                assertThat(beerUnit.getSku()).isNull();
+                                assertThat(beerUnit.getUpc()).isNull();
                                 assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(Timestamp.valueOf("2021-03-31 20:45:00")));
                                 assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), new Timestamp(new Date().getTime())) >= 0).isEqualTo(false);
                             })
@@ -579,14 +579,14 @@ public class BeerTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("lon");
-                                assertThat(beerUnit.getSku()).isEqualTo(null);
-                                assertThat(beerUnit.getUpc()).isEqualTo(null);
+                                assertThat(beerUnit.getSku()).isNull();
+                                assertThat(beerUnit.getUpc()).isNull();
                                 assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(new Timestamp(new Date().getTime())));
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
-                                assertThat(beerUnit.getSku()).isEqualTo(null);
-                                assertThat(beerUnit.getUpc()).isEqualTo(null);
+                                assertThat(beerUnit.getSku()).isNull();
+                                assertThat(beerUnit.getUpc()).isNull();
                                 assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(Timestamp.valueOf("2021-03-31 20:45:00")));
                                 assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), new Timestamp(new Date().getTime())) >= 0).isEqualTo(false);
                             })

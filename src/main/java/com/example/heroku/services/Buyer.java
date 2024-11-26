@@ -10,6 +10,7 @@ import com.example.heroku.request.client.UserID;
 import com.example.heroku.response.BuyerData;
 import com.example.heroku.response.BuyerStatictisData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,6 +24,7 @@ public class Buyer {
     StatisticTotalBenifitRepository statisticTotalBenifitRepository;
 
     @Autowired
+    @Lazy
     UserPackage userPackageAPI;
 
     @Autowired

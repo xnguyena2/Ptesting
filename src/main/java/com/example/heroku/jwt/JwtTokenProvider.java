@@ -1,15 +1,10 @@
 package com.example.heroku.jwt;
 
 import com.example.heroku.model.Users;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.var;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -69,44 +63,44 @@ public class JwtTokenProvider {
     }
 
     private String createToken(String userName, Collection<? extends GrantedAuthority> authorities, String groupID) {
-        Claims claims = Jwts.claims().setSubject(userName);
+        ClaimsBuilder claims = Jwts.claims().subject(userName);
         if (!authorities.isEmpty()) {
-            claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority).collect(joining(",")));
+            claims.add(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority).collect(joining(",")));
         }
 
         if (groupID != null) {
-            claims.put(GROUP_ID_KEY, groupID);
+            claims.add(GROUP_ID_KEY, groupID);
         }
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMs);
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(this.secretKey, SignatureAlgorithm.HS256)
+                .claims(claims.build())
+                .issuedAt(now)
+                .expiration(validity)
+                .signWith(this.secretKey, Jwts.SIG.HS256)
                 .compact();
     }
 
     private String createToken(String userName, Collection<? extends GrantedAuthority> authorities, String groupID, long validityInMs) {
-        Claims claims = Jwts.claims().setSubject(userName);
+        ClaimsBuilder claims = Jwts.claims().subject(userName);
         if (!authorities.isEmpty()) {
-            claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority).collect(joining(",")));
+            claims.add(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority).collect(joining(",")));
         }
 
         if (groupID != null) {
-            claims.put(GROUP_ID_KEY, groupID);
+            claims.add(GROUP_ID_KEY, groupID);
         }
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMs);
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(this.secretKey, SignatureAlgorithm.HS256)
+                .claims(claims.build())
+                .issuedAt(now)
+                .expiration(validity)
+                .signWith(this.secretKey, Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -147,7 +141,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        Claims claims = Jwts.parserBuilder().setSigningKey(this.secretKey).build().parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parser().verifyWith(this.secretKey).build().parseSignedClaims(token).getPayload();
 
         Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
 
@@ -168,11 +162,9 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts
-                    .parserBuilder().setSigningKey(this.secretKey).build()
-                    .parseClaimsJws(token);
+            Jws<Claims> claims = Jwts.parser().verifyWith(this.secretKey).build().parseSignedClaims(token);
             //  parseClaimsJws will check expiration date. No need do here.
-            log.info("expiration date: {}", claims.getBody().getExpiration());
+            log.info("expiration date: {}", claims.getPayload().getExpiration());
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             log.info("Invalid JWT token: {}", e.getMessage());
@@ -185,9 +177,6 @@ public class JwtTokenProvider {
     public String resolveToken(ServerHttpRequest req) {
         if (fromCookie) {
             MultiValueMap<String, HttpCookie> cookies = req.getCookies();
-            if (cookies == null) {
-                return null;
-            }
             HttpCookie cookie = cookies.getFirst(accessTokenCookieName);
             if(cookie == null)
                 return null;

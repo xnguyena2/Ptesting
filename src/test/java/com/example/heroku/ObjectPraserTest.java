@@ -30,7 +30,7 @@ public class ObjectPraserTest {
         assertThat(beerInfo.getProductUnit().length).isEqualTo(1);
         assertThat(beerInfo.getProductUnit()[0].getName()).isEqualTo("Lon");
         assertThat(beerInfo.getProductUnit()[0].getProduct_second_id()).isEqualTo("1");
-        assertThat(beerInfo.getProductUnit()[0].getDate_expire()).isEqualTo(null);
+        assertThat(beerInfo.getProductUnit()[0].getDate_expire()).isNull();
         assertThat(beerInfo.getProductUnit()[0].getDiscount()).isEqualTo(0);
         assertThat(beerInfo.getProductUnit()[0].getPrice()).isEqualTo(17000);
         assertThat(beerInfo.getProductUnit()[0].getVolumetric()).isEqualTo(0.33f);
@@ -41,7 +41,7 @@ public class ObjectPraserTest {
 
         assertThat(beerInfo.getProductUnit().length).isEqualTo(1);
         assertThat(beerInfo.getProductUnit()[0].getProduct_second_id()).isEqualTo("1");
-        assertThat(beerInfo.getProductUnit()[0].getDate_expire()).isEqualTo(null);
+        assertThat(beerInfo.getProductUnit()[0].getDate_expire()).isNull();
         assertThat(beerInfo.getProductUnit()[0].getDiscount()).isEqualTo(0);
         assertThat(beerInfo.getProductUnit()[0].getPrice()).isEqualTo(0);
         assertThat(beerInfo.getProductUnit()[0].getWeight()).isEqualTo(0);
