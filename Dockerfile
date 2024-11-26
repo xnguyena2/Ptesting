@@ -1,12 +1,9 @@
-FROM ubuntu:latest AS build
+FROM gradle:jdk17-alpine AS build
 
-RUN apt-get update
-RUN apt-get install openjdk-8-jdk -y
 COPY . .
-RUN chmod +x ./gradlew
-RUN ./gradlew bootJar --no-daemon
+RUN gradle bootJar --no-daemon
 
-FROM openjdk:8-jdk-slim
+FROM openjdk:17-alpine
 
 EXPOSE 8080
 
