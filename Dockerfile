@@ -12,7 +12,7 @@ FROM openjdk:17-alpine
 
 EXPOSE 8080
 
-# COPY . .
+COPY . .
 COPY --from=build /home/gradle/src/build/libs/gradle-getting-started-1.0.jar app.jar
 
 ENTRYPOINT ["java", "-Xmx64m", "-Xss1m", "-jar", "app.jar"]
