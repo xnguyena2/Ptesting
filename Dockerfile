@@ -4,9 +4,9 @@ COPY . /home/gradle/src
 
 WORKDIR /home/gradle/src
 
-RUN chmod +x ./gradlew
-RUN ./gradlew bootJar --no-daemon
-# RUN gradle clean build -x test
+# RUN chmod +x ./gradlew
+# RUN ./gradlew bootJar --no-daemon
+RUN gradle clean build -x test
 
 FROM openjdk:17-alpine
 
