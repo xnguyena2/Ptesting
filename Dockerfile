@@ -1,7 +1,7 @@
 FROM gradle:jdk17-alpine AS build
 
 COPY . .
-RUN gradle bootJar --no-daemon
+RUN gradle clean build
 
 FROM openjdk:17-alpine
 
