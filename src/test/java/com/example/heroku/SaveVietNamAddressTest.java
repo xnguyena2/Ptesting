@@ -57,7 +57,11 @@ public class SaveVietNamAddressTest {
                         }
                 )
                 .consumeNextWith(district -> {
-                            assertThat(district.getName()).isEqualTo("Quận 2");
+                            assertThat(district.getName()).isEqualTo("Quận 3");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Quận Bình Tân");
                         }
                 )
                 .consumeNextWith(district -> {
@@ -66,6 +70,26 @@ public class SaveVietNamAddressTest {
                 )
                 .consumeNextWith(district -> {
                             assertThat(district.getName()).isEqualTo("Quận Gò Vấp");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Quận Phú Nhuận");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Quận Tân Bình");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Quận Tân Phú");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Thành phố Thủ Đức");
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Huyện Bình Chánh");
                         }
                 )
                 .consumeNextWith(district -> {
@@ -94,8 +118,13 @@ public class SaveVietNamAddressTest {
                         }
                 )
                 .consumeNextWith(district -> {
-                            assertThat(district.getName()).isEqualTo("Quận 2");
-                            assertThat(district.getId()).isEqualTo(485);
+                            assertThat(district.getName()).isEqualTo("Quận 3");
+                            assertThat(district.getId()).isEqualTo(486);
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Quận Bình Tân");
+                            assertThat(district.getId()).isEqualTo(496);
                         }
                 )
                 .consumeNextWith(district -> {
@@ -106,6 +135,31 @@ public class SaveVietNamAddressTest {
                 .consumeNextWith(district -> {
                             assertThat(district.getName()).isEqualTo("Quận Gò Vấp");
                             assertThat(district.getId()).isEqualTo(498);
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Quận Phú Nhuận");
+                            assertThat(district.getId()).isEqualTo(499);
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Quận Tân Bình");
+                            assertThat(district.getId()).isEqualTo(500);
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Quận Tân Phú");
+                            assertThat(district.getId()).isEqualTo(501);
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Thành phố Thủ Đức");
+                            assertThat(district.getId()).isEqualTo(502);
+                        }
+                )
+                .consumeNextWith(district -> {
+                            assertThat(district.getName()).isEqualTo("Huyện Bình Chánh");
+                            assertThat(district.getId()).isEqualTo(503);
                         }
                 )
                 .consumeNextWith(district -> {
