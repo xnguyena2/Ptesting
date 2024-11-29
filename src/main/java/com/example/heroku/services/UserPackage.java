@@ -489,4 +489,14 @@ public class UserPackage {
         return userPackageRepository.GetByStatusBetween(userPackageID.getGroup_id(), userPackageID.getProduct_second_id(), userPackageID.getProduct_unit_second_id(),
                 userPackageID.getFrom(), userPackageID.getTo(), userPackageID.getStatus(), userPackageID.getPage(), userPackageID.getSize());
     }
+
+    public Flux<com.example.heroku.model.UserPackage> GetByStatusOfProduct(UserPackageID userPackageID) {
+        long id = userPackageID.getAfter_id();
+        if (id <= 0) {
+            return userPackageRepository.GetByStatusOfProduct(userPackageID.getGroup_id(), userPackageID.getProduct_second_id(),
+                    userPackageID.getStatus(), userPackageID.getPage(), userPackageID.getSize());
+        }
+        return userPackageRepository.GetByStatusOfProductAfterID(userPackageID.getGroup_id(), userPackageID.getProduct_second_id(),
+                id, userPackageID.getStatus(), userPackageID.getPage(), userPackageID.getSize());
+    }
 }

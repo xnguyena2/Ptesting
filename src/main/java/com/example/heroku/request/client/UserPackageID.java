@@ -18,6 +18,7 @@ import java.sql.Timestamp;
 public class UserPackageID extends BaseID {
     private String product_second_id;
     private String product_unit_second_id;
+    private long after_id;
     private Timestamp from;
     private Timestamp to;
     private UserPackageDetail.Status status;

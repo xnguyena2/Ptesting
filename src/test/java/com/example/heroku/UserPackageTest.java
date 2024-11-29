@@ -637,6 +637,73 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
+        userPackageAPI.GetByStatusOfProduct(UserPackageID.builder().group_id(group).product_second_id("123")
+                        .status(UserPackageDetail.Status.CREATE)
+                        .page(0)
+                        .size(100)
+                        .build())
+                .sort(Comparator.comparing(com.example.heroku.model.UserPackage::getProduct_unit_second_id))
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(9);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(12);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(100);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(106);
+                })
+                .verifyComplete();
+
+        userPackageAPI.GetByStatusOfProduct(UserPackageID.builder().group_id(group).product_second_id("123")
+                        .after_id(10000)
+                        .status(UserPackageDetail.Status.CREATE)
+                        .page(0)
+                        .size(100)
+                        .build())
+                .sort(Comparator.comparing(com.example.heroku.model.UserPackage::getProduct_unit_second_id))
+                .as(StepVerifier::create)
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(9);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(12);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(100);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(106);
+                })
+                .verifyComplete();
+
         userPackageAPI.DeleteByBeerUnit(PackageItemRemove.builder().device_id("222222").unit_id(beerUnit1ID.get()).group_id(group).build(), UserPackageDetail.Status.CREATE).blockLast();
 
         userPackageAPI.GetMyPackage(UserID.builder().id("222222").page(0).size(1000).group_id(group).build())

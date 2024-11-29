@@ -222,4 +222,11 @@ public class UserPackageController {
         System.out.println("get statictis of group: " + userPackageID.getGroup_id() + ", product: " + userPackageID.getProduct_second_id() + ", unit: " + userPackageID.getProduct_unit_second_id() + ", from: " + userPackageID.getFrom() + ", to: " + userPackageID.getTo());
         return userPackageAPI.GetByStatusBetween(userPackageID);
     }
+
+    @PostMapping("/getbystatusproduct")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<com.example.heroku.model.UserPackage> getStatictisByStatusOfProduct(@RequestBody @Valid UserPackageID userPackageID) {
+        System.out.println("get statictis only for product of group: " + userPackageID.getGroup_id() + ", product: " + userPackageID.getProduct_second_id() + ", after id: " + userPackageID.getAfter_id());
+        return userPackageAPI.GetByStatusOfProduct(userPackageID);
+    }
 }
