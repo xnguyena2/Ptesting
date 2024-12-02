@@ -54,53 +54,105 @@
             }
           },
           {
-            "id": 485,
-            "name": "Quận 2",
+            "id": 486,
+            "name": "Quận 3",
             "wards": {
               "data": [
                 {
-                  "id": 10431,
-                  "name": "Phường An Khánh"
+                  "id": 10442,
+                  "name": "Phường 01"
                 },
                 {
-                  "id": 10432,
-                  "name": "Phường An Lợi Đông"
+                  "id": 10443,
+                  "name": "Phường 02"
                 },
                 {
-                  "id": 10433,
-                  "name": "Phường An Phú"
+                  "id": 10444,
+                  "name": "Phường 03"
                 },
                 {
-                  "id": 10434,
-                  "name": "Phường Bình An"
+                  "id": 10445,
+                  "name": "Phường 04"
                 },
                 {
-                  "id": 10435,
-                  "name": "Phường Bình Khánh"
+                  "id": 10446,
+                  "name": "Phường 05"
                 },
                 {
-                  "id": 10436,
-                  "name": "Phường Bình Trưng Đông"
+                  "id": 10450,
+                  "name": "Phường 09"
                 },
                 {
-                  "id": 10437,
-                  "name": "Phường Bình Trưng Tây"
+                  "id": 10451,
+                  "name": "Phường 10"
                 },
                 {
-                  "id": 10438,
-                  "name": "Phường Cát Lái"
+                  "id": 10452,
+                  "name": "Phường 11"
                 },
                 {
-                  "id": 10439,
-                  "name": "Phường Thạnh Mỹ Lợi"
+                  "id": 10453,
+                  "name": "Phường 12"
                 },
                 {
-                  "id": 10440,
-                  "name": "Phường Thảo Điền"
+                  "id": 10454,
+                  "name": "Phường 13"
                 },
                 {
-                  "id": 10441,
-                  "name": "Phường Thủ Thiêm"
+                  "id": 10455,
+                  "name": "Phường 14"
+                },
+                {
+                  "id": 11989,
+                  "name": "Phường Võ Thị Sáu"
+                }
+              ]
+            }
+          },
+          {
+            "id": 496,
+            "name": "Quận Bình Tân",
+            "wards": {
+              "data": [
+                {
+                  "id": 10539,
+                  "name": "Phường An Lạc"
+                },
+                {
+                  "id": 10540,
+                  "name": "Phường An Lạc A"
+                },
+                {
+                  "id": 10541,
+                  "name": "Phường Bình Hưng Hòa"
+                },
+                {
+                  "id": 10542,
+                  "name": "Phường Bình Hưng Hoà A"
+                },
+                {
+                  "id": 10543,
+                  "name": "Phường Bình Hưng Hoà B"
+                },
+                {
+                  "id": 10544,
+                  "name": "Phường Bình Trị Đông"
+                },
+                {
+                  "id": 10545,
+                  "name": "Phường Bình Trị Đông A"
+                },
+                {
+                  "id": 10546,
+                  "name": "Phường Bình Trị Đông B"
+                },
+                {
+                  "id": 10547,
+                  "name": "Phường Tân Tạo"
+                },
+                {
+                  "id": 10548,
+                  "name": "Phường Tân Tạo A"
                 }
               ]
             }
@@ -215,20 +267,8 @@
                   "name": "Phường 05"
                 },
                 {
-                  "id": 10581,
-                  "name": "Phường 06"
-                },
-                {
                   "id": 10582,
                   "name": "Phường 07"
-                },
-                {
-                  "id": 10583,
-                  "name": "Phường 08"
-                },
-                {
-                  "id": 10584,
-                  "name": "Phường 09"
                 },
                 {
                   "id": 10570,
@@ -261,6 +301,422 @@
                 {
                   "id": 10577,
                   "name": "Phường 17"
+                },
+                {
+                  "id": 10581,
+                  "name": "Phường 6"
+                },
+                {
+                  "id": 10583,
+                  "name": "Phường 8"
+                },
+                {
+                  "id": 10584,
+                  "name": "Phường 9"
+                }
+              ]
+            }
+          },
+          {
+            "id": 499,
+            "name": "Quận Phú Nhuận",
+            "wards": {
+              "data": [
+                {
+                  "id": 10585,
+                  "name": "Phường 01"
+                },
+                {
+                  "id": 10586,
+                  "name": "Phường 02"
+                },
+                {
+                  "id": 10587,
+                  "name": "Phường 03"
+                },
+                {
+                  "id": 10588,
+                  "name": "Phường 04"
+                },
+                {
+                  "id": 10589,
+                  "name": "Phường 05"
+                },
+                {
+                  "id": 10590,
+                  "name": "Phường 07"
+                },
+                {
+                  "id": 10591,
+                  "name": "Phường 08"
+                },
+                {
+                  "id": 10592,
+                  "name": "Phường 09"
+                },
+                {
+                  "id": 10593,
+                  "name": "Phường 10"
+                },
+                {
+                  "id": 10594,
+                  "name": "Phường 11"
+                },
+                {
+                  "id": 10595,
+                  "name": "Phường 12"
+                },
+                {
+                  "id": 10596,
+                  "name": "Phường 13"
+                },
+                {
+                  "id": 10597,
+                  "name": "Phường 14"
+                },
+                {
+                  "id": 10598,
+                  "name": "Phường 15"
+                },
+                {
+                  "id": 10599,
+                  "name": "Phường 17"
+                }
+              ]
+            }
+          },
+          {
+            "id": 500,
+            "name": "Quận Tân Bình",
+            "wards": {
+              "data": [
+                {
+                  "id": 10600,
+                  "name": "Phường 01"
+                },
+                {
+                  "id": 10607,
+                  "name": "Phường 02"
+                },
+                {
+                  "id": 10608,
+                  "name": "Phường 03"
+                },
+                {
+                  "id": 10609,
+                  "name": "Phường 04"
+                },
+                {
+                  "id": 10610,
+                  "name": "Phường 05"
+                },
+                {
+                  "id": 10611,
+                  "name": "Phường 06"
+                },
+                {
+                  "id": 10612,
+                  "name": "Phường 07"
+                },
+                {
+                  "id": 10613,
+                  "name": "Phường 08"
+                },
+                {
+                  "id": 10614,
+                  "name": "Phường 09"
+                },
+                {
+                  "id": 10601,
+                  "name": "Phường 10"
+                },
+                {
+                  "id": 10602,
+                  "name": "Phường 11"
+                },
+                {
+                  "id": 10603,
+                  "name": "Phường 12"
+                },
+                {
+                  "id": 10604,
+                  "name": "Phường 13"
+                },
+                {
+                  "id": 10605,
+                  "name": "Phường 14"
+                },
+                {
+                  "id": 10606,
+                  "name": "Phường 15"
+                }
+              ]
+            }
+          },
+          {
+            "id": 501,
+            "name": "Quận Tân Phú",
+            "wards": {
+              "data": [
+                {
+                  "id": 10615,
+                  "name": "Phường Hiệp Tân"
+                },
+                {
+                  "id": 10616,
+                  "name": "Phường Hòa Thạnh"
+                },
+                {
+                  "id": 10617,
+                  "name": "Phường Phú Thạnh"
+                },
+                {
+                  "id": 10618,
+                  "name": "Phường Phú Thọ Hòa"
+                },
+                {
+                  "id": 10619,
+                  "name": "Phường Phú Trung"
+                },
+                {
+                  "id": 10620,
+                  "name": "Phường Sơn Kỳ"
+                },
+                {
+                  "id": 10621,
+                  "name": "Phường Tân Quý"
+                },
+                {
+                  "id": 10622,
+                  "name": "Phường Tân Sơn Nhì"
+                },
+                {
+                  "id": 10623,
+                  "name": "Phường Tân Thành"
+                },
+                {
+                  "id": 10624,
+                  "name": "Phường Tân Thới Hòa"
+                },
+                {
+                  "id": 10625,
+                  "name": "Phường Tây Thạnh"
+                }
+              ]
+            }
+          },
+          {
+            "id": 502,
+            "name": "Thành phố Thủ Đức",
+            "wards": {
+              "data": [
+                {
+                  "id": 12399,
+                  "name": " Phường Cát Lái"
+                },
+                {
+                  "id": 12396,
+                  "name": "Phường An Khánh"
+                },
+                {
+                  "id": 12401,
+                  "name": "Phường An Lợi Đông"
+                },
+                {
+                  "id": 12395,
+                  "name": "Phường An Phú"
+                },
+                {
+                  "id": 10626,
+                  "name": "Phường Bình Chiểu"
+                },
+                {
+                  "id": 10627,
+                  "name": "Phường Bình Thọ"
+                },
+                {
+                  "id": 12397,
+                  "name": "Phường Bình Trưng Đông"
+                },
+                {
+                  "id": 12398,
+                  "name": "Phường Bình Trưng Tây"
+                },
+                {
+                  "id": 10628,
+                  "name": "Phường Hiệp Bình Chánh"
+                },
+                {
+                  "id": 10629,
+                  "name": "Phường Hiệp Bình Phước"
+                },
+                {
+                  "id": 12384,
+                  "name": "Phường Hiệp Phú"
+                },
+                {
+                  "id": 10630,
+                  "name": "Phường Linh Chiểu"
+                },
+                {
+                  "id": 10631,
+                  "name": "Phường Linh Đông"
+                },
+                {
+                  "id": 10632,
+                  "name": "Phường Linh Tây"
+                },
+                {
+                  "id": 10633,
+                  "name": "Phường Linh Trung"
+                },
+                {
+                  "id": 10634,
+                  "name": "Phường Linh Xuân"
+                },
+                {
+                  "id": 12381,
+                  "name": "Phường Long Bình"
+                },
+                {
+                  "id": 12390,
+                  "name": "Phường Long Phước"
+                },
+                {
+                  "id": 12382,
+                  "name": "Phường Long Thạnh Mỹ"
+                },
+                {
+                  "id": 12391,
+                  "name": "Phường Long Trường"
+                },
+                {
+                  "id": 12393,
+                  "name": "Phường Phú Hữu"
+                },
+                {
+                  "id": 12392,
+                  "name": "Phường Phước Bình"
+                },
+                {
+                  "id": 12388,
+                  "name": "Phường Phước Long A"
+                },
+                {
+                  "id": 12387,
+                  "name": "Phường Phước Long B"
+                },
+                {
+                  "id": 10635,
+                  "name": "Phường Tam Bình"
+                },
+                {
+                  "id": 10636,
+                  "name": "Phường Tam Phú"
+                },
+                {
+                  "id": 12385,
+                  "name": "Phường Tăng Nhơn Phú A"
+                },
+                {
+                  "id": 12386,
+                  "name": "Phường Tăng Nhơn Phú B"
+                },
+                {
+                  "id": 12383,
+                  "name": "Phường Tân Phú"
+                },
+                {
+                  "id": 12400,
+                  "name": "Phường Thạnh Mỹ Lợi"
+                },
+                {
+                  "id": 12394,
+                  "name": "Phường Thảo Điền"
+                },
+                {
+                  "id": 12402,
+                  "name": "Phường Thủ Thiêm"
+                },
+                {
+                  "id": 12389,
+                  "name": "Phường Trường Thạnh"
+                },
+                {
+                  "id": 10637,
+                  "name": "Phường Trường Thọ"
+                }
+              ]
+            }
+          },
+          {
+            "id": 503,
+            "name": "Huyện Bình Chánh",
+            "wards": {
+              "data": [
+                {
+                  "id": 10316,
+                  "name": "Thị trấn Tân Túc"
+                },
+                {
+                  "id": 10317,
+                  "name": "Xã An Phú Tây"
+                },
+                {
+                  "id": 10318,
+                  "name": "Xã Bình Chánh"
+                },
+                {
+                  "id": 10319,
+                  "name": "Xã Bình Hưng"
+                },
+                {
+                  "id": 10320,
+                  "name": "Xã Bình Lợi"
+                },
+                {
+                  "id": 10321,
+                  "name": "Xã Đa Phước"
+                },
+                {
+                  "id": 10322,
+                  "name": "Xã Hưng Long"
+                },
+                {
+                  "id": 10323,
+                  "name": "Xã Lê Minh Xuân"
+                },
+                {
+                  "id": 10324,
+                  "name": "Xã Phạm Văn Hai"
+                },
+                {
+                  "id": 10325,
+                  "name": "Xã Phong Phú"
+                },
+                {
+                  "id": 10326,
+                  "name": "Xã Quy Đức"
+                },
+                {
+                  "id": 10327,
+                  "name": "Xã Tân Kiên"
+                },
+                {
+                  "id": 10328,
+                  "name": "Xã Tân Nhựt"
+                },
+                {
+                  "id": 10329,
+                  "name": "Xã Tân Quý Tây"
+                },
+                {
+                  "id": 10330,
+                  "name": "Xã Vĩnh Lộc A"
+                },
+                {
+                  "id": 10331,
+                  "name": "Xã Vĩnh Lộc B"
                 }
               ]
             }
@@ -3081,12 +3537,7 @@
             "id": 371,
             "name": "Huyện Hoàng Sa",
             "wards": {
-              "data": [
-                {
-                  "id": 1865,
-                  "name": "Xã Hoàng Sa"
-                }
-              ]
+              "data": []
             }
           },
           {
@@ -3372,7 +3823,5 @@
         ]
       }
     }
-    ],
-  "districts": [],
-  "wards": []
+  ]
 }

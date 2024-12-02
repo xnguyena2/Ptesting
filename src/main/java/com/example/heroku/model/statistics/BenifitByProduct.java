@@ -9,6 +9,9 @@ import java.sql.Timestamp;
 public class BenifitByProduct {
     private String product_name;
     private String product_unit_name;
+    private String p_product_name;
+    private String p_product_unit_name;
+    private String p_product_group_unit_name;
     private String product_second_id;
     private String product_unit_second_id;
     private float revenue;
