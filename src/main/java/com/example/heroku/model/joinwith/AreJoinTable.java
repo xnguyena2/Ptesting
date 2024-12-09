@@ -8,6 +8,7 @@ import com.example.heroku.status.ActiveStatus;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,9 @@ import java.util.List;
 @AllArgsConstructor
 public class AreJoinTable extends Area {
 
+    protected Long child_id;
+    protected String child_group_id;
+    protected Timestamp child_createat;
     private String child_area_id;
     private String child_table_id;
     private String child_package_second_id;
@@ -38,6 +42,9 @@ public class AreJoinTable extends Area {
 
     public TableDetailData getChild() {
         TableDetail tableDetail = TableDetail.builder()
+                .id(getChild_id())
+                .group_id(getChild_group_id())
+                .createat(getChild_createat())
                 .area_id(getChild_area_id())
                 .table_id(getChild_table_id())
                 .package_second_id(getChild_package_second_id())
