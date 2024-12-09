@@ -2,9 +2,11 @@ package com.example.heroku.services;
 
 import com.example.heroku.model.TableDetail;
 import com.example.heroku.model.UserPackageDetail;
+import com.example.heroku.model.joinwith.AreJoinTable;
 import com.example.heroku.model.repository.AreaRepository;
 import com.example.heroku.model.repository.TableDetailRepository;
 import com.example.heroku.model.repository.UserPackageDetailRepository;
+import com.example.heroku.model.repository.join.AreJoinTableAndPackageDetailRepository;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.AreaID;
 import com.example.heroku.request.client.UserID;
@@ -27,6 +29,9 @@ public class Area {
 
     @Autowired
     AreaRepository areaRepository;
+
+    @Autowired
+    AreJoinTableAndPackageDetailRepository areJoinTableAndPackageDetailRepository;
 
     @Autowired
     TableDetailRepository tableDetailRepository;
@@ -62,9 +67,16 @@ public class Area {
         );
     }
 
-    public Flux<AreaData> getAll(UserID userID) {
+    @Deprecated()
+    public Flux<AreaData> getAllOld(UserID userID) {
         return areaRepository.findByIdNotNull(userID.getGroup_id(), PageRequest.of(userID.getPage(), userID.getSize(), Sort.by(Sort.Direction.ASC, "area_name")))
                 .flatMap(this::fillData);
+    }
+
+    public Flux<AreaData> getAll(UserID userID) {
+        return areJoinTableAndPackageDetailRepository.findByGroupID(userID.getGroup_id())
+                .groupBy(AreJoinTable::getArea_id)
+                .flatMap(stringAreJoinTableGroupedFlux -> stringAreJoinTableGroupedFlux.collectList().map(AreJoinTable::GenerateAreaData));
     }
 
     public Flux<AreaData> findArea(SearchQuery searchQuery) {
@@ -80,10 +92,18 @@ public class Area {
                 .then(Mono.just(areaData));
     }
 
-    public Mono<AreaData> getAreaById(AreaID areaID) {
+
+    @Deprecated()
+    public Mono<AreaData> getAreaByIdOld(AreaID areaID) {
         return areaRepository.getById(areaID.getGroup_id(), areaID.getArea_id())
                 .map(AreaData::new)
                 .flatMap(this::fillData);
+    }
+
+    public Mono<AreaData> getAreaById(AreaID areaID) {
+        return areJoinTableAndPackageDetailRepository.findByID(areaID.getGroup_id(), areaID.getArea_id())
+                .collectList().map(AreJoinTable::GenerateAreaData)
+                .filter(areaData -> areaData.getArea_id() != null);
     }
 
     public Mono<AreaData> deleteArea(AreaData areaData) {
