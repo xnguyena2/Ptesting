@@ -33,6 +33,8 @@ public class TableDetail extends BaseEntity {
 
     private ActiveStatus status;
 
+    // update AreJoinTable
+
     public void copy(TableDetail t) {
         id = t.id;
         group_id = t.group_id;

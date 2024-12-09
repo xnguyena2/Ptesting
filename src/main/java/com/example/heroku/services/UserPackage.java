@@ -417,10 +417,10 @@ public class UserPackage {
     }
 
     public Mono<PackageDataResponse> GetJustByPackageId(PackageID packageID) {
-
-        return userPackageDetailRepository.GetPackageDetailById(packageID.getGroup_id(), packageID.getPackage_id())
-                .map(PackageDataResponse::new)
-                .flatMap(this::fillPackageItem);
+        return joinUserPackageDetailWithUserPackgeRepository.getUserPackageDetailByID(packageID.getGroup_id(), packageID.getPackage_id())
+                .collectList().map(UserPackageDetailJoinWithUserPackage::GeneratePackageData)
+                .filter(packageDataResponse -> packageDataResponse.getPackage_second_id() != null)
+                .flatMap(this::fillProductAndBuyer);
     }
 
     private Mono<ResponseEntity<Format>> ReturnOrCalcelPackage(PackageID packageID, UserPackageDetail.Status status) {

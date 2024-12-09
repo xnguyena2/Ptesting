@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 @EqualsAndHashCode(callSuper = true)
 @Table(name="area")
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Entity
 @Data
 @NoArgsConstructor
@@ -30,6 +30,8 @@ public class Area extends BaseEntity {
     private String meta_search;
 
     private ActiveStatus status;
+
+    // update AreJoinTable
 
     public void copy(Area a) {
         id = a.id;
