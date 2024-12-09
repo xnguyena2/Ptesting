@@ -419,6 +419,7 @@ public class UserPackage {
     public Mono<PackageDataResponse> GetJustByPackageId(PackageID packageID) {
         return joinUserPackageDetailWithUserPackgeRepository.getUserPackageDetailByID(packageID.getGroup_id(), packageID.getPackage_id())
                 .collectList().map(UserPackageDetailJoinWithUserPackage::GeneratePackageData)
+                .filter(packageDataResponse -> packageDataResponse.getPackage_second_id() != null)
                 .flatMap(this::fillProductAndBuyer);
     }
 
