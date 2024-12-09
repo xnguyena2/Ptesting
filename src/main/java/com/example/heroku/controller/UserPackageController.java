@@ -126,8 +126,8 @@ public class UserPackageController {
 
     @PostMapping("/getbyid")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<PackageDataResponse> getByID(@RequestBody @Valid PackageID packageID) {
-        System.out.println("Get package: " + packageID.getPackage_id());
+    public Mono<PackageDataResponse> getByIDOfDevice(@RequestBody @Valid PackageID packageID) {
+        System.out.println("Group: " + packageID.getGroup_id() + ", Get package: " + packageID.getPackage_id() + ", device: " + packageID.getDevice_id());
         return userPackageAPI.GetPackage(packageID);
     }
 
@@ -135,7 +135,7 @@ public class UserPackageController {
     @PostMapping("/getbyjustid")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<PackageDataResponse> getJustByID(@RequestBody @Valid PackageID packageID) {
-        System.out.println("Get package: " + packageID.getPackage_id());
+        System.out.println("Group: " + packageID.getGroup_id() + ", Get package: " + packageID.getPackage_id());
         return userPackageAPI.GetJustByPackageId(packageID);
     }
 
