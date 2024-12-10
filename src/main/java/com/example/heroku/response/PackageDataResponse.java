@@ -1,13 +1,16 @@
 package com.example.heroku.response;
 
 import com.example.heroku.model.UserPackageDetail;
+import com.example.heroku.request.beer.BeerSubmitData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -35,6 +38,26 @@ public class PackageDataResponse extends UserPackageDetail {
 
     public PackageDataResponse setBuyer(BuyerData buyer) {
         this.buyer = buyer;
+        return this;
+    }
+
+    public PackageDataResponse setProductData(List<BeerSubmitData> listProduct) {
+
+        Map<String, BeerSubmitData> lookup = new HashMap<>();
+        for (BeerSubmitData p : listProduct) {
+            BeerSubmitData.BeerUnit[] firstE = p.getListUnit();
+            if (firstE == null || firstE.length == 0) {
+                continue;
+            }
+            lookup.put(p.getBeerSecondID() + firstE[0].getBeer_unit_second_id(), p);
+        }
+        for (ProductInPackageResponse i : items) {
+            BeerSubmitData productData = lookup.get(i.getProduct_second_id() + i.getProduct_unit_second_id());
+            if (productData == null) {
+                continue;
+            }
+            i.SetBeerData(productData);
+        }
         return this;
     }
 }

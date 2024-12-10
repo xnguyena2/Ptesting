@@ -74,7 +74,7 @@ public class Area {
     }
 
     public Flux<AreaData> getAll(UserID userID) {
-        return areJoinTableAndPackageDetailRepository.findByGroupID(userID.getGroup_id())
+        return areJoinTableAndPackageDetailRepository.findByGroupID(userID.getGroup_id(), UserPackageDetail.Status.CREATE)
                 .groupBy(AreJoinTable::getArea_id)
                 .flatMap(stringAreJoinTableGroupedFlux -> stringAreJoinTableGroupedFlux.collectList().map(AreJoinTable::GenerateAreaData));
     }
@@ -101,7 +101,7 @@ public class Area {
     }
 
     public Mono<AreaData> getAreaById(AreaID areaID) {
-        return areJoinTableAndPackageDetailRepository.findByID(areaID.getGroup_id(), areaID.getArea_id())
+        return areJoinTableAndPackageDetailRepository.findByID(areaID.getGroup_id(), areaID.getArea_id(), UserPackageDetail.Status.CREATE)
                 .collectList().map(AreJoinTable::GenerateAreaData)
                 .filter(areaData -> areaData.getArea_id() != null);
     }
