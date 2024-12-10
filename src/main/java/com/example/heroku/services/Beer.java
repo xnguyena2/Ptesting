@@ -161,14 +161,26 @@ public class Beer {
                 .flatMap(this::CoverToSubmitData);
     }
 
+    @Deprecated
     public Mono<BeerSubmitData> GetBeerByIDWithUnit(String  groupID, String productID, String productUnitID) {
         return this.joinProductWithProductUnit.GetProductAndUnit(groupID, productID, productUnitID)
                 .flatMap(this::_setImg4SubmitData);
     }
 
+    @Deprecated
     public Mono<BeerSubmitData> GetBeerByIDWithUnit(String  groupID, String productID, String productUnitID, Map<String, List<com.example.heroku.model.Image>> mapImg) {
         return this.joinProductWithProductUnit.GetProductAndUnit(groupID, productID, productUnitID)
                 .map(beerSubmitData -> beerSubmitData.SetImg(mapImg));
+    }
+
+    public Flux<BeerSubmitData> GetAllProductOfPackage(String  groupID, String packageID, Map<String, List<com.example.heroku.model.Image>> mapImg) {
+        return this.joinProductWithProductUnit.GetAllBeerByJoinOfPackage(groupID, packageID)
+                .map(beerSubmitData -> beerSubmitData.SetImg(mapImg));
+    }
+
+    public Flux<BeerSubmitData> GetAllProductOfPackage(String  groupID, String packageID) {
+        return this.joinProductWithProductUnit.GetAllBeerByJoinOfPackage(groupID, packageID)
+                .flatMap(this::_setImg4SubmitData);
     }
 
     public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {

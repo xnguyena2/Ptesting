@@ -204,12 +204,8 @@ public class UserPackage {
 
     Mono<PackageDataResponse> fillProductAndBuyer(PackageDataResponse packageDataResponse) {
         return
-                Flux.fromIterable(packageDataResponse.getItems())
-                        .flatMap(userPackage ->
-                                beerAPI.GetBeerByIDWithUnit(userPackage.getGroup_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id())
-                                        .switchIfEmpty(Mono.just(BeerSubmitData.builder().build()))
-                                        .map(userPackage::SetBeerData)
-                        )
+                beerAPI.GetAllProductOfPackage(packageDataResponse.getGroup_id(), packageDataResponse.getPackage_second_id())
+                        .collectList().map(packageDataResponse::setProductData)
                         .then(buyer.FindByDeviceID(packageDataResponse.getGroup_id(), packageDataResponse.getDevice_id())
                                 .handle((buyerData, synchronousSink) -> synchronousSink.next(packageDataResponse.setBuyer(buyerData)))
                         )
@@ -218,12 +214,8 @@ public class UserPackage {
 
     Mono<PackageDataResponse> fillProductAndBuyer(PackageDataResponse packageDataResponse, Map<String, List<Image>> mapImg) {
         return
-                Flux.fromIterable(packageDataResponse.getItems())
-                        .flatMap(userPackage ->
-                                beerAPI.GetBeerByIDWithUnit(userPackage.getGroup_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(), mapImg)
-                                        .switchIfEmpty(Mono.just(BeerSubmitData.builder().build()))
-                                        .map(userPackage::SetBeerData)
-                        )
+                beerAPI.GetAllProductOfPackage(packageDataResponse.getGroup_id(), packageDataResponse.getPackage_second_id(), mapImg)
+                        .collectList().map(packageDataResponse::setProductData)
                         .then(buyer.FindByDeviceID(packageDataResponse.getGroup_id(), packageDataResponse.getDevice_id())
                                 .handle((buyerData, synchronousSink) -> synchronousSink.next(packageDataResponse.setBuyer(buyerData)))
                         )

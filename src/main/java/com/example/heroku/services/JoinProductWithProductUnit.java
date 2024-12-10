@@ -64,6 +64,10 @@ public class JoinProductWithProductUnit {
         return flattenResult(this.joinProductWithProductUnitRepository.getProductAndOnly1Unit(groupID, productID, productUnitID));
     }
 
+    public Flux<BeerSubmitData> GetAllBeerByJoinOfPackage(String groupID, String packageID) {
+        return flattenResult(this.joinProductWithProductUnitRepository.getProductAndUnitOfPackage(groupID, packageID));
+    }
+
     public Mono<BeerSubmitData> GetProductAndAllUnit(String groupID, String productID) {
         return flattenResultFor1Product(this.joinProductWithProductUnitRepository.getProductAndAllUnit(groupID, productID));
     }
