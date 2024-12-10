@@ -190,12 +190,12 @@ public class UserPackage {
     Mono<PackageDataResponse> fillPackageItem(PackageDataResponse packageDataResponse) {
         return
                 userPackageRepository.GetDevicePackageWithID(packageDataResponse.getGroup_id(), packageDataResponse.getPackage_second_id())
-                        .flatMap(userPackage ->
-                                beerAPI.GetBeerByIDWithUnit(userPackage.getGroup_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id())
-                                        .switchIfEmpty(Mono.just(BeerSubmitData.builder().build()))
-                                        .map(beerSubmitData -> new ProductInPackageResponse(userPackage).SetBeerData(beerSubmitData))
-                        )
+                        .map(ProductInPackageResponse::new)
                         .map(packageDataResponse::addItem)
+                        .then(
+                                beerAPI.GetAllProductOfPackage(packageDataResponse.getGroup_id(), packageDataResponse.getPackage_second_id())
+                                        .collectList().map(packageDataResponse::setProductData)
+                        )
                         .then(buyer.FindByDeviceID(packageDataResponse.getGroup_id(), packageDataResponse.getDevice_id())
                                 .handle((buyerData, synchronousSink) -> synchronousSink.next(packageDataResponse.setBuyer(buyerData)))
                         )
