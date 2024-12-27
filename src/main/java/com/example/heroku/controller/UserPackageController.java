@@ -69,8 +69,12 @@ public class UserPackageController {
                         return Mono.just(org.springframework.http.ResponseEntity.badRequest().body(Format.builder().response("user not active!").build()));
                     }
                     return userPackageAPI.SavePackageWithoutCheck(productPackage)
-                            .onErrorResume(throwable -> Mono.just(org.springframework.http.ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                    .body(Format.builder().response(throwable.getMessage()).build())));
+                            .onErrorResume(throwable -> {
+                                String msg = throwable.getMessage();
+                                System.out.println(msg);
+                                return Mono.just(org.springframework.http.ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                        .body(Format.builder().response(msg).build()));
+                            });
                 });
     }
 
