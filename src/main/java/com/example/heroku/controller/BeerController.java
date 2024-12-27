@@ -11,6 +11,7 @@ import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAct
 import com.example.heroku.response.Format;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
@@ -36,7 +37,7 @@ public class BeerController {
     @PostMapping(value = "/admin/{groupid}/{id}/img/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_NDJSON_VALUE)
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<com.example.heroku.model.Image>> uploadIMG(@AuthenticationPrincipal Mono<Users> principal, @RequestPart("file") Flux<FilePart> file, @PathVariable("groupid") String groupid, @PathVariable("id") String beerID) {
-        System.out.println("Uplaod image for beer!");
+        System.out.println("Uplaod image for beer! of group: " + groupid + ", id: " + beerID);
         return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<com.example.heroku.model.Image>>builder()
                 .principal(principal)
                 .subject(() -> groupid)
@@ -47,7 +48,7 @@ public class BeerController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<com.example.heroku.model.Image>> uploadIMGWithTag(@AuthenticationPrincipal Mono<Users> principal, @RequestPart("file") Flux<FilePart> file,
                                                                                  @PathVariable("groupid") String groupid, @PathVariable("id") String beerID, @PathVariable("tag") String tag) {
-        System.out.println("Uplaod image for beer!");
+        System.out.println("Uplaod image for beer! of group: " + groupid + ", id: " + beerID + ", tag: " + tag);
         return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<com.example.heroku.model.Image>>builder()
                 .principal(principal)
                 .subject(() -> groupid)
@@ -82,13 +83,21 @@ public class BeerController {
 
     @PostMapping("/admin/create")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<BeerSubmitData> addBeerInfo(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid BeerSubmitData beerInfo) {
+    public Mono<ResponseEntity<BeerSubmitData>> addBeerInfo(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid BeerSubmitData beerInfo) {
         BeerInfo beerInf = beerInfo.GetBeerInfo();
-        System.out.println("add or update beer: " + beerInf.getProduct().getName());
-        return WrapPermissionGroupWithPrincipalAction.<BeerSubmitData>builder()
+        System.out.println("group: " + beerInf.getProduct().getGroup_id() + ", add or update beer: " + beerInf.getProduct().getName());
+        return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<BeerSubmitData>>builder()
                 .principal(principal)
                 .subject(beerInfo::getGroup_id)
-                .monoAction(() -> beerAPI.CreateBeer(beerInf))
+                .monoAction(() -> beerAPI.CreateBeer(beerInf)
+                        .map(ResponseEntity::ok)
+                        .onErrorResume(throwable -> {
+                                    beerInfo.setName(throwable.getMessage());
+                                    return Mono.just(org.springframework.http.ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                            .body(beerInfo));
+                                }
+                        )
+                )
                 .build().toMono();
     }
 
