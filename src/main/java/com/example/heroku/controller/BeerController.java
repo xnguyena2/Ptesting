@@ -92,7 +92,12 @@ public class BeerController {
                 .monoAction(() -> beerAPI.CreateBeer(beerInf)
                         .map(ResponseEntity::ok)
                         .onErrorResume(throwable -> {
-                                    beerInfo.setName(throwable.getMessage());
+                                    String msg = throwable.getMessage();
+                                    System.out.println(msg);
+                                    if (!msg.contains("uq_product_unit_upc") && !msg.contains("uq_product_unit_sku")) {
+                                        throw new RuntimeException(throwable);
+                                    }
+                                    beerInfo.setName(msg);
                                     return Mono.just(org.springframework.http.ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                             .body(beerInfo));
                                 }
