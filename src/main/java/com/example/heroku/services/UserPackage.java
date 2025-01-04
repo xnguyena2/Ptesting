@@ -165,6 +165,7 @@ public class UserPackage {
                         detail.getDiscount_promotional(), detail.getDiscount_by_point(), detail.getAdditional_fee(), detail.getAdditional_config(),
                         detail.getShip_price(), detail.getDeliver_ship_price(), detail.getCost(), detail.getProfit(),
                         detail.getPoint(), detail.getNote(), detail.getImage(), detail.getProgress(), detail.getMeta_search(),
+                        detail.getMoney_source(),
                         detail.getStatus(), detail.getCreateat())
                 .then(Mono.just(detail));
     }

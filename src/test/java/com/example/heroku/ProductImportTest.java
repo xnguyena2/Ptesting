@@ -160,6 +160,7 @@ public class ProductImportTest {
                                 .progress("{}")
                                 .note("note")
                                 .images("images")
+                                .money_source("moneysource")
                                 .type(ProductImport.ImportType.IMPORT)
                                 .items(
                                         new ProductImport[]{
@@ -221,6 +222,7 @@ public class ProductImportTest {
                     assertThat(productImport.getProgress()).isEqualTo("{}");
                     assertThat(productImport.getNote()).isEqualTo("note");
                     assertThat(productImport.getImages()).isEqualTo("images");
+                    assertThat(productImport.getMoney_source()).isEqualTo("moneysource");
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.IMPORT);
                     assertThat(productImport.getStatus()).isEqualTo(ProductImport.Status.CREATE);
                     assertThat(productImport.getItems().length).isEqualTo(2);

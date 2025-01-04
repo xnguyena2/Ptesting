@@ -75,6 +75,8 @@ public class UserPackageDetail  extends BaseEntity {
 
     private String meta_search;
 
+    private String money_source;
+
     private Status status;
 
 //    update UserPackageDetailJoinWithUserPackage
@@ -114,6 +116,7 @@ public class UserPackageDetail  extends BaseEntity {
         image = s.image;
         progress = s.progress;
         meta_search = s.meta_search;
+        money_source = s.money_source;
         status = s.status;
     }
 
@@ -139,7 +142,7 @@ public class UserPackageDetail  extends BaseEntity {
         WEB_SUBMIT("WEB_SUBMIT");
 
 
-        private String name;
+        private final String name;
 
         Status(String name){
             this.name = name;

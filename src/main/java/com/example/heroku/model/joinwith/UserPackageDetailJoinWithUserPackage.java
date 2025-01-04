@@ -50,6 +50,7 @@ public class UserPackageDetailJoinWithUserPackage {
     private String image;
     private String progress;
     private String meta_search;
+    private String money_source;
     private UserPackageDetail.Status status;
 
 
@@ -113,6 +114,7 @@ public class UserPackageDetailJoinWithUserPackage {
                 .image(image)
                 .progress(progress)
                 .meta_search(meta_search)
+                .money_source(money_source)
                 .status(status)
                 .build();
     }

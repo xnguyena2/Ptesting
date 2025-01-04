@@ -24,7 +24,7 @@ public class AccountController {
     @PostMapping("/admin/getall")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<SearchResult<Users>> getAll(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
-        System.out.println("Get all account!");
+        System.out.println("group: " + query.getGroup_id() + ", Get all account!");
         return WrapPermissionAction.<SearchResult<Users>>builder()
                 .principal(principal)
                 .query(query)
@@ -36,7 +36,7 @@ public class AccountController {
     @PostMapping("/admin/getallclean")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<UserJoinUserInfo> getAllClean(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
-        System.out.println("Get all account!");
+        System.out.println("group: " + query.getGroup_id() + ", Get all clean account!");
         return WrapPermissionAction.<UserJoinUserInfo>builder()
                 .principal(principal)
                 .query(query)
