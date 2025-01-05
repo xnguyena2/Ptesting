@@ -52,6 +52,8 @@ public class GroupImport extends BaseEntity {
 
     private ProductImport.ImportType type;
 
+    private String money_source;
+
     private ProductImport.Status status;
 
     // GroupImportJoinProductImport
@@ -74,6 +76,7 @@ public class GroupImport extends BaseEntity {
         note = g.note;
         images = g.images;
         type = g.type;
+        money_source = g.money_source;
         status = g.status;
     }
 

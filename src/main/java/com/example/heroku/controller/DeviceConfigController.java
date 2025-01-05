@@ -23,7 +23,7 @@ public class DeviceConfigController {
     @PostMapping("/admin/changecolor")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> updateDeviceColor(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid com.example.heroku.model.DeviceConfig config) {
-        System.out.println("update color: " + config.getColor());
+        System.out.println("group: " + config.getGroup_id() + ", update config: " + config.getConfig());
         return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<Format>>builder()
                 .principal(principal)
                 .subject(config::getGroup_id)

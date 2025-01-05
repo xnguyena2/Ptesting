@@ -135,7 +135,8 @@ public class GroupImport {
                 groupImport.getSupplier_id(), groupImport.getSupplier_name(), groupImport.getSupplier_phone(),
                 groupImport.getTotal_price(), groupImport.getTotal_amount(), groupImport.getPayment(),
                 groupImport.getDiscount_amount(), groupImport.getDiscount_percent(), groupImport.getAdditional_fee(), groupImport.getProgress(),
-                groupImport.getNote(), groupImport.getImages(), groupImport.getType(), groupImport.getStatus(), groupImport.getCreateat());
+                groupImport.getNote(), groupImport.getImages(), groupImport.getType(), groupImport.getMoney_source(),
+                groupImport.getStatus(), groupImport.getCreateat());
     }
 
     private Mono<ProductImport> saveProductImportItem(ProductImport productImport) {
