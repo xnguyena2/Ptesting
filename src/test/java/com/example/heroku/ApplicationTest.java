@@ -93,6 +93,9 @@ public class ApplicationTest extends TestConfig {
     @Autowired
     DebtTransation debtTransation;
 
+    @Autowired
+    MapKeyValue mapKeyValue;
+
     @Value("${account.admin.username}")
     private String adminName;
 
@@ -217,6 +220,11 @@ public class ApplicationTest extends TestConfig {
 
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).testWithMainGroup(true).build().BootStrapData();
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).testWithMainGroup(true).build().BootStrapDataNew();
+    }
+
+    @Test
+    public void mapKeyTest(){
+        MapKeyValueTest.builder().mapKeyValueServices(mapKeyValue).group(mainGroup).build().test();
     }
 
     @Test
@@ -349,6 +357,11 @@ public class ApplicationTest extends TestConfig {
 
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapData();
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapDataNew();
+    }
+
+    @Test
+    public void mapKeyTest2(){
+        MapKeyValueTest.builder().mapKeyValueServices(mapKeyValue).group(anotherGroup).build().test();
     }
 
     @Test

@@ -50,6 +50,8 @@ CREATE TABLE IF NOT EXISTS tokens (id SERIAL PRIMARY KEY, group_id VARCHAR NOT N
 
 CREATE TABLE IF NOT EXISTS debt_transaction (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, transaction_second_id VARCHAR NOT NULL, device_id VARCHAR, action_id VARCHAR, action_type VARCHAR, transaction_type VARCHAR, amount float8, category VARCHAR, money_source VARCHAR, note VARCHAR, status VARCHAR, createat TIMESTAMP);
 
+CREATE TABLE IF NOT EXISTS map_key_value (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, id_o VARCHAR, value_o VARCHAR, createat TIMESTAMP);
+
 CREATE TABLE IF NOT EXISTS delete_request (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, delete_request_id VARCHAR, user_id VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE INDEX device_config_index ON device_config(group_id);
@@ -95,6 +97,8 @@ CREATE INDEX area_index ON area(area_name);
 CREATE INDEX area_search_index ON area(meta_search);
 CREATE INDEX tokens_group_index ON tokens(group_id);
 CREATE INDEX tokens_second_id_index ON tokens(token_second_id);
+CREATE INDEX map_key_value_group_id_index ON map_key_value(group_id);
+CREATE INDEX map_key_value_id_index ON map_key_value(id_o);
 CREATE INDEX delete_request_user_id_index ON delete_request(user_id);
 
 ALTER TABLE device_config ADD CONSTRAINT UQ_device_config UNIQUE(group_id);
@@ -124,6 +128,7 @@ ALTER TABLE debt_transaction ADD CONSTRAINT UQ_group_debt_transaction UNIQUE(gro
 ALTER TABLE table_detail ADD CONSTRAINT UQ_table_detail UNIQUE(group_id, area_id, table_id);
 ALTER TABLE area ADD CONSTRAINT UQ_area UNIQUE(group_id, area_id);
 ALTER TABLE tokens ADD CONSTRAINT UQ_tokens UNIQUE(token_second_id);
+ALTER TABLE map_key_value ADD CONSTRAINT UQ_map_key_value UNIQUE(group_id, id_o);
 ALTER TABLE delete_request ADD CONSTRAINT UQ_delete_request UNIQUE(user_id);
 
 ALTER TABLE product_unit ADD CONSTRAINT FK_product_unit FOREIGN KEY(group_id, product_second_id) REFERENCES product(group_id, product_second_id) ON DELETE CASCADE;
