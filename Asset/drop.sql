@@ -56,4 +56,5 @@ DROP TABLE IF EXISTS table_detail;
 DROP TABLE IF EXISTS area;
 DROP TABLE IF EXISTS tokens;
 DROP TABLE IF EXISTS debt_transaction;
+DROP TABLE IF EXISTS map_key_value;
 DROP TABLE IF EXISTS delete_request;
