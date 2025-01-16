@@ -20,7 +20,7 @@ public class MapKeyValueController {
 
     @PostMapping("/admin/insert")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<com.example.heroku.model.MapKeyValue> insert(@AuthenticationPrincipal Mono<Users> principal, @Valid @ModelAttribute com.example.heroku.model.MapKeyValue obj) {
+    public Mono<com.example.heroku.model.MapKeyValue> insert(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid com.example.heroku.model.MapKeyValue obj) {
 
         System.out.println("group: " + obj.getGroup_id() + ", insert key: " + obj.getId_o() + ", value: " + obj.getValue_o());
         return WrapPermissionGroupWithPrincipalAction.<com.example.heroku.model.MapKeyValue>builder()
@@ -44,7 +44,7 @@ public class MapKeyValueController {
 
     @PostMapping("/admin/delete")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<com.example.heroku.model.MapKeyValue> delete(@AuthenticationPrincipal Mono<Users> principal, @Valid @ModelAttribute com.example.heroku.model.MapKeyValue obj) {
+    public Mono<com.example.heroku.model.MapKeyValue> delete(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid com.example.heroku.model.MapKeyValue obj) {
 
         System.out.println("group: " + obj.getGroup_id() + ", delete key: " + obj.getId_o());
         return WrapPermissionGroupWithPrincipalAction.<com.example.heroku.model.MapKeyValue>builder()
