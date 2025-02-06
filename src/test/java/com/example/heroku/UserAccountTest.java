@@ -58,6 +58,7 @@ public class UserAccountTest {
                 .roles_in_group("r1,r2")
                 .roles(Collections.singletonList(Util.ROLE.ROLE_ADMIN.getName()))
                 .register_code("hello code")
+                .update_password(true)
                 .build()).block();
 
         this.userAccount.createAccount(adminName, UpdatePassword.builder()

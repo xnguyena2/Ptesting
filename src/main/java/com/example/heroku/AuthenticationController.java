@@ -8,6 +8,7 @@ import com.example.heroku.model.joinwith.UserJoinUserInfo;
 import com.example.heroku.request.data.AuthenticationRequest;
 import com.example.heroku.request.data.UpdatePassword;
 import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
+import com.example.heroku.response.Format;
 import com.example.heroku.services.DeleteAllData;
 import com.example.heroku.services.UserAccount;
 import com.example.heroku.util.Util;
@@ -33,6 +34,8 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/auth")
@@ -81,14 +84,12 @@ public class AuthenticationController {
 
     @PostMapping("/signin")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity> signin(@Valid @RequestBody Mono<AuthenticationRequest> authRequest) {
-        System.out.println("request signin!!");
+    public Mono<ResponseEntity> signin(@Valid @RequestBody AuthenticationRequest authRequest) {
+        System.out.println("request signin from username: " + authRequest.getUsername());
         try {
-            return authRequest
-                    .flatMap(login -> this.authenticationManager
-                            .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()))
-                            .map(this.jwtTokenProvider::createToken)
-                    )
+            return this.authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()))
+                    .map(this.jwtTokenProvider::createToken)
                     .map(this::createAuthBearToken);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
@@ -147,6 +148,21 @@ public class AuthenticationController {
                     )
                     .then(Mono.just(""))
                     .map(this::createAuthBearToken);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid username/password supplied");
+        }
+    }
+
+    @PostMapping("/admin/account/updatepassword")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity> updatePassword(@AuthenticationPrincipal Mono<UserDetails> principal, @Valid @RequestBody UpdatePassword update) {
+
+        try {
+            return principal
+                    .flatMap(
+                            login -> userServices.updatePassword(login.getUsername(), update.getNewpassword())
+                    )
+                    .then(Mono.just(ok(Format.builder().response("done").build())));
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
         }

@@ -117,7 +117,7 @@ public class Image {
                     try {
                         fireBaseStorage.delete(image.getImgid());
                         return true;
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         return false;
                     }
