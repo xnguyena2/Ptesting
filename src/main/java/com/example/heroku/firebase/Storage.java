@@ -1,6 +1,6 @@
 package com.example.heroku.firebase;
 
-import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.StorageClient;
 import lombok.Data;
@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -59,12 +58,7 @@ public class Storage implements IImageService {
 
     @Override
     public String getImageUrl(String name) {
-        String encoded = name;
-        try {
-            encoded = URLEncoder.encode(name, StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        String encoded = URLEncoder.encode(name, StandardCharsets.UTF_8);
         return String.format("https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media", properties.getBucketName(), encoded);
     }
 
@@ -132,18 +126,32 @@ public class Storage implements IImageService {
     @Override
     public void delete(String name) throws IOException {
 
-        Bucket bucket = getBucket();
-
         if (!StringUtils.hasLength(name)) {
             throw new IOException("invalid file name");
         }
 
-        Blob blob = bucket.get(name);
+        com.google.cloud.storage.Storage storage = myFireBase.getStorage();
+        // Define the blob ID
+        BlobId blobId = BlobId.of(properties.getBucketName(), name);
 
-        if (blob == null) {
-            throw new IOException("file not found");
+        // Delete the blob
+        boolean deleted = storage.delete(blobId);
+
+        if (deleted) {
+            System.out.println("File " + name + " deleted from bucket " + properties.getBucketName());
+        } else {
+            System.out.println("File " + name + " not found in bucket " + properties.getBucketName());
         }
 
-        blob.delete();
+
+//        Bucket bucket = getBucket();
+//
+//        Blob blob = bucket.get(name);
+//
+//        if (blob == null) {
+//            throw new IOException("file not found");
+//        }
+//
+//        blob.delete();
     }
 }
