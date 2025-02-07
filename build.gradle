@@ -74,6 +74,9 @@ dependencies {
 	compileOnly "org.projectlombok:lombok:$gradle.ext.lombokV"
 	annotationProcessor "org.projectlombok:lombok:$gradle.ext.lombokV"
 
+	testCompileOnly "org.projectlombok:lombok:$gradle.ext.lombokV"
+	testAnnotationProcessor "org.projectlombok:lombok:$gradle.ext.lombokV"
+
 	testImplementation "io.projectreactor:reactor-test"
 	testImplementation "org.springframework.security:spring-security-test"
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
