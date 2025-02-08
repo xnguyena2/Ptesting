@@ -131,28 +131,30 @@ public class Storage implements IImageService {
             throw new IOException("invalid file name");
         }
 
-//        com.google.cloud.storage.Storage storage = myFireBase.getStorage();
-//        // Define the blob ID
-//        BlobId blobId = BlobId.of(properties.getBucketName(), name);
-//
-//        // Delete the blob
-//        boolean deleted = storage.delete(blobId);
-//
-//        if (deleted) {
-//            System.out.println("File " + name + " deleted from bucket " + properties.getBucketName());
-//        } else {
-//            System.out.println("File " + name + " not found in bucket " + properties.getBucketName());
-//        }
+        com.google.cloud.storage.Storage storage = myFireBase.getStorage();
+        if (storage != null) {
+            // Define the blob ID
+            BlobId blobId = BlobId.of(properties.getBucketName(), name);
 
+            // Delete the blob
+            boolean deleted = storage.delete(blobId);
 
-        Bucket bucket = getBucket();
+            if (deleted) {
+                System.out.println("File " + name + " deleted from bucket " + properties.getBucketName());
+            } else {
+                System.out.println("File " + name + " not found in bucket " + properties.getBucketName());
+            }
+        } else {
 
-        Blob blob = bucket.get(name);
+            Bucket bucket = getBucket();
 
-        if (blob == null) {
-            throw new IOException("file not found");
+            Blob blob = bucket.get(name);
+
+            if (blob == null) {
+                throw new IOException("file not found");
+            }
+
+            blob.delete();
         }
-
-        blob.delete();
     }
 }
