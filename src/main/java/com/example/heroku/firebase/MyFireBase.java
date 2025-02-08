@@ -49,12 +49,18 @@ public class MyFireBase {
         }
         try {
             InputStream serviceAccount = new ByteArrayInputStream(firebaseCredential.getBytes());
+            GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
 
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setCredentials(credentials)
                     .build();
+            try {
+                storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
 
-//            storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build().getService();
+            } catch (Exception e) {
+                log.debug("initializing storage error...");
+                e.printStackTrace();
+            }
 
             FirebaseApp.initializeApp(options);
             isAuthSuccess = true;
