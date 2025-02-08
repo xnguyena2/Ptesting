@@ -195,15 +195,19 @@ public class AuthenticationController {
 
     @PostMapping("/account/markdelete")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<ResponseEntity> selfMarkDelete(@AuthenticationPrincipal Mono<UserDetails> principal) {
+    public Mono<ResponseEntity> selfMarkDelete(@AuthenticationPrincipal Mono<Users> principal) {
 
         try {
             return principal
                     .filter(userDetails -> getRole(userDetails) == Util.ROLE.ROLE_ADMIN)
                     .switchIfEmpty(Mono.error(new AccessDeniedException("403 returned1")))
-                    .flatMap(login -> deleteAllData.seftMarkDelete(
-                                    login.getUsername()
-                            )
+                    .flatMap(login -> {
+                                System.out.println("Delete store: " + login.getGroup_id());
+                                return deleteAllData.seftMarkDelete(
+                                        login.getUsername()
+                                );
+                            }
+
                     )
                     .then(Mono.just(""))
                     .map(this::createAuthBearToken);
