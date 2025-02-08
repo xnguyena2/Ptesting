@@ -1,5 +1,6 @@
 package com.example.heroku.firebase;
 
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.StorageClient;
@@ -130,28 +131,28 @@ public class Storage implements IImageService {
             throw new IOException("invalid file name");
         }
 
-        com.google.cloud.storage.Storage storage = myFireBase.getStorage();
-        // Define the blob ID
-        BlobId blobId = BlobId.of(properties.getBucketName(), name);
+//        com.google.cloud.storage.Storage storage = myFireBase.getStorage();
+//        // Define the blob ID
+//        BlobId blobId = BlobId.of(properties.getBucketName(), name);
+//
+//        // Delete the blob
+//        boolean deleted = storage.delete(blobId);
+//
+//        if (deleted) {
+//            System.out.println("File " + name + " deleted from bucket " + properties.getBucketName());
+//        } else {
+//            System.out.println("File " + name + " not found in bucket " + properties.getBucketName());
+//        }
 
-        // Delete the blob
-        boolean deleted = storage.delete(blobId);
 
-        if (deleted) {
-            System.out.println("File " + name + " deleted from bucket " + properties.getBucketName());
-        } else {
-            System.out.println("File " + name + " not found in bucket " + properties.getBucketName());
+        Bucket bucket = getBucket();
+
+        Blob blob = bucket.get(name);
+
+        if (blob == null) {
+            throw new IOException("file not found");
         }
 
-
-//        Bucket bucket = getBucket();
-//
-//        Blob blob = bucket.get(name);
-//
-//        if (blob == null) {
-//            throw new IOException("file not found");
-//        }
-//
-//        blob.delete();
+        blob.delete();
     }
 }

@@ -54,7 +54,7 @@ public class MyFireBase {
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
 
-            storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build().getService();
+//            storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build().getService();
 
             FirebaseApp.initializeApp(options);
             isAuthSuccess = true;
