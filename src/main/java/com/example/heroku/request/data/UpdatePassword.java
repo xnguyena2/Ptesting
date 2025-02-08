@@ -26,5 +26,6 @@ public class UpdatePassword implements Serializable {
     private String roles_in_group;
     private String full_name;
     private String register_code;
+    private boolean update_password;
     List<String> roles;
 }

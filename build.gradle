@@ -12,8 +12,8 @@
 
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.4.0'
-	id 'io.spring.dependency-management' version '1.1.6'
+	id 'org.springframework.boot' version '3.4.2'
+	id 'io.spring.dependency-management' version '1.1.7'
 }
 
 //apply plugin: 'java'
@@ -68,7 +68,7 @@ dependencies {
 
 	implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '4.0.2'
 
-	implementation 'com.google.firebase:firebase-admin:9.2.0'
+	implementation 'com.google.firebase:firebase-admin:9.4.3'
 	implementation 'com.google.cloud:google-cloud-storage'
 
 	compileOnly "org.projectlombok:lombok:$gradle.ext.lombokV"
@@ -82,6 +82,6 @@ dependencies {
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
 	testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 
-	runtimeOnly group: 'org.springframework.boot', name: 'spring-boot-properties-migrator', version: '2.4.0'
+	runtimeOnly group: 'org.springframework.boot', name: 'spring-boot-properties-migrator', version: '3.4.2'
 
 }
