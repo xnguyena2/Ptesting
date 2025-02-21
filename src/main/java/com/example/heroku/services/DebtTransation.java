@@ -1,11 +1,14 @@
 package com.example.heroku.services;
 
+import com.example.heroku.model.ProductImport;
 import com.example.heroku.model.repository.DebtTransactionRepository;
 import com.example.heroku.model.repository.StatisticDebtOfBuyerRepository;
 import com.example.heroku.model.statistics.DebtOfBuyer;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
+import com.example.heroku.request.debt.PendingDebtOfBuyer;
+import com.example.heroku.response.DebtImportAndUserPackge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -19,6 +22,12 @@ public class DebtTransation {
 
     @Autowired
     StatisticDebtOfBuyerRepository statisticDebtOfBuyerRepository;
+
+    @Autowired
+    UserPackage userPackage;
+
+    @Autowired
+    GroupImport groupImport;
 
     public Mono<com.example.heroku.model.DebtTransation> insertOrUpdate(com.example.heroku.model.DebtTransation paymentTransation) {
         paymentTransation.AutoFill();
@@ -66,5 +75,27 @@ public class DebtTransation {
     public Flux<DebtOfBuyer> getDebtOfAllBuyer(IDContainer idContainer) {
         return statisticDebtOfBuyerRepository.getIncomeOutComeAllBuyer(idContainer.getGroup_id())
                 .map(DebtOfBuyer::new);
+    }
+
+    public Mono<DebtImportAndUserPackge> getAllDebtGroupImportAndPackageofBuyer(PendingDebtOfBuyer pendingDebtOfBuyer) {
+        String groupID = pendingDebtOfBuyer.getGroup_id();
+        String deviceID = pendingDebtOfBuyer.getDevice_id();
+        com.example.heroku.model.DebtTransation.TType type = pendingDebtOfBuyer.getType();
+        return Mono.just(DebtImportAndUserPackge.builder().build())
+                .flatMap(debtImportAndUserPackge -> {
+                    if (type == com.example.heroku.model.DebtTransation.TType.INCOME) {
+                        return userPackage.GetPackageByDebtOfUser(groupID, deviceID).collectList().map(debtImportAndUserPackge::setPackage);
+                    }
+                    return Mono.just(debtImportAndUserPackge);
+                })
+                .flatMap(debtImportAndUserPackge -> {
+                    if (type == com.example.heroku.model.DebtTransation.TType.INCOME) {
+                        return groupImport.GetAllDebtOfSupplier(groupID, ProductImport.ImportType.IMPORT, deviceID).collectList().map(debtImportAndUserPackge::setImport);
+                    }
+                    if (type == com.example.heroku.model.DebtTransation.TType.OUTCOME) {
+                        return groupImport.GetAllDebtOfSupplier(groupID, ProductImport.ImportType.EXPORT, deviceID).collectList().map(debtImportAndUserPackge::setImport);
+                    }
+                    return Mono.just(debtImportAndUserPackge);
+                });
     }
 }
