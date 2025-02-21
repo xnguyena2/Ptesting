@@ -1293,6 +1293,10 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
+        userPackageAPI.GetPackageByDebtOfUser(group, "0022929222")
+                .as(StepVerifier::create)
+                .verifyComplete();
+
 
         userPackageAPI.GetPackageByGroup(UserID.builder().group_id(group).page(0).size(10000).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))

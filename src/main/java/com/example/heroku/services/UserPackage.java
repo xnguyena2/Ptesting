@@ -492,4 +492,11 @@ public class UserPackage {
         return userPackageRepository.GetByStatusOfProductAfterID(userPackageID.getGroup_id(), userPackageID.getProduct_second_id(),
                 id, userPackageID.getStatus(), userPackageID.getPage(), userPackageID.getSize());
     }
+
+    public Flux<PackageDataResponse> GetPackageByDebtOfUser(String groupID, String deviceID) {
+        return joinUserPackageDetailWithUserPackgeRepository.getUserPackageDetailByDeviceIDDebt(groupID, deviceID)
+                .groupBy(UserPackageDetailJoinWithUserPackage::getPackage_second_id)
+                .flatMap(groupedFlux -> groupedFlux.collectList().map(UserPackageDetailJoinWithUserPackage::GeneratePackageData))
+                .flatMap(this::fillProductAndBuyer);
+    }
 }

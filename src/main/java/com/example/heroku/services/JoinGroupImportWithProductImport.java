@@ -61,4 +61,8 @@ public class JoinGroupImportWithProductImport {
     public Flux<GroupImportWithItem> GetAllGroupImport(SearchQuery query) {
         return flattenResult(this.joinGroupImportWithProductImportRepository.getAll(query.getGroup_id(), query.getPage(), query.getSize()));
     }
+
+    public Flux<GroupImportWithItem> GetAllDebtOfSupplier(String groupID, ProductImport.ImportType importType, String supplier) {
+        return flattenResult(this.joinGroupImportWithProductImportRepository.getDebtOfType(groupID, importType, supplier));
+    }
 }
