@@ -83,12 +83,15 @@ public class DebtTransation {
         com.example.heroku.model.DebtTransation.TType type = pendingDebtOfBuyer.getType();
         return Mono.just(DebtImportAndUserPackge.builder().build())
                 .flatMap(debtImportAndUserPackge -> {
-                    if (type == com.example.heroku.model.DebtTransation.TType.INCOME) {
+                    if (type == null || type == com.example.heroku.model.DebtTransation.TType.INCOME) {
                         return userPackage.GetPackageByDebtOfUser(groupID, deviceID).collectList().map(debtImportAndUserPackge::setPackage);
                     }
                     return Mono.just(debtImportAndUserPackge);
                 })
                 .flatMap(debtImportAndUserPackge -> {
+                    if (type == null) {
+                        return groupImport.GetAllDebtOfSupplier(groupID, ProductImport.ImportType.UN_KNOW, deviceID).collectList().map(debtImportAndUserPackge::setImport);
+                    }
                     if (type == com.example.heroku.model.DebtTransation.TType.INCOME) {
                         return groupImport.GetAllDebtOfSupplier(groupID, ProductImport.ImportType.IMPORT, deviceID).collectList().map(debtImportAndUserPackge::setImport);
                     }
