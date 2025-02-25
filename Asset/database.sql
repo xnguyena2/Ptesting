@@ -371,7 +371,7 @@ BEGIN
     IF _inventory_number < NEW.number_unit
     THEN
 --        PERFORM delete_all_data_belong_user_package_detail(NEW.group_id, NEW.package_second_id);
-	    RAISE EXCEPTION 'inventory_number small than number_unit, product_unit_second_id: %' , NEW.product_unit_second_id;
+	    RAISE EXCEPTION 'inventory_number small than number_unit, product_unit_second_id: %, _inventory_number: %, NEW.number_unit: % ' , NEW.product_unit_second_id , _inventory_number, NEW.number_unit;
     END IF;
 
 	UPDATE product_unit
@@ -473,7 +473,7 @@ BEGIN
     IF _inventory_number_new < 0
     THEN
 --        PERFORM delete_all_data_belong_user_package_detail(NEW.group_id, NEW.package_second_id);
-	    RAISE EXCEPTION 'inventory_number_new small than number_unit, product_unit_second_id: %' , NEW.product_unit_second_id;
+	    RAISE EXCEPTION 'inventory_number_new small than 0, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id, _inventory_number_new;
     END IF;
 
 	UPDATE product_unit
@@ -679,7 +679,7 @@ BEGIN
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %' , NEW.product_unit_second_id;
+	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id , _inventory_number_new;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -750,7 +750,7 @@ BEGIN
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %' , OLD.product_unit_second_id;
+	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , OLD.product_unit_second_id , _inventory_number_new;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -829,7 +829,7 @@ BEGIN
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %' , NEW.product_unit_second_id;
+	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id , _inventory_number_new;
     END IF;
 
     _buy_price_new = _buy_price;
