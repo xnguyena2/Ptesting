@@ -673,7 +673,7 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION '_inventory_number_new = -1';
+	    RAISE EXCEPTION '_inventory_number_new = -1, type: %' , NEW.type;
     END IF;
 
 
@@ -744,7 +744,7 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION '_inventory_number_new = -1';
+	    RAISE EXCEPTION '_inventory_number_new = -1, type: %' , OLD.type;
     END IF;
 
 
@@ -823,7 +823,7 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION '_inventory_number_new = -1';
+	    RAISE EXCEPTION '_inventory_number_new = -1, type: %' , NEW.type;
     END IF;
 
 
