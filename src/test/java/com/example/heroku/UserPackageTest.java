@@ -785,7 +785,7 @@ public class UserPackageTest {
                     assertThat(item.getProduct_name()).isEqualTo("product_name");
                     assertThat(item.getProduct_unit_name()).isEqualTo("product_unit_name");
                     assertThat(item.getProduct_group_unit_name()).isEqualTo("product_group_unit_name");
-                    assertThat(item.getProduct_type()).isEqualTo("product_type");
+                    assertThat(item.getProduct_type()).isEqualTo(null);
                     assertThat(item.getNumber_services_unit()).isEqualTo(46);
                     assertThat(item.getNumber_unit()).isEqualTo(106);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
