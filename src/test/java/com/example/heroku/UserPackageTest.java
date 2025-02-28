@@ -202,6 +202,7 @@ public class UserPackageTest {
                                 .product_name("product_name")
                                 .product_unit_name("product_unit_name")
                                 .product_group_unit_name("product_group_unit_name")
+                                .product_type("product_type")
                                 .number_services_unit(46)
                                 .number_unit(100)
                                 .build(),
@@ -784,6 +785,7 @@ public class UserPackageTest {
                     assertThat(item.getProduct_name()).isEqualTo("product_name");
                     assertThat(item.getProduct_unit_name()).isEqualTo("product_unit_name");
                     assertThat(item.getProduct_group_unit_name()).isEqualTo("product_group_unit_name");
+                    assertThat(item.getProduct_type()).isEqualTo("product_type");
                     assertThat(item.getNumber_services_unit()).isEqualTo(46);
                     assertThat(item.getNumber_unit()).isEqualTo(106);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
@@ -844,6 +846,7 @@ public class UserPackageTest {
                                 .product_name("product_name")
                                 .product_unit_name("product_unit_name")
                                 .product_group_unit_name("product_group_unit_name")
+                                .product_type("product_type")
                                 .number_services_unit(46)
                                 .number_unit(100)
                                 .discount_promotional(54)
@@ -898,6 +901,7 @@ public class UserPackageTest {
                     assertThat(item.getProduct_name()).isEqualTo("product_name");
                     assertThat(item.getProduct_unit_name()).isEqualTo("product_unit_name");
                     assertThat(item.getProduct_group_unit_name()).isEqualTo("product_group_unit_name");
+                    assertThat(item.getProduct_type()).isEqualTo("product_type");
                     assertThat(item.getNumber_services_unit()).isEqualTo(46);
                     assertThat(item.getNumber_unit()).isEqualTo(100);
                     assertThat(item.getDiscount_promotional()).isEqualTo(54);
@@ -1026,6 +1030,7 @@ public class UserPackageTest {
                                 .product_name("product_name")
                                 .product_unit_name("product_unit_name")
                                 .product_group_unit_name("product_group_unit_name")
+                                .product_type("product_type")
                                 .number_services_unit(46)
                                 .number_unit(3)
                                 .build(),
@@ -1063,6 +1068,7 @@ public class UserPackageTest {
                     assertThat(item.getProduct_name()).isEqualTo("product_name");
                     assertThat(item.getProduct_unit_name()).isEqualTo("product_unit_name");
                     assertThat(item.getProduct_group_unit_name()).isEqualTo("product_group_unit_name");
+                    assertThat(item.getProduct_type()).isEqualTo("product_type");
                     assertThat(item.getNumber_services_unit()).isEqualTo(46);
                     assertThat(item.getNumber_unit()).isEqualTo(3);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
