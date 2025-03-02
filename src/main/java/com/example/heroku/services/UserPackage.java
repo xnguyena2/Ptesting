@@ -173,7 +173,7 @@ public class UserPackage {
     Mono<com.example.heroku.model.UserPackage> savePackageItem(com.example.heroku.model.UserPackage userPackage) {
         return userPackageRepository.InsertOrUpdatePackage(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
                 userPackage.getProduct_name(), userPackage.getProduct_unit_name(), userPackage.getProduct_group_unit_name(),
-                userPackage.getNumber_services_unit(),
+                userPackage.getProduct_type(), userPackage.getNumber_services_unit(),
                 userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(),
                 userPackage.getDiscount_amount(), userPackage.getDiscount_percent(), userPackage.getDiscount_promotional(),
                 userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());
@@ -182,7 +182,7 @@ public class UserPackage {
     Mono<com.example.heroku.model.UserPackage> savePackageItemWithoutCheck(com.example.heroku.model.UserPackage userPackage) {
         return userPackageRepository.InsertOrUpdatePackageWithoutCheck(userPackage.getGroup_id(), userPackage.getDevice_id(), userPackage.getPackage_second_id(), userPackage.getProduct_second_id(), userPackage.getProduct_unit_second_id(),
                 userPackage.getProduct_name(), userPackage.getProduct_unit_name(), userPackage.getProduct_group_unit_name(),
-                userPackage.getNumber_services_unit(),
+                userPackage.getProduct_type(), userPackage.getNumber_services_unit(),
                 userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(),
                 userPackage.getDiscount_amount(), userPackage.getDiscount_percent(), userPackage.getDiscount_promotional(),
                 userPackage.getNote(), userPackage.getStatus(), userPackage.getCreateat());
@@ -491,5 +491,12 @@ public class UserPackage {
         }
         return userPackageRepository.GetByStatusOfProductAfterID(userPackageID.getGroup_id(), userPackageID.getProduct_second_id(),
                 id, userPackageID.getStatus(), userPackageID.getPage(), userPackageID.getSize());
+    }
+
+    public Flux<PackageDataResponse> GetPackageByDebtOfUser(String groupID, String deviceID) {
+        return joinUserPackageDetailWithUserPackgeRepository.getUserPackageDetailByDeviceIDDebt(groupID, deviceID)
+                .groupBy(UserPackageDetailJoinWithUserPackage::getPackage_second_id)
+                .flatMap(groupedFlux -> groupedFlux.collectList().map(UserPackageDetailJoinWithUserPackage::GeneratePackageData))
+                .flatMap(this::fillProductAndBuyer);
     }
 }

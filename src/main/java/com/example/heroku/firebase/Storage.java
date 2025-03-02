@@ -147,6 +147,9 @@ public class Storage implements IImageService {
         } else {
 
             Bucket bucket = getBucket();
+            if(bucket == null){
+                throw new NullPointerException("bucket is null");
+            }
 
             Blob blob = bucket.get(name);
 

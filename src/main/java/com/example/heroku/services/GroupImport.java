@@ -105,6 +105,10 @@ public class GroupImport {
         return joinGroupImportWithProductImport.GetByGroupImportID(query);
     }
 
+    public Flux<GroupImportWithItem> GetAllDebtOfSupplier(String groupID, ProductImport.ImportType importType, String supplier) {
+        return joinGroupImportWithProductImport.GetAllDebtOfSupplier(groupID, importType, supplier);
+    }
+
     public Mono<WareHouseIncomeOutCome> GetWareHouseStatictisBetween(SearchImportQuery query){
         return statisticWareHouseIncomeOutcomeRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), ProductImport.Status.RETURN);
     }

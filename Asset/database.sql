@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS user_address (id SERIAL PRIMARY KEY, group_id VARCHAR
 
 
 CREATE TABLE IF NOT EXISTS user_package_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, staff_id VARCHAR, staff_name VARCHAR, package_type VARCHAR, area_id VARCHAR, area_name VARCHAR, table_id VARCHAR, table_name VARCHAR, voucher VARCHAR, price float8, payment float8, discount_amount float8, discount_percent float8, discount_promotional float8, discount_by_point float8, additional_fee float8, additional_config VARCHAR, ship_price float8, deliver_ship_price float8, cost float8, profit float8, point INTEGER, note VARCHAR, image VARCHAR, progress VARCHAR, meta_search VARCHAR, money_source VARCHAR, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS user_package (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_name VARCHAR, product_unit_name VARCHAR, product_group_unit_name VARCHAR, number_services_unit float8, number_unit float8, buy_price float8, price float8, discount_amount float8, discount_percent float8, discount_promotional float8, note VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS user_package (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_name VARCHAR, product_unit_name VARCHAR, product_group_unit_name VARCHAR, product_type VARCHAR, number_services_unit float8, number_unit float8, buy_price float8, price float8, discount_amount float8, discount_percent float8, discount_promotional float8, note VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 
 CREATE TABLE IF NOT EXISTS voucher (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, voucher_second_id VARCHAR, detail VARCHAR, discount float8, amount float8, reuse INTEGER, for_all_product BOOLEAN, for_all_user BOOLEAN, package_voucher BOOLEAN, date_expire TIMESTAMP, status VARCHAR, createat TIMESTAMP);
@@ -371,7 +371,7 @@ BEGIN
     IF _inventory_number < NEW.number_unit
     THEN
 --        PERFORM delete_all_data_belong_user_package_detail(NEW.group_id, NEW.package_second_id);
-	    RAISE EXCEPTION 'inventory_number small than number_unit, product_unit_second_id: %' , NEW.product_unit_second_id;
+	    RAISE EXCEPTION 'inventory_number small than number_unit, product_unit_second_id: %, _inventory_number: %, NEW.number_unit: % ' , NEW.product_unit_second_id , _inventory_number, NEW.number_unit;
     END IF;
 
 	UPDATE product_unit
@@ -473,7 +473,7 @@ BEGIN
     IF _inventory_number_new < 0
     THEN
 --        PERFORM delete_all_data_belong_user_package_detail(NEW.group_id, NEW.package_second_id);
-	    RAISE EXCEPTION 'inventory_number_new small than number_unit, product_unit_second_id: %' , NEW.product_unit_second_id;
+	    RAISE EXCEPTION 'inventory_number_new small than 0, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id, _inventory_number_new;
     END IF;
 
 	UPDATE product_unit
@@ -673,13 +673,13 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION '_inventory_number_new = -1';
+	    RAISE EXCEPTION '_inventory_number_new = -1, type: %' , NEW.type;
     END IF;
 
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %' , NEW.product_unit_second_id;
+	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id , _inventory_number_new;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -744,13 +744,13 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION '_inventory_number_new = -1';
+	    RAISE EXCEPTION '_inventory_number_new = -1, type: %' , OLD.type;
     END IF;
 
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %' , OLD.product_unit_second_id;
+	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , OLD.product_unit_second_id , _inventory_number_new;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -823,13 +823,13 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION '_inventory_number_new = -1';
+	    RAISE EXCEPTION '_inventory_number_new = -1, type: %' , NEW.type;
     END IF;
 
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %' , NEW.product_unit_second_id;
+	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id , _inventory_number_new;
     END IF;
 
     _buy_price_new = _buy_price;

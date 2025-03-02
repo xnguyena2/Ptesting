@@ -4,6 +4,8 @@ import com.example.heroku.model.statistics.DebtOfBuyer;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
+import com.example.heroku.request.debt.PendingDebtOfBuyer;
+import com.example.heroku.response.DebtImportAndUserPackge;
 import com.example.heroku.services.DebtTransation;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +82,12 @@ public class DebtTransactionController {
     public Flux<DebtOfBuyer> getAllOfBuyer(@RequestBody @Valid IDContainer idContainer) {
         System.out.println("get all debt of all buyer group id: " + idContainer.getGroup_id());
         return debtTransation.getDebtOfAllBuyer(idContainer);
+    }
+
+    @PostMapping("/getpendingdebtofbuyer")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<DebtImportAndUserPackge> getAllPendingDebtOfBuyer(@RequestBody @Valid PendingDebtOfBuyer pendingDebtOfBuyer) {
+        System.out.println("get all group import and package debt of all buyer group id: " + pendingDebtOfBuyer.getGroup_id() + ", buyer: " + pendingDebtOfBuyer.getDevice_id() + ", type: " + pendingDebtOfBuyer.getType());
+        return debtTransation.getAllDebtGroupImportAndPackageofBuyer(pendingDebtOfBuyer);
     }
 }

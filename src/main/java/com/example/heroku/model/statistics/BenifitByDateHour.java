@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class BenifitByDateHour extends BenifitOfOrder{
+public class BenifitByDateHour extends BenifitOfOrder {
     private LocalDateTime local_time;
 }
