@@ -77,6 +77,11 @@ public class DebtTransation {
                 .map(DebtOfBuyer::new);
     }
 
+    public Flux<DebtOfBuyer> getDebtOfAllBuyerInner(IDContainer idContainer) {
+        return statisticDebtOfBuyerRepository.getIncomeOutComeAllBuyerInner(idContainer.getGroup_id())
+                .map(DebtOfBuyer::new);
+    }
+
     public Mono<DebtImportAndUserPackge> getAllDebtGroupImportAndPackageofBuyer(PendingDebtOfBuyer pendingDebtOfBuyer) {
         String groupID = pendingDebtOfBuyer.getGroup_id();
         String deviceID = pendingDebtOfBuyer.getDevice_id();
