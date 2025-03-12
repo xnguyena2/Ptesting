@@ -3,6 +3,7 @@ package com.example.heroku.controller;
 import com.example.heroku.model.Buyer;
 import com.example.heroku.model.Image;
 import com.example.heroku.model.Users;
+import com.example.heroku.model.statistics.DebtOfBuyer;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.client.PackageID;
@@ -40,8 +41,8 @@ public class BuyerControler {
 
     @PostMapping("/admin/getall")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<BuyerData> getAll(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
-        return WrapPermissionAction.<BuyerData>builder()
+    public Flux<DebtOfBuyer> getAll(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
+        return WrapPermissionAction.<DebtOfBuyer>builder()
                 .principal(principal)
                 .query(query)
                 .fluxAction(q -> buyerServices.GetAllDirectWithoutEmpty(q))

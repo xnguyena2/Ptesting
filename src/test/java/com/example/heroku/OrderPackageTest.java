@@ -367,11 +367,15 @@ public class OrderPackageTest extends TestConfig {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("12345678909");
                     assertThat(buyerData.getDiscount()).isEqualTo(0);
                     assertThat(buyerData.getReal_price()).isEqualTo(10375);// 10375 = 122*5 + 117*25 + 106*30 + 122*30
+                    assertThat(buyerData.getIn_come()).isEqualTo(0);
+                    assertThat(buyerData.getIn_come()).isEqualTo(0);
                 })
                 .consumeNextWith(buyerData -> {
                     assertThat(buyerData.getPhone_number_clean()).isEqualTo("1234567890");
                     assertThat(buyerData.getDiscount()).isEqualTo(30);
                     assertThat(buyerData.getReal_price()).isEqualTo(69986.0f);// 69986 = (365.4*3 + 672 * 0.7) * 30 + (122*10 + 122*20*0.7) + (672*10 + (672-5)*20)
+                    assertThat(buyerData.getIn_come()).isEqualTo(0);
+                    assertThat(buyerData.getIn_come()).isEqualTo(0);
                 })
                 .verifyComplete();
 

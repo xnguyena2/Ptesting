@@ -2,6 +2,7 @@ package com.example.heroku.model.repository;
 
 import com.example.heroku.model.Buyer;
 import com.example.heroku.model.PackageOrder;
+import com.example.heroku.model.statistics.DebtOfBuyer;
 import com.example.heroku.status.ActiveStatus;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,8 +20,8 @@ public interface BuyerRepository extends ReactiveCrudRepository<Buyer, Long> {
     @Query(value = "SELECT * FROM buyer WHERE buyer.group_id = :group_id LIMIT :size OFFSET (:page * :size)")
     Flux<Buyer> findByGroupID(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size);
 
-    @Query(value = "SELECT * FROM buyer WHERE buyer.group_id = :group_id AND (reciver_fullname <> '' OR phone_number <> '') LIMIT :size OFFSET (:page * :size)")
-    Flux<Buyer> findByGroupIDWithoutEmpty(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size);
+    @Query(value = "SELECT * FROM (SELECT * FROM buyer WHERE buyer.group_id = :group_id AND (reciver_fullname <> '' OR phone_number <> '') LIMIT :size OFFSET (:page * :size)) AS buyer LEFT JOIN (SELECT device_id, SUM(CASE WHEN transaction_type = 'INCOME' THEN amount ELSE 0 END) AS in_come, SUM(CASE WHEN transaction_type = 'OUTCOME' THEN amount ELSE 0 END) AS out_come FROM debt_transaction WHERE group_id = :group_id GROUP BY device_id) AS debt ON debt.device_id = buyer.device_id")
+    Flux<DebtOfBuyer> findByGroupIDWithoutEmpty(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "SELECT * FROM buyer WHERE buyer.group_id = :group_id AND buyer.device_id = :device_id")
     Mono<Buyer> findByGroupIDAndDeviceID(@Param("group_id") String group_id, @Param("device_id") String device_id);
