@@ -31,6 +31,7 @@ public class BuyerControler {
     @PostMapping("/admin/getallbyorder")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BuyerData> getAllByOrder(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
+        System.out.println("group_id: " + query.getGroup_id() + ", buyer getallbyorder, " + " page: " + query.getPage() + " size: " + query.getSize());
         return WrapPermissionAction.<BuyerData>builder()
                 .principal(principal)
                 .query(query)
@@ -42,6 +43,7 @@ public class BuyerControler {
     @PostMapping("/admin/getall")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<DebtOfBuyer> getAll(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
+        System.out.println("group_id: " + query.getGroup_id() + ", buyer getall, " + " page: " + query.getPage() + " size: " + query.getSize());
         return WrapPermissionAction.<DebtOfBuyer>builder()
                 .principal(principal)
                 .query(query)
@@ -53,6 +55,7 @@ public class BuyerControler {
     @PostMapping("/admin/getdetail")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<BuyerStatictisData> getDetail(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID packageID) {
+        System.out.println("group_id: " + packageID.getGroup_id() + ", buyer getdetail, " + " id: " + packageID.getDevice_id());
         return WrapPermissionGroupWithPrincipalAction.<BuyerStatictisData>builder()
                 .principal(principal)
                 .subject(packageID::getGroup_id)
@@ -63,12 +66,14 @@ public class BuyerControler {
     @PostMapping("/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Buyer> create(@RequestBody @Valid Buyer buyer) {
-        return buyerServices.insertOrUpdate(buyer.AutoFill(),0,0,0,0, 0);
+        System.out.println("group_id: " + buyer.getGroup_id() + ", buyer create, " + " id: " + buyer.getDevice_id());
+        return buyerServices.insertOrUpdate(buyer.AutoFill(), 0, 0, 0, 0, 0);
     }
 
     @PostMapping("/admin/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Buyer> create(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
+        System.out.println("group_id: " + idContainer.getGroup_id() + ", buyer delete, " + " id: " + idContainer.getId());
         return WrapPermissionGroupWithPrincipalAction.<Buyer>builder()
                 .principal(principal)
                 .subject(idContainer::getGroup_id)
@@ -79,12 +84,14 @@ public class BuyerControler {
     @PostMapping("/search")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BuyerData> searchByPhone(@RequestBody @Valid SearchQuery searchQuery) {
+        System.out.println("group_id: " + searchQuery.getGroup_id() + ", buyer search, " + " query: " + searchQuery.getQuery());
         return buyerServices.FindByPhone(searchQuery);
     }
 
     @PostMapping("/admin/getbyid")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<BuyerData> getByID(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
+        System.out.println("group_id: " + idContainer.getGroup_id() + ", buyer getbyid, " + " id: " + idContainer.getId());
         return WrapPermissionGroupWithPrincipalAction.<BuyerData>builder()
                 .principal(principal)
                 .subject(idContainer::getGroup_id)
