@@ -1,6 +1,7 @@
 package com.example.heroku.controller.root;
 
 import com.example.heroku.model.Store;
+import com.example.heroku.request.warehouse.SearchImportQuery;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,19 @@ public class RootStoreController {
 
     @GetMapping("/search/{txt}")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<Store> updateStore(@PathVariable("txt") String txt) {
+    public Flux<Store> search(@PathVariable("txt") String txt) {
         return storeServices.findStore(txt);
+    }
+
+    @GetMapping("/searchbypackage/{txt}")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<Store> searchbypackage(@PathVariable("txt") String txt) {
+        return storeServices.getAllStoreBaseonDonePackage(txt);
+    }
+
+    @PostMapping("/getallbetween")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<Store> getAllBetween(@RequestBody @Valid SearchImportQuery searchImportQuery) {
+        return storeServices.getAllStoreCreateBetween(searchImportQuery);
     }
 }

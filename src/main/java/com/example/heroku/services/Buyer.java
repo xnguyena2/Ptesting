@@ -4,6 +4,7 @@ import com.example.heroku.model.PackageOrder;
 import com.example.heroku.model.repository.BuyerRepository;
 import com.example.heroku.model.repository.StatisticBenifitOfProductRepository;
 import com.example.heroku.model.repository.StatisticTotalBenifitRepository;
+import com.example.heroku.model.statistics.DebtOfBuyer;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
@@ -52,9 +53,9 @@ public class Buyer {
                 .map(BuyerData::new);
     }
 
-    public Flux<BuyerData> GetAllDirectWithoutEmpty(SearchQuery query) {
+    public Flux<DebtOfBuyer> GetAllDirectWithoutEmpty(SearchQuery query) {
         return this.buyerRepository.findByGroupIDWithoutEmpty(query.getGroup_id(), query.getPage(), query.getSize())
-                .map(BuyerData::new);
+                .map(DebtOfBuyer::new);
     }
 
 

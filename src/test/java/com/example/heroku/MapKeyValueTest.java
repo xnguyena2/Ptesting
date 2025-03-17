@@ -1,9 +1,10 @@
 package com.example.heroku;
 
 import com.example.heroku.services.MapKeyValue;
-import com.example.heroku.services.Store;
 import lombok.Builder;
 import reactor.test.StepVerifier;
+
+import java.util.Comparator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,6 +38,21 @@ public class MapKeyValueTest {
 
         mapKeyValueServices.getByID(group, "id2")
                 .as(StepVerifier::create)
+                .consumeNextWith(store -> {
+                    assertThat(store.getGroup_id()).isEqualTo(group);
+                    assertThat(store.getValue_o()).isEqualTo("vl2");
+                    assertThat(store.getId_o()).isEqualTo("id2");
+                })
+                .verifyComplete();
+
+        mapKeyValueServices.search(group, "id")
+                .sort(Comparator.comparing(com.example.heroku.model.MapKeyValue::getId_o))
+                .as(StepVerifier::create)
+                .consumeNextWith(store -> {
+                    assertThat(store.getGroup_id()).isEqualTo(group);
+                    assertThat(store.getValue_o()).isEqualTo("vl1");
+                    assertThat(store.getId_o()).isEqualTo("id1");
+                })
                 .consumeNextWith(store -> {
                     assertThat(store.getGroup_id()).isEqualTo(group);
                     assertThat(store.getValue_o()).isEqualTo("vl2");

@@ -244,13 +244,17 @@ public class AuthenticationController {
 
     @GetMapping("/account/info")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<UserJoinUserInfo> getAccountInfo(@AuthenticationPrincipal Mono<Users> principal) {
-        return principal.flatMap(users -> userServices.getUserClean(users.getUsername()).map(userJoinUserInfo -> {
+    public Mono<UserJoinUserInfo> getAccountInfo(@AuthenticationPrincipal Users users) {
+        if (users == null) {
+            throw new AuthenticationException("Tokens invalid!!") {
+            };
+        }
+        return userServices.getUserClean(users.getUsername()).map(userJoinUserInfo -> {
             if (!userJoinUserInfo.isActive()) {
                 throw new AccessDeniedException("403 account disable!!");
             }
             return userJoinUserInfo;
-        }));
+        });
     }
 
     @PostMapping("/admin/account/create")

@@ -1,7 +1,6 @@
 package com.example.heroku;
 
 import com.example.heroku.model.Store;
-import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.services.ClientDevice;
 import com.example.heroku.services.DeviceConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;

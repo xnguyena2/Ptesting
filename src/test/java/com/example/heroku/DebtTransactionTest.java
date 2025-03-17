@@ -332,5 +332,10 @@ public class DebtTransactionTest {
                 })
                 .verifyComplete();
 
+        debtTransation.getDebtOfAllBuyerInner(IDContainer.builder().group_id(group).build())
+                .sort(Comparator.comparing(DebtOfBuyer::getIn_come))
+                .as(StepVerifier::create)
+                .verifyComplete();
+
     }
 }

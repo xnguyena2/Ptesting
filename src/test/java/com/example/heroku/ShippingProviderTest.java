@@ -15,46 +15,47 @@ public class ShippingProviderTest {
     String group;
     
     public void ShipTest() throws Exception {
-        String json = "{\n" +
-                "    \"weigitExchange\":0.0002,\n" +
-                "    \"listPackagePriceDetail\":[\n" +
-                "        {\n" +
-                "            \"reciverLocation\": \"INSIDE_REGION\",\n" +
-                "            \"maxWeight\": 3,\n" +
-                "            \"priceMaxWeight\": 22000,\n" +
-                "            \"nextWeight\":0.5,\n" +
-                "            \"priceNextWeight\":5000\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"reciverLocation\": \"OUTSIDE_REGION_TYPE1\",\n" +
-                "            \"maxWeight\": 1,\n" +
-                "            \"priceMaxWeight\": 37000,\n" +
-                "            \"nextWeight\":0.5,\n" +
-                "            \"priceNextWeight\":6600\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"reciverLocation\": \"OUTSIDE_REGION_TYPE2\",\n" +
-                "            \"maxWeight\": 1,\n" +
-                "            \"priceMaxWeight\": 37000,\n" +
-                "            \"nextWeight\":0.5,\n" +
-                "            \"priceNextWeight\":6600\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"reciverLocation\": \"INSIDE_GREGION\",\n" +
-                "            \"maxWeight\": 1,\n" +
-                "            \"priceMaxWeight\": 37000,\n" +
-                "            \"nextWeight\":0.5,\n" +
-                "            \"priceNextWeight\":7000\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"reciverLocation\": \"DIFFIRENT_GPREGION\",\n" +
-                "            \"maxWeight\": 1,\n" +
-                "            \"priceMaxWeight\": 37000,\n" +
-                "            \"nextWeight\":0.5,\n" +
-                "            \"priceNextWeight\":7700\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}";
+        String json = """
+                {
+                    "weigitExchange":0.0002,
+                    "listPackagePriceDetail":[
+                        {
+                            "reciverLocation": "INSIDE_REGION",
+                            "maxWeight": 3,
+                            "priceMaxWeight": 22000,
+                            "nextWeight":0.5,
+                            "priceNextWeight":5000
+                        },
+                        {
+                            "reciverLocation": "OUTSIDE_REGION_TYPE1",
+                            "maxWeight": 1,
+                            "priceMaxWeight": 37000,
+                            "nextWeight":0.5,
+                            "priceNextWeight":6600
+                        },
+                        {
+                            "reciverLocation": "OUTSIDE_REGION_TYPE2",
+                            "maxWeight": 1,
+                            "priceMaxWeight": 37000,
+                            "nextWeight":0.5,
+                            "priceNextWeight":6600
+                        },
+                        {
+                            "reciverLocation": "INSIDE_GREGION",
+                            "maxWeight": 1,
+                            "priceMaxWeight": 37000,
+                            "nextWeight":0.5,
+                            "priceNextWeight":7000
+                        },
+                        {
+                            "reciverLocation": "DIFFIRENT_GPREGION",
+                            "maxWeight": 1,
+                            "priceMaxWeight": 37000,
+                            "nextWeight":0.5,
+                            "priceNextWeight":7700
+                        }
+                    ]
+                }""";
         shippingProvider.CreateShipProvider(ShippingProviderData.builder().id(ShippingProvider.GHN.ID).json(json).group_id(group).build())
                 .block();
 

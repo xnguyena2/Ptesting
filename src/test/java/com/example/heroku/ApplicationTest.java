@@ -135,7 +135,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public  void fcmTest(){
-        UserFCMTest.builder().userFCMAPI(fcmServices).group(mainGroup).build().UserFCMTest();
+        UserFCMTest.builder().userFCMAPI(fcmServices).group(mainGroup).build().Test();
     }
 
     @Test
@@ -272,7 +272,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public  void fcmTest2(){
-        UserFCMTest.builder().userFCMAPI(fcmServices).group(anotherGroup).build().UserFCMTest();
+        UserFCMTest.builder().userFCMAPI(fcmServices).group(anotherGroup).build().Test();
     }
 
     @Test

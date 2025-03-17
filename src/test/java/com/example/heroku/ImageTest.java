@@ -2,6 +2,7 @@ package com.example.heroku;
 
 import com.example.heroku.model.repository.ImageRepository;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -72,6 +73,7 @@ public class ImageTest {
 
     static class FilePartIPL implements FilePart {
         String filePath;
+        @Getter
         byte[] imageContent = null;
 
         public FilePartIPL(String filePath) {
@@ -114,9 +116,6 @@ public class ImageTest {
                     new ByteArrayResource(imageContent), new DefaultDataBufferFactory(), 1024);
         }
 
-        public byte[] getImageContent() {
-            return imageContent;
-        }
     }
 
     public void Run(String[] listImg) {

@@ -183,7 +183,7 @@ public class AuthenticationTest extends TestConfig {
     }
 
     @Test
-    public void AuthenticationTest() throws NoSuchAlgorithmException {
+    public void AuthenTest() throws NoSuchAlgorithmException {
 
         final String group_id = adminStore;
 

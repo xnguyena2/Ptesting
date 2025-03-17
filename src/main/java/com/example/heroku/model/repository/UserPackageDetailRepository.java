@@ -79,4 +79,8 @@ public interface UserPackageDetailRepository extends ReactiveCrudRepository<User
 
     @Query(value = "UPDATE user_package_detail SET status = :status WHERE user_package_detail.group_id = :group_id AND user_package_detail.package_second_id = :package_second_id")
     Mono<UserPackageDetail> UpdateStatusByID(@Param("group_id") String group_id, @Param("package_second_id") String package_id, @Param("status") UserPackageDetail.Status status);
+
+    @Query(value = "SELECT user_package_detail.* FROM user_package_detail LEFT JOIN store ON store.group_id = user_package_detail.group_id WHERE store.payment_status = :payment_status AND meta_search LIKE :meta_search AND user_package_detail.status = 'DONE' ORDER BY user_package_detail.id DESC")
+    Flux<UserPackageDetail> GetDonePackageOfStorWithPaymentStatus(@Param("payment_status") String storePaymentStatus, @Param("meta_search") String metaSearch);
+
 }

@@ -2920,6 +2920,12 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
+
+        userPackageAPI.GetDonePackageOfStorWithPaymentStatus("NOT_PAID", "")
+                .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
+                .as(StepVerifier::create)
+                .verifyComplete();
+
         buyer.getBuyerStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).device_id("0022929222").page(0).size(3).page(0).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerStatictisData -> {

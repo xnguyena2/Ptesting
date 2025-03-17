@@ -75,22 +75,23 @@ public class ObjectPraserTest {
 
 
     public void BeerPackageTest() throws JsonProcessingException {
-        String json = "{\n" +
-                "    \"device_id\":\"vuong\",\n" +
-                "    \"package_second_id\":\"7788900\",\n" +
-                "    \"product_units\":[\n" +
-                "        {\n" +
-                "            \"product_unit_second_id\":\"333\",\n" +
-                "            \"product_second_id\":\"7788900\",\n" +
-                "            \"number_unit\":10\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"product_unit_second_id\":\"444\",\n" +
-                "            \"product_second_id\":\"7788900\",\n" +
-                "            \"number_unit\":5\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}";
+        String json = """
+                {
+                    "device_id":"vuong",
+                    "package_second_id":"7788900",
+                    "product_units":[
+                        {
+                            "product_unit_second_id":"333",
+                            "product_second_id":"7788900",
+                            "number_unit":10
+                        },
+                        {
+                            "product_unit_second_id":"444",
+                            "product_second_id":"7788900",
+                            "number_unit":5
+                        }
+                    ]
+                }""";
         UserPackage[] userPackages = new ObjectMapper().readValue(json, ProductPackage.class).getUserPackage();
 
         assertThat(userPackages.length).isEqualTo(2);

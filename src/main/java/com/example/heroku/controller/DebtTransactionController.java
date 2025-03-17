@@ -84,6 +84,13 @@ public class DebtTransactionController {
         return debtTransation.getDebtOfAllBuyer(idContainer);
     }
 
+    @PostMapping("/getallbuyerinner")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<DebtOfBuyer> getAllOfBuyyerInner(@RequestBody @Valid IDContainer idContainer) {
+        System.out.println("get all debt of all exits buyer group id: " + idContainer.getGroup_id());
+        return debtTransation.getDebtOfAllBuyerInner(idContainer);
+    }
+
     @PostMapping("/getpendingdebtofbuyer")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<DebtImportAndUserPackge> getAllPendingDebtOfBuyer(@RequestBody @Valid PendingDebtOfBuyer pendingDebtOfBuyer) {

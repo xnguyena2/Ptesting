@@ -499,4 +499,9 @@ public class UserPackage {
                 .flatMap(groupedFlux -> groupedFlux.collectList().map(UserPackageDetailJoinWithUserPackage::GeneratePackageData))
                 .flatMap(this::fillProductAndBuyer);
     }
+
+    public Flux<PackageDataResponse> GetDonePackageOfStorWithPaymentStatus(String paymentStatus, String metaSearch) {
+        return userPackageDetailRepository.GetDonePackageOfStorWithPaymentStatus(paymentStatus, metaSearch)
+                .map(PackageDataResponse::new);
+    }
 }

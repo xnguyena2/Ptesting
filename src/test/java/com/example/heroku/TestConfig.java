@@ -10,12 +10,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 @TestPropertySource(properties = {
         "FIRE_BASE_TOKEN=",
-        "JDBC_DATABASE_URL=jdbc:postgres://dpg-cuib6vt6l47c73fai4l0-a.singapore-postgres.render.com/sale_management_dev_6lz3",
+        "JDBC_DATABASE_URL=jdbc:postgresql://dpg-cv83v00gph6c739a8t60-a.singapore-postgres.render.com/sale_management_dev_rd0x",
         "POSTGRESQL_PORT=5432",
-        "POSTGRESQL_DB=sale_management_dev_6lz3",
-        "POSTGRESQL_HOST=dpg-cuib6vt6l47c73fai4l0-a.singapore-postgres.render.com",
-        "DB_USER_NAME=sale_management_dev_6lz3_user",
-        "DB_PASSWORD=ZaiADAM2kRC3n8OQWEvpeZbm0VnSLNjQ",
+        "POSTGRESQL_DB=sale_management_dev_rd0x",
+        "POSTGRESQL_HOST=dpg-cv83v00gph6c739a8t60-a.singapore-postgres.render.com",
+        "DB_USER_NAME=sale_management_dev_rd0x_user",
+        "DB_PASSWORD=pFCPf4pxmqii96nDxawQN1ksiEgWbAEu",
         "DB_DRIVER=org.postgresql.Driver",
         "POSTGRESQL_POOLSIZE=10",
         "POSTGRESQL_TIMEIDLE=10000",
@@ -37,7 +37,8 @@ import org.springframework.test.context.junit4.SpringRunner;
         "FLICKR_AUTH_TOKEN=72157718531338752-478e88fe3e96fc70",
         "FLICKR_TOKEN_SECRET=fdc5a5980651383c",
         "FLICKR_USER_NAME=xnguyena2",
-        "FLICKR_NID=192362717@N03"
+        "FLICKR_NID=192362717@N03",
+        "FCM_GROUP_NAME=sodi_admin"
 })
 public class TestConfig {
     @Test
