@@ -7,6 +7,7 @@ import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -40,6 +41,18 @@ public class MapKeyValueController {
                 .subject(() -> groupid)
                 .monoAction(() -> mapKeyValue.getByID(groupid, id))
                 .build().toMono();
+    }
+
+    @GetMapping("/search/{groupid}/{id}")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<com.example.heroku.model.MapKeyValue> search(@AuthenticationPrincipal Mono<Users> principal, @PathVariable("groupid") String groupid, @PathVariable("id") String id) {
+
+        System.out.println("group: " + groupid + ", search: " + id);
+        return WrapPermissionGroupWithPrincipalAction.<com.example.heroku.model.MapKeyValue>builder()
+                .principal(principal)
+                .subject(() -> groupid)
+                .fluxAction(() -> mapKeyValue.search(groupid, id))
+                .build().toFlux();
     }
 
     @PostMapping("/admin/delete")

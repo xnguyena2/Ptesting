@@ -3,6 +3,7 @@ package com.example.heroku.services;
 import com.example.heroku.model.repository.MapKeyValueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -23,5 +24,9 @@ public class MapKeyValue {
 
     public Mono<com.example.heroku.model.MapKeyValue> deleteByID(String groupID, String id) {
         return mapKeyValueRepository.deleteByID(groupID, id);
+    }
+
+    public Flux<com.example.heroku.model.MapKeyValue> search(String groupID, String id) {
+        return this.mapKeyValueRepository.search(groupID, "%" + id + "%");
     }
 }
