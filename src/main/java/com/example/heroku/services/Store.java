@@ -3,6 +3,7 @@ package com.example.heroku.services;
 import com.example.heroku.model.repository.StoreManagementRepository;
 import com.example.heroku.request.data.UpdatePassword;
 import com.example.heroku.request.store.StoreInitData;
+import com.example.heroku.request.warehouse.SearchImportQuery;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,14 @@ public class Store {
 
     public Flux<com.example.heroku.model.Store> findStore(String groupID) {
         return storeManagementRepository.findStore("%" + groupID.toLowerCase() + "%");
+    }
+
+    public Flux<com.example.heroku.model.Store> getAllStoreBaseonDonePackage(String metaSearch) {
+        return storeManagementRepository.getAllStoreBaseonDonePackage("%" + metaSearch + "%");
+    }
+
+    public Flux<com.example.heroku.model.Store> getAllStoreCreateBetween(SearchImportQuery searchImportQuery) {
+        return storeManagementRepository.getAllStoreCreateBetween(searchImportQuery.getFrom(), searchImportQuery.getTo());
     }
 
     public Mono<com.example.heroku.model.Store> getStoreDomainUrl(String domain) {
