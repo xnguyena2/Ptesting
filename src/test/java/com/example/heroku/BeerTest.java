@@ -154,10 +154,11 @@ public class BeerTest {
                         .product(Product
                                 .builder()
                                 .category(Category.CRAB.getName())
-                                .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
-                                        "- bia thơm ngon\n" +
-                                        "- bia nhập ngoại\n" +
-                                        "- bia sản xuất từ hà lan")
+                                .detail("""
+                                        Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
+                                        - bia thơm ngon
+                                        - bia nhập ngoại
+                                        - bia sản xuất từ hà lan""")
                                 .name("beer tiger")
                                 .product_second_id("456")
                                 .group_id(group)
@@ -217,10 +218,11 @@ public class BeerTest {
                         .product(Product
                                 .builder()
                                 .category(Category.CRAB.getName())
-                                .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
-                                        "- bia thơm ngon\n" +
-                                        "- bia nhập ngoại\n" +
-                                        "- bia sản xuất từ hà lan")
+                                .detail("""
+                                        Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
+                                        - bia thơm ngon
+                                        - bia nhập ngoại
+                                        - bia sản xuất từ hà lan""")
                                 .name("beer tiger")
                                 .product_second_id("456")
                                 .unit_category_config("hello i am config")
@@ -279,10 +281,11 @@ public class BeerTest {
                                 .product(Product
                                         .builder()
                                         .category(Category.CRAB.getName())
-                                        .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
-                                                "- bia thơm ngon\n" +
-                                                "- bia nhập ngoại\n" +
-                                                "- bia sản xuất từ hà lan")
+                                        .detail("""
+                                                Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
+                                                - bia thơm ngon
+                                                - bia nhập ngoại
+                                                - bia sản xuất từ hà lan""")
                                         .name("beer tiger")
                                         .product_second_id("combo")
                                         .unit_category_config("hello i am config")
@@ -339,10 +342,11 @@ public class BeerTest {
                                 .product(Product
                                         .builder()
                                         .category(Category.CRAB.getName())
-                                        .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
-                                                "- bia thơm ngon\n" +
-                                                "- bia nhập ngoại\n" +
-                                                "- bia sản xuất từ hà lan")
+                                        .detail("""
+                                                Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
+                                                - bia thơm ngon
+                                                - bia nhập ngoại
+                                                - bia sản xuất từ hà lan""")
                                         .name("beer tiger")
                                         .status(Product.Status.HIDE)
                                         .group_id(group)
@@ -534,10 +538,11 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("456");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProduct().getUnit_category_config()).isEqualTo("hello i am config");
-                    assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger day la beer tiger co non do con cao nen chu y khi su dung:\n" +
-                            "- bia thom ngon\n" +
-                            "- bia nhap ngoai\n" +
-                            "- bia san xuat tu ha lan");
+                    assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("""
+                            beer tiger day la beer tiger co non do con cao nen chu y khi su dung:
+                            - bia thom ngon
+                            - bia nhap ngoai
+                            - bia san xuat tu ha lan""");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
                     Flux.just(beerInfo.getProductUnit())
@@ -567,10 +572,11 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("combo");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProduct().getUnit_category_config()).isEqualTo("hello i am config");
-                    assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger day la beer tiger co non do con cao nen chu y khi su dung:\n" +
-                            "- bia thom ngon\n" +
-                            "- bia nhap ngoai\n" +
-                            "- bia san xuat tu ha lan");
+                    assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("""
+                            beer tiger day la beer tiger co non do con cao nen chu y khi su dung:
+                            - bia thom ngon
+                            - bia nhap ngoai
+                            - bia san xuat tu ha lan""");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
                     assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.COMBO);
                     assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
@@ -1707,10 +1713,11 @@ public class BeerTest {
                         .product(Product
                                 .builder()
                                 .category(Category.CRAB.getName())
-                                .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
-                                        "- bia thơm ngon\n" +
-                                        "- bia nhập ngoại\n" +
-                                        "- bia sản xuất từ hà lan")
+                                .detail("""
+                                        Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
+                                        - bia thơm ngon
+                                        - bia nhập ngoại
+                                        - bia sản xuất từ hà lan""")
                                 .name("beer tiger")
                                 .group_id(group)
                                 .product_second_id("444").build()
@@ -1751,10 +1758,11 @@ public class BeerTest {
                                 .product(Product
                                         .builder()
                                         .category(Category.CRAB.getName())
-                                        .detail("Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:\n" +
-                                                "- bia thơm ngon\n" +
-                                                "- bia nhập ngoại\n" +
-                                                "- bia sản xuất từ hà lan")
+                                        .detail("""
+                                                Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
+                                                - bia thơm ngon
+                                                - bia nhập ngoại
+                                                - bia sản xuất từ hà lan""")
                                         .name("beer tiger")
                                         .group_id(group)
                                         .product_second_id("444").build()

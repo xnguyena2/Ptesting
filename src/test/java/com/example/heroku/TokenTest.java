@@ -1,8 +1,6 @@
 package com.example.heroku;
 
-import com.example.heroku.model.Users;
 import com.example.heroku.request.beer.SearchQuery;
-import com.example.heroku.services.Store;
 import com.example.heroku.services.Tokens;
 import com.example.heroku.status.ActiveStatus;
 import lombok.Builder;
