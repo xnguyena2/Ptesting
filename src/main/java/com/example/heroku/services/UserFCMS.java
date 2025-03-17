@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -35,17 +36,33 @@ public class UserFCMS {
     }
 
     public Mono<ResponseEntity<Format>> sendNotification(@Valid @ModelAttribute Notification notification) {
-        return findByDeviceID(notification.getGroup_id(), notification.getDevice_id())
+        return sendNotificationToDevice(notification, findByDeviceID(notification.getGroup_id(), notification.getDevice_id()));
+    }
+
+    public Mono<ResponseEntity<Format>> sendNotificationToGroup(@Valid @ModelAttribute Notification notification) {
+        return sendNotificationToDevice(notification, findByGroupID(notification.getGroup_id()));
+    }
+
+    public Mono<ResponseEntity<Format>> sendNotificationToDevice(@Valid @ModelAttribute Notification notification, Flux<UserFCM> userFCMFlux) {
+        return userFCMFlux
                 .flatMap(userFCM ->
                         Mono.just(myFireBase.SendNotification(notification.getTitle(), notification.getMsg(), userFCM.getFcm_id()))
+                )
+                .collectList()
+                .map(response ->
+                        String.join(",", response)
                 )
                 .flatMap(response ->
                         Mono.just(ok(Format.builder().response(response).build()))
                 );
     }
 
-    public Mono<UserFCM> findByDeviceID(String groupid, String device_id) {
+    public Flux<UserFCM> findByDeviceID(String groupid, String device_id) {
         return userFCMRepository.findByDeviceId(groupid, device_id);
+    }
+
+    public Flux<UserFCM> findByGroupID(String groupid) {
+        return userFCMRepository.findByGroupId(groupid);
     }
 
     public Mono<UserFCM> deleteByDeviceID(String groupid, String device_id) {

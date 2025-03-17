@@ -37,7 +37,8 @@ import org.springframework.test.context.junit4.SpringRunner;
         "FLICKR_AUTH_TOKEN=72157718531338752-478e88fe3e96fc70",
         "FLICKR_TOKEN_SECRET=fdc5a5980651383c",
         "FLICKR_USER_NAME=xnguyena2",
-        "FLICKR_NID=192362717@N03"
+        "FLICKR_NID=192362717@N03",
+        "FCM_GROUP_NAME=sodi_admin"
 })
 public class TestConfig {
     @Test
