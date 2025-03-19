@@ -37,7 +37,7 @@ public class RootTokenController {
                         }
                 )
                 .map(this.jwtTokenProvider::createToken)
-                .flatMap(s -> tokens.createToken(idContainer.getGroup_id(), Util.getInstance().GenerateID(), s, idContainer.getId(), 0));
+                .flatMap(s -> tokens.createToken(idContainer.getGroup_id(), Util.getInstance().GenerateIDOrg(), s, idContainer.getId(), 0));
     }
 
     @PostMapping("/getall")

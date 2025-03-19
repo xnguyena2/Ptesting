@@ -140,8 +140,12 @@ public class Util {
 //        return synchronizedHashMap.compute(id, (k, v) -> (v == null) ? GenerateID() : v);
     }
 
-    public String GenerateID(){
-        return UUID.randomUUID().toString().replaceAll("-","");
+    public String GenerateID() {
+        return UUID.randomUUID().toString().replaceAll("-", "");
+    }
+
+    public String GenerateIDOrg() {
+        return UUID.randomUUID().toString();
     }
 
     public String HashPassword(String password) throws NoSuchAlgorithmException {
