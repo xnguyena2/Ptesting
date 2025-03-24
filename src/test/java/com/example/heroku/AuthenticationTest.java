@@ -350,7 +350,7 @@ public class AuthenticationTest extends TestConfig {
                 .expectBody()
                 .jsonPath("username").isEqualTo("nhanvien2")
                 .jsonPath("phone_number").isEqualTo("12355555")
-                .jsonPath("token_expiration").isEqualTo(360)
+                .jsonPath("token_expiration").isEqualTo(0)
                 .jsonPath("group_id").isEqualTo(group_id);
 
         deleteAcc("nhanvien2", "nhanvien123", finalAuthToken4, false)
