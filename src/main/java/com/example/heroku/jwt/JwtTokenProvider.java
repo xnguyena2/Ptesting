@@ -19,9 +19,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
@@ -170,11 +167,14 @@ public class JwtTokenProvider {
             //  parseClaimsJws will check expiration date. No need do here.
             Date expirationDate = claims.getPayload().getExpiration();
             log.info("expiration date: {}", expirationDate);
-            LocalDate today = LocalDate.now();
-            LocalDate localExpiDate = expirationDate.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
-            return (int) (ChronoUnit.DAYS.between(today, localExpiDate));
+//            LocalDate today = LocalDate.now();
+//            LocalDate localExpiDate = expirationDate.toInstant()
+//                    .atZone(ZoneId.systemDefault())
+//                    .toLocalDate();
+//            ChronoUnit.DAYS.between(today, localExpiDate);
+            Date now = new Date();
+            long diff = expirationDate.getTime() - now.getTime();
+            return (int) (diff / (1000 * 60 * 60 * 24));
         } catch (JwtException | IllegalArgumentException e) {
             log.info("Invalid JWT token: {}", e.getMessage());
             log.trace("Invalid JWT token trace.", e);
