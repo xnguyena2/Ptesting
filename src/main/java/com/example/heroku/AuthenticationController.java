@@ -253,6 +253,7 @@ public class AuthenticationController {
             if (!userJoinUserInfo.isActive()) {
                 throw new AccessDeniedException("403 account disable!!");
             }
+            userJoinUserInfo.setToken_expiration(users.getExpirationDate());
             return userJoinUserInfo;
         });
     }

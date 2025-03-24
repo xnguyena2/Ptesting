@@ -47,11 +47,14 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
     @Transient
     private UserDetails user;
 
-    public Users(String username, String password, String group_id, Collection<? extends GrantedAuthority> authorities) {
-        this(username, password, group_id, true, authorities);
+    @Transient
+    private int expirationDate;
+
+    public Users(String username, String password, String group_id, Collection<? extends GrantedAuthority> authorities, int expirationDate) {
+        this(username, password, group_id, true, authorities, expirationDate);
     }
 
-    public Users(String username, String password, String group_id, boolean enabled, Collection<? extends GrantedAuthority> authorities) {
+    private Users(String username, String password, String group_id, boolean enabled, Collection<? extends GrantedAuthority> authorities, int expirationDate) {
         if (username != null && !username.isEmpty() && password != null) {
             this.username = username;
             this.password = password;
@@ -66,6 +69,7 @@ public class Users extends BaseEntity implements UserDetails, CredentialsContain
                     .disabled(!isActive())
                     .accountLocked(!isActive())
                     .build();
+            this.expirationDate = expirationDate;
         } else {
             throw new IllegalArgumentException("Cannot pass null or empty values to constructor");
         }

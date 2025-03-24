@@ -19,6 +19,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
@@ -45,6 +48,7 @@ public class JwtTokenProvider {
     private long validityInMs; // 1h
 
     public static final String HEADER_PREFIX = "Bearer ";
+    public static final int HEADER_PREFIX_LENGTH = HEADER_PREFIX.length();
 
     private static final String AUTHORITIES_KEY = "roles";
 
@@ -140,7 +144,7 @@ public class JwtTokenProvider {
         return createToken(username, authorities, groupID);
     }
 
-    public Authentication getAuthentication(String token) {
+    public Authentication getAuthentication(String token, int expirationDate) {
         Claims claims = Jwts.parser().verifyWith(this.secretKey).build().parseSignedClaims(token).getPayload();
 
         Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
@@ -155,22 +159,27 @@ public class JwtTokenProvider {
         Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null ? AuthorityUtils.NO_AUTHORITIES
                 : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
 
-        Users principal = new Users(claims.getSubject(), "", group_id, authorities);
+        Users principal = new Users(claims.getSubject(), "", group_id, authorities, expirationDate);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
-    public boolean validateToken(String token) {
+    public int validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().verifyWith(this.secretKey).build().parseSignedClaims(token);
             //  parseClaimsJws will check expiration date. No need do here.
-            log.info("expiration date: {}", claims.getPayload().getExpiration());
-            return true;
+            Date expirationDate = claims.getPayload().getExpiration();
+            log.info("expiration date: {}", expirationDate);
+            LocalDate today = LocalDate.now();
+            LocalDate localExpiDate = expirationDate.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            return (int) (ChronoUnit.DAYS.between(today, localExpiDate));
         } catch (JwtException | IllegalArgumentException e) {
             log.info("Invalid JWT token: {}", e.getMessage());
             log.trace("Invalid JWT token trace.", e);
         }
-        return false;
+        return -1;
     }
 
 
@@ -184,7 +193,7 @@ public class JwtTokenProvider {
         } else {
             String bearerToken = req.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
             if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)) {
-                return bearerToken.substring(7);
+                return bearerToken.substring(HEADER_PREFIX_LENGTH);
             }
         }
         return null;
