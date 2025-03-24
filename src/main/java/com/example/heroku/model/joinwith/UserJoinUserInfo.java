@@ -25,6 +25,8 @@ public class UserJoinUserInfo extends Users {
     private String client_roles;
     protected Timestamp child_createat;
 
+    private int token_expiration;
+
 
     public UserJoinUserInfo Clean() {
         super.Clean();
