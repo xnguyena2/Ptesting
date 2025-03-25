@@ -120,6 +120,10 @@ public class AuthenticationController {
     public Mono<ResponseEntity> refreshToken(@AuthenticationPrincipal Mono<UserDetails> principal) {
         try {
             return principal
+                    .map(userDetails -> {
+                        System.out.println("Refresh tokens of username: " + userDetails.getUsername());
+                        return userDetails;
+                    })
                     .map(this.jwtTokenProvider::createToken)
                     .map(this::createAuthBearToken);
         } catch (AuthenticationException e) {
