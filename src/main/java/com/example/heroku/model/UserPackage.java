@@ -55,7 +55,6 @@ public class UserPackage extends BaseEntity {
 
     public UserPackage(UserPackage s) {
         super(s);
-        this.setId(s.getId());
         this.package_second_id = s.package_second_id;
         this.device_id = s.device_id;
         this.product_second_id = s.product_second_id;
