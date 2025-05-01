@@ -39,17 +39,17 @@ public class UserPaySoDiTest {
                 .sort(Comparator.comparing(UserPaySoDi::getId))
                 .as(StepVerifier::create)
                 .consumeNextWith(userPaySoDi -> {
-                    id1.set(userPaySoDi.getId());
+                    id2.set(userPaySoDi.getId());
                     assertThat(userPaySoDi.getGroup_id()).isEqualTo(group);
-                    assertThat(userPaySoDi.getAmount()).isEqualTo(100.0f);
+                    assertThat(userPaySoDi.getAmount()).isEqualTo(10);
                     assertThat(userPaySoDi.getNote()).isEqualTo("Test Note");
                     assertThat(userPaySoDi.getPlan()).isEqualTo("Test Plan");
                     assertThat(userPaySoDi.getBonus()).isEqualTo(10);
                 })
                 .consumeNextWith(userPaySoDi -> {
-                    id2.set(userPaySoDi.getId());
+                    id1.set(userPaySoDi.getId());
                     assertThat(userPaySoDi.getGroup_id()).isEqualTo(group);
-                    assertThat(userPaySoDi.getAmount()).isEqualTo(10);
+                    assertThat(userPaySoDi.getAmount()).isEqualTo(100.0f);
                     assertThat(userPaySoDi.getNote()).isEqualTo("Test Note");
                     assertThat(userPaySoDi.getPlan()).isEqualTo("Test Plan");
                     assertThat(userPaySoDi.getBonus()).isEqualTo(10);
