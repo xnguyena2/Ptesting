@@ -58,8 +58,7 @@ public class UserPaySoDiTest {
 
 
 
-        userPaySoDiService.deleteByID(group, id1.get()).subscribe(deletedPayment -> {
-        });
+        userPaySoDiService.deleteByID(group, id1.get()).block();
 
 
         userPaySoDiService.findByGroupId(group)
