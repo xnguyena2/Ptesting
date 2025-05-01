@@ -36,12 +36,12 @@ public class UserPaySoDiTest {
         userPaySoDiService.createTransaction(payment).block();
 
         userPaySoDiService.findByGroupId(group)
-                .sort(Comparator.comparing(UserPaySoDi::getId))
+                .sort(Comparator.comparing(UserPaySoDi::getAmount))
                 .as(StepVerifier::create)
                 .consumeNextWith(userPaySoDi -> {
                     id2.set(userPaySoDi.getId());
                     assertThat(userPaySoDi.getGroup_id()).isEqualTo(group);
-                    assertThat(userPaySoDi.getAmount()).isEqualTo(10);
+                    assertThat(userPaySoDi.getAmount()).isEqualTo(10.0f);
                     assertThat(userPaySoDi.getNote()).isEqualTo("Test Note");
                     assertThat(userPaySoDi.getPlan()).isEqualTo("Test Plan");
                     assertThat(userPaySoDi.getBonus()).isEqualTo(10);
@@ -63,12 +63,11 @@ public class UserPaySoDiTest {
 
 
         userPaySoDiService.findByGroupId(group)
-                .sort(Comparator.comparing(UserPaySoDi::getId))
+                .sort(Comparator.comparing(UserPaySoDi::getAmount))
                 .as(StepVerifier::create)
                 .consumeNextWith(userPaySoDi -> {
-                    id2.set(userPaySoDi.getId());
                     assertThat(userPaySoDi.getGroup_id()).isEqualTo(group);
-                    assertThat(userPaySoDi.getAmount()).isEqualTo(10);
+                    assertThat(userPaySoDi.getAmount()).isEqualTo(10.0f);
                     assertThat(userPaySoDi.getNote()).isEqualTo("Test Note");
                     assertThat(userPaySoDi.getPlan()).isEqualTo("Test Plan");
                     assertThat(userPaySoDi.getBonus()).isEqualTo(10);
