@@ -18,20 +18,16 @@ import javax.persistence.Table;
 @AllArgsConstructor
 public class UserPaySoDi extends BaseEntity {
 
-    private String device_id;
+    private float amount;
 
-    private String fcm_id;
+    private String note;
 
-    private Status status;
+    private String plan;
+
+    private int bonus;
 
     public UserPaySoDi AutoFill(){
         super.AutoFill();
-        this.status = Status.ACTIVE;
         return this;
-    }
-
-    public enum Status {
-        ACTIVE,
-        BLOCK
     }
 }

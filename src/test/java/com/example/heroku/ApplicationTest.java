@@ -107,6 +107,19 @@ public class ApplicationTest extends TestConfig {
     @Autowired
     Area area;
 
+    @Autowired
+    UserPaySoDi userPaySoDiService;
+
+    @Test
+    public void userPaySodiTest1() {
+        UserPaySoDiTest.builder().group(mainGroup).userPaySoDiService(userPaySoDiService).build().test();
+    }
+
+    @Test
+    public void userPaySodiTest2() {
+        UserPaySoDiTest.builder().group(anotherGroup).userPaySoDiService(userPaySoDiService).build().test();
+    }
+
     @Test
     public void areaAndTableTest1() {
         AreaAndTabletTest.builder().area(area).userPackageAPI(userPackageAPI).buyer(buyer).build().Test(mainGroup);

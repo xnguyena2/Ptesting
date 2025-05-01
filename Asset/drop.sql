@@ -58,3 +58,4 @@ DROP TABLE IF EXISTS tokens;
 DROP TABLE IF EXISTS debt_transaction;
 DROP TABLE IF EXISTS map_key_value;
 DROP TABLE IF EXISTS delete_request;
+DROP TABLE IF EXISTS user_pay_sodi;

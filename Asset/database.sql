@@ -54,6 +54,8 @@ CREATE TABLE IF NOT EXISTS map_key_value (id SERIAL PRIMARY KEY, group_id VARCHA
 
 CREATE TABLE IF NOT EXISTS delete_request (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, delete_request_id VARCHAR, user_id VARCHAR, status VARCHAR, createat TIMESTAMP);
 
+CREATE TABLE IF NOT EXISTS user_pay_sodi (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, amount float8, note VARCHAR, plan VARCHAR, bonus INTEGER, createat TIMESTAMP);
+
 CREATE INDEX device_config_index ON device_config(group_id);
 CREATE INDEX users_name_index ON users(username);
 CREATE INDEX users_info_name_index ON users_info(username);
@@ -100,6 +102,7 @@ CREATE INDEX tokens_second_id_index ON tokens(token_second_id);
 CREATE INDEX map_key_value_group_id_index ON map_key_value(group_id);
 CREATE INDEX map_key_value_id_index ON map_key_value(id_o);
 CREATE INDEX delete_request_user_id_index ON delete_request(user_id);
+CREATE INDEX user_pay_sodi_id_index ON user_pay_sodi(group_id);
 
 ALTER TABLE device_config ADD CONSTRAINT UQ_device_config UNIQUE(group_id);
 ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
@@ -270,6 +273,8 @@ begin
     DELETE FROM tokens WHERE group_id = by_group_id;
 
     DELETE FROM debt_transaction WHERE group_id = by_group_id;
+    DELETE FROM map_key_value WHERE group_id = by_group_id;
+    DELETE FROM user_pay_sodi WHERE group_id = by_group_id;
 
     RETURN TRUE;
 end;
