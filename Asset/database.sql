@@ -376,7 +376,7 @@ BEGIN
     IF _inventory_number < NEW.number_unit
     THEN
 --        PERFORM delete_all_data_belong_user_package_detail(NEW.group_id, NEW.package_second_id);
-	    RAISE EXCEPTION 'decrese_product_unit_inventory: inventory_number small than number_unit, product_unit_second_id: %, _inventory_number: %, NEW.number_unit: % ' , NEW.product_unit_second_id , _inventory_number, NEW.number_unit;
+	    RAISE NOTICE 'decrese_product_unit_inventory: inventory_number small than number_unit, product_unit_second_id: %, _inventory_number: %, NEW.number_unit: % ' , NEW.product_unit_second_id , _inventory_number, NEW.number_unit;
     END IF;
 
 	UPDATE product_unit
@@ -478,7 +478,7 @@ BEGIN
     IF _inventory_number_new < 0
     THEN
 --        PERFORM delete_all_data_belong_user_package_detail(NEW.group_id, NEW.package_second_id);
-	    RAISE EXCEPTION 'update_product_unit_inventory: inventory_number_new small than 0, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id, _inventory_number_new;
+	    RAISE NOTICE 'update_product_unit_inventory: inventory_number_new small than 0, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id, _inventory_number_new;
     END IF;
 
 	UPDATE product_unit
@@ -678,13 +678,13 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION 'trigger_on_insert_product_import: _inventory_number_new = -1, type: %' , NEW.type;
+	    RAISE NOTICE 'trigger_on_insert_product_import: _inventory_number_new = -1, type: %' , NEW.type;
     END IF;
 
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'trigger_on_insert_product_import: inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id , _inventory_number_new;
+	    RAISE NOTICE 'trigger_on_insert_product_import: inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id , _inventory_number_new;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -749,13 +749,13 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION 'trigger_on_delete_product_import: _inventory_number_new = -1, type: %' , OLD.type;
+	    RAISE NOTICE 'trigger_on_delete_product_import: _inventory_number_new = -1, type: %' , OLD.type;
     END IF;
 
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'trigger_on_delete_product_import: inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , OLD.product_unit_second_id , _inventory_number_new;
+	    RAISE NOTICE 'trigger_on_delete_product_import: inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , OLD.product_unit_second_id , _inventory_number_new;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -828,13 +828,13 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION 'trigger_on_update_product_import: _inventory_number_new = -1, type: %' , NEW.type;
+	    RAISE NOTICE 'trigger_on_update_product_import: _inventory_number_new = -1, type: %' , NEW.type;
     END IF;
 
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'trigger_on_update_product_import: inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id , _inventory_number_new;
+	    RAISE NOTICE 'trigger_on_update_product_import: inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id , _inventory_number_new;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -1142,7 +1142,7 @@ BEGIN
     ON product_combo_item.item_product_second_id = product_unit.product_second_id AND product_combo_item.item_product_unit_second_id = product_unit.product_unit_second_id
     WHERE product_combo_item.unit_number * _item_num > product_unit.inventory_number)
     THEN
-	    RAISE EXCEPTION 'change_inventory_combo_item: inventory_number small than number_unit, product_unit_second_id: %' , _product_unit_second_id;
+	    RAISE NOTICE 'change_inventory_combo_item: inventory_number small than number_unit, product_unit_second_id: %' , _product_unit_second_id;
     END IF;
 
     FOR _item IN
