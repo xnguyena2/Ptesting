@@ -51,7 +51,7 @@ public class PaymentTransactionJoinBuyer extends PaymentTransation {
 
     private String meta_search;
 
-    private ActiveStatus status;
+    private ActiveStatus buyer_status;
 
     public Buyer createBuyer() {
         if (buyer_group_id == null) {
@@ -74,7 +74,7 @@ public class PaymentTransactionJoinBuyer extends PaymentTransation {
                 .discount(this.discount)
                 .point(this.point)
                 .meta_search(this.meta_search)
-                .status(this.status)
+                .status(this.buyer_status)
                 .build();
     }
 
