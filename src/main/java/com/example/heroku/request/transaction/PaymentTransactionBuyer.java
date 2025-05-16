@@ -2,6 +2,7 @@ package com.example.heroku.request.transaction;
 
 import com.example.heroku.model.Buyer;
 import com.example.heroku.model.PaymentTransation;
+import com.example.heroku.response.BuyerData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,11 +16,11 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class PaymentTransactionBuyer extends PaymentTransation {
 
-    private Buyer buyer;
+    private BuyerData buyer;
 
     public PaymentTransactionBuyer(PaymentTransation s, Buyer buyer) {
         super(s);
-        this.buyer = buyer;
+        this.buyer = new BuyerData(buyer);
     }
 
     public PaymentTransactionBuyer AutoFill() {
