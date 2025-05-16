@@ -20,6 +20,9 @@ public class PaymentTransactionBuyer extends PaymentTransation {
 
     public PaymentTransactionBuyer(PaymentTransation s, Buyer buyer) {
         super(s);
+        if(buyer == null) {
+            return;
+        }
         this.buyer = new BuyerData(buyer);
     }
 
