@@ -50,6 +50,14 @@ public class PaymentTransation {
                 .map(PaymentTransactionJoinBuyer::GeneratePaymentTransactionBuyer);
     }
 
+    public Flux<com.example.heroku.model.PaymentTransation> getAllTransactionBettwenWithoutBuyer(PackageID query) {
+        return paymentTransactionRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo());
+    }
+
+    public Flux<com.example.heroku.model.PaymentTransation> getAllTransactionByPackageIDWithoutBuyer(IDContainer idContainer) {
+        return paymentTransactionRepository.getTransactionByPackageID(idContainer.getGroup_id(), idContainer.getId());
+    }
+
     public Flux<com.example.heroku.model.PaymentTransation> getAllCategory(IDContainer idContainer) {
         return paymentTransactionRepository.getAllCategory(idContainer.getGroup_id());
     }

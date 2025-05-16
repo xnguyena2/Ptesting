@@ -33,7 +33,7 @@ public class PaymentTransactionController {
 
     @GetMapping("/getbypackage")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<PaymentTransactionBuyer> getByPackageID(@RequestBody @Valid IDContainer idContainer) {
+    public Flux<PaymentTransactionBuyer> getByPackageIDWithBuyer(@RequestBody @Valid IDContainer idContainer) {
         System.out.println("get transaction of package id: " + idContainer.getId());
         return paymentTransation.getAllTransactionByPackageID(idContainer);
     }
@@ -47,8 +47,22 @@ public class PaymentTransactionController {
 
     @PostMapping("/getbytime")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<PaymentTransactionBuyer> getBettwenTime(@RequestBody @Valid PackageID packageID) {
+    public Flux<PaymentTransactionBuyer> getBettwenTimeWithBuyer(@RequestBody @Valid PackageID packageID) {
         System.out.println("get transaction of group id: " + packageID.getGroup_id());
         return paymentTransation.getAllTransactionBettwen(packageID);
+    }
+
+    @PostMapping("/getbytimewithoutbuyer")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<com.example.heroku.model.PaymentTransation> getBettwenTime(@RequestBody @Valid PackageID packageID) {
+        System.out.println("get transaction without buyer of group id: " + packageID.getGroup_id());
+        return paymentTransation.getAllTransactionBettwenWithoutBuyer(packageID);
+    }
+
+    @GetMapping("/getbypackagewithoutbuyer")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<com.example.heroku.model.PaymentTransation> getByPackageID(@RequestBody @Valid IDContainer idContainer) {
+        System.out.println("get transaction without buyer of package id: " + idContainer.getId());
+        return paymentTransation.getAllTransactionByPackageIDWithoutBuyer(idContainer);
     }
 }
