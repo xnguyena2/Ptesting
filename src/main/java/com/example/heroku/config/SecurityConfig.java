@@ -38,35 +38,25 @@ public class SecurityConfig {
 
                             .anyExchange().permitAll();
         }
+
+        for (String path : JwtTokenAuthenticationFilter.authenPaths) {
+            it = it.pathMatchers(path).authenticated();
+        }
+
+        for (String path : JwtTokenAuthenticationFilter.rootPaths) {
+            it = it.pathMatchers(path).hasAnyRole("ROOT");
+        }
+
+        for (String path : JwtTokenAuthenticationFilter.adminPaths) {
+            it = it.pathMatchers(path).hasAnyRole("ROOT", "ADMIN");
+        }
+
+        for (String path : JwtTokenAuthenticationFilter.permitAllPaths) {
+            it = it.pathMatchers(path).permitAll();
+        }
         return it
                 //.pathMatchers(HttpMethod.DELETE, PATH_POSTS).hasRole("ADMIN")
-                .pathMatchers("/auth/me").authenticated()
                 //.pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
-
-                //for admin
-                .pathMatchers("/root/**").hasAnyRole("ROOT")
-                .pathMatchers("/root/*/**").hasAnyRole("ROOT")
-                .pathMatchers("/root/*/*/**").hasAnyRole("ROOT")
-                .pathMatchers("/root/*/*/*/**").hasAnyRole("ROOT")
-
-
-                .pathMatchers("/*/admin/**").hasAnyRole("ROOT", "ADMIN")
-                .pathMatchers("/*/admin/*/**").hasAnyRole("ROOT", "ADMIN")
-                .pathMatchers("/*/admin/*/*/**").hasAnyRole("ROOT", "ADMIN")
-                .pathMatchers("/*/admin/*/*/*/**").hasAnyRole("ROOT", "ADMIN")
-                .pathMatchers("/*/admin/*/*/*/*/**").hasAnyRole("ROOT", "ADMIN")
-
-                .pathMatchers("/address/**").permitAll()
-                .pathMatchers("/beer/**").permitAll()
-                .pathMatchers("/clientdevice/**").permitAll()
-                .pathMatchers("/deviceconfig/**").permitAll()
-                .pathMatchers("/order/**").permitAll()
-                .pathMatchers("/package/**").permitAll()
-
-                .pathMatchers("/auth/signin").permitAll()
-                .pathMatchers("/auth/account/update").authenticated()
-
-                .pathMatchers("/**").permitAll()
 
                 .anyExchange().authenticated();
     }
