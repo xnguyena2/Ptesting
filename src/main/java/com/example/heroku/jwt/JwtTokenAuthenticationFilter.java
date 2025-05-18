@@ -1,6 +1,7 @@
 package com.example.heroku.jwt;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtTokenAuthenticationFilter implements WebFilter {
 
@@ -27,24 +29,15 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
             "/order/**",
             "/package/**",
             "/auth/signin",
-            "/**");
+            "/*");
 
     public static final List<String> authenPaths = Arrays.asList(
             "/auth/me",
             "/auth/account/update");
 
-    public static final List<String> rootPaths = Arrays.asList(
-            "/root/**",
-            "/root/*/**",
-            "/root/*/*/**",
-            "/root/*/*/*/**");
+    public static final List<String> rootPaths = List.of("/root/**");
 
-    public static final List<String> adminPaths = Arrays.asList(
-            "/*/admin/**",
-            "/*/admin/*/**",
-            "/*/admin/*/*/**",
-            "/*/admin/*/*/*/**",
-            "/*/admin/*/*/*/*/**");
+    public static final List<String> adminPaths = List.of("/*/admin/**");
 
     private final List<String> mustValid = Stream.of(authenPaths, rootPaths, adminPaths)
             .flatMap(List::stream)
@@ -62,6 +55,7 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
         boolean isPermitAll = permitAllPaths.stream()
                 .anyMatch(pattern -> pathMatcher.match(pattern, path));
         if (isPermitAll) {
+            log.info("Permit all path: {}", path);
             return chain.filter(exchange); // Proceed without authentication/authorization
         } else {
             String token = this.tokenProvider.resolveToken(request);
