@@ -59,9 +59,9 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
 
-        boolean isValidTokens = mustValid.stream()
+        boolean isPermitAll = permitAllPaths.stream()
                 .anyMatch(pattern -> pathMatcher.match(pattern, path));
-        if (!isValidTokens) {
+        if (isPermitAll) {
             return chain.filter(exchange); // Proceed without authentication/authorization
         } else {
             String token = this.tokenProvider.resolveToken(request);
