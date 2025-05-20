@@ -104,6 +104,7 @@ public class BeerTest {
                                 .category(Category.CRAB.getName())
                                 .name("beer tiger")
                                 .product_second_id("123")
+                                .product_parent_id("parent_id")
                                 .group_id(group)
                                 .visible_web(true)
                                 .default_group_unit_naname("default")
@@ -376,6 +377,7 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
+                    assertThat(beerInfo.getProduct().getProduct_parent_id()).isEqualTo("parent_id");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);

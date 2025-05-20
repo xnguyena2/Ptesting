@@ -21,6 +21,8 @@ public class Product extends BaseEntity {
 
     private String product_second_id;
 
+    private String product_parent_id;
+
     private String name;
 
     private String detail;
@@ -131,6 +133,7 @@ public class Product extends BaseEntity {
 
     public enum ProductType {
         PRODUCT("PRODUCT"),
+        SUBPRODUCT("SUBPRODUCT"),
         COMBO("COMBO"),
         MATERIAL("MATERIAL");
 
