@@ -56,7 +56,20 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
             "/package/getbystatusproduct",
             "/auth/signin",
             "/assets/**",
-            "/fcmtoken/*",
+
+            "/getobjectjs/logs",
+            "/fcmtoken/create",
+            "/auth/account/create",
+            "/store/initial",
+            "/table/getall",
+            "/table/setpackage",
+            "/table/savetable",
+            "/table/createlisttable",
+            "/table/savearea",
+            "/table/deletearea",
+            "/table/deletetable",
+
+
             "/*");
 
     public static final List<String> authenPaths = Arrays.asList(
