@@ -56,6 +56,7 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
             "/package/getbystatusproduct",
             "/auth/signin",
             "/assets/**",
+            "/fcmtoken/*",
             "/*");
 
     public static final List<String> authenPaths = Arrays.asList(
