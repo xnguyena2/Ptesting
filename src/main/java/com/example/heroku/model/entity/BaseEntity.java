@@ -28,6 +28,7 @@ public class BaseEntity {
     protected Timestamp createat;
 
     public BaseEntity(BaseEntity s) {
+        id = s.getId();
         group_id = s.getGroup_id();
         createat = s.getCreateat();
     }

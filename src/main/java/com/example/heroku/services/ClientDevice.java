@@ -1,12 +1,14 @@
 package com.example.heroku.services;
 
 import com.example.heroku.model.UserPackageDetail;
-import com.example.heroku.model.repository.StatisticTotalBenifitRepository;
 import com.example.heroku.model.statistics.BenifitByMonth;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.response.BootStrapData;
+import com.example.heroku.response.BootStrapDataWeb;
+import com.example.heroku.response.Format;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -15,8 +17,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 @Component
 public class ClientDevice {
+
+    private final String WEB_CONFIG = "webconfig";
+
     @Autowired
     Image imageAPI;
 
@@ -32,12 +39,15 @@ public class ClientDevice {
     @Autowired
     Store storeServices;
 
-    public Mono<BootStrapData> bootStrapDataForWeb(String groupID) {
+    @Autowired
+    private MapKeyValue mapKeyValue;
+
+    public Mono<BootStrapDataWeb> bootStrapDataForWeb(String groupID) {
 
         return
                 this.storeServices.getStoreDomainUrl(groupID)
                         .switchIfEmpty(Mono.just(com.example.heroku.model.Store.builder().group_id(groupID).build()))
-                        .map(store -> BootStrapData.builder()
+                        .map(store -> (BootStrapDataWeb) BootStrapDataWeb.builder()
                                 .store(store)
                                 .carousel(new ArrayList<>())
                                 .products(new ArrayList<>())
@@ -66,7 +76,34 @@ public class ClientDevice {
                                 this.deviceConfigAPI.GetConfig(bootStrapData.getStore().getGroup_id())
                                         .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().color("#333333").build()))
                                         .map(bootStrapData::setDeviceConfig)
+                                        .then(Mono.just(bootStrapData))
+                        )
+                        .flatMap(bootStrapData ->
+                                this.mapKeyValue.getByID(bootStrapData.getStore().getGroup_id(), WEB_CONFIG)
+                                        .switchIfEmpty(Mono.just(com.example.heroku.model.MapKeyValue.builder().build()))
+                                        .map(mapKeyValue -> {
+                                            if (mapKeyValue.getValue_o() == null) {
+                                                return bootStrapData;
+                                            }
+                                            return bootStrapData.setWeb_config(mapKeyValue.getValue_o());
+                                        })
                         );
+
+    }
+
+    public Mono<ResponseEntity<Format>> saveWebConfig(com.example.heroku.model.MapKeyValue webconfig) {
+        return this.mapKeyValue.insert(com.example.heroku.model.MapKeyValue.builder().group_id(webconfig.getGroup_id()).id_o(WEB_CONFIG).value_o(webconfig.getValue_o()).build())
+                .map(com.example.heroku.model.MapKeyValue::AutoFill)
+                .then(
+                        Mono.just(ok(Format.builder().response(webconfig.getValue_o()).build()))
+                );
+    }
+
+    public Mono<ResponseEntity<Format>> getWebConfig(String groupID) {
+        return this.mapKeyValue.getByID(groupID, WEB_CONFIG)
+                .map(mapKeyValue ->
+                        ok(Format.builder().response(mapKeyValue.getValue_o()).build())
+                );
     }
 
     public Mono<BootStrapData> adminBootStrapWithoutCarouselData(String groupID) {

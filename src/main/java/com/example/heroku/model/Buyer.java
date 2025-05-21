@@ -18,6 +18,8 @@ import javax.persistence.Table;
 @AllArgsConstructor
 public class Buyer extends BaseEntity {
 
+    //PaymentTransactionJoinBuyer
+
     private String device_id;
 
     private String reciver_fullname;

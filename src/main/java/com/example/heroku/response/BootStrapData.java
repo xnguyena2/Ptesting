@@ -4,13 +4,13 @@ import com.example.heroku.model.DeviceConfig;
 import com.example.heroku.model.Store;
 import com.example.heroku.model.statistics.BenifitByMonth;
 import com.example.heroku.request.beer.BeerSubmitData;
-import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Data
-@Builder
+@SuperBuilder(toBuilder = true)
 public class BootStrapData {
     private DeviceConfig deviceConfig;
 

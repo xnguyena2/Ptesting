@@ -1,9 +1,11 @@
 package com.example.heroku.controller;
 
+import com.example.heroku.model.MapKeyValue;
 import com.example.heroku.model.Users;
 import com.example.heroku.request.client.Register;
 import com.example.heroku.request.permission.WrapPermissionGroupWithPrincipalAction;
 import com.example.heroku.response.BootStrapData;
+import com.example.heroku.response.BootStrapDataWeb;
 import com.example.heroku.response.Format;
 import com.example.heroku.services.UserDevice;
 import com.example.heroku.util.Util;
@@ -14,9 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @RestController
 @RequestMapping("/clientdevice")
@@ -30,7 +29,7 @@ public class ClientDeviceController {
 
     @GetMapping("/bootstrap/{groupid}")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<BootStrapData> bootStrapData(@PathVariable("groupid") String groupID) {
+    public Mono<BootStrapDataWeb> bootStrapData(@PathVariable("groupid") String groupID) {
         System.out.println("Website get bootstrap: " + groupID);
         return clientDeviceAPI.bootStrapDataForWeb(groupID);
     }
@@ -65,5 +64,23 @@ public class ClientDeviceController {
                                 .build()
                 ))
                 .build().toMono();
+    }
+
+    @PostMapping("/savewebconfig")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<Format>> saveWebConfig(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid MapKeyValue webconfig) {
+        System.out.println("Save web config: " + webconfig.getGroup_id());
+        return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<Format>>builder()
+                .principal(principal)
+                .subject(webconfig::getGroup_id)
+                .monoAction(() -> clientDeviceAPI.saveWebConfig(webconfig))
+                .build().toMono();
+    }
+
+    @GetMapping("/getwebconfig")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<Format>> getWebConfig(@AuthenticationPrincipal Users principal) {
+        System.out.println("Get web config: " + principal.getGroup_id());
+        return clientDeviceAPI.getWebConfig(principal.getGroup_id());
     }
 }

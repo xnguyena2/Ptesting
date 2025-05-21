@@ -1,20 +1,17 @@
 package com.example.heroku;
 
 import com.example.heroku.model.PaymentTransation;
-import com.example.heroku.model.Store;
 import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.statistics.BenifitByDate;
 import com.example.heroku.model.statistics.BenifitByDateHour;
 import com.example.heroku.model.statistics.BenifitByPaymentTransaction;
-import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.client.PackageID;
+import com.example.heroku.request.transaction.PaymentTransactionBuyer;
 import com.example.heroku.services.StatisticServices;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
-import org.springframework.beans.factory.annotation.Autowired;
-import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.sql.Timestamp;
@@ -35,7 +32,7 @@ public class PaymentTransactionTest {
     String group;
 
     public void Test() {
-        paymentTransation.insertOrUpdate(PaymentTransation.builder()
+        paymentTransation.insertOrUpdate(PaymentTransactionBuyer.builder()
                         .group_id(group)
                         .package_second_id("2222")
                         .transaction_second_id(group+"123")
@@ -44,7 +41,7 @@ public class PaymentTransactionTest {
                         .money_source("tien mat")
                         .amount(100000)
                 .build()).block();
-        paymentTransation.insertOrUpdate(PaymentTransation.builder()
+        paymentTransation.insertOrUpdate(PaymentTransactionBuyer.builder()
                 .group_id(group)
                 .transaction_second_id(group+"234")
                 .transaction_type(PaymentTransation.TType.INCOME)
@@ -52,7 +49,7 @@ public class PaymentTransactionTest {
                 .money_source("tien mat")
                 .amount(55000)
                 .build()).block();
-        paymentTransation.insertOrUpdate(PaymentTransation.builder()
+        paymentTransation.insertOrUpdate(PaymentTransactionBuyer.builder()
                 .group_id(group)
                 .package_second_id("2222")
                 .transaction_second_id(group+"345")
@@ -131,7 +128,7 @@ public class PaymentTransactionTest {
 
         paymentTransation.deleteOfPackgeID(IDContainer.builder().group_id(group).build()).block();
 
-        paymentTransation.getAllTransactionBettwen(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).build())
+        paymentTransation.getAllTransactionBettwenWithoutBuyer(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).build())
                 .sort(Comparator.comparing(PaymentTransation::getTransaction_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(transation -> {
@@ -163,7 +160,7 @@ public class PaymentTransactionTest {
                 .expectNextCount(2)
                 .verifyComplete();
 
-        paymentTransation.getAllTransactionByPackageID(IDContainer.builder().group_id(group).id("2222").build())
+        paymentTransation.getAllTransactionByPackageIDWithoutBuyer(IDContainer.builder().group_id(group).id("2222").build())
                 .sort(Comparator.comparing(PaymentTransation::getTransaction_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(transation -> {
@@ -179,7 +176,7 @@ public class PaymentTransactionTest {
                 })
                 .verifyComplete();
 
-        paymentTransation.insertOrUpdate(PaymentTransation.builder()
+        paymentTransation.insertOrUpdate(PaymentTransactionBuyer.builder()
                 .group_id(group)
                 .transaction_second_id(group+"456")
                 .transaction_type(PaymentTransation.TType.OUTCOME)

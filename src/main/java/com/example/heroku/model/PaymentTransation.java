@@ -44,6 +44,20 @@ public class PaymentTransation extends BaseEntity {
 
     private Status status;
 
+    public PaymentTransation(PaymentTransation s) {
+        super(s);
+        this.transaction_second_id = s.transaction_second_id;
+        this.device_id = s.device_id;
+        this.package_second_id = s.package_second_id;
+        this.action_id = s.action_id;
+        this.action_type = s.action_type;
+        this.amount = s.amount;
+        this.note = s.note;
+        this.category = s.category;
+        this.money_source = s.money_source;
+        this.transaction_type = s.transaction_type;
+        this.status = s.status;
+    }
 
     public PaymentTransation AutoFill() {
         if (transaction_second_id == null) {

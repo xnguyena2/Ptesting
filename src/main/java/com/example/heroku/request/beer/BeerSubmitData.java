@@ -24,6 +24,7 @@ public class BeerSubmitData {
 
     private String group_id;
     private String beerSecondID;
+    private String product_parent_id;
     private String name;
     private String detail;
     private String meta_search;
@@ -80,6 +81,7 @@ public class BeerSubmitData {
                                 .builder()
                                 .group_id(this.group_id)
                                 .product_second_id(this.beerSecondID)
+                                .product_parent_id(this.product_parent_id)
                                 .name(this.name)
                                 .detail(this.detail)
                                 .category(this.category)
@@ -102,6 +104,7 @@ public class BeerSubmitData {
         return BeerSubmitData.builder()
                 .group_id(product.getGroup_id())
                 .beerSecondID(product.getProduct_second_id())
+                .product_parent_id(product.getProduct_parent_id())
                 .name(product.getName())
                 .detail(product.getDetail())
                 .category(product.getCategory())

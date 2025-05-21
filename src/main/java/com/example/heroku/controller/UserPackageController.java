@@ -112,11 +112,22 @@ public class UserPackageController {
     @PostMapping("/getmypackageprocessing")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<PackageDataResponse> getMyPackage(@RequestBody @Valid UserID userID) {
-        System.out.println("Get all my package by status: " + userID.getId());
+        System.out.println("Get all my package by status create: " + userID.getId());
         if (userID.getAfter_id() > 0) {
             return userPackageAPI.GetMyPackageOfStatusAfterID(userID, UserPackageDetail.Status.CREATE);
         }
         return userPackageAPI.GetMyPackageOfStatus(userID, UserPackageDetail.Status.CREATE);
+    }
+
+
+    @PostMapping("/getmypackagereturn")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<PackageDataResponse> getMyPackageReturn(@RequestBody @Valid UserID userID) {
+        System.out.println("Get all my package by status return: " + userID.getId());
+        if (userID.getAfter_id() > 0) {
+            return userPackageAPI.GetMyPackageOfStatusAfterID(userID, UserPackageDetail.Status.RETURN);
+        }
+        return userPackageAPI.GetMyPackageOfStatus(userID, UserPackageDetail.Status.RETURN);
     }
 
 

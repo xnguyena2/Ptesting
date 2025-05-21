@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users_info (id SERIAL PRIMARY KEY, group_id VARCHAR N
 
 CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, tokens TSVECTOR, createat TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, visible_web BOOL, default_group_unit_naname VARCHAR, number_group_unit_config VARCHAR, warranty VARCHAR, product_type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_parent_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, visible_web BOOL, default_group_unit_naname VARCHAR, number_group_unit_config VARCHAR, warranty VARCHAR, product_type VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, product_type VARCHAR, group_unit_id VARCHAR, group_unit_naname VARCHAR, group_unit_number float8, services_config VARCHAR, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_combo_item (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, item_product_second_id VARCHAR, item_product_unit_second_id VARCHAR, unit_number float8, createat TIMESTAMP);
 
@@ -54,6 +54,8 @@ CREATE TABLE IF NOT EXISTS map_key_value (id SERIAL PRIMARY KEY, group_id VARCHA
 
 CREATE TABLE IF NOT EXISTS delete_request (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, delete_request_id VARCHAR, user_id VARCHAR, status VARCHAR, createat TIMESTAMP);
 
+CREATE TABLE IF NOT EXISTS user_pay_sodi (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, amount float8, note VARCHAR, plan VARCHAR, bonus INTEGER, createat TIMESTAMP);
+
 CREATE INDEX device_config_index ON device_config(group_id);
 CREATE INDEX users_name_index ON users(username);
 CREATE INDEX users_info_name_index ON users_info(username);
@@ -100,6 +102,7 @@ CREATE INDEX tokens_second_id_index ON tokens(token_second_id);
 CREATE INDEX map_key_value_group_id_index ON map_key_value(group_id);
 CREATE INDEX map_key_value_id_index ON map_key_value(id_o);
 CREATE INDEX delete_request_user_id_index ON delete_request(user_id);
+CREATE INDEX user_pay_sodi_id_index ON user_pay_sodi(group_id);
 
 ALTER TABLE device_config ADD CONSTRAINT UQ_device_config UNIQUE(group_id);
 ALTER TABLE users ADD CONSTRAINT UQ_users_name UNIQUE(username);
@@ -270,6 +273,8 @@ begin
     DELETE FROM tokens WHERE group_id = by_group_id;
 
     DELETE FROM debt_transaction WHERE group_id = by_group_id;
+    DELETE FROM map_key_value WHERE group_id = by_group_id;
+    DELETE FROM user_pay_sodi WHERE group_id = by_group_id;
 
     RETURN TRUE;
 end;
@@ -371,7 +376,7 @@ BEGIN
     IF _inventory_number < NEW.number_unit
     THEN
 --        PERFORM delete_all_data_belong_user_package_detail(NEW.group_id, NEW.package_second_id);
-	    RAISE EXCEPTION 'inventory_number small than number_unit, product_unit_second_id: %, _inventory_number: %, NEW.number_unit: % ' , NEW.product_unit_second_id , _inventory_number, NEW.number_unit;
+	    RAISE NOTICE 'decrese_product_unit_inventory: inventory_number small than number_unit, product_unit_second_id: %, _inventory_number: %, NEW.number_unit: % ' , NEW.product_unit_second_id , _inventory_number, NEW.number_unit;
     END IF;
 
 	UPDATE product_unit
@@ -443,7 +448,7 @@ BEGIN
 	    RETURN NEW;
     END IF;
 
-    
+
     SELECT enable_warehouse, inventory_number, product_type
     INTO _enable_warehouse, _inventory_number, _product_type
     FROM product_unit
@@ -473,7 +478,7 @@ BEGIN
     IF _inventory_number_new < 0
     THEN
 --        PERFORM delete_all_data_belong_user_package_detail(NEW.group_id, NEW.package_second_id);
-	    RAISE EXCEPTION 'inventory_number_new small than 0, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id, _inventory_number_new;
+	    RAISE NOTICE 'update_product_unit_inventory: inventory_number_new small than 0, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id, _inventory_number_new;
     END IF;
 
 	UPDATE product_unit
@@ -654,13 +659,13 @@ BEGIN
 
     IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
-	    RAISE EXCEPTION 'product not enable warehouse';
+	    RAISE EXCEPTION 'trigger_on_insert_product_import: product not enable warehouse';
     END IF;
 
 
     IF NEW.type = 'UN_KNOW' OR NEW.type IS NULL
     THEN
-	    RAISE EXCEPTION 'unknow import type';
+	    RAISE EXCEPTION 'trigger_on_insert_product_import: unknow import type';
     END IF;
 
 
@@ -673,13 +678,13 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION '_inventory_number_new = -1, type: %' , NEW.type;
+	    RAISE NOTICE 'trigger_on_insert_product_import: _inventory_number_new = -1, type: %' , NEW.type;
     END IF;
 
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id , _inventory_number_new;
+	    RAISE NOTICE 'trigger_on_insert_product_import: inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id , _inventory_number_new;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -744,13 +749,13 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION '_inventory_number_new = -1, type: %' , OLD.type;
+	    RAISE NOTICE 'trigger_on_delete_product_import: _inventory_number_new = -1, type: %' , OLD.type;
     END IF;
 
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , OLD.product_unit_second_id , _inventory_number_new;
+	    RAISE NOTICE 'trigger_on_delete_product_import: inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , OLD.product_unit_second_id , _inventory_number_new;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -806,7 +811,7 @@ BEGIN
 
     IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
-	    RAISE EXCEPTION 'product not enable warehouse';
+	    RAISE EXCEPTION 'trigger_on_update_product_import: product not enable warehouse';
     END IF;
 
 
@@ -823,13 +828,13 @@ BEGIN
 
     IF _inventory_number_new = -1
     THEN
-	    RAISE EXCEPTION '_inventory_number_new = -1, type: %' , NEW.type;
+	    RAISE NOTICE 'trigger_on_update_product_import: _inventory_number_new = -1, type: %' , NEW.type;
     END IF;
 
 
     IF _inventory_number_new < 0
     THEN
-	    RAISE EXCEPTION 'inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id , _inventory_number_new;
+	    RAISE NOTICE 'trigger_on_update_product_import: inventory_number_new small than 0!, product_unit_second_id: %, _inventory_number_new: %' , NEW.product_unit_second_id , _inventory_number_new;
     END IF;
 
     _buy_price_new = _buy_price;
@@ -895,7 +900,7 @@ BEGIN
 
     IF OLD.status = 'RETURN'
     THEN
-	    RAISE EXCEPTION 'can not update on RETURN!';
+	    RAISE EXCEPTION 'trigger_on_update_group_import: can not update on RETURN!';
     END IF;
 
 --  update payment transaction
@@ -1030,7 +1035,7 @@ BEGIN
 
     IF NEW.arg_action_id IS NULL
     THEN
-	    RAISE EXCEPTION 'arg_action_id null!';
+	    RAISE EXCEPTION 'trigger_on_insert_product_unit: arg_action_id null!';
     END IF;
 
     INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
@@ -1137,7 +1142,7 @@ BEGIN
     ON product_combo_item.item_product_second_id = product_unit.product_second_id AND product_combo_item.item_product_unit_second_id = product_unit.product_unit_second_id
     WHERE product_combo_item.unit_number * _item_num > product_unit.inventory_number)
     THEN
-	    RAISE EXCEPTION 'inventory_number small than number_unit, product_unit_second_id: %' , _product_unit_second_id;
+	    RAISE NOTICE 'change_inventory_combo_item: inventory_number small than number_unit, product_unit_second_id: %' , _product_unit_second_id;
     END IF;
 
     FOR _item IN
@@ -1158,7 +1163,6 @@ BEGIN
 	RETURN;
 END;
 $$;
-
 
 
 

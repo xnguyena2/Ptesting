@@ -5,6 +5,7 @@ import io.r2dbc.pool.ConnectionPoolConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionFactory;
 import io.r2dbc.postgresql.client.SSLMode;
+import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,10 @@ import java.time.Duration;
 @EnableR2dbcRepositories
 //@EnableR2dbcRepositories(basePackages = "com.example.heroku.model.repository")
 public class R2dbcPostgresqlConfiguration extends AbstractR2dbcConfiguration {
+
+    @Value("${spring.postgresql.externalurl}")
+    private String externalUrl;
+
     @Value("${spring.postgresql.host}")
     private String host;
 
@@ -44,15 +49,20 @@ public class R2dbcPostgresqlConfiguration extends AbstractR2dbcConfiguration {
     @Bean
     @Override
     public ConnectionFactory connectionFactory() {
-        PostgresqlConnectionFactory postgresqlConnectionFactory = new PostgresqlConnectionFactory(PostgresqlConnectionConfiguration
-                .builder()
-                .host(host)
-                .database(db)
-                .username(username)
-                .password(password)
-                .port(port)
-                .sslMode(SSLMode.REQUIRE)
-                .build());
+        ConnectionFactory postgresqlConnectionFactory;
+        if (externalUrl != null && !externalUrl.isEmpty()) {
+            postgresqlConnectionFactory = ConnectionFactories.get(externalUrl);
+        } else {
+            postgresqlConnectionFactory = new PostgresqlConnectionFactory(PostgresqlConnectionConfiguration
+                    .builder()
+                    .host(host)
+                    .database(db)
+                    .username(username)
+                    .password(password)
+                    .port(port)
+                    .sslMode(SSLMode.REQUIRE)
+                    .build());
+        }
 
         ConnectionPoolConfiguration configuration = ConnectionPoolConfiguration.builder(postgresqlConnectionFactory)
                 .maxIdleTime(Duration.ofMillis(timeidle))

@@ -60,6 +60,7 @@ public class Beer {
         return Mono.just(info.getProduct())
                 .flatMap(product ->
                         this.beerRepository.saveProduct(product.getGroup_id(), product.getProduct_second_id(),
+                                product.getProduct_parent_id(),
                                 product.getName(), product.getDetail(),
                                 product.getCategory(), product.getUnit_category_config(),
                                 product.getMeta_search(), product.isVisible_web(),

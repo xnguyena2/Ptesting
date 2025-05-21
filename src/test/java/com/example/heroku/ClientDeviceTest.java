@@ -1,5 +1,6 @@
 package com.example.heroku;
 
+import com.example.heroku.model.MapKeyValue;
 import com.example.heroku.model.Store;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,6 +23,8 @@ public class ClientDeviceTest {
     boolean testWithMainGroup;
 
     public void BootStrapData() {
+        clientDeviceAPI.saveWebConfig(MapKeyValue.builder().group_id(group).value_o("webconfig").build())
+                        .block();
         clientDeviceAPI.bootStrapDataForWeb(group)
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
@@ -30,6 +33,7 @@ public class ClientDeviceTest {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
+                    assertThat(bootStrapData.getWeb_config()).isEqualTo("webconfig");
                     assertThat((long) bootStrapData.getCarousel().size()).isEqualTo(4);
                     assertThat((long) bootStrapData.getProducts().size()).isEqualTo(4);
                     if(testWithMainGroup) {
