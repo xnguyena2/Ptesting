@@ -55,6 +55,7 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
             "/package/getbystatusbetween",
             "/package/getbystatusproduct",
             "/auth/signin",
+            "/assets/**",
             "/*");
 
     public static final List<String> authenPaths = Arrays.asList(
