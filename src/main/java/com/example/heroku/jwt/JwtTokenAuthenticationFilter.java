@@ -68,6 +68,7 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
             "/table/savearea",
             "/table/deletearea",
             "/table/deletetable",
+            "/icons/**",
 
 
             "/*");
