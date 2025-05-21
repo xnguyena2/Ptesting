@@ -55,6 +55,8 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
             "/package/getbystatusbetween",
             "/package/getbystatusproduct",
             "/auth/signin",
+            "/auth/signinwithtoken/*",
+            "/token/get/*",
             "/assets/**",
 
             "/getobjectjs/logs",
