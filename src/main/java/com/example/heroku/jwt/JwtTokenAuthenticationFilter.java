@@ -55,6 +55,8 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
             "/package/getbystatusbetween",
             "/package/getbystatusproduct",
             "/auth/signin",
+            "/auth/signinwithtoken/*",
+            "/token/get/*",
             "/assets/**",
 
             "/getobjectjs/logs",
@@ -68,6 +70,7 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
             "/table/savearea",
             "/table/deletearea",
             "/table/deletetable",
+            "/icons/**",
 
 
             "/*");
