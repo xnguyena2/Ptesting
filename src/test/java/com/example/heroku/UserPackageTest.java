@@ -850,6 +850,7 @@ public class UserPackageTest {
                                 .number_services_unit(46)
                                 .number_unit(100)
                                 .discount_promotional(54)
+                                .depend_to_product("depend_to_product")
                                 .build(),
                         com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("123")
@@ -902,6 +903,7 @@ public class UserPackageTest {
                     assertThat(item.getProduct_unit_name()).isEqualTo("product_unit_name");
                     assertThat(item.getProduct_group_unit_name()).isEqualTo("product_group_unit_name");
                     assertThat(item.getProduct_type()).isEqualTo("product_type");
+                    assertThat(item.getDepend_to_product()).isEqualTo("depend_to_product");
                     assertThat(item.getNumber_services_unit()).isEqualTo(46);
                     assertThat(item.getNumber_unit()).isEqualTo(100);
                     assertThat(item.getDiscount_promotional()).isEqualTo(54);
