@@ -4,16 +4,15 @@ import com.example.heroku.model.UserPackage;
 import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.response.PackageDataResponse;
 import com.example.heroku.response.ProductInPackageResponse;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.sql.Timestamp;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserPackageDetailJoinWithUserPackage extends UserPackageDetail {
