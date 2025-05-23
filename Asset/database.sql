@@ -123,7 +123,7 @@ ALTER TABLE store ADD CONSTRAINT UQ_store UNIQUE(group_id);
 ALTER TABLE store ADD CONSTRAINT UQ_domain_url UNIQUE(domain_url);
 ALTER TABLE buyer ADD CONSTRAINT UQ_buyer UNIQUE(group_id, device_id);
 ALTER TABLE user_package_detail ADD CONSTRAINT UQ_user_package_detail UNIQUE(group_id, package_second_id);
-ALTER TABLE user_package ADD CONSTRAINT UQ_user_package UNIQUE(group_id, package_second_id, product_second_id, product_unit_second_id);
+ALTER TABLE user_package ADD CONSTRAINT UQ_user_package UNIQUE NULLS NOT DISTINCT (group_id, package_second_id, product_second_id, product_unit_second_id, depend_to_product);
 ALTER TABLE payment_transaction ADD CONSTRAINT UQ_payment_transaction UNIQUE(transaction_second_id);
 ALTER TABLE payment_transaction ADD CONSTRAINT UQ_group_payment_transaction UNIQUE(group_id, transaction_second_id);
 ALTER TABLE debt_transaction ADD CONSTRAINT UQ_debt_transaction UNIQUE(transaction_second_id);
