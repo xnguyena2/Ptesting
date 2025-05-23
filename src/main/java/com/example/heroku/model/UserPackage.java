@@ -31,7 +31,7 @@ public class UserPackage extends BaseEntity {
 
     private String product_group_unit_name;
 
-    private String  product_type;
+    private String product_type;
 
     private float number_services_unit;
 
@@ -49,9 +49,13 @@ public class UserPackage extends BaseEntity {
 
     private String note;
 
+    private String depend_to_product;
+
     private UserPackageDetail.Status status;
 
-//    update UserPackageDetailJoinWithUserPackage
+    /**
+     * please take a look at {@link com.example.heroku.model.joinwith.UserPackageDetailJoinWithUserPackage}
+     **/
 
     public UserPackage(UserPackage s) {
         super(s);
@@ -72,6 +76,7 @@ public class UserPackage extends BaseEntity {
         this.discount_promotional = s.discount_promotional;
         this.note = s.note;
         this.status = s.status;
+        this.depend_to_product = s.depend_to_product;
     }
 
     public UserPackage AutoFill() {

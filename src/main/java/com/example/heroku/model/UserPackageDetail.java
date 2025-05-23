@@ -79,7 +79,10 @@ public class UserPackageDetail  extends BaseEntity {
 
     private Status status;
 
-//    update UserPackageDetailJoinWithUserPackage
+
+    /**
+     * {@link com.example.heroku.model.joinwith.UserPackageDetailJoinWithUserPackage}
+     */
 
     public static UserPackageDetail clone(UserPackageDetail s) {
         return s.toBuilder().build();
