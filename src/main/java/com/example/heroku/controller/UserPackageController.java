@@ -78,6 +78,20 @@ public class UserPackageController {
                 });
     }
 
+    @PostMapping("/updateprintkitchen")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<Format>> updatePrintKitchen(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid ProductPackage productPackage) {
+        System.out.println("update print kitchen: " + productPackage.getPackage_second_id() + ", group: " + productPackage.getGroup_id());
+
+        return userPackageAPI.SavePackageDetailKitchen(productPackage)
+                .onErrorResume(throwable -> {
+                    String msg = throwable.getMessage();
+                    System.out.println(msg);
+                    return Mono.just(org.springframework.http.ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(Format.builder().response(msg).build()));
+                });
+    }
+
     @PostMapping("/admin/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> deletePackage(@RequestBody @Valid PackageID packageID) {

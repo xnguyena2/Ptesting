@@ -838,6 +838,7 @@ public class UserPackageTest {
                 .progress("{}")
                 .meta_search("hello meta search")
                 .money_source("moneysource")
+                .print_kitchen("print_kitchen")
                 .status(UserPackageDetail.Status.CREATE)
                 .product_units(new com.example.heroku.model.UserPackage[]{
                         com.example.heroku.model.UserPackage.builder()
@@ -868,6 +869,11 @@ public class UserPackageTest {
         userPackageAPI.SavePackageWithoutCheck(productPackage)
                 .block();
 
+        productPackage.setPrint_kitchen("print_kitchen_1");
+
+        userPackageAPI.SavePackageDetailKitchen(productPackage)
+                .block();
+
         userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
@@ -891,6 +897,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getAdditional_config()).isEqualTo("additional_config");
                     assertThat(userPackage.getMeta_search()).isEqualTo("hello meta search");
                     assertThat(userPackage.getMoney_source()).isEqualTo("moneysource");
+                    assertThat(userPackage.getPrint_kitchen()).isEqualTo("print_kitchen_1");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(3);
 
