@@ -126,7 +126,7 @@ public class UserPackage {
     }
 
     public Mono<ResponseEntity<Format>> SavePackageDetailKitchen(ProductPackage productPackage) {
-        return savePackageDetailKitchenToRepo(productPackage.AutoFill())
+        return savePackageDetailKitchenToRepo(productPackage)
                 .then(Mono.just(ok(Format.builder().response("done").build())));
     }
 
@@ -177,7 +177,7 @@ public class UserPackage {
     }
 
     Mono<UserPackageDetail> savePackageDetailKitchenToRepo(UserPackageDetail detail) {
-        return userPackageDetailRepository.SavePrintKitchen(detail.getGroup_id(), detail.getDevice_id(), detail.getPrint_kitchen())
+        return userPackageDetailRepository.SavePrintKitchen(detail.getGroup_id(), detail.getPackage_second_id(), detail.getPrint_kitchen())
                 .then(Mono.just(detail));
     }
 
