@@ -13,9 +13,6 @@ CREATE TABLE IF NOT EXISTS product_combo_item (id SERIAL PRIMARY KEY, group_id V
 CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, imgid VARCHAR, tag VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, categorys VARCHAR, config TEXT, createat TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS package_order (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_order_second_id VARCHAR, user_device_id VARCHAR, voucher_second_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, total_price float8, real_price float8, ship_price float8, discount float8, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_order (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, package_order_second_id VARCHAR, product_second_id VARCHAR, voucher_second_id VARCHAR, total_price float8, ship_price float8, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_unit_order (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, package_order_second_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, price float8, total_discount float8, number_unit INTEGER, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS user_device (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, user_first_name VARCHAR, user_last_name VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS user_fcm (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, fcm_id VARCHAR, status VARCHAR, createat TIMESTAMP);
@@ -240,9 +237,6 @@ begin
     DELETE FROM users WHERE group_id = by_group_id;
     DELETE FROM search_token WHERE group_id = by_group_id;
     DELETE FROM device_config WHERE group_id = by_group_id;
-    DELETE FROM package_order WHERE group_id = by_group_id;
-    DELETE FROM product_order WHERE group_id = by_group_id;
-    DELETE FROM product_unit_order WHERE group_id = by_group_id;
     DELETE FROM user_device WHERE group_id = by_group_id;
     DELETE FROM user_fcm WHERE group_id = by_group_id;
     DELETE FROM user_address WHERE group_id = by_group_id;
@@ -294,31 +288,6 @@ BEGIN
 	RETURN;
 END;
 $$;
-
-
-CREATE OR REPLACE FUNCTION add_buyer()
-  RETURNS TRIGGER
-  LANGUAGE PLPGSQL
-  AS
-$$
-BEGIN
-
-	INSERT INTO
-    	buyer (group_id , device_id, reciver_address, region_id, district_id, ward_id, reciver_fullname, phone_number, phone_number_clean, meta_search, total_price, real_price, ship_price, discount, point, status, createat)
-    VALUES(NEW.group_id, NEW.user_device_id, NEW.reciver_address, NEW.region_id, NEW.district_id, NEW.ward_id, NEW.reciver_fullname, NEW.phone_number, NEW.phone_number_clean, NEW.phone_number_clean || NEW.reciver_fullname, NEW.total_price, NEW.real_price, NEW.ship_price, NEW.discount, 0, NULL, NOW()) ON CONFLICT (group_id, device_id) DO
-    UPDATE
-    SET
-    	total_price = buyer.total_price + NEW.total_price,
-        real_price = buyer.real_price + NEW.real_price,
-        ship_price = buyer.ship_price + NEW.ship_price,
-        discount = buyer.discount + NEW.discount;
-
-	RETURN NEW;
-END;
-$$;
-
-
-CREATE OR REPLACE TRIGGER update_buyer AFTER INSERT ON package_order FOR EACH ROW EXECUTE PROCEDURE add_buyer();
 
 
 

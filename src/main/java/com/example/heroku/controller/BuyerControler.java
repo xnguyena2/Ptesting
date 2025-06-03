@@ -28,18 +28,6 @@ public class BuyerControler {
     @Autowired
     com.example.heroku.services.Buyer buyerServices;
 
-    @PostMapping("/admin/getallbyorder")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<BuyerData> getAllByOrder(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
-        System.out.println("group_id: " + query.getGroup_id() + ", buyer getallbyorder, " + " page: " + query.getPage() + " size: " + query.getSize());
-        return WrapPermissionAction.<BuyerData>builder()
-                .principal(principal)
-                .query(query)
-                .fluxAction(q -> buyerServices.GetAll(q))
-                .build()
-                .toFlux();
-    }
-
     @PostMapping("/admin/getall")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<DebtOfBuyer> getAll(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
