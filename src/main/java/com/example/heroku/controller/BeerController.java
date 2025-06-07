@@ -139,19 +139,6 @@ public class BeerController {
                 .build().toMono();
     }
 
-    @PostMapping("/admin/getall")
-    @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<SearchResult<BeerSubmitData>> adminGetAll(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchQuery query) {
-        System.out.println("admin get all beer: " + query.getPage());
-        return WrapPermissionAction.<SearchResult<BeerSubmitData>>builder()
-                .principal(principal)
-                .query(query)
-                .monoAction(q -> beerAPI.AdminCountGetAllBeer(q))
-                .build()
-                .toMono();
-    }
-
-
 
 
     @PostMapping("/getall")

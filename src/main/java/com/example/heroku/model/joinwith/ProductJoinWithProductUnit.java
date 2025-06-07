@@ -9,7 +9,9 @@ import lombok.experimental.SuperBuilder;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -19,7 +21,12 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductJoinWithProductUnit extends Product {
 
-    // ProductUnit
+    /***
+     * {@link ProductUnit}
+     */
+    /***
+     * {@link Image}
+     */
 
 
     protected Long child_id;
@@ -140,6 +147,43 @@ public class ProductJoinWithProductUnit extends Product {
         }
         result.setImages(productUnitImageList);
         result.SetBeerUnit(productUnitList);
+        return result;
+    }
+
+    public static BeerSubmitData GenerateBeerSubmitDataAllImg(List<ProductJoinWithProductUnit> listData) {
+        if (listData.isEmpty()) {
+            return BeerSubmitData.Empty();
+        }
+        ProductJoinWithProductUnit firstElement = listData.get(0);
+        BeerSubmitData result = BeerSubmitData.FromBeer(firstElement.getParent());
+        Map<String, ProductUnit> productUnitList = new HashMap<>();
+        Map<String, Image> productUnitImageList = new HashMap<>();
+        for (ProductJoinWithProductUnit child : listData) {
+            ProductUnit productUnit = child.getChild();
+            if (productUnit.getProduct_second_id() == null || productUnit.getProduct_second_id().isEmpty()) {
+                continue;
+            }
+            productUnitList.put(productUnit.getProduct_unit_second_id(), productUnit);
+
+            if (child.getImgid() == null || child.getImgid().isEmpty()) {
+                continue;
+            }
+            Image img =  Image.builder()
+                    .id(child.getImg_id())
+                    .group_id(child.getImg_group_id())
+                    .createat(child.getImg_createat())
+                    .imgid(child.getImgid())
+                    .tag(child.getTag())
+                    .thumbnail(child.getThumbnail())
+                    .medium(child.getMedium())
+                    .large(child.getLarge())
+                    .category(child.getCategory())
+                    .build();
+
+            productUnitImageList.put(img.getId().toString() ,img);
+        }
+        result.setImages(new ArrayList<>(productUnitImageList.values()));
+        result.SetBeerUnit(new ArrayList<>(productUnitList.values()));
         return result;
     }
 }

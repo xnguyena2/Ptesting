@@ -73,8 +73,12 @@ public class ProductUnit extends BaseEntity {
 
     private Status status;
 
-    //update ProductJoinWithProductUnit
-    //update BeerSubmitData
+    /***
+     * {@link com.example.heroku.model.joinwith.ProductJoinWithProductUnit}
+     */
+    /***
+     * {@link com.example.heroku.request.beer.BeerSubmitData}
+     */
 
     public enum Status{
         AVARIABLE("AVARIABLE"),

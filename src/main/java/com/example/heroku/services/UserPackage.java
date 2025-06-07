@@ -125,6 +125,11 @@ public class UserPackage {
                 .then(Mono.just(productPackage));
     }
 
+    public Mono<ResponseEntity<Format>> SavePackageDetailKitchen(ProductPackage productPackage) {
+        return savePackageDetailKitchenToRepo(productPackage)
+                .then(Mono.just(ok(Format.builder().response("done").build())));
+    }
+
     Mono<ProductPackage> saveBuyer(ProductPackage productPackage) {
 
         com.example.heroku.model.Buyer buyerInfo = productPackage.getBuyer();
@@ -166,8 +171,13 @@ public class UserPackage {
                         detail.getDiscount_promotional(), detail.getDiscount_by_point(), detail.getAdditional_fee(), detail.getAdditional_config(),
                         detail.getShip_price(), detail.getDeliver_ship_price(), detail.getCost(), detail.getProfit(),
                         detail.getPoint(), detail.getNote(), detail.getImage(), detail.getProgress(), detail.getMeta_search(),
-                        detail.getMoney_source(),
+                        detail.getMoney_source(), detail.getPrint_kitchen(),
                         detail.getStatus(), detail.getCreateat())
+                .then(Mono.just(detail));
+    }
+
+    Mono<UserPackageDetail> savePackageDetailKitchenToRepo(UserPackageDetail detail) {
+        return userPackageDetailRepository.SavePrintKitchen(detail.getGroup_id(), detail.getPackage_second_id(), detail.getPrint_kitchen())
                 .then(Mono.just(detail));
     }
 
@@ -214,6 +224,7 @@ public class UserPackage {
                         .then(Mono.just(packageDataResponse));
     }
 
+    @Deprecated
     Mono<PackageDataResponse> fillProductAndBuyer(PackageDataResponse packageDataResponse, Map<String, List<Image>> mapImg) {
         return
                 beerAPI.GetAllProductOfPackage(packageDataResponse.getGroup_id(), packageDataResponse.getPackage_second_id(), mapImg)
@@ -361,24 +372,18 @@ public class UserPackage {
     }
 
     public Flux<PackageDataResponse> GetPackageJoinByGrouAndStatus(UserID userID, UserPackageDetail.Status status, UserPackageDetail.Status or_status) {
-        return beerAPI.GetListImgOfProductOfPackage(userID.getGroup_id(), status, or_status, userID.getPage(), userID.getSize())
-                .flatMapMany(stringListMap ->
-                        joinUserPackageDetailWithUserPackgeRepository.getUserPackgeDetailAndPackageItem(userID.getGroup_id(), status, or_status, userID.getPage(), userID.getSize())
-                                .groupBy(UserPackageDetailJoinWithUserPackage::getPackage_second_id)
-                                .flatMap(groupedFlux -> groupedFlux.collectList().map(UserPackageDetailJoinWithUserPackage::GeneratePackageData))
-                                .flatMap(packageDataResponse -> fillProductAndBuyer(packageDataResponse, stringListMap))
-                );
+        return joinUserPackageDetailWithUserPackgeRepository.getUserPackgeDetailAndPackageItem(userID.getGroup_id(), status, or_status, userID.getPage(), userID.getSize())
+                .groupBy(UserPackageDetailJoinWithUserPackage::getPackage_second_id)
+                .flatMap(groupedFlux -> groupedFlux.collectList().map(UserPackageDetailJoinWithUserPackage::GeneratePackageData))
+                .flatMap(this::fillProductAndBuyer);
     }
 
     public Flux<PackageDataResponse> GetPackageJoinByGrouAndStatusAfterID(UserID userID, UserPackageDetail.Status status, UserPackageDetail.Status or_status) {
         long id = Long.parseLong(userID.getId());
-        return beerAPI.GetListImgOfProductOfPackageAfterID(userID.getGroup_id(), status, or_status, id, userID.getPage(), userID.getSize())
-                .flatMapMany(stringListMap ->
-                        joinUserPackageDetailWithUserPackgeRepository.getUserPackgeDetailAndPackageItemAferID(userID.getGroup_id(), status, or_status, id, userID.getPage(), userID.getSize())
-                                .groupBy(UserPackageDetailJoinWithUserPackage::getPackage_second_id)
-                                .flatMap(groupedFlux -> groupedFlux.collectList().map(UserPackageDetailJoinWithUserPackage::GeneratePackageData))
-                                .flatMap(packageDataResponse -> fillProductAndBuyer(packageDataResponse, stringListMap))
-                );
+        return joinUserPackageDetailWithUserPackgeRepository.getUserPackgeDetailAndPackageItemAferID(userID.getGroup_id(), status, or_status, id, userID.getPage(), userID.getSize())
+                .groupBy(UserPackageDetailJoinWithUserPackage::getPackage_second_id)
+                .flatMap(groupedFlux -> groupedFlux.collectList().map(UserPackageDetailJoinWithUserPackage::GeneratePackageData))
+                .flatMap(this::fillProductAndBuyer);
     }
 
     public Flux<PackageDataResponse> SearchPackageJoinByGrouAndStatus(SearchQuery searchQuery, UserPackageDetail.Status status, UserPackageDetail.Status or_status) {

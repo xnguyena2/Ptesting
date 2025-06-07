@@ -1,6 +1,5 @@
 package com.example.heroku.services;
 
-import com.example.heroku.model.PackageOrder;
 import com.example.heroku.model.repository.BuyerRepository;
 import com.example.heroku.model.repository.StatisticBenifitOfProductRepository;
 import com.example.heroku.model.repository.StatisticTotalBenifitRepository;
@@ -40,12 +39,6 @@ public class Buyer {
 
     public Mono<com.example.heroku.model.Buyer> updatePrice(String groupID, String deviceID, float totalPrice, float realPrice, float shipPrice, float discount, int point){
         return buyerRepository.updateMoney(groupID, deviceID, totalPrice, realPrice, shipPrice, discount, point);
-    }
-
-    public Flux<BuyerData> GetAll(SearchQuery query) {
-        PackageOrder.Status status = PackageOrder.Status.get(query.GetFilterTxt());
-        return this.buyerRepository.getAll(status, query.getGroup_id(), query.getPage(), query.getSize())
-                .map(BuyerData::new);
     }
 
     public Flux<BuyerData> GetAllDirect(SearchQuery query) {

@@ -47,22 +47,6 @@ public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
     @Query(value = "SELECT * FROM product WHERE product.group_id = :group_id AND product.status IS DISTINCT FROM 'HIDE' ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<Product> findByIdNotNull(@Param("group_id")String groupID, @Param("page")int page, @Param("size")int size);
 
-    //search all
-    @Query(value = "SELECT * FROM product WHERE product.group_id = :group_id ORDER BY :property ASC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> findByGroupIdASC(@Param("group_id")String groupID, @Param("property")String property, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT * FROM product WHERE product.group_id = :group_id ORDER BY :property DESC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> findByGroupIdDESC(@Param("group_id")String groupID, @Param("property")String property, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product.* FROM ( SELECT product_unit.product_second_id, MAX(product_unit.price) AS price FROM product_unit WHERE product_unit.group_id = :group_id GROUP BY product_unit.product_second_id ) product_price RIGHT JOIN ( SELECT * FROM product WHERE product.group_id = :group_id ) product ON product.product_second_id = product_price.product_second_id ORDER BY price ASC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminGetAllBeerSortByPriceASC(@Param("group_id")String groupID, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product.* FROM ( SELECT product_unit.product_second_id, MAX(product_unit.price) AS price FROM product_unit WHERE product_unit.group_id = :group_id GROUP BY product_unit.product_second_id ) product_price RIGHT JOIN ( SELECT * FROM product WHERE product.group_id = :group_id ) product ON product.product_second_id = product_price.product_second_id ORDER BY price DESC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminGetAllBeerSortByPriceDESC(@Param("group_id")String groupID, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT * FROM ( SELECT * FROM product WHERE product.group_id = :group_id ) product LEFT JOIN ( SELECT product_unit_order.product_second_id, SUM(product_unit_order.number_unit) AS sold FROM product_unit_order WHERE product_unit_order.group_id = :group_id GROUP BY product_unit_order.product_second_id ) product_sold ON product.product_second_id = product_sold.product_second_id ORDER BY sold DESC NULLS LAST LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminGetAllBeerSortBySoldDESC(@Param("group_id")String groupID, @Param("page")int page, @Param("size")int size);
-
     //for user so must remove hide
     @Query(value = "SELECT product_temp.* FROM ( SELECT * FROM product WHERE product.group_id = :group_id AND product.status IS DISTINCT FROM 'HIDE' ) product_temp LEFT JOIN ( SELECT product_unit.product_second_id, MAX(product_unit.price) AS price FROM product_unit WHERE product_unit.group_id = :group_id GROUP BY product_unit.product_second_id ) product_unit_temp ON product_temp.product_second_id = product_unit_temp.product_second_id ORDER BY price ASC LIMIT :size OFFSET (:page * :size)")
     Flux<Product> getAllBeerSortByPriceASC(@Param("group_id")String groupID, @Param("page")int page, @Param("size")int size);
@@ -70,21 +54,8 @@ public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
     @Query(value = "SELECT product_temp.* FROM ( SELECT * FROM product WHERE product.group_id = :group_id AND product.status IS DISTINCT FROM 'HIDE' ) product_temp LEFT JOIN ( SELECT product_unit.product_second_id, MAX(product_unit.price) AS price FROM product_unit WHERE product_unit.group_id = :group_id GROUP BY product_unit.product_second_id ) product_unit_temp ON product_temp.product_second_id = product_unit_temp.product_second_id ORDER BY price DESC LIMIT :size OFFSET (:page * :size)")
     Flux<Product> getAllBeerSortByPriceDESC(@Param("group_id")String groupID, @Param("page")int page, @Param("size")int size);
 
-    @Query(value = "SELECT product.* FROM ( SELECT product.product_second_id, SUM(product_unit_order.number_unit) AS sold FROM product LEFT JOIN product_unit_order ON product.product_second_id = product_unit_order.product_second_id AND product.group_id = product_unit_order.group_id WHERE product.group_id = :group_id AND product.status IS DISTINCT FROM 'HIDE' GROUP BY product.product_second_id ) product_temp RIGHT JOIN ( SELECT * FROM product WHERE product.group_id = :group_id AND product.status IS DISTINCT FROM 'HIDE' ) product ON product.product_second_id = product_temp.product_second_id ORDER BY sold DESC NULLS LAST LIMIT :size OFFSET (:page * :size)")
+    @Query(value = "SELECT product.* FROM (SELECT product.product_second_id, SUM(user_package.number_unit) AS sold FROM product LEFT JOIN user_package ON product.product_second_id = user_package.product_second_id AND product.group_id = user_package.group_id WHERE product.group_id = :group_id AND product.status IS DISTINCT FROM 'HIDE' GROUP BY product.product_second_id ORDER BY sold DESC NULLS LAST LIMIT :size OFFSET (:page * :size)) product_temp LEFT JOIN (SELECT * FROM product WHERE product.group_id = :group_id) AS product ON product.product_second_id = product_temp.product_second_id")
     Flux<Product> getAllBeerSortBySoldDESC(@Param("group_id")String groupID, @Param("page")int page, @Param("size")int size);
-
-    //search by category
-    @Query(value = "SELECT * FROM product WHERE product.group_id = :group_id AND product.category = :category")
-    Flux<Product> findByGroupIDAndCategory(@Param("group_id")String groupID, @Param("category") String category, Pageable pageable);
-
-    @Query(value = "SELECT product.* FROM ( SELECT product_unit.product_second_id, MAX(product_unit.price) AS price FROM product_unit WHERE product_unit.group_id = :group_id GROUP BY product_unit.product_second_id ) product_price_temp RIGHT JOIN ( SELECT * FROM product WHERE product.group_id = :group_id AND product.category = :category ) product ON product.product_second_id = product_price_temp.product_second_id ORDER BY price ASC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> AdminFindByCategoryBeerSortByPriceASC(@Param("group_id")String groupID, @Param("category") String category, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product.* FROM ( SELECT product_unit.product_second_id, MAX(product_unit.price) AS price FROM product_unit WHERE product_unit.group_id = :group_id GROUP BY product_unit.product_second_id ) product_price_temp RIGHT JOIN ( SELECT * FROM product WHERE product.group_id = :group_id AND product.category = :category ) product ON product.product_second_id = product_price_temp.product_second_id ORDER BY price DESC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> AdminFindByCategoryBeerSortByPriceDESC(@Param("group_id")String groupID, @Param("category") String category, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product.* FROM ( SELECT product_unit_order.product_second_id, SUM(product_unit_order.number_unit) AS sold FROM product_unit_order WHERE product_unit_order.group_id = :group_id GROUP BY product_unit_order.product_second_id ) product_sole_temp RIGHT JOIN ( SELECT * FROM product WHERE product.group_id = :group_id AND product.category = :category ) product ON product.product_second_id = product_sole_temp.product_second_id ORDER BY sold DESC NULLS LAST LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> AdminFindByCategoryBeerSortBySoldDESC(@Param("group_id")String groupID, @Param("category") String category, @Param("page")int page, @Param("size")int size);
 
 
     //search by category
@@ -100,36 +71,8 @@ public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
     @Query(value = "SELECT product.* FROM ( SELECT * FROM product WHERE product.group_id = :group_id AND product.category = :category AND product.status IS DISTINCT FROM 'HIDE' ) product LEFT JOIN ( SELECT product_unit.product_second_id, MAX(product_unit.price) AS price FROM product_unit WHERE product_unit.group_id = :group_id GROUP BY product_unit.product_second_id ) product_price ON product.product_second_id = product_price.product_second_id ORDER BY price DESC LIMIT :size OFFSET (:page * :size)")
     Flux<Product> findByCategoryBeerSortByPriceDESC(@Param("group_id")String groupID, @Param("category") String category, @Param("page")int page, @Param("size")int size);
 
-    @Query(value = "SELECT product.* FROM ( SELECT * FROM product WHERE product.group_id = :group_id AND product.category = :category AND product.status IS DISTINCT FROM 'HIDE' ) product LEFT JOIN ( SELECT product_unit_order.product_second_id, SUM(product_unit_order.number_unit) AS sold FROM product_unit_order WHERE product_unit_order.group_id = :group_id GROUP BY product_unit_order.product_second_id ) product_sold ON product.product_second_id = product_sold.product_second_id ORDER BY sold DESC NULLS LAST LIMIT :size OFFSET (:page * :size)")
+    @Query(value = "SELECT product.* FROM (SELECT * FROM product WHERE product.group_id = :group_id AND product.category = :category AND product.status IS DISTINCT FROM 'HIDE') product LEFT JOIN (SELECT user_package.product_second_id, SUM(user_package.number_unit) AS sold FROM user_package WHERE user_package.group_id = :group_id GROUP BY user_package.product_second_id) product_sold ON product.product_second_id = product_sold.product_second_id ORDER BY sold DESC NULLS LAST LIMIT :size OFFSET (:page * :size)")
     Flux<Product> findByCategoryBeerSortBySoldDESC(@Param("group_id")String groupID, @Param("category") String category, @Param("page")int page, @Param("size")int size);
-
-
-
-    //search by query for admin
-    @Query(value = "SELECT * FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE product.group_id = :group_id AND search_token.tokens @@ to_tsquery(:search) LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeer(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product_search.* FROM ( SELECT product.* FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE product.group_id = :group_id AND search_token.tokens @@ to_tsquery(:search) ) product_search INNER JOIN ( SELECT product_unit.product_second_id, MAX(product_unit.price) AS price FROM product_unit WHERE product_unit.group_id = :group_id GROUP BY product_unit.product_second_id ) product_unit_temp ON product_search.product_second_id = product_unit_temp.product_second_id ORDER BY price ASC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerSortByPriceASC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product_search.* FROM ( SELECT product.* FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE product.group_id = :group_id AND search_token.tokens @@ to_tsquery(:search) ) product_search INNER JOIN ( SELECT product_unit.product_second_id, MAX(product_unit.price) AS price FROM product_unit WHERE product_unit.group_id = :group_id GROUP BY product_unit.product_second_id ) product_unit_temp ON product_search.product_second_id = product_unit_temp.product_second_id ORDER BY price DESC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerSortByPriceDESC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product.* FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE product.group_id = :group_id AND search_token.tokens @@ to_tsquery(:search) ORDER BY name ASC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerSortByNameASC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product.* FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE product.group_id = :group_id AND search_token.tokens @@ to_tsquery(:search) ORDER BY name DESC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerSortByNameDESC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product.* FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE product.group_id = :group_id AND search_token.tokens @@ to_tsquery(:search) ORDER BY createat ASC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerSortByCreateASC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product.* FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE product.group_id = :group_id AND search_token.tokens @@ to_tsquery(:search) ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerSortByCreateDESC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product_search.* FROM ( SELECT product.* FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE product.group_id = :group_id AND search_token.tokens @@ to_tsquery(:search) ) product_search LEFT JOIN ( SELECT product_unit_order.product_second_id, SUM(product_unit_order.number_unit) AS sold from product_unit_order WHERE product_unit_order.group_id = :group_id GROUP BY product_unit_order.product_second_id ) product_sold_temp ON product_search.product_second_id = product_sold_temp.product_second_id ORDER BY sold DESC NULLS LAST LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerSortBySoldDESC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
 
 
     //search by query for user
@@ -154,35 +97,8 @@ public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
     @Query(value = "SELECT product.* FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE product.group_id = :group_id AND search_token.tokens @@ to_tsquery(:search) AND product.status IS DISTINCT FROM 'HIDE' ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<Product> searchBeerSortByCreateDESC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
 
-    @Query(value = "SELECT product_search.* FROM ( SELECT product.* FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE product.group_id = :group_id AND search_token.tokens @@ to_tsquery(:search) AND product.status IS DISTINCT FROM 'HIDE' ) product_search LEFT JOIN ( SELECT product_unit_order.product_second_id, SUM(product_unit_order.number_unit) AS sold from product_unit_order WHERE product_unit_order.group_id = :group_id GROUP BY product_unit_order.product_second_id ) product_sold ON product_search.product_second_id = product_sold.product_second_id ORDER BY sold DESC NULLS LAST LIMIT :size OFFSET (:page * :size)")
+    @Query(value = "SELECT product_search.* FROM (SELECT product.* FROM product INNER JOIN search_token ON search_token.product_second_id = product.product_second_id AND search_token.group_id = product.group_id WHERE product.group_id = :group_id AND search_token.tokens @@ to_tsquery(:search) AND product.status IS DISTINCT FROM 'HIDE') product_search LEFT JOIN (SELECT user_package.product_second_id, SUM(user_package.number_unit) AS sold FROM user_package WHERE user_package.group_id = :group_id GROUP BY user_package.product_second_id) product_sold ON product_search.product_second_id = product_sold.product_second_id ORDER BY sold DESC NULLS LAST LIMIT :size OFFSET (:page * :size)")
     Flux<Product> searchBeerSortBySoldDESC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-
-    //SEARCH LIKE foradmin
-    //select * FROM product where meta_search ~ '(?=.*go)(?=.*ha)'
-    @Query(value = "SELECT * FROM product WHERE product.group_id = :group_id AND product.meta_search LIKE :search LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerLike(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product_temp.* FROM ( SELECT product.* FROM product WHERE product.group_id = :group_id AND product.meta_search LIKE :search ) product_temp LEFT JOIN ( SELECT product_unit.product_second_id, MAX(product_unit.price) as price FROM product_unit WHERE product_unit.group_id = :group_id GROUP BY product_unit.product_second_id ) product_unit_temp ON product_temp.product_second_id = product_unit_temp.product_second_id ORDER BY price ASC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerLikeSortByPriceASC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product_temp.* FROM ( SELECT product.* FROM product WHERE product.group_id = :group_id AND product.meta_search LIKE :search ) product_temp LEFT JOIN ( SELECT product_unit.product_second_id, MAX(product_unit.price) as price FROM product_unit WHERE product_unit.group_id = :group_id GROUP BY product_unit.product_second_id ) product_unit_temp ON product_temp.product_second_id = product_unit_temp.product_second_id ORDER BY price DESC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerLikeSortByPriceDESC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT * FROM product WHERE product.group_id = :group_id AND product.meta_search LIKE :search ORDER BY name ASC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerLikeSortByNameASC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT * FROM product WHERE product.group_id = :group_id AND product.meta_search LIKE :search ORDER BY name DESC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerLikeSortByNameDESC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT * FROM product WHERE product.group_id = :group_id AND product.meta_search LIKE :search ORDER BY createat ASC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerLikeSortCreateASC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT * FROM product WHERE product.group_id = :group_id AND product.meta_search LIKE :search ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerLikeSortCreateDESC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
-
-    @Query(value = "SELECT product_temp.* FROM ( SELECT * FROM product WHERE product.group_id = :group_id AND product.meta_search LIKE :search ) product_temp LEFT JOIN ( SELECT product_unit_order.product_second_id, SUM(product_unit_order.number_unit) AS sold FROM product_unit_order WHERE product_unit_order.group_id = :group_id GROUP BY product_unit_order.product_second_id ) product_sold_temp ON product_temp.product_second_id = product_sold_temp.product_second_id ORDER BY sold DESC NULLS LAST LIMIT :size OFFSET (:page * :size)")
-    Flux<Product> adminSearchBeerLikeSortBySoldDESC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
 
 
     //SEARCH LIKE
@@ -208,7 +124,7 @@ public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
     @Query(value = "SELECT * FROM product WHERE product.group_id = :group_id AND product.meta_search LIKE :search AND product.status IS DISTINCT FROM 'HIDE' ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<Product> searchBeerLikeSortCreateDESC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
 
-    @Query(value = "SELECT product_temp.* FROM ( SELECT * FROM product WHERE product.group_id = :group_id AND product.meta_search LIKE :search AND product.status IS DISTINCT FROM 'HIDE' ) product_temp LEFT JOIN ( SELECT product_unit_order.product_second_id, SUM(product_unit_order.number_unit) AS sold FROM product_unit_order WHERE product_unit_order.group_id = :group_id GROUP BY product_unit_order.product_second_id ) product_unit_order_temp ON product_temp.product_second_id = product_unit_order_temp.product_second_id ORDER BY sold DESC NULLS LAST LIMIT :size OFFSET (:page * :size)")
+    @Query(value = "SELECT product_temp.* FROM (SELECT * FROM product WHERE product.group_id = :group_id AND product.meta_search LIKE :search AND product.status IS DISTINCT FROM 'HIDE') product_temp LEFT JOIN (SELECT user_package.product_second_id, SUM(user_package.number_unit) AS sold FROM user_package WHERE user_package.group_id = :group_id GROUP BY user_package.product_second_id) product_sold ON product_temp.product_second_id = product_sold.product_second_id ORDER BY sold DESC NULLS LAST LIMIT :size OFFSET (:page * :size)")
     Flux<Product> searchBeerLikeSortBySoldDESC(@Param("group_id")String groupID, @Param("search")String search, @Param("page")int page, @Param("size")int size);
 
 
