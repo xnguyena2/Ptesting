@@ -29,4 +29,7 @@ public class Image extends BaseEntity {
     private String category;
 
     //update ProductJoinWithProductUnit
+    /***
+     * {@link com.example.heroku.model.joinwith.ProductJoinWithProductUnit}
+     */
 }

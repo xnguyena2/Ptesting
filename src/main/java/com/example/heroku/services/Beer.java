@@ -174,14 +174,14 @@ public class Beer {
                 .map(beerSubmitData -> beerSubmitData.SetImg(mapImg));
     }
 
+    @Deprecated
     public Flux<BeerSubmitData> GetAllProductOfPackage(String  groupID, String packageID, Map<String, List<com.example.heroku.model.Image>> mapImg) {
-        return this.joinProductWithProductUnit.GetAllBeerByJoinOfPackage(groupID, packageID)
+        return this.joinProductWithProductUnit.GetAllBeerByJoinOfPackageAllImg(groupID, packageID)
                 .map(beerSubmitData -> beerSubmitData.SetImg(mapImg));
     }
 
     public Flux<BeerSubmitData> GetAllProductOfPackage(String  groupID, String packageID) {
-        return this.joinProductWithProductUnit.GetAllBeerByJoinOfPackage(groupID, packageID)
-                .flatMap(this::_setImg4SubmitData);
+        return this.joinProductWithProductUnit.GetAllBeerByJoinOfPackageAllImg(groupID, packageID);
     }
 
     public Flux<BeerSubmitData> GetAllBeer(SearchQuery query) {
@@ -189,6 +189,7 @@ public class Beer {
                 .flatMap(this::CoverToSubmitData);
     }
 
+    @Deprecated
     public Flux<BeerSubmitData> GetAllBeerByJoinFirst(SearchQuery query) {
         Map<String, List<com.example.heroku.model.Image>> imgMap = new HashMap<>();
         return Mono.just(imgMap).flatMap(stringListMap ->
@@ -207,23 +208,11 @@ public class Beer {
     }
 
     public Flux<BeerSubmitData> GetAllBeerByJoinWithImageFirst(SearchQuery query) {
-        Map<String, com.example.heroku.model.Image> imgMap = new HashMap<>();
-        return Mono.just(imgMap).flatMap(stringListMap ->
-                imageRepository.getAllOfOnlyForProduct(query.getGroup_id())
-                        .map(img -> {
-                                    stringListMap.put(img.getCategory(), img);
-                                    return 0;
-                                }
-                        ).then(Mono.just(stringListMap))
-        ).flatMapMany(mapMono ->
-                this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHide(query)
-                        .map(beerSubmitData -> beerSubmitData.SetProductImg(mapMono))
-        );
+        return this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHideAllImg(query);
     }
 
     public Flux<BeerSubmitData> GetAllBeerByJoinFirstForWeb(SearchQuery query) {
-        return this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHideForWeb(query)
-                .flatMap(this::_setImg4SubmitData);
+        return this.joinProductWithProductUnit.GetAllBeerByJoinFirstNotHideForWebAllImg(query);
     }
 
     public Flux<ProductUnit> getAllProductUnitOfIDs(String groupID, List<String> productIDs, List<String> productUinitIDs) {
