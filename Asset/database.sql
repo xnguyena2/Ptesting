@@ -7,8 +7,9 @@ CREATE TABLE IF NOT EXISTS users_info (id SERIAL PRIMARY KEY, group_id VARCHAR N
 CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, tokens TSVECTOR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_parent_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, visible_web BOOL, default_group_unit_naname VARCHAR, number_group_unit_config VARCHAR, warranty VARCHAR, product_type VARCHAR, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, product_type VARCHAR, group_unit_id VARCHAR, group_unit_naname VARCHAR, group_unit_number float8, services_config VARCHAR, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, enable_serial BOOL, product_type VARCHAR, group_unit_id VARCHAR, group_unit_naname VARCHAR, group_unit_number float8, services_config VARCHAR, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_combo_item (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, item_product_second_id VARCHAR, item_product_unit_second_id VARCHAR, unit_number float8, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_serial (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, group_import_second_id VARCHAR, warranty VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, imgid VARCHAR, tag VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, categorys VARCHAR, config TEXT, createat TIMESTAMP);
@@ -937,7 +938,7 @@ BEGIN
 
     INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
     VALUES ( OLD.group_id, OLD.arg_action_id, OLD.product_second_id, OLD.product_unit_second_id, OLD.name, OLD.buy_price, OLD.inventory_number, 'DELETE PRODUCT', 'DELETE_PRODUCT', 'DONE', NOW() )
-    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id)
+    ON CONFLICT ON CONSTRAINT UQ_product_import_second_id
     DO UPDATE SET product_unit_name_category = OLD.name, price = OLD.buy_price, amount = OLD.inventory_number, note = 'DELETE PRODUCT', type = 'DELETE_PRODUCT', status = 'DONE', createat = NOW();
 
 	RETURN OLD;
@@ -982,7 +983,7 @@ BEGIN
 
     INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
     VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, _note, _type, _status, NOW() )
-    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id)
+    ON CONFLICT ON CONSTRAINT UQ_product_import_second_id
     DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = product_import.amount + NEW.inventory_number - OLD.inventory_number, note = _note, type = _type, status = _status, createat = NOW();
 
 	RETURN NEW;
@@ -1009,7 +1010,7 @@ BEGIN
 
     INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
     VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number, 'set inventory to:' || NEW.inventory_number, 'UPDATE_NUMBER', 'DONE', NOW() )
-    ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id)
+    ON CONFLICT ON CONSTRAINT UQ_product_import_second_id
     DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - product_import.amount, note = 'update inventory from: ' || product_import.amount || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW()
     WHERE product_import.amount <> NEW.inventory_number OR NEW.arg_action_type <> product_import.type;
 
@@ -1058,7 +1059,8 @@ BEGIN
 
     INSERT INTO group_import( group_id, group_import_second_id, staff_id, staff_name, total_price, total_amount, type, status, createat )
     VALUES ( _group_id, _group_import_second_id, _staff_id, _staff_name, _price, _amount, _type, _status, NOW() )
-    ON CONFLICT (group_id, group_import_second_id) DO UPDATE SET staff_id = _staff_id, staff_name = _staff_name, total_price = _price, total_amount = _amount, type = _type, status = _status, createat = NOW();
+    ON CONFLICT ON CONSTRAINT UQ_group_import_second_id
+    DO UPDATE SET staff_id = _staff_id, staff_name = _staff_name, total_price = _price, total_amount = _amount, type = _type, status = _status, createat = NOW();
 
 	RETURN;
 END;

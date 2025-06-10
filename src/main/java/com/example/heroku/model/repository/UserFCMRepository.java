@@ -16,7 +16,7 @@ public interface UserFCMRepository  extends ReactiveCrudRepository<UserFCM, Long
     @Query(value = "SELECT * FROM user_fcm WHERE user_fcm.group_id = :group_id AND user_fcm.device_id = :id")
     Flux<UserFCM> findByDeviceId(@Param("group_id")String groupID, @Param("id") String id);
 
-    @Query(value = "INSERT INTO user_fcm(group_id, device_id, fcm_id, status, createat) VALUES (:group_id, :device_id, :fcm_id, :status, :createat) ON CONFLICT (group_id, device_id) DO UPDATE SET fcm_id=:fcm_id, status=:status, createat=:createat")
+    @Query(value = "INSERT INTO user_fcm(group_id, device_id, fcm_id, status, createat) VALUES (:group_id, :device_id, :fcm_id, :status, :createat) ON CONFLICT ON CONSTRAINT UQ_user_fcm_device_id DO UPDATE SET fcm_id=:fcm_id, status=:status, createat=:createat")
     Mono<UserFCM> saveToken(@Param("group_id")String groupID, @Param("device_id") String id, @Param("fcm_id") String tokens, @Param("status") UserFCM.Status status, @Param("createat") Timestamp createat);
 
     @Query(value = "DELETE FROM user_fcm WHERE user_fcm.group_id = :group_id AND user_fcm.device_id = :id")

@@ -26,7 +26,7 @@ public interface StoreManagementRepository extends ReactiveCrudRepository<Store,
     @Query(value = "DELETE FROM store WHERE store.group_id = :group_id")
     Mono<Store> deleteStore(@Param("group_id")String groupID);
 
-    @Query(value = "INSERT INTO store(group_id, name, time_open, address, phone ,domain_url, status, store_type, createat) VALUES (:group_id, :name, :time_open, :address, :phone, :domain_url, :status, :store_type, :createat) ON CONFLICT (group_id) DO UPDATE SET name = :name, time_open = :time_open, address = :address, phone = :phone, domain_url = :domain_url, status = :status, store_type = :store_type")
+    @Query(value = "INSERT INTO store(group_id, name, time_open, address, phone ,domain_url, status, store_type, createat) VALUES (:group_id, :name, :time_open, :address, :phone, :domain_url, :status, :store_type, :createat) ON CONFLICT ON CONSTRAINT UQ_store DO UPDATE SET name = :name, time_open = :time_open, address = :address, phone = :phone, domain_url = :domain_url, status = :status, store_type = :store_type")
     Mono<Store> insertOrUpdate(@Param("group_id")String groupID, @Param("name")String name, @Param("time_open")String time_open, @Param("address")String address, @Param("phone")String phone, @Param("domain_url")String domain_url, @Param("status")Store.Status status, @Param("store_type")Store.StoreType storeType, @Param("createat")Timestamp createat);
 
     @Query(value = "UPDATE store SET name = :name, time_open = :time_open, address = :address, phone = :phone, domain_url = :domain_url, status = :status, store_type = :store_type WHERE group_id = :group_id")

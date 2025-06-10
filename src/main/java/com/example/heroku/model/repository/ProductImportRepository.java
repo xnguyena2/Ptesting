@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 public interface ProductImportRepository extends ReactiveCrudRepository<ProductImport, Long> {
 
 
-    @Query(value = "INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat ) VALUES ( :group_id, :group_import_second_id, :product_second_id, :product_unit_second_id, :product_unit_name_category, :price, :amount, :note, :type, :status, :createat ) ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = :product_unit_name_category, price = :price, amount = :amount, note = :note, type = :type, status = :status, createat = :createat ")
+    @Query(value = "INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat ) VALUES ( :group_id, :group_import_second_id, :product_second_id, :product_unit_second_id, :product_unit_name_category, :price, :amount, :note, :type, :status, :createat ) ON CONFLICT ON CONSTRAINT UQ_product_import_second_id DO UPDATE SET product_unit_name_category = :product_unit_name_category, price = :price, amount = :amount, note = :note, type = :type, status = :status, createat = :createat ")
     Mono<ProductImport> inertOrUpdate(@Param("group_id") String group_id, @Param("group_import_second_id") String group_import_second_id,
                                       @Param("product_second_id") String product_second_id, @Param("product_unit_second_id") String product_unit_second_id,
                                       @Param("product_unit_name_category") String product_unit_name_category,

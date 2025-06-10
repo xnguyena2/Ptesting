@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 
 public interface MapKeyValueRepository extends ReactiveCrudRepository<MapKeyValue, Long> {
 
-    @Query(value = "INSERT INTO map_key_value( group_id, id_o, value_o, createat ) VALUES ( :group_id, :id_o, :value_o, :createat ) ON CONFLICT (group_id, id_o) DO UPDATE SET value_o = :value_o, createat = :createat")
+    @Query(value = "INSERT INTO map_key_value( group_id, id_o, value_o, createat ) VALUES ( :group_id, :id_o, :value_o, :createat ) ON CONFLICT ON CONSTRAINT UQ_map_key_value DO UPDATE SET value_o = :value_o, createat = :createat")
     Mono<MapKeyValue> insert(@Param("group_id") String group_id, @Param("id_o") String id_o, @Param("value_o") String value_o, @Param("createat") Timestamp createat);
 
     @Query(value = "SELECT * FROM map_key_value WHERE group_id = :group_id AND id_o = :id_o")

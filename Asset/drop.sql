@@ -37,6 +37,7 @@ DROP TABLE IF EXISTS notification;
 DROP TABLE IF EXISTS notification_relate_user_device;
 DROP TABLE IF EXISTS shipping_provider;
 
+DROP TABLE IF EXISTS product_serial;
 DROP TABLE IF EXISTS product_combo_item;
 DROP TABLE IF EXISTS product_unit;
 DROP TABLE IF EXISTS product;

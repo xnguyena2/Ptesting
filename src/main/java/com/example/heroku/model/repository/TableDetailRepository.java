@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 
 public interface TableDetailRepository extends ReactiveCrudRepository<TableDetail, Long> {
 
-    @Query(value = "INSERT INTO table_detail(group_id, area_id, table_id, table_name, package_second_id, detail, status, createat) VALUES (:group_id, :area_id, :table_id, :table_name, :package_second_id, :detail, :status, :createat) ON CONFLICT (group_id, area_id, table_id) DO UPDATE SET table_name = :table_name, package_second_id = :package_second_id, detail = :detail, status = :status, createat = :createat")
+    @Query(value = "INSERT INTO table_detail(group_id, area_id, table_id, table_name, package_second_id, detail, status, createat) VALUES (:group_id, :area_id, :table_id, :table_name, :package_second_id, :detail, :status, :createat) ON CONFLICT ON CONSTRAINT UQ_table_detail DO UPDATE SET table_name = :table_name, package_second_id = :package_second_id, detail = :detail, status = :status, createat = :createat")
     Mono<TableDetail> insertOrUpdate(@Param("group_id") String group_id, @Param("area_id") String area_id, @Param("table_id") String table_id,
                                      @Param("table_name") String table_name, @Param("package_second_id") String package_second_id,
                                      @Param("detail") String detail,
