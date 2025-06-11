@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR
 CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_parent_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, visible_web BOOL, default_group_unit_naname VARCHAR, number_group_unit_config VARCHAR, warranty VARCHAR, product_type VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, enable_serial BOOL, product_type VARCHAR, group_unit_id VARCHAR, group_unit_naname VARCHAR, group_unit_number float8, services_config VARCHAR, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_combo_item (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, item_product_second_id VARCHAR, item_product_unit_second_id VARCHAR, unit_number float8, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_serial (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, group_import_second_id VARCHAR, warranty VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_serial (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_serial_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, group_import_second_id VARCHAR, package_second_id VARCHAR, warranty VARCHAR, note VARCHAR, status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS image (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, imgid VARCHAR, tag VARCHAR, thumbnail VARCHAR, medium VARCHAR, large VARCHAR, category VARCHAR, createat TIMESTAMP);
 CREATE TABLE IF NOT EXISTS device_config (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, color VARCHAR, categorys VARCHAR, config TEXT, createat TIMESTAMP);
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS user_address (id SERIAL PRIMARY KEY, group_id VARCHAR
 
 
 CREATE TABLE IF NOT EXISTS user_package_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, staff_id VARCHAR, staff_name VARCHAR, package_type VARCHAR, area_id VARCHAR, area_name VARCHAR, table_id VARCHAR, table_name VARCHAR, voucher VARCHAR, price float8, payment float8, discount_amount float8, discount_percent float8, discount_promotional float8, discount_by_point float8, additional_fee float8, additional_config VARCHAR, ship_price float8, deliver_ship_price float8, cost float8, profit float8, point INTEGER, note VARCHAR, image VARCHAR, progress VARCHAR, meta_search VARCHAR, money_source VARCHAR, print_kitchen VARCHAR, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS user_package (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_name VARCHAR, product_unit_name VARCHAR, product_group_unit_name VARCHAR, product_type VARCHAR, number_services_unit float8, number_unit float8, buy_price float8, price float8, discount_amount float8, discount_percent float8, discount_promotional float8, note VARCHAR, status VARCHAR, depend_to_product VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS user_package (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_name VARCHAR, product_unit_name VARCHAR, product_group_unit_name VARCHAR, product_type VARCHAR, number_services_unit float8, number_unit float8, buy_price float8, price float8, discount_amount float8, discount_percent float8, discount_promotional float8, note VARCHAR, status VARCHAR, depend_to_product VARCHAR, list_product_serial_id VARCHAR[], createat TIMESTAMP);
 
 
 CREATE TABLE IF NOT EXISTS voucher (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, voucher_second_id VARCHAR, detail VARCHAR, discount float8, amount float8, reuse INTEGER, for_all_product BOOLEAN, for_all_user BOOLEAN, package_voucher BOOLEAN, date_expire TIMESTAMP, status VARCHAR, createat TIMESTAMP);
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS notification_relate_user_device (id SERIAL PRIMARY KE
 CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, provider_id VARCHAR, name VARCHAR, config TEXT, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS group_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, supplier_id VARCHAR, staff_id VARCHAR, staff_name VARCHAR, supplier_name VARCHAR, supplier_phone VARCHAR, total_price float8, total_amount float8, payment float8, discount_amount float8, discount_percent float8, additional_fee float8, progress VARCHAR, note TEXT, images VARCHAR, type VARCHAR, money_source VARCHAR, status VARCHAR, createat TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_unit_name_category VARCHAR, price float8, amount float8, note TEXT, type VARCHAR, status VARCHAR, createat TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_unit_name_category VARCHAR, price float8, amount float8, note TEXT, type VARCHAR, list_product_serial_id VARCHAR[], status VARCHAR, createat TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, domain_url VARCHAR, status VARCHAR, store_type VARCHAR, each_month float8, half_year float8, each_year float8, payment_status VARCHAR, createat TIMESTAMP);
 
@@ -63,6 +63,10 @@ CREATE INDEX product_detail_index ON product(detail);
 CREATE INDEX product_unit_index ON product_unit(product_unit_second_id);
 CREATE INDEX product_unit_sku_index ON product_unit(sku);
 CREATE INDEX product_unit_upc_index ON product_unit(upc);
+CREATE INDEX product_serial_group_index ON product_serial(group_id);
+CREATE INDEX product_serial_index ON product_serial(product_serial_id);
+CREATE INDEX product_serial_product_index ON product_serial(product_second_id);
+CREATE INDEX product_serial_product_unit_index ON product_serial(product_unit_second_id);
 CREATE INDEX group_import_index ON group_import(group_import_second_id);
 CREATE INDEX product_import_index ON product_import(group_import_second_id);
 CREATE INDEX product_import_product_second_id_index ON product_import(product_second_id);
@@ -109,6 +113,7 @@ ALTER TABLE product ADD CONSTRAINT UQ_product_second_id UNIQUE(group_id, product
 ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_second_id UNIQUE(group_id, product_second_id, product_unit_second_id);
 ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_sku UNIQUE(group_id, sku);
 ALTER TABLE product_unit ADD CONSTRAINT UQ_product_unit_upc UNIQUE(group_id, upc);
+ALTER TABLE product_serial ADD CONSTRAINT UQ_product_serial_id UNIQUE(group_id, product_serial_id);
 ALTER TABLE product_combo_item ADD CONSTRAINT UQ_product_combo_item UNIQUE(group_id, product_second_id, product_unit_second_id, item_product_second_id, item_product_unit_second_id);
 ALTER TABLE search_token ADD CONSTRAINT UQ_search_token_product_second_id UNIQUE(group_id, product_second_id);
 ALTER TABLE user_fcm ADD CONSTRAINT UQ_user_fcm_device_id UNIQUE(group_id, device_id);
@@ -251,9 +256,11 @@ begin
     DELETE FROM notification_relate_user_device WHERE group_id = by_group_id;
     DELETE FROM shipping_provider WHERE group_id = by_group_id;
 
+    DELETE FROM product_serial WHERE group_id = by_group_id;
     DELETE FROM product_combo_item WHERE group_id = by_group_id;
     DELETE FROM product_unit WHERE group_id = by_group_id;
     DELETE FROM product WHERE group_id = by_group_id;
+
     DELETE FROM product_import WHERE group_id = by_group_id;
     DELETE FROM group_import WHERE group_id = by_group_id;
 
@@ -316,7 +323,9 @@ $$
 DECLARE
    _inventory_number float8;
    _enable_warehouse BOOL;
+   _enable_serial BOOL;
    _product_type VARCHAR;
+   _product_serial_id VARCHAR;
 BEGIN
 
     IF NEW.status = 'WEB_TEMP' OR NEW.status = 'WEB_SUBMIT'
@@ -325,8 +334,8 @@ BEGIN
     END IF;
 
 
-    SELECT enable_warehouse, inventory_number, product_type
-    INTO _enable_warehouse, _inventory_number, _product_type
+    SELECT enable_warehouse, enable_serial, inventory_number, product_type
+    INTO _enable_warehouse, _enable_serial, _inventory_number, _product_type
     FROM product_unit
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
 
@@ -340,6 +349,21 @@ BEGIN
 
     IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
+	    RETURN NEW;
+    END IF;
+
+    IF _enable_serial = TRUE
+    THEN
+
+        FOREACH _product_serial_id IN ARRAY NEW.list_product_serial_id
+        LOOP
+
+            UPDATE product_serial
+            SET status = 'SOLD', package_second_id = NEW.package_second_id
+            WHERE NEW.group_id = product_serial.group_id AND NEW.product_second_id = product_serial.product_second_id AND NEW.product_unit_second_id = product_serial.product_unit_second_id AND product_serial.product_serial_id = _product_serial_id;
+
+        END LOOP;
+
 	    RETURN NEW;
     END IF;
 
@@ -367,24 +391,49 @@ CREATE OR REPLACE FUNCTION increase_product_unit_inventory()
   AS
 $$
 DECLARE
+   _inventory_number float8;
+   _enable_warehouse BOOL;
+   _enable_serial BOOL;
    _product_type VARCHAR;
+   _product_serial_id VARCHAR;
 BEGIN
 
-    IF OLD.status = 'WEB_TEMP' OR OLD.status = 'WEB_SUBMIT'
+    IF OLD.status IN ('WEB_TEMP', 'WEB_SUBMIT', 'RETURN', 'CANCEL')
     THEN
 	    RETURN OLD;
     END IF;
 
 
-    SELECT product_type
-    INTO _product_type
+    SELECT enable_warehouse, enable_serial, inventory_number, product_type
+    INTO _enable_warehouse, _enable_serial, _inventory_number, _product_type
     FROM product_unit
     WHERE OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id;
 
 
-    IF OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND _product_type = 'COMBO'
+    IF _product_type = 'COMBO'
     THEN
         PERFORM change_inventory_combo_item(OLD.group_id, OLD.product_second_id, OLD.product_unit_second_id, -OLD.number_unit, OLD.package_second_id, 'SELLING_RETURN');
+	    RETURN OLD;
+    END IF;
+
+
+    IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
+    THEN
+	    RETURN OLD;
+    END IF;
+
+    IF _enable_serial = TRUE
+    THEN
+
+        FOREACH _product_serial_id IN ARRAY OLD.list_product_serial_id
+        LOOP
+
+            UPDATE product_serial
+            SET status = NULL, package_second_id = NULL
+            WHERE OLD.group_id = product_serial.group_id AND OLD.product_second_id = product_serial.product_second_id AND OLD.product_unit_second_id = product_serial.product_unit_second_id AND product_serial.product_serial_id = _product_serial_id;
+
+        END LOOP;
+
 	    RETURN OLD;
     END IF;
 
@@ -393,7 +442,7 @@ BEGIN
     	inventory_number = product_unit.inventory_number + OLD.number_unit,
     	arg_action_id = OLD.package_second_id,
     	arg_action_type = 'SELLING_RETURN'
-    WHERE OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
+    WHERE OLD.status <> 'RETURN' AND OLD.status <> 'CANCEL' AND OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id;
 
 	RETURN OLD;
 END;
@@ -613,6 +662,8 @@ DECLARE
    _buy_price float8;
    _buy_price_new float8;
    _enable_warehouse BOOL;
+   _enable_serial BOOL;
+   _product_serial_id VARCHAR;
 BEGIN
 
 --  return should update status not insert
@@ -621,8 +672,8 @@ BEGIN
 	    RETURN NEW;
     END IF;
 
-    SELECT enable_warehouse, inventory_number, buy_price
-    INTO _enable_warehouse, _inventory_number, _buy_price
+    SELECT enable_warehouse, enable_serial, inventory_number, buy_price
+    INTO _enable_warehouse, _enable_serial, _inventory_number, _buy_price
     FROM product_unit
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
 
@@ -630,6 +681,22 @@ BEGIN
     IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
 	    RAISE EXCEPTION 'trigger_on_insert_product_import: product not enable warehouse';
+    END IF;
+
+
+    IF _enable_serial = TRUE
+    THEN
+
+        FOREACH _product_serial_id IN ARRAY NEW.list_product_serial_id
+        LOOP
+
+            INSERT INTO product_serial( group_id, product_serial_id, product_second_id, product_unit_second_id, group_import_second_id, createat )
+            VALUES ( NEW.group_id, _product_serial_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.group_import_second_id, NOW() );
+
+        END LOOP;
+
+	    RETURN NEW;
+
     END IF;
 
 
@@ -689,6 +756,8 @@ DECLARE
    _buy_price float8;
    _buy_price_new float8;
    _enable_warehouse BOOL;
+   _enable_serial BOOL;
+   _product_serial_id VARCHAR;
 BEGIN
 
 
@@ -697,14 +766,38 @@ BEGIN
 	    RETURN OLD;
     END IF;
 
-    SELECT enable_warehouse, inventory_number, buy_price
-    INTO _enable_warehouse, _inventory_number, _buy_price
+    SELECT enable_warehouse, enable_serial, inventory_number, buy_price
+    INTO _enable_warehouse, _enable_serial, _inventory_number, _buy_price
     FROM product_unit
     WHERE OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id;
 
 
     IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
+	    RETURN OLD;
+    END IF;
+
+    IF _enable_serial = TRUE
+    THEN
+
+        FOREACH _product_serial_id IN ARRAY OLD.list_product_serial_id
+        LOOP
+
+            IF OLD.type = 'IMPORT' OR OLD.type = 'CHECK_WAREHOUSE'
+            THEN
+                DELETE FROM product_serial
+                WHERE OLD.group_id = product_serial.group_id AND OLD.product_second_id = product_serial.product_second_id AND OLD.product_unit_second_id = product_serial.product_unit_second_id AND product_serial.product_serial_id = _product_serial_id AND product_serial.group_import_second_id = OLD.group_import_second_id;
+            END IF;
+
+            IF OLD.type = 'EXPORT'
+            THEN
+                UPDATE product_serial
+                SET status = NULL, group_import_second_id = NULL
+                WHERE OLD.group_id = product_serial.group_id AND OLD.product_second_id = product_serial.product_second_id AND OLD.product_unit_second_id = product_serial.product_unit_second_id AND product_serial.product_serial_id = _product_serial_id AND product_serial.group_import_second_id = OLD.group_import_second_id;
+            END IF;
+
+        END LOOP;
+
 	    RETURN OLD;
     END IF;
 
@@ -760,6 +853,8 @@ DECLARE
    _buy_price float8;
    _buy_price_new float8;
    _enable_warehouse BOOL;
+   _enable_serial BOOL;
+   _product_serial_id VARCHAR;
 BEGIN
 
     IF OLD.status = 'RETURN'
@@ -773,8 +868,8 @@ BEGIN
 	    RETURN NEW;
     END IF;
 
-    SELECT enable_warehouse, inventory_number, buy_price
-    INTO _enable_warehouse, _inventory_number, _buy_price
+    SELECT enable_warehouse, enable_serial, inventory_number, buy_price
+    INTO _enable_warehouse, _enable_serial, _inventory_number, _buy_price
     FROM product_unit
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
 
@@ -782,6 +877,30 @@ BEGIN
     IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
 	    RAISE EXCEPTION 'trigger_on_update_product_import: product not enable warehouse';
+    END IF;
+
+    IF _enable_serial = TRUE
+    THEN
+
+        FOREACH _product_serial_id IN ARRAY NEW.list_product_serial_id
+        LOOP
+
+            IF (NEW.type = 'IMPORT' AND NEW.status = 'RETURN') OR (NEW.type = 'CHECK_WAREHOUSE' AND NEW.status = 'RETURN')
+            THEN
+                DELETE FROM product_serial
+                WHERE NEW.group_id = product_serial.group_id AND NEW.product_second_id = product_serial.product_second_id AND NEW.product_unit_second_id = product_serial.product_unit_second_id AND product_serial.product_serial_id = _product_serial_id AND product_serial.group_import_second_id = NEW.group_import_second_id;
+            END IF;
+
+            IF NEW.type = 'EXPORT' AND NEW.status = 'RETURN'
+            THEN
+                UPDATE product_serial
+                SET status = NULL, group_import_second_id = NULL
+                WHERE NEW.group_id = product_serial.group_id AND NEW.product_second_id = product_serial.product_second_id AND NEW.product_unit_second_id = product_serial.product_unit_second_id AND product_serial.product_serial_id = _product_serial_id AND product_serial.group_import_second_id = NEW.group_import_second_id;
+            END IF;
+
+        END LOOP;
+
+	    RETURN NEW;
     END IF;
 
 
@@ -941,6 +1060,11 @@ BEGIN
     ON CONFLICT ON CONSTRAINT UQ_product_import_second_id
     DO UPDATE SET product_unit_name_category = OLD.name, price = OLD.buy_price, amount = OLD.inventory_number, note = 'DELETE PRODUCT', type = 'DELETE_PRODUCT', status = 'DONE', createat = NOW();
 
+
+    DELETE FROM product_serial
+    WHERE group_id = OLD.group_id AND product_second_id = OLD.product_second_id AND product_unit_second_id = OLD.product_unit_second_id AND group_import_second_id IS NULL AND package_second_id IS NULL;
+
+
 	RETURN OLD;
 END;
 $$;
@@ -956,6 +1080,7 @@ DECLARE
    _type VARCHAR;
    _status VARCHAR;
    _price float8;
+   _product_serial_id VARCHAR;
 BEGIN
 
     IF NEW.arg_action_id IS NULL OR OLD.inventory_number = NEW.inventory_number OR NEW.enable_warehouse <> TRUE
@@ -986,6 +1111,24 @@ BEGIN
     ON CONFLICT ON CONSTRAINT UQ_product_import_second_id
     DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = product_import.amount + NEW.inventory_number - OLD.inventory_number, note = _note, type = _type, status = _status, createat = NOW();
 
+
+    IF NEW.enable_serial = TRUE
+    THEN
+
+        DELETE FROM product_serial
+        WHERE group_id = NEW.group_id AND product_second_id = NEW.product_second_id AND product_unit_second_id = NEW.product_unit_second_id AND group_import_second_id IS NULL AND package_second_id IS NULL;
+
+        FOREACH _product_serial_id IN ARRAY NEW.list_product_serial_id
+        LOOP
+
+            INSERT INTO product_serial( group_id, product_serial_id, product_second_id, product_unit_second_id, group_import_second_id, createat )
+            VALUES ( NEW.group_id, _product_serial_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.arg_action_id, NOW() )
+            ON CONFLICT ON CONSTRAINT UQ_product_serial_id DO NOTHING;
+
+        END LOOP;
+
+    END IF;
+
 	RETURN NEW;
 END;
 $$;
@@ -996,6 +1139,8 @@ CREATE OR REPLACE FUNCTION trigger_on_insert_product_unit()
   LANGUAGE PLPGSQL
   AS
 $$
+DECLARE
+   _product_serial_id VARCHAR;
 BEGIN
 
     IF NEW.enable_warehouse <> TRUE
@@ -1013,6 +1158,20 @@ BEGIN
     ON CONFLICT ON CONSTRAINT UQ_product_import_second_id
     DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - product_import.amount, note = 'update inventory from: ' || product_import.amount || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW()
     WHERE product_import.amount <> NEW.inventory_number OR NEW.arg_action_type <> product_import.type;
+
+
+    IF NEW.enable_serial = TRUE
+    THEN
+
+        FOREACH _product_serial_id IN ARRAY NEW.list_product_serial_id
+        LOOP
+
+            INSERT INTO product_serial( group_id, product_serial_id, product_second_id, product_unit_second_id, group_import_second_id, createat )
+            VALUES ( NEW.group_id, _product_serial_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.arg_action_id, NOW() );
+
+        END LOOP;
+
+    END IF;
 
 	RETURN NEW;
 END;
