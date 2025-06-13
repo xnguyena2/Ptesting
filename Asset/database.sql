@@ -938,7 +938,7 @@ BEGIN
     	buy_price = _buy_price_new,
         arg_action_id = NULL,
         arg_action_type = NULL
-    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id AND product_unit.enable_warehouse = TRUE;
+    WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
 
 	RETURN NEW;
 END;
@@ -1266,10 +1266,10 @@ BEGIN
 	    RETURN OLD;
     END IF;
 
-    INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
-    VALUES ( OLD.group_id, OLD.arg_action_id, OLD.product_second_id, OLD.product_unit_second_id, OLD.name, OLD.buy_price, OLD.inventory_number, 'DELETE PRODUCT', 'DELETE_PRODUCT', 'DONE', NOW() )
+    INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, list_product_serial_id, createat )
+    VALUES ( OLD.group_id, OLD.arg_action_id, OLD.product_second_id, OLD.product_unit_second_id, OLD.name, OLD.buy_price, OLD.inventory_number, 'DELETE PRODUCT', 'DELETE_PRODUCT', 'DONE', OLD.list_product_serial_id, NOW() )
     ON CONFLICT ON CONSTRAINT UQ_product_import_second_id
-    DO UPDATE SET product_unit_name_category = OLD.name, price = OLD.buy_price, amount = OLD.inventory_number, note = 'DELETE PRODUCT', type = 'DELETE_PRODUCT', status = 'DONE', createat = NOW();
+    DO UPDATE SET product_unit_name_category = OLD.name, price = OLD.buy_price, amount = OLD.inventory_number, note = 'DELETE PRODUCT', type = 'DELETE_PRODUCT', status = 'DONE', list_product_serial_id = OLD.list_product_serial_id, createat = NOW();
 
     PERFORM delete_product_serial_if_status_null(
         OLD.group_id,
@@ -1318,10 +1318,10 @@ BEGIN
 
 --  sum all amount for combo and material
 
-    INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
-    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, _note, _type, _status, NOW() )
+    INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, list_product_serial_id, createat )
+    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number - OLD.inventory_number, _note, _type, _status, NEW.list_product_serial_id, NOW() )
     ON CONFLICT ON CONSTRAINT UQ_product_import_second_id
-    DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = product_import.amount + NEW.inventory_number - OLD.inventory_number, note = _note, type = _type, status = _status, createat = NOW();
+    DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = product_import.amount + NEW.inventory_number - OLD.inventory_number, note = _note, type = _type, status = _status, list_product_serial_id = NEW.list_product_serial_id, createat = NOW();
 
 
     IF NEW.enable_serial = TRUE
@@ -1371,10 +1371,10 @@ BEGIN
 	    RAISE EXCEPTION 'trigger_on_insert_product_unit: arg_action_id null!';
     END IF;
 
-    INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat )
-    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number, 'set inventory to:' || NEW.inventory_number, 'UPDATE_NUMBER', 'DONE', NOW() )
+    INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, list_product_serial_id, createat )
+    VALUES ( NEW.group_id, NEW.arg_action_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.name, NEW.buy_price, NEW.inventory_number, 'set inventory to:' || NEW.inventory_number, 'UPDATE_NUMBER', 'DONE', NEW.list_product_serial_id, NOW() )
     ON CONFLICT ON CONSTRAINT UQ_product_import_second_id
-    DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - product_import.amount, note = 'update inventory from: ' || product_import.amount || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', createat = NOW()
+    DO UPDATE SET product_unit_name_category = NEW.name, price = NEW.buy_price, amount = NEW.inventory_number - product_import.amount, note = 'update inventory from: ' || product_import.amount || ' to: ' || NEW.inventory_number, type = 'UPDATE_NUMBER', status = 'DONE', list_product_serial_id = NEW.list_product_serial_id, createat = NOW()
     WHERE product_import.amount <> NEW.inventory_number OR NEW.arg_action_type <> product_import.type;
 
 
