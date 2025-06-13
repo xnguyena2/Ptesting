@@ -2,10 +2,7 @@ package com.example.heroku.model;
 
 import com.example.heroku.model.entity.BaseEntity;
 import com.example.heroku.util.Util;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
@@ -57,6 +54,8 @@ public class ProductUnit extends BaseEntity {
 
     private boolean enable_warehouse;
 
+    private boolean enable_serial;
+
     private Product.ProductType product_type;
 
     private String arg_action_id;
@@ -70,6 +69,8 @@ public class ProductUnit extends BaseEntity {
     private float group_unit_number;
 
     private String services_config;
+
+    private String[] list_product_serial_id;
 
     private Status status;
 

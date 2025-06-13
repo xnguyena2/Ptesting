@@ -61,7 +61,9 @@ public class BeerSubmitData {
                     .weight(beerUnit.weight)
                     .product_unit_second_id(beerUnit.beer_unit_second_id)
                     .visible(beerUnit.visible)
-                    .enable_warehouse((beerUnit.enable_warehouse))
+                    .enable_warehouse(beerUnit.enable_warehouse)
+                    .enable_serial(beerUnit.enable_serial)
+                    .list_product_serial_id(beerUnit.list_product_serial_id)
                     .product_type(beerUnit.product_type)
                     .group_unit_id(beerUnit.group_unit_id)
                     .group_unit_number(beerUnit.group_unit_number)
@@ -142,6 +144,8 @@ public class BeerSubmitData {
                     .beer_unit_second_id(item.getProduct_unit_second_id())
                     .visible(item.isVisible())
                     .enable_warehouse(item.isEnable_warehouse())
+                    .enable_serial(item.isEnable_serial())
+                    .list_product_serial_id(item.getList_product_serial_id())
                     .product_type(item.getProduct_type())
                     .group_unit_id(item.getGroup_unit_id())
                     .group_unit_number(item.getGroup_unit_number())
@@ -210,6 +214,7 @@ public class BeerSubmitData {
         private String beer_unit_second_id;
         private boolean visible;
         private boolean enable_warehouse;
+        private boolean enable_serial;
         private Product.ProductType product_type;
         private String group_unit_naname;
         private String group_unit_id;
@@ -217,6 +222,7 @@ public class BeerSubmitData {
         private String services_config;
         private String arg_action_id;
         private String arg_action_type;
+        private String[] list_product_serial_id;
         private String status;
 
         public Timestamp GetExpirDateTime() {

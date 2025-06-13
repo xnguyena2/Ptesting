@@ -32,8 +32,14 @@ public class GroupImportJoinProductImport extends GroupImport {
     private float child_price;
     private float child_amount;
     private String child_note;
+    private String[] child_list_product_serial_id;
     private ProductImport.ImportType child_type;
     private ProductImport.Status child_status;
+
+    /***
+     * {@link com.example.heroku.model.repository.JoinGroupImportWithProductImportRepository}
+     * @return
+     */
 
 
     public String getID() {

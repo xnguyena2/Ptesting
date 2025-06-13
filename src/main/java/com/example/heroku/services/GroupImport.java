@@ -147,6 +147,7 @@ public class GroupImport {
         return productImportRepository.inertOrUpdate(productImport.getGroup_id(), productImport.getGroup_import_second_id(),
                 productImport.getProduct_second_id(), productImport.getProduct_unit_second_id(),
                 productImport.getProduct_unit_name_category(), productImport.getPrice(), productImport.getAmount(),
-                productImport.getNote(), productImport.getType(), productImport.getStatus(), productImport.getCreateat());
+                productImport.getNote(), productImport.getList_product_serial_id(),
+                productImport.getType(), productImport.getStatus(), productImport.getCreateat());
     }
 }

@@ -48,6 +48,7 @@ public class UserPackageDetailJoinWithUserPackage extends UserPackageDetail {
     private UserPackageDetail.Status child_status;
     private String child_depend_to_product;
 
+    private String[] child_list_product_serial_id;
 
     public String getID() {
         return getPackage_second_id();
@@ -80,6 +81,7 @@ public class UserPackageDetailJoinWithUserPackage extends UserPackageDetail {
                 .note(child_note)
                 .status(child_status)
                 .depend_to_product(child_depend_to_product)
+                .list_product_serial_id(child_list_product_serial_id)
                 .build();
     }
 

@@ -28,6 +28,10 @@ public class ProductJoinWithProductUnit extends Product {
      * {@link Image}
      */
 
+    /***
+     * {@link com.example.heroku.model.repository.JoinProductWithProductUnitRepository}
+     */
+
 
     protected Long child_id;
     protected String child_group_id;
@@ -49,6 +53,10 @@ public class ProductJoinWithProductUnit extends Product {
     private float child_weight;
     private boolean child_visible;
     private boolean child_enable_warehouse;
+    private boolean child_enable_serial;
+
+    private String[] child_list_product_serial_id;
+
     private String child_group_unit_id;
     private String child_group_unit_naname;
     private float child_group_unit_number;
@@ -102,6 +110,8 @@ public class ProductJoinWithProductUnit extends Product {
                 .weight(child_weight)
                 .visible(child_visible)
                 .enable_warehouse(child_enable_warehouse)
+                .enable_serial(child_enable_serial)
+                .list_product_serial_id(child_list_product_serial_id)
                 .group_unit_id(child_group_unit_id)
                 .group_unit_naname(child_group_unit_naname)
                 .group_unit_number(child_group_unit_number)
