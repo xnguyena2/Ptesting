@@ -88,29 +88,25 @@ public class UserPackageTest {
 
         AtomicReference<String> beerUnit1ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit2ID = new AtomicReference<String>();
+        AtomicReference<String> beerUnit3ID = new AtomicReference<String>();
         this.beerAPI.GetBeerByID(group, "123")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
-                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(3);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(com.example.heroku.model.ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    beerUnit1ID.set(beerUnit.getProduct_unit_second_id());
-                                } else {
-                                    beerUnit2ID.set(beerUnit.getProduct_unit_second_id());
-                                }
+                                beerUnit1ID.set(beerUnit.getProduct_unit_second_id());
                             })
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    beerUnit1ID.set(beerUnit.getProduct_unit_second_id());
-                                } else {
-                                    beerUnit2ID.set(beerUnit.getProduct_unit_second_id());
-                                }
+                                beerUnit2ID.set(beerUnit.getProduct_unit_second_id());
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                beerUnit3ID.set(beerUnit.getProduct_unit_second_id());
                             })
                             .verifyComplete();
                 })
@@ -2583,18 +2579,13 @@ public class UserPackageTest {
                             .sort(Comparator.comparing(com.example.heroku.model.ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(543 - 106 - 3 - 3*2.5f);
-                                } else {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(345 - 12 - 4);
-                                }
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(543 - 106 - 3 - 3*2.5f);
                             })
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(543 - 106 - 3 - 3*2.5f);
-                                } else {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(345 - 12 - 4);
-                                }
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345 - 12 - 4);
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
                             })
                             .verifyComplete();
                 })

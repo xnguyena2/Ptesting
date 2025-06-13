@@ -30,33 +30,28 @@ public class ProductImportTest {
 
         AtomicReference<String> beerUnit1ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit2ID = new AtomicReference<String>();
+        AtomicReference<String> beerUnit3ID = new AtomicReference<String>();
         this.beerAPI.GetBeerByID(group, "123")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
-                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(3);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(com.example.heroku.model.ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    beerUnit1ID.set(beerUnit.getProduct_unit_second_id());
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(543);
-                                } else {
-                                    beerUnit2ID.set(beerUnit.getProduct_unit_second_id());
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(345);
-                                }
+                                beerUnit1ID.set(beerUnit.getProduct_unit_second_id());
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(543);
                             })
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    beerUnit1ID.set(beerUnit.getProduct_unit_second_id());
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(543);
-                                } else {
-                                    beerUnit2ID.set(beerUnit.getProduct_unit_second_id());
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(345);
-                                }
+                                beerUnit2ID.set(beerUnit.getProduct_unit_second_id());
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                beerUnit3ID.set(beerUnit.getProduct_unit_second_id());
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
                             })
                             .verifyComplete();
                 })
@@ -195,7 +190,7 @@ public class ProductImportTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
-                    assertThat(productImport.getTotal_amount()).isEqualTo(888);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(345 + 345 +543);
 
                 })
                 .consumeNextWith(productImport -> {
@@ -316,7 +311,7 @@ public class ProductImportTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
-                    assertThat(productImport.getTotal_amount()).isEqualTo(888);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(345 + 345 + 543);
 
                 })
                 .consumeNextWith(productImport -> {
@@ -435,7 +430,7 @@ public class ProductImportTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
-                    assertThat(productImport.getTotal_amount()).isEqualTo(888);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(345 + 345 + 543);
 
                 })
                 .consumeNextWith(productImport -> {
@@ -606,7 +601,7 @@ public class ProductImportTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
                     assertThat(productImport.getType()).isEqualTo(ProductImport.ImportType.UPDATE_NUMBER);
-                    assertThat(productImport.getTotal_amount()).isEqualTo(888);
+                    assertThat(productImport.getTotal_amount()).isEqualTo(345 + 345 + 543);
 
                 })
                 .consumeNextWith(productImport -> {
@@ -726,28 +721,21 @@ public class ProductImportTest {
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
-                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(3);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(com.example.heroku.model.ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(543 + 30);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(38.95288f);
-                                } else {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(345 + 57);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(23.828358f);
-                                }
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(543 + 30);
+                                assertThat(beerUnit.getBuy_price()).isEqualTo(38.95288f);
                             })
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(543 + 30);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(38.95288f);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(20);
-                                } else {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(345 + 57);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(23.828358f);
-                                }
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345 + 57);
+                                assertThat(beerUnit.getBuy_price()).isEqualTo(23.828358f);
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.getBuy_price()).isEqualTo(20.0f);
                             })
                             .verifyComplete();
                 })
@@ -799,27 +787,21 @@ public class ProductImportTest {
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
-                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(3);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(com.example.heroku.model.ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(543+30-3);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(38.95288f);
-                                } else {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(345+57-6);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(23.828358f);
-                                }
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(543+30-3);
+                                assertThat(beerUnit.getBuy_price()).isEqualTo(38.95288f);
                             })
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(543+30-3);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(38.95288f);
-                                } else {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(345+57-6);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(23.828358f);
-                                }
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345+57-6);
+                                assertThat(beerUnit.getBuy_price()).isEqualTo(23.828358f);
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.getBuy_price()).isEqualTo(20.0f);
                             })
                             .verifyComplete();
                 })
@@ -1109,27 +1091,21 @@ public class ProductImportTest {
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
-                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(3);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(com.example.heroku.model.ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(387);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(40);
-                                } else {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(687);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(20);
-                                }
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(387);
+                                assertThat(beerUnit.getBuy_price()).isEqualTo(40);
                             })
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(387);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(40);
-                                } else {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(687);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(20);
-                                }
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(687);
+                                assertThat(beerUnit.getBuy_price()).isEqualTo(20);
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.getBuy_price()).isEqualTo(20.0f);
                             })
                             .verifyComplete();
                 })
@@ -1182,27 +1158,21 @@ public class ProductImportTest {
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getProduct().getProduct_second_id()).isEqualTo("123");
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
-                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(3);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(com.example.heroku.model.ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(543);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(40);
-                                } else {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(345);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(20);
-                                }
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(543);
+                                assertThat(beerUnit.getBuy_price()).isEqualTo(40);
                             })
                             .consumeNextWith(beerUnit -> {
-                                if (beerUnit.getName().equals("lon")) {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(543);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(40);
-                                } else {
-                                    assertThat(beerUnit.getInventory_number()).isEqualTo(345);
-                                    assertThat(beerUnit.getBuy_price()).isEqualTo(20);
-                                }
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.getBuy_price()).isEqualTo(20);
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.getBuy_price()).isEqualTo(20.0f);
                             })
                             .verifyComplete();
                 })

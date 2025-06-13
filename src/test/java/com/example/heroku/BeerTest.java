@@ -97,7 +97,26 @@ public class BeerTest {
                                         .visible(false)
                                         .buy_price(40)
                                         .enable_warehouse(true)
-                                        .build()
+                                        .build(),
+                                ProductUnit.builder().product_second_id("123").name("zan").group_id(group)
+                                        .product_unit_second_id("wrttttwerwrwre")
+                                        .upc("909090909")
+                                        .sku("909090909")
+                                        .wholesale_number(34)
+                                        .wholesale_price(1233)
+                                        .promotional_price(234)
+                                        .inventory_number(345)
+                                        .visible(true)
+                                        .group_unit_number(2.3f)
+                                        .group_unit_id("ggggg")
+                                        .group_unit_naname("Block")
+                                        .services_config("services_config")
+                                        .buy_price(20)
+                                        .enable_warehouse(true)
+                                        .enable_serial(true)
+                                        .list_product_serial_id(new String[] {"serial1", "serial2", "serial3"})
+                                        .product_type(Product.ProductType.PRODUCT)
+                                        .build(),
                         })
                         .product(Product
                                 .builder()
@@ -382,7 +401,7 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
                     assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
-                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(3);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
                             .as(StepVerifier::create)
@@ -413,6 +432,21 @@ public class BeerTest {
                                 assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                                 assertThat(beerUnit.getDate_expire()).isNull();
                             })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("zan");
+                                assertThat(beerUnit.getUpc()).isEqualTo("909090909");
+                                assertThat(beerUnit.getSku()).isEqualTo("909090909");
+                                assertThat(beerUnit.getWholesale_number()).isEqualTo(34);
+                                assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
+                                assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.isVisible()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_serial()).isEqualTo(true);
+                                assertThat(beerUnit.getList_product_serial_id()).isEqualTo(new String[] {"serial1", "serial2", "serial3"});
+                                assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
+                                assertThat(beerUnit.getDate_expire()).isNull();
+                            })
                             .verifyComplete();
                 })
                 .verifyComplete();
@@ -437,7 +471,7 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
-                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(3);
                     assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                     assertThat(beerInfo.getProduct().getDefault_group_unit_naname()).isEqualTo("default");
                     assertThat(beerInfo.getProduct().getNumber_group_unit_config()).isEqualTo("number");
@@ -473,6 +507,21 @@ public class BeerTest {
                                 assertThat(beerUnit.getGroup_unit_number()).isEqualTo(2.3f);
                                 assertThat(beerUnit.getGroup_unit_id()).isEqualTo("ggggg");
                             })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("zan");
+                                assertThat(beerUnit.getUpc()).isEqualTo("909090909");
+                                assertThat(beerUnit.getSku()).isEqualTo("909090909");
+                                assertThat(beerUnit.getWholesale_number()).isEqualTo(34);
+                                assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
+                                assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.isVisible()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_serial()).isEqualTo(true);
+                                assertThat(beerUnit.getList_product_serial_id()).isEqualTo(new String[] {"serial1", "serial2", "serial3"});
+                                assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
+                                assertThat(beerUnit.getDate_expire()).isNull();
+                            })
                             .verifyComplete();
                 })
                 .verifyComplete();
@@ -493,7 +542,7 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
-                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(3);
                     assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                     assertThat(beerInfo.getProduct().getDefault_group_unit_naname()).isEqualTo("default");
                     assertThat(beerInfo.getProduct().getNumber_group_unit_config()).isEqualTo("number");
@@ -528,6 +577,21 @@ public class BeerTest {
                                 assertThat(beerUnit.getServices_config()).isEqualTo("services_config");
                                 assertThat(beerUnit.getGroup_unit_number()).isEqualTo(2.3f);
                                 assertThat(beerUnit.getGroup_unit_id()).isEqualTo("ggggg");
+                            })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("zan");
+                                assertThat(beerUnit.getUpc()).isEqualTo("909090909");
+                                assertThat(beerUnit.getSku()).isEqualTo("909090909");
+                                assertThat(beerUnit.getWholesale_number()).isEqualTo(34);
+                                assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
+                                assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.isVisible()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_serial()).isEqualTo(true);
+                                assertThat(beerUnit.getList_product_serial_id()).isEqualTo(new String[] {"serial1", "serial2", "serial3"});
+                                assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
+                                assertThat(beerUnit.getDate_expire()).isNull();
                             })
                             .verifyComplete();
                 })
@@ -1111,7 +1175,7 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("123");
-                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getListUnit().length).isEqualTo(3);
                 })
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
@@ -1144,7 +1208,7 @@ public class BeerTest {
                                 .as(StepVerifier::create)
                                 .consumeNextWith(beerSubmitData -> {
                                     assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(3);
                                 })
                                 .consumeNextWith(beerInfo -> {
                                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
@@ -1181,7 +1245,7 @@ public class BeerTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(3);
                             })
                             .consumeNextWith(beerInfo -> {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
@@ -1216,7 +1280,7 @@ public class BeerTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(3);
                             })
                             .consumeNextWith(beerInfo -> {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
@@ -1296,7 +1360,7 @@ public class BeerTest {
                                 .as(StepVerifier::create)
                                 .consumeNextWith(beerSubmitData -> {
                                     assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(3);
                                 })
                                 .consumeNextWith(beerInfo -> {
                                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
