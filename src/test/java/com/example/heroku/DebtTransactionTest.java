@@ -8,7 +8,7 @@ import com.example.heroku.request.client.UserID;
 import lombok.Builder;
 import reactor.test.StepVerifier;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,7 +48,7 @@ public class DebtTransactionTest {
                 .amount(33000)
                 .build()).block();
 
-        debtTransation.getAllTransactionBettwen(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).build())
+        debtTransation.getAllTransactionBettwen(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).build())
                 .sort(Comparator.comparing(DebtTransation::getTransaction_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(transation -> {
@@ -112,7 +112,7 @@ public class DebtTransactionTest {
 
         debtTransation.deleteOfPackgeID(IDContainer.builder().group_id(group).build()).block();
 
-        debtTransation.getAllTransactionBettwen(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).build())
+        debtTransation.getAllTransactionBettwen(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).build())
                 .sort(Comparator.comparing(DebtTransation::getTransaction_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(transation -> {

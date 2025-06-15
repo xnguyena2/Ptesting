@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +30,7 @@ public class Voucher extends BaseEntity {
 
     private int reuse;
 
-    private Timestamp date_expire;
+    private LocalDateTime date_expire;
 
     private Status status;
 

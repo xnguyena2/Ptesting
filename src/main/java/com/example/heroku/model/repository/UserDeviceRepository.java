@@ -7,14 +7,15 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface UserDeviceRepository extends ReactiveCrudRepository<UserDevice, Long> {
 
     @Query(value = "INSERT INTO user_device( group_id, device_id, user_first_name, user_last_name, status, createat ) VALUES( :group_id, :device_id, :user_first_name, :user_last_name, :status, :createat ) ON CONFLICT ON CONSTRAINT UQ_user_device DO UPDATE SET user_first_name = :user_first_name, user_last_name = :user_last_name, status = :status, createat = :createat")
     Mono<UserDevice> saveDevice(@Param("group_id")String groupID, @Param("device_id")String id,
                                     @Param("user_first_name")String user_first_name, @Param("user_last_name")String user_last_name,
-                                    @Param("status")UserDevice.Status status, @Param("createat") Timestamp createat);
+                                    @Param("status")UserDevice.Status status, @Param("createat") LocalDateTime createat);
 
     @Query(value = "SELECT * FROM user_device WHERE user_device.group_id = :group_id AND user_device.device_id = :id")
     Mono<UserDevice> findByDeviceId(@Param("group_id")String groupID, @Param("id")String id);

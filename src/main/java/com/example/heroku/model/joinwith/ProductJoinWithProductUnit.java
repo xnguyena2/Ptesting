@@ -7,7 +7,7 @@ import com.example.heroku.request.beer.BeerSubmitData;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +35,7 @@ public class ProductJoinWithProductUnit extends Product {
 
     protected Long child_id;
     protected String child_group_id;
-    protected Timestamp child_createat;
+    protected LocalDateTime child_createat;
     private String child_product_unit_second_id;
     private String child_product_second_id;
     private String child_name;
@@ -48,7 +48,7 @@ public class ProductJoinWithProductUnit extends Product {
     private float child_wholesale_price;
     private float child_buy_price;
     private float child_discount;
-    private Timestamp child_date_expire;
+    private LocalDateTime child_date_expire;
     private float child_volumetric;
     private float child_weight;
     private boolean child_visible;
@@ -71,7 +71,7 @@ public class ProductJoinWithProductUnit extends Product {
     // image of product unit
     protected Long img_id;
     protected String img_group_id;
-    protected Timestamp img_createat;
+    protected LocalDateTime img_createat;
     private String imgid;
     private String tag;
     private String thumbnail;

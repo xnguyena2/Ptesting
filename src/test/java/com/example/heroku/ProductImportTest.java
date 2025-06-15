@@ -11,7 +11,7 @@ import lombok.Builder;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -185,7 +185,7 @@ public class ProductImportTest {
 
 
 
-        groupImport.GetAllWorkingBetween(SearchImportQuery.builder().from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).page(0).size(100).group_id(group).build())
+        groupImport.GetAllWorkingBetween(SearchImportQuery.builder().from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).page(0).size(100).group_id(group).build())
                 .sort(Comparator.comparing(GroupImportWithItem::getCreateat))
                 .as(StepVerifier::create)
                 .consumeNextWith(productImport -> {
@@ -255,7 +255,7 @@ public class ProductImportTest {
 
 
         groupImport.GetAllWorkingBetweenAndType(SearchImportQuery.builder()
-                        .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00"))
+                        .from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00"))
                         .type(ProductImport.ImportType.IMPORT)
                         .page(0).size(100).group_id(group).build())
                 .sort(Comparator.comparing(GroupImportWithItem::getCreateat))
@@ -422,7 +422,7 @@ public class ProductImportTest {
 
 
         groupImport.GetAllWorkingOfProductBetween(SearchImportQuery.builder()
-                        .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00"))
+                        .from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00"))
                         .product_second_id("123")
                         .product_unit_second_id(beerUnit1ID.get())
                         .page(0).size(100).group_id(group).build())
@@ -532,7 +532,7 @@ public class ProductImportTest {
 
         groupImport.GetWareHouseStatictisBetween(SearchImportQuery.builder()
                         .group_import_second_id("1")
-                        .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00"))
+                        .from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00"))
                         .page(0).size(100).group_id(group).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(wareHouseIncomeOutCome -> {
@@ -551,7 +551,7 @@ public class ProductImportTest {
 
 
         groupImport.GetAllWorkingOfProductBetweenAndType(SearchImportQuery.builder()
-                        .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00"))
+                        .from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00"))
                         .type(ProductImport.ImportType.IMPORT)
                         .product_second_id("123")
                         .product_unit_second_id(beerUnit1ID.get())
@@ -593,7 +593,7 @@ public class ProductImportTest {
 
 
         groupImport.GetAllWorkingOfProduct(SearchImportQuery.builder()
-                        .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00"))
+                        .from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00"))
                         .product_second_id("123")
                         .product_unit_second_id(beerUnit2ID.get())
                         .page(0).size(100).group_id(group).build())
@@ -636,7 +636,7 @@ public class ProductImportTest {
                 .verifyComplete();
 
         groupImport.GetAllWorkingOfProductAndType(SearchImportQuery.builder()
-                        .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00"))
+                        .from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00"))
                         .product_second_id("123")
                         .type(ProductImport.ImportType.IMPORT)
                         .product_unit_second_id(beerUnit2ID.get())

@@ -23,8 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -206,6 +206,12 @@ public class UserPackageTest {
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit2ID.get())
                                 .number_unit(9)
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit3ID.get())
+                                .number_unit(2)
+                                .list_product_serial_id(new String[]{"serial1", "serial2"})
                                 .build(),
                         com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("combo")
@@ -613,7 +619,7 @@ public class UserPackageTest {
 
         userPackageAPI.GetByStatusBetween(UserPackageID.builder().group_id(group).product_second_id("123")
                         .product_unit_second_id(beerUnit1ID.get())
-                        .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00"))
+                        .from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00"))
                         .status(UserPackageDetail.Status.CREATE)
                         .page(0)
                         .size(100)
@@ -1803,7 +1809,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        buyer.getBuyerStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).device_id("0022929222").page(0).size(3).page(0).status(UserPackageDetail.Status.CREATE).build())
+        buyer.getBuyerStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).device_id("0022929222").page(0).size(3).page(0).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerStatictisData -> {
                     try {
@@ -1838,7 +1844,7 @@ public class UserPackageTest {
                 .verifyComplete();
 
 
-        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getCost()).isEqualTo(444);
@@ -1857,7 +1863,7 @@ public class UserPackageTest {
                 .verifyComplete();
 
 
-        statisticServices.getBenifitOfPaymentByDateStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getBenifitOfPaymentByDateStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getReturn_price()).isEqualTo(0);
@@ -1885,7 +1891,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByDateHour::getRevenue))
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
@@ -1904,7 +1910,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getBenifitOfPaymentByHourStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getBenifitOfPaymentByHourStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getReturn_price()).isEqualTo(0);
@@ -1931,7 +1937,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getPackageTotalStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getPackageTotalStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getCost()).isEqualTo(444);
@@ -1945,7 +1951,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getProductBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getProductBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByProduct::getRevenue))
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
@@ -1977,7 +1983,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getBuyerBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getBuyerBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByBuyer::getRevenue))
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
@@ -1996,7 +2002,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getStaffBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getStaffBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByBuyer::getRevenue))
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
@@ -2017,7 +2023,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getOrderBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getOrderBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByOrder::getRevenue))
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
@@ -2926,7 +2932,7 @@ public class UserPackageTest {
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        buyer.getBuyerStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).device_id("0022929222").page(0).size(3).page(0).status(UserPackageDetail.Status.CREATE).build())
+        buyer.getBuyerStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).device_id("0022929222").page(0).size(3).page(0).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerStatictisData -> {
                     try {
@@ -2952,7 +2958,7 @@ public class UserPackageTest {
 
         buyer.deleteBuyer(group, "0022929222").block();
 
-        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getCost()).isEqualTo(0);
@@ -2970,7 +2976,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getBenifitOfPaymentByDateStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getBenifitOfPaymentByDateStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getReturn_price()).isEqualTo(0);
@@ -2997,7 +3003,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByDateHour::getRevenue))
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
@@ -3016,7 +3022,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getBenifitOfPaymentByHourStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getBenifitOfPaymentByHourStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getReturn_price()).isEqualTo(0);
@@ -3043,7 +3049,7 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getPackageTotalStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getPackageTotalStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getCost()).isEqualTo(0);
@@ -3057,12 +3063,12 @@ public class UserPackageTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getProductBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getProductBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByProduct::getRevenue))
                 .as(StepVerifier::create)
                 .verifyComplete();
 
-        statisticServices.getCountCancelReturnStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getCountCancelReturnStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
                     assertThat(data.getCount_cancel()).isEqualTo(1);

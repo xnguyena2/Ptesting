@@ -5,12 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @SuperBuilder(toBuilder = true)
@@ -25,7 +25,7 @@ public class BaseEntity {
 
 
     protected String group_id;
-    protected Timestamp createat;
+    protected LocalDateTime createat;
 
     public BaseEntity(BaseEntity s) {
         id = s.getId();
@@ -33,7 +33,7 @@ public class BaseEntity {
         createat = s.getCreateat();
     }
 
-    public void copy(BaseEntity b){
+    public void copy(BaseEntity b) {
         id = b.id;
         group_id = b.group_id;
         createat = b.createat;
@@ -45,7 +45,7 @@ public class BaseEntity {
     }
 
     public BaseEntity AutoFillIfNull() {
-        if(this.createat == null) {
+        if (this.createat == null) {
             this.createat = Util.getInstance().Now();
         }
         return this;

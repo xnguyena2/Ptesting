@@ -1,11 +1,11 @@
 package com.example.heroku.model.joinwith;
 
-import com.example.heroku.model.ProductImport;
 import com.example.heroku.model.Users;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -23,7 +23,7 @@ public class UserJoinUserInfo extends Users {
     private String phone;
     private String title;
     private String client_roles;
-    protected Timestamp child_createat;
+    protected LocalDateTime child_createat;
 
     private int token_expiration;
 

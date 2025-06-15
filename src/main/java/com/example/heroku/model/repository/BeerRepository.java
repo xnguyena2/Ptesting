@@ -1,16 +1,14 @@
 package com.example.heroku.model.repository;
 
 import com.example.heroku.model.Product;
-import com.example.heroku.model.UserFCM;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
 
@@ -23,7 +21,7 @@ public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
                               @Param("default_group_unit_naname") String default_group_unit_naname, @Param("number_group_unit_config") String number_group_unit_config,
                               @Param("warranty") String warranty,
                               @Param("product_type") Product.ProductType product_type,
-                              @Param("status") Product.Status status, @Param("createat") Timestamp createat);
+                              @Param("status") Product.Status status, @Param("createat") LocalDateTime createat);
 
 
     @Query(value = "SELECT * FROM product WHERE product.product_second_id = :id AND product.group_id = :group_id")

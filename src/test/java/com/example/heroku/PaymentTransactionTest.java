@@ -14,8 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import reactor.test.StepVerifier;
 
-import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +59,7 @@ public class PaymentTransactionTest {
                 .amount(33000)
                 .build()).block();
 
-        paymentTransation.getAllTransactionBettwen(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).build())
+        paymentTransation.getAllTransactionBettwen(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).build())
                 .sort(Comparator.comparing(PaymentTransation::getTransaction_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(transation -> {
@@ -128,7 +128,7 @@ public class PaymentTransactionTest {
 
         paymentTransation.deleteOfPackgeID(IDContainer.builder().group_id(group).build()).block();
 
-        paymentTransation.getAllTransactionBettwenWithoutBuyer(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).build())
+        paymentTransation.getAllTransactionBettwenWithoutBuyer(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).build())
                 .sort(Comparator.comparing(PaymentTransation::getTransaction_second_id))
                 .as(StepVerifier::create)
                 .consumeNextWith(transation -> {
@@ -185,7 +185,7 @@ public class PaymentTransactionTest {
                 .amount(33000)
                 .build()).block();
 
-        statisticServices.getBenifitOfPaymentByDateStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getBenifitOfPaymentByDateStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
 
@@ -237,7 +237,7 @@ public class PaymentTransactionTest {
                 })
                 .verifyComplete();
 
-        statisticServices.getBenifitOfPaymentByHourStatictis(PackageID.builder().group_id(group).from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).status(UserPackageDetail.Status.CREATE).build())
+        statisticServices.getBenifitOfPaymentByHourStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
                 .consumeNextWith(data -> {
 

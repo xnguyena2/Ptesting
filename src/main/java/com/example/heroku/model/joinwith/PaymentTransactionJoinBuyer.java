@@ -6,7 +6,7 @@ import com.example.heroku.status.ActiveStatus;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -21,7 +21,7 @@ public class PaymentTransactionJoinBuyer extends PaymentTransation {
 
 
     protected String buyer_group_id;
-    protected Timestamp buyer_createat;
+    protected LocalDateTime buyer_createat;
 
     private String device_id;
 

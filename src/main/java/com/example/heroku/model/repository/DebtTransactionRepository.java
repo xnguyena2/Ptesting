@@ -7,7 +7,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface DebtTransactionRepository extends ReactiveCrudRepository<DebtTransation, Long> {
 
@@ -18,7 +19,7 @@ public interface DebtTransactionRepository extends ReactiveCrudRepository<DebtTr
                                             @Param("transaction_type") DebtTransation.TType transaction_type,
                                             @Param("amount") float amount, @Param("category") String category,
                                             @Param("money_source") String money_source, @Param("note") String note,
-                                            @Param("status") DebtTransation.Status status, @Param("createat") Timestamp createat);
+                                            @Param("status") DebtTransation.Status status, @Param("createat") LocalDateTime createat);
 
     @Query(value = "DELETE FROM debt_transaction WHERE debt_transaction.group_id = :group_id AND debt_transaction.transaction_second_id = :transaction_second_id")
     Mono<DebtTransation> deleteTransaction(@Param("group_id") String group_id, @Param("transaction_second_id") String transaction_second_id);
@@ -45,6 +46,6 @@ public interface DebtTransactionRepository extends ReactiveCrudRepository<DebtTr
     Flux<DebtTransation> getAllDebtAfterIDOfBuyer(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("id") long id, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "SELECT * FROM debt_transaction WHERE debt_transaction.group_id = :group_id AND (debt_transaction.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime)")
-    Flux<DebtTransation> getStatictis(@Param("group_id") String groupID, @Param("fromtime") Timestamp from, @Param("totime") Timestamp to);
+    Flux<DebtTransation> getStatictis(@Param("group_id") String groupID, @Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to);
 
 }

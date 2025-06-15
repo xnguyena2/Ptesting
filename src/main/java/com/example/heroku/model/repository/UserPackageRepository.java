@@ -8,8 +8,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
-import java.util.List;
+import java.time.LocalDateTime;
+
 
 public interface UserPackageRepository extends ReactiveCrudRepository<UserPackage, Long> {
 
@@ -18,7 +18,7 @@ public interface UserPackageRepository extends ReactiveCrudRepository<UserPackag
     Flux<UserPackage> GetDevicePackage(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "SELECT * FROM user_package WHERE user_package.group_id = :group_id AND user_package.status = :status AND user_package.product_second_id = :product_second_id AND user_package.product_unit_second_id = :product_unit_second_id AND (user_package.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
-    Flux<UserPackage> GetByStatusBetween(@Param("group_id") String group_id, @Param("product_second_id") String product_second_id, @Param("product_unit_second_id") String product_unit_second_id, @Param("fromtime") Timestamp from, @Param("totime") Timestamp to, @Param("status") UserPackageDetail.Status status, @Param("page") int page, @Param("size") int size);
+    Flux<UserPackage> GetByStatusBetween(@Param("group_id") String group_id, @Param("product_second_id") String product_second_id, @Param("product_unit_second_id") String product_unit_second_id, @Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to, @Param("status") UserPackageDetail.Status status, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "SELECT * FROM user_package WHERE user_package.group_id = :group_id AND user_package.status = :status AND user_package.product_second_id = :product_second_id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<UserPackage> GetByStatusOfProduct(@Param("group_id") String group_id, @Param("product_second_id") String product_second_id, @Param("status") UserPackageDetail.Status status, @Param("page") int page, @Param("size") int size);
@@ -56,7 +56,7 @@ public interface UserPackageRepository extends ReactiveCrudRepository<UserPackag
                                             @Param("note") String note, @Param("status") UserPackageDetail.Status status,
                                             @Param("depend_to_product") String depend_to_product,
                                             @Param("list_product_serial_id") String[] list_product_serial_id,
-                                            @Param("createat") Timestamp createat);
+                                            @Param("createat") LocalDateTime createat);
 
     @Query(value = "INSERT INTO user_package(group_id, device_id, package_second_id, product_second_id, product_unit_second_id, product_name, product_unit_name, product_group_unit_name, product_type, number_services_unit, number_unit, buy_price, price, discount_amount, discount_percent, discount_promotional, note, status, depend_to_product, list_product_serial_id, createat) VALUES (:group_id, :device_id, :package_second_id, :product_second_id, :product_unit_second_id, :product_name, :product_unit_name, :product_group_unit_name, :product_type, :number_services_unit, :number_unit, :buy_price, :price, :discount_amount, :discount_percent, :discount_promotional, :note, :status, :depend_to_product, :list_product_serial_id, :createat) ON CONFLICT ON CONSTRAINT UQ_user_package DO UPDATE SET number_unit = user_package.number_unit + :number_unit, buy_price = :buy_price, price = :price, discount_amount = :discount_amount, discount_percent = :discount_percent, discount_promotional = :discount_promotional, note = :note, product_name = :product_name, product_unit_name = :product_unit_name, product_group_unit_name = :product_group_unit_name, product_type = :product_type, number_services_unit = :number_services_unit, status = :status, depend_to_product = :depend_to_product, list_product_serial_id = :list_product_serial_id")
     Mono<UserPackage> InsertOrUpdatePackageWithoutCheck(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("package_second_id") String package_second_id,
@@ -67,7 +67,7 @@ public interface UserPackageRepository extends ReactiveCrudRepository<UserPackag
                                                         @Param("note") String note, @Param("status") UserPackageDetail.Status status,
                                                         @Param("depend_to_product") String depend_to_product,
                                                         @Param("list_product_serial_id") String[] list_product_serial_id,
-                                                        @Param("createat") Timestamp createat);
+                                                        @Param("createat") LocalDateTime createat);
 
     @Query(value = "UPDATE user_package SET status = :status WHERE group_id = :group_id AND package_second_id = :package_second_id")
     Flux<UserPackage> UpdateStatusByPackgeID(@Param("group_id") String groupID, @Param("package_second_id") String package_second_id, @Param("status") UserPackageDetail.Status status);

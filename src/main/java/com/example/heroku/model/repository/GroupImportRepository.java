@@ -8,7 +8,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface GroupImportRepository extends ReactiveCrudRepository<GroupImport, Long> {
 
@@ -23,7 +24,7 @@ public interface GroupImportRepository extends ReactiveCrudRepository<GroupImpor
                                     @Param("additional_fee") float additional_fee, @Param("progress") String progress, @Param("note") String note,
                                     @Param("images") String images, @Param("type") ProductImport.ImportType type,
                                     @Param("money_source") String money_source,
-                                    @Param("status") ProductImport.Status status, @Param("createat") Timestamp createat);
+                                    @Param("status") ProductImport.Status status, @Param("createat") LocalDateTime createat);
 
     @Query(value = "SELECT create_group_import_for_product_import(:group_id, :group_import_second_id, :type, :status)")
     Mono<GroupImport> createGroupImportForEmpty(@Param("group_id") String group_id, @Param("group_import_second_id") String groupImportID, @Param("type") String type, @Param("status") String status);
@@ -38,7 +39,7 @@ public interface GroupImportRepository extends ReactiveCrudRepository<GroupImpor
     Flux<GroupImport> getALLBeforeNoDate(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size, @Param("date") int date);
 
     @Query(value = "SELECT * FROM group_import WHERE group_import.group_id = :group_id AND (group_import.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
-    Flux<GroupImport> getALLBetween(@Param("group_id") String group_id, @Param("fromtime") Timestamp fromtime, @Param("totime") Timestamp totime, @Param("page") int page, @Param("size") int size);
+    Flux<GroupImport> getALLBetween(@Param("group_id") String group_id, @Param("fromtime") LocalDateTime fromtime, @Param("totime") LocalDateTime totime, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "DELETE FROM group_import WHERE group_import.group_id = :group_id AND group_import.group_import_second_id = :id")
     Mono<GroupImport> deleteByImportID(@Param("group_id") String group_id, @Param("id") String groupImportID);

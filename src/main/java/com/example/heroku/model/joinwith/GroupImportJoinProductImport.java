@@ -6,7 +6,7 @@ import com.example.heroku.request.warehouse.GroupImportWithItem;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class GroupImportJoinProductImport extends GroupImport {
 
     protected Long child_id;
     protected String child_group_id;
-    protected Timestamp child_createat;
+    protected LocalDateTime child_createat;
     private String child_group_import_second_id;
     private String child_product_second_id;
     private String child_product_unit_second_id;

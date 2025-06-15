@@ -9,7 +9,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface TableDetailRepository extends ReactiveCrudRepository<TableDetail, Long> {
 
@@ -17,7 +18,7 @@ public interface TableDetailRepository extends ReactiveCrudRepository<TableDetai
     Mono<TableDetail> insertOrUpdate(@Param("group_id") String group_id, @Param("area_id") String area_id, @Param("table_id") String table_id,
                                      @Param("table_name") String table_name, @Param("package_second_id") String package_second_id,
                                      @Param("detail") String detail,
-                                     @Param("status") ActiveStatus status, @Param("createat") Timestamp createat);
+                                     @Param("status") ActiveStatus status, @Param("createat") LocalDateTime createat);
     //search all
     @Query(value = "SELECT * FROM table_detail WHERE table_detail.group_id = :group_id")// ORDER BY createat DESC LIMIT :size OFFSET (:page*:size)")
     Flux<TableDetail> findByIdNotNull(@Param("group_id")String group_id, Pageable pageable);

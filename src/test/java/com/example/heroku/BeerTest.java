@@ -17,13 +17,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -219,7 +216,7 @@ public class BeerTest {
                                         .price(10)
                                         .weight(0.3f)
                                         .discount(10)
-                                        .date_expire(Timestamp.valueOf("2021-03-31 20:45:00"))
+                                        .date_expire(LocalDateTime.parse("2021-03-31T20:45:00"))
                                         .name("thung")
                                         .group_id(group)
                                         .build(),
@@ -230,7 +227,7 @@ public class BeerTest {
                                         .price(10)
                                         .weight(0.3f)
                                         .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
+                                        .date_expire(Util.getInstance().Now())
                                         .name("lon")
                                         .group_id(group)
                                         .build()
@@ -281,7 +278,7 @@ public class BeerTest {
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
-                                                .date_expire(Timestamp.valueOf("2021-03-31 20:45:00"))
+                                                .date_expire(LocalDateTime.parse("2021-03-31T20:45:00"))
                                                 .name("thung")
                                                 .product_type(Product.ProductType.COMBO)
                                                 .group_id(group)
@@ -293,7 +290,7 @@ public class BeerTest {
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
-                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .date_expire(Util.getInstance().Now())
                                                 .name("lon")
                                                 .group_id(group)
                                                 .build()
@@ -344,7 +341,7 @@ public class BeerTest {
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
-                                                .date_expire(Timestamp.valueOf("2021-03-31 20:45:00"))
+                                                .date_expire(LocalDateTime.parse("2021-03-31T20:45:00"))
                                                 .name("thung")
                                                 .group_id(group)
                                                 .build(),
@@ -354,7 +351,7 @@ public class BeerTest {
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
-                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .date_expire(Util.getInstance().Now())
                                                 .name("lon")
                                                 .group_id(group)
                                                 .build()
@@ -618,14 +615,14 @@ public class BeerTest {
                                 assertThat(beerUnit.getName()).isEqualTo("lon");
                                 assertThat(beerUnit.getSku()).isNull();
                                 assertThat(beerUnit.getUpc()).isNull();
-                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(new Timestamp(new Date().getTime())));
+                                assertThat(NgbDateStruct.fromLocalDateTime(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.fromLocalDateTime(Util.getInstance().Now()));
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
                                 assertThat(beerUnit.getSku()).isNull();
                                 assertThat(beerUnit.getUpc()).isNull();
-                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(Timestamp.valueOf("2021-03-31 20:45:00")));
-                                assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), new Timestamp(new Date().getTime())) >= 0).isEqualTo(false);
+                                assertThat(NgbDateStruct.fromLocalDateTime(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.fromLocalDateTime(LocalDateTime.parse("2021-03-31T20:45:00")));
+                                assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), Util.getInstance().Now()) >= 0).isEqualTo(false);
                             })
                             .verifyComplete();
                 })
@@ -653,14 +650,14 @@ public class BeerTest {
                                 assertThat(beerUnit.getName()).isEqualTo("lon");
                                 assertThat(beerUnit.getSku()).isNull();
                                 assertThat(beerUnit.getUpc()).isNull();
-                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(new Timestamp(new Date().getTime())));
+                                assertThat(NgbDateStruct.fromLocalDateTime(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.fromLocalDateTime(Util.getInstance().Now()));
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
                                 assertThat(beerUnit.getSku()).isNull();
                                 assertThat(beerUnit.getUpc()).isNull();
-                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(Timestamp.valueOf("2021-03-31 20:45:00")));
-                                assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), new Timestamp(new Date().getTime())) >= 0).isEqualTo(false);
+                                assertThat(NgbDateStruct.fromLocalDateTime(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.fromLocalDateTime(LocalDateTime.parse("2021-03-31T20:45:00")));
+                                assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), Util.getInstance().Now()) >= 0).isEqualTo(false);
                             })
                             .verifyComplete();
                 })
@@ -1391,7 +1388,7 @@ public class BeerTest {
                                         .price(10)
                                         .weight(0.3f)
                                         .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
+                                        .date_expire(Util.getInstance().Now())
                                         .name("thung")
                                         .group_id(group)
                                         .build(),
@@ -1402,7 +1399,7 @@ public class BeerTest {
                                         .price(10)
                                         .weight(0.3f)
                                         .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
+                                        .date_expire(Util.getInstance().Now())
                                         .name("lon")
                                         .group_id(group)
                                         .build()
@@ -1437,7 +1434,7 @@ public class BeerTest {
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
-                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .date_expire(Util.getInstance().Now())
                                                 .name("thung")
                                                 .group_id(group)
                                                 .build(),
@@ -1447,7 +1444,7 @@ public class BeerTest {
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
-                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .date_expire(Util.getInstance().Now())
                                                 .name("lon")
                                                 .group_id(group)
                                                 .build()
@@ -1506,7 +1503,7 @@ public class BeerTest {
                                         .price(price)
                                         .weight(0.3f)
                                         .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
+                                        .date_expire(Util.getInstance().Now())
                                         .name("thung")
                                         .group_id(group)
                                         .build(),
@@ -1516,7 +1513,7 @@ public class BeerTest {
                                         .price(10000)
                                         .weight(0.3f)
                                         .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
+                                        .date_expire(Util.getInstance().Now())
                                         .name("lon")
                                         .group_id(group)
                                         .build()

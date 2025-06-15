@@ -8,9 +8,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, Long> {
 
@@ -21,7 +20,7 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, 
                                       @Param("price") float price, @Param("wholesale_price") float wholesale_price, @Param("wholesale_number") int wholesale_number,
                                       @Param("promotional_price") float promotional_price, @Param("inventory_number") float inventory_number,
                                       @Param("buy_price") float buy_price, @Param("discount") float discount,
-                                      @Param("date_expire") Timestamp date_expire, @Param("volumetric") float volumetric,
+                                      @Param("date_expire") LocalDateTime date_expire, @Param("volumetric") float volumetric,
                                       @Param("weight") float weight,
                                       @Param("visible") boolean visible, @Param("enable_warehouse") boolean enable_warehouse, @Param("enable_serial") String enable_serial,
                                       @Param("list_product_serial_id") String[] list_product_serial_id,
@@ -29,7 +28,7 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, 
                                       @Param("product_type") Product.ProductType product_type, @Param("services_config") String services_config,
                                       @Param("arg_action_id") String arg_action_id, @Param("arg_action_type") String arg_action_type,
                                       @Param("status") ProductUnit.Status status,
-                                      @Param("createat") Timestamp createat);
+                                      @Param("createat") LocalDateTime createat);
     @Query(value = "DELETE FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :product_second_id")
     Mono<ProductUnit> deleteByBeerId(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id);
 

@@ -7,7 +7,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface PaymentTransactionRepository extends ReactiveCrudRepository<PaymentTransation, Long> {
 
@@ -18,7 +19,7 @@ public interface PaymentTransactionRepository extends ReactiveCrudRepository<Pay
                                             @Param("transaction_type") PaymentTransation.TType transaction_type,
                                             @Param("amount") float amount, @Param("category") String category,
                                             @Param("money_source") String money_source, @Param("note") String note,
-                                            @Param("status") PaymentTransation.Status status, @Param("createat") Timestamp createat);
+                                            @Param("status") PaymentTransation.Status status, @Param("createat") LocalDateTime createat);
 
     @Query(value = "DELETE FROM payment_transaction WHERE payment_transaction.group_id = :group_id AND payment_transaction.transaction_second_id = :transaction_second_id")
     Mono<PaymentTransation> deleteTransaction(@Param("group_id") String group_id, @Param("transaction_second_id") String transaction_second_id);
@@ -33,5 +34,5 @@ public interface PaymentTransactionRepository extends ReactiveCrudRepository<Pay
     Flux<PaymentTransation> getAllCategory(@Param("group_id") String group_id);
 
     @Query(value = "SELECT * FROM payment_transaction WHERE payment_transaction.group_id = :group_id AND (payment_transaction.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime)")
-    Flux<PaymentTransation> getStatictis(@Param("group_id") String groupID, @Param("fromtime") Timestamp from, @Param("totime") Timestamp to);
+    Flux<PaymentTransation> getStatictis(@Param("group_id") String groupID, @Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to);
 }

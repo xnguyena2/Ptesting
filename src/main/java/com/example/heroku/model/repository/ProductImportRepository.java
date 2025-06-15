@@ -7,7 +7,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface ProductImportRepository extends ReactiveCrudRepository<ProductImport, Long> {
 
@@ -19,7 +20,7 @@ public interface ProductImportRepository extends ReactiveCrudRepository<ProductI
                                       @Param("price") float price, @Param("amount") float amount,
                                       @Param("note") String note, @Param("list_product_serial_id") String[] list_product_serial_id,
                                       @Param("type") ProductImport.ImportType type,
-                                      @Param("status") ProductImport.Status status, @Param("createat") Timestamp createat);
+                                      @Param("status") ProductImport.Status status, @Param("createat") LocalDateTime createat);
 
     @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id LIMIT :size OFFSET (:page * :size)")
     Flux<ProductImport> getALL(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size);
@@ -28,7 +29,7 @@ public interface ProductImportRepository extends ReactiveCrudRepository<ProductI
     Flux<ProductImport> getALLBeforeNoDate(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size, @Param("date") int date);
 
     @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id AND (product_import.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
-    Flux<ProductImport> getALLBetween(@Param("group_id") String group_id, @Param("fromtime") Timestamp fromtime, @Param("totime") Timestamp totime, @Param("page") int page, @Param("size") int size);
+    Flux<ProductImport> getALLBetween(@Param("group_id") String group_id, @Param("fromtime") LocalDateTime fromtime, @Param("totime") LocalDateTime totime, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id AND product_import.product_id = :id AND DATE_PART('day', NOW() - createat) <= :date LIMIT :size OFFSET (:page*:size)")
     Flux<ProductImport> getAllByProductID(@Param("group_id") String group_id, @Param("id") String productID, @Param("page") int page, @Param("size") int size, @Param("date") int date);

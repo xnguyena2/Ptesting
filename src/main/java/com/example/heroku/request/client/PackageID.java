@@ -5,7 +5,7 @@ import com.example.heroku.request.client.base.BaseID;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 public class PackageID extends BaseID {
     private String device_id;
     private String package_id;
-    private Timestamp from;
-    private Timestamp to;
+    private LocalDateTime from;
+    private LocalDateTime to;
     private UserPackageDetail.Status status;
 }

@@ -2,8 +2,8 @@ package com.example.heroku.model.statistics;
 
 import lombok.Data;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 @Data
 public class BenifitByProduct {
@@ -17,5 +17,5 @@ public class BenifitByProduct {
     private float revenue;
     private float profit;
     private float number_unit;
-    protected Timestamp createat;
+    protected LocalDateTime createat;
 }

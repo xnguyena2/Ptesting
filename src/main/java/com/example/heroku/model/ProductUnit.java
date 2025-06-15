@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +44,7 @@ public class ProductUnit extends BaseEntity {
 
     private float discount;
 
-    private Timestamp date_expire;
+    private LocalDateTime date_expire;
 
     private float volumetric;
 
@@ -151,7 +151,7 @@ public class ProductUnit extends BaseEntity {
     public ProductUnit CheckDiscount() {
         if (date_expire == null)
             return this;
-        Timestamp currentTime = Util.getInstance().Now();
+        LocalDateTime currentTime = Util.getInstance().Now();
         int diff = Util.getInstance().DiffirentDays(date_expire, currentTime);
         System.out.println("Check Discount date expire: " + date_expire.toString() + ", current time: " + currentTime + ", diff: " + diff);
         if (diff < 0) {

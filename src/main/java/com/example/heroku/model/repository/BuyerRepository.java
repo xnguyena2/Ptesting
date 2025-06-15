@@ -9,7 +9,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface BuyerRepository extends ReactiveCrudRepository<Buyer, Long> {
 
@@ -44,5 +45,5 @@ public interface BuyerRepository extends ReactiveCrudRepository<Buyer, Long> {
                                @Param("region_id") int region_id, @Param("district_id") int district_id, @Param("ward_id") int ward_id,
                                @Param("reciver_fullname") String reciver_fullname, @Param("phone_number") String phone_number,
                                @Param("phone_number_clean") String phone_number_clean, @Param("meta_search") String meta_search,
-                               @Param("status") ActiveStatus status, @Param("createat") Timestamp createat);
+                               @Param("status") ActiveStatus status, @Param("createat") LocalDateTime createat);
 }

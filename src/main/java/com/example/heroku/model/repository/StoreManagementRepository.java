@@ -7,7 +7,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface StoreManagementRepository extends ReactiveCrudRepository<Store, Long> {
 
@@ -27,7 +28,7 @@ public interface StoreManagementRepository extends ReactiveCrudRepository<Store,
     Mono<Store> deleteStore(@Param("group_id")String groupID);
 
     @Query(value = "INSERT INTO store(group_id, name, time_open, address, phone ,domain_url, status, store_type, createat) VALUES (:group_id, :name, :time_open, :address, :phone, :domain_url, :status, :store_type, :createat) ON CONFLICT ON CONSTRAINT UQ_store DO UPDATE SET name = :name, time_open = :time_open, address = :address, phone = :phone, domain_url = :domain_url, status = :status, store_type = :store_type")
-    Mono<Store> insertOrUpdate(@Param("group_id")String groupID, @Param("name")String name, @Param("time_open")String time_open, @Param("address")String address, @Param("phone")String phone, @Param("domain_url")String domain_url, @Param("status")Store.Status status, @Param("store_type")Store.StoreType storeType, @Param("createat")Timestamp createat);
+    Mono<Store> insertOrUpdate(@Param("group_id")String groupID, @Param("name")String name, @Param("time_open")String time_open, @Param("address")String address, @Param("phone")String phone, @Param("domain_url")String domain_url, @Param("status")Store.Status status, @Param("store_type")Store.StoreType storeType, @Param("createat") LocalDateTime createat);
 
     @Query(value = "UPDATE store SET name = :name, time_open = :time_open, address = :address, phone = :phone, domain_url = :domain_url, status = :status, store_type = :store_type WHERE group_id = :group_id")
     Mono<Store> update(@Param("group_id")String groupID, @Param("name")String name, @Param("time_open")String time_open, @Param("address")String address, @Param("phone")String phone, @Param("domain_url")String domain_url, @Param("status")Store.Status status, @Param("store_type")Store.StoreType storeType);
@@ -39,7 +40,7 @@ public interface StoreManagementRepository extends ReactiveCrudRepository<Store,
     Flux<Store> getAllStoreBaseonDonePackage(@Param("meta_search")String metaSearch);
 
     @Query(value = "SELECT * FROM store WHERE store.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime")
-    Flux<Store> getAllStoreCreateBetween(@Param("fromtime") Timestamp from, @Param("totime") Timestamp to);
+    Flux<Store> getAllStoreCreateBetween(@Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to);
 
 
 }

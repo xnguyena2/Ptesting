@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -138,7 +138,7 @@ public class BeerSubmitData {
                     .inventory_number(item.getInventory_number())
                     .buy_price(item.getBuy_price())
                     .discount(item.getDiscount())
-                    .dateExpir(NgbDateStruct.FromTimestamp(item.getDate_expire()))
+                    .dateExpir(NgbDateStruct.fromLocalDateTime(item.getDate_expire()))
                     .volumetric(item.getVolumetric())
                     .weight(item.getWeight())
                     .beer_unit_second_id(item.getProduct_unit_second_id())
@@ -225,12 +225,12 @@ public class BeerSubmitData {
         private String[] list_product_serial_id;
         private String status;
 
-        public Timestamp GetExpirDateTime() {
+        public LocalDateTime GetExpirDateTime() {
             if (dateExpir == null)
                 return null;
             if (dateExpir.getDay() == 0 && dateExpir.getMonth() == 0 && dateExpir.getYear() == 0)
                 return null;
-            return dateExpir.ToDateTime();
+            return dateExpir.toLocalDateTime();
         }
     }
 }
