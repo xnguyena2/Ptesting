@@ -34,6 +34,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Builder
 public class UserPackageTest {
+
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Autowired
     UserPackage userPackageAPI;
 
@@ -81,9 +85,11 @@ public class UserPackageTest {
                                     beerUnitsold_out2ID.set(beerUnit.getProduct_unit_second_id());
                                 }
                             })
-                            .verifyComplete();
+                            .expectComplete()
+                            .verify();
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         AtomicReference<String> beerUnit1ID = new AtomicReference<String>();
@@ -108,9 +114,11 @@ public class UserPackageTest {
                             .consumeNextWith(beerUnit -> {
                                 beerUnit3ID.set(beerUnit.getProduct_unit_second_id());
                             })
-                            .verifyComplete();
+                            .expectComplete()
+                            .verify();
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         AtomicReference<String> beerUnit4561ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit4562ID = new AtomicReference<String>();
@@ -138,9 +146,11 @@ public class UserPackageTest {
                                     beerUnit4562ID.set(beerUnit.getProduct_unit_second_id());
                                 }
                             })
-                            .verifyComplete();
+                            .expectComplete()
+                            .verify();
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         productPackage = ProductPackage.builder()
@@ -276,7 +286,13 @@ public class UserPackageTest {
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit2ID.get())
                                 .number_unit(9)
-                                .build()
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit3ID.get())
+                                .number_unit(2)
+                                .list_product_serial_id(new String[]{"serial3"})
+                                .build(),
                 })
                 .build();
         userPackageAPI.AddProductToPackage(productPackage)
@@ -309,15 +325,15 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
 
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
@@ -333,13 +349,20 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(9);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
@@ -348,7 +371,8 @@ public class UserPackageTest {
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetMyPackageOfStatusAfterID(UserID.builder().id("222222").page(0).size(1000).group_id(group).after_id(100000).build(), UserPackageDetail.Status.CREATE)
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
@@ -356,15 +380,15 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
 
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
@@ -380,13 +404,20 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(9);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
@@ -395,7 +426,8 @@ public class UserPackageTest {
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         productPackage = ProductPackage.builder()
@@ -424,9 +456,9 @@ public class UserPackageTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
@@ -444,9 +476,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
@@ -458,15 +490,15 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
 
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
@@ -482,17 +514,25 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(9);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetMyPackageWorking(UserID.builder().id("222222").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
@@ -510,9 +550,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
@@ -524,15 +564,15 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
 
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
@@ -548,17 +588,25 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(9);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetMyPackageWorking(UserID.builder().id("222222").page(0).size(1000).group_id(group).after_id(10000).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
@@ -576,9 +624,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
@@ -590,9 +638,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
@@ -615,7 +663,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetByStatusBetween(UserPackageID.builder().group_id(group).product_second_id("123")
                         .product_unit_second_id(beerUnit1ID.get())
@@ -638,7 +687,8 @@ public class UserPackageTest {
                     assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(106);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetByStatusOfProduct(UserPackageID.builder().group_id(group).product_second_id("123")
                         .status(UserPackageDetail.Status.CREATE)
@@ -671,7 +721,8 @@ public class UserPackageTest {
                     assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(106);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetByStatusOfProduct(UserPackageID.builder().group_id(group).product_second_id("123")
                         .after_id(10000)
@@ -705,7 +756,8 @@ public class UserPackageTest {
                     assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(106);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.DeleteByBeerUnit(PackageItemRemove.builder().device_id("222222").unit_id(beerUnit1ID.get()).group_id(group).build(), UserPackageDetail.Status.CREATE).blockLast();
 
@@ -729,9 +781,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
@@ -754,14 +806,16 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.DeleteByUserID(UserID.builder().id("222222").page(0).size(1000).group_id(group).build(), UserPackageDetail.Status.CREATE).blockLast();
 
         userPackageAPI.GetMyPackage(UserID.builder().id("222222").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
                 .as(StepVerifier::create)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetMyPackage(UserID.builder().id("soldoutttt").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
@@ -769,9 +823,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -804,9 +858,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -816,7 +870,8 @@ public class UserPackageTest {
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         productPackage = ProductPackage.builder()
@@ -881,9 +936,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("save_package");
@@ -928,7 +983,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         productPackage = ProductPackage.builder()
@@ -975,9 +1031,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("save_package");
@@ -1003,21 +1059,21 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.DeleteByUserID(UserID.builder().id("save_package").page(0).size(1000).group_id(group).build(), UserPackageDetail.Status.CREATE).blockLast();
 
         userPackageAPI.GetMyPackage(UserID.builder().id("save_package").page(0).size(1000).group_id(group).build())
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice).reversed())
                 .as(StepVerifier::create)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())
                 .as(StepVerifier::create)
-                .verifyComplete();
-
-
-
+                .expectComplete()
+                .verify();
 
 
         productPackage = ProductPackage.builder()
@@ -1060,9 +1116,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("save_package");
@@ -1093,16 +1149,17 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("save_package");
@@ -1128,17 +1185,20 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.DeletePackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build()).block();
 
         userPackageAPI.GetPackage(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())
                 .as(StepVerifier::create)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetJustByPackageId(PackageID.builder().group_id(group).device_id("save_package").package_id("save_pack").build())
                 .as(StepVerifier::create)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         productPackage = ProductPackage.builder()
@@ -1202,9 +1262,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -1254,16 +1314,17 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetJustByPackageId(PackageID.builder().group_id(group).device_id("0022929222").package_id("save_pack").build())
                 .as(StepVerifier::create)
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -1308,11 +1369,13 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetPackageByDebtOfUser(group, "0022929222")
                 .as(StepVerifier::create)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetPackageByGroup(UserID.builder().group_id(group).page(0).size(10000).build())
@@ -1321,9 +1384,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -1364,9 +1427,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -1379,9 +1442,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -1406,7 +1469,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetPackageByGroupOnlyBuyerData(UserID.builder().group_id(group).page(0).size(10000).build())
@@ -1415,9 +1479,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -1437,9 +1501,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -1448,15 +1512,16 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetPackageByGroupOnlyBuyerData(UserID.builder().group_id(group).after_id(10000).page(0).size(10000).build())
@@ -1465,9 +1530,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -1487,9 +1552,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -1498,15 +1563,16 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetWorkingPackageByGroup(UserID.builder().group_id(group).page(0).size(10000).build())
@@ -1515,9 +1581,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -1558,9 +1624,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -1573,9 +1639,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -1600,7 +1666,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetWorkingPackageByGroupByJoinWith(UserID.builder().group_id(group).page(0).size(10000).build())
@@ -1609,9 +1676,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -1652,9 +1719,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -1667,9 +1734,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -1694,7 +1761,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(group).page(0).size(10000).build(), UserPackageDetail.Status.CREATE)
@@ -1703,9 +1771,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -1746,9 +1814,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -1761,9 +1829,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -1788,7 +1856,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         buyer.FindByDeviceID(group, "0022929222")
                 .as(StepVerifier::create)
@@ -1807,7 +1876,8 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyerData.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
                     assertThat(buyerData.getReciver_fullname()).isEqualTo("test create package");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         buyer.getBuyerStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).device_id("0022929222").page(0).size(3).page(0).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
@@ -1841,7 +1911,8 @@ public class UserPackageTest {
                     assertThat(thung.getProfit()).isEqualTo(8);
                     assertThat(thung.getNumber_unit()).isEqualTo(4);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         statisticServices.getPackageStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
@@ -1860,7 +1931,8 @@ public class UserPackageTest {
                     assertThat(data.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("30000.4");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         statisticServices.getBenifitOfPaymentByDateStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
@@ -1889,7 +1961,8 @@ public class UserPackageTest {
                     assertThat(new DecimalFormat("0.0").format(benifitByDate.getDiscount())).isEqualTo("30000.4");
 
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByDateHour::getRevenue))
@@ -1908,7 +1981,8 @@ public class UserPackageTest {
                     assertThat(data.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("30000.4");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getBenifitOfPaymentByHourStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
@@ -1935,7 +2009,8 @@ public class UserPackageTest {
                     assertThat(data.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(benifitByHour.getDiscount())).isEqualTo("30000.4");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getPackageTotalStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
@@ -1949,7 +2024,8 @@ public class UserPackageTest {
                     assertThat(data.getShip_price()).isEqualTo(60000);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("30000.4");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getProductBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByProduct::getRevenue))
@@ -1981,7 +2057,8 @@ public class UserPackageTest {
                     assertThat(data.getProduct_name()).isEqualTo("beer tiger");
                     assertThat(data.getProduct_unit_name()).isEqualTo("thung");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getBuyerBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByBuyer::getRevenue))
@@ -2000,7 +2077,8 @@ public class UserPackageTest {
                     assertThat(data.getRevenue()).isEqualTo(7868.0f);
                     assertThat(data.getProfit()).isEqualTo(7878.0f);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getStaffBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByBuyer::getRevenue))
@@ -2021,7 +2099,8 @@ public class UserPackageTest {
                     assertThat(data.getRevenue()).isEqualTo(7868.0f);// 7*3*(1-0.1) - 19
                     assertThat(data.getProfit()).isEqualTo(7878.0f);// 7*3*(1-0.1) - 19
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getOrderBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByOrder::getRevenue))
@@ -2047,7 +2126,8 @@ public class UserPackageTest {
                     assertThat(data.getRevenue()).isEqualTo(7868.0f);// 7*3*(1-0.1) - 19
                     assertThat(data.getProfit()).isEqualTo(7878.0f);// 7*3*(1-0.1) - 19
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         productPackage = ProductPackage.builder()
@@ -2109,9 +2189,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -2154,9 +2234,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2169,9 +2249,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2196,7 +2276,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetWorkingPackageByGroupByJoinWith(UserID.builder().group_id(group).page(0).size(10000).build())
@@ -2205,9 +2286,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -2250,9 +2331,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2265,9 +2346,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2292,7 +2373,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(group).page(0).size(10000).build(), UserPackageDetail.Status.DONE)
@@ -2301,9 +2383,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -2341,7 +2423,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         buyer.FindByDeviceID(group, "0022929222")
                 .as(StepVerifier::create)
@@ -2365,7 +2448,8 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyerData.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
                     assertThat(buyerData.getReciver_fullname()).isEqualTo("test create package");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         productPackage = ProductPackage.builder()
@@ -2420,7 +2504,6 @@ public class UserPackageTest {
                 .block();
 
         userPackageAPI.CancelPackage(PackageID.builder().group_id(group).package_id("save_pack").build()).block();
-
 
 
         productPackage = ProductPackage.builder()
@@ -2482,9 +2565,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("00229292223");
@@ -2522,7 +2605,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(group).page(0).size(10000).build(), UserPackageDetail.Status.DONE)
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
@@ -2530,9 +2614,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -2570,7 +2654,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.BuyerFromWebSubmitPackage(ProductPackage.builder()
                 .group_id(group)
@@ -2585,7 +2670,7 @@ public class UserPackageTest {
                             .sort(Comparator.comparing(com.example.heroku.model.ProductUnit::getName))
                             .as(StepVerifier::create)
                             .consumeNextWith(beerUnit -> {
-                                assertThat(beerUnit.getInventory_number()).isEqualTo(543 - 106 - 3 - 3*2.5f);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(543 - 106 - 3 - 3 * 2.5f);
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(345 - 12 - 4);
@@ -2593,9 +2678,11 @@ public class UserPackageTest {
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(345);
                             })
-                            .verifyComplete();
+                            .expectComplete()
+                            .verify();
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageAPI.ReturnPackage(PackageID.builder().group_id(group).package_id("save_pack").build()).block();
 
@@ -2603,7 +2690,8 @@ public class UserPackageTest {
         userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(group).page(0).size(10000).build(), UserPackageDetail.Status.DONE)
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
                 .as(StepVerifier::create)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetPackageByGrouAndStatusAfterID(UserID.builder().group_id(group).id("1000").page(0).size(10000).build(), UserPackageDetail.Status.RETURN)
@@ -2612,9 +2700,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("0022929222");
@@ -2652,7 +2740,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetWorkingPackageByGroup(UserID.builder().group_id(group).page(0).size(10000).build())
@@ -2661,9 +2750,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2676,9 +2765,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2703,7 +2792,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetWorkingPackageByGroupByJoinWith(UserID.builder().group_id(group).page(0).size(10000).build())
@@ -2712,9 +2802,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2727,9 +2817,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2754,7 +2844,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.SearchWorkingPackageByGroupByJoinWith(SearchQuery.builder().query("hello met").group_id(group).page(0).size(10000).build())
@@ -2763,9 +2854,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2778,9 +2869,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2805,7 +2896,8 @@ public class UserPackageTest {
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         buyer.FindByDeviceID(group, "0022929222")
                 .as(StepVerifier::create)
@@ -2824,8 +2916,8 @@ public class UserPackageTest {
                     assertThat(Util.getInstance().RemoveAccent(buyerData.getWard())).isEqualTo(Util.getInstance().RemoveAccent("Phường Bến Nghé"));
                     assertThat(buyerData.getReciver_fullname()).isEqualTo("test create package");
                 })
-                .verifyComplete();
-
+                .expectComplete()
+                .verify();
 
 
         productPackage = ProductPackage.builder()
@@ -2870,9 +2962,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2882,7 +2974,8 @@ public class UserPackageTest {
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetWorkingPackageByGroupByJoinWith(UserID.builder().group_id(group).id("1000").page(0).size(10000).build())
@@ -2891,9 +2984,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2903,7 +2996,8 @@ public class UserPackageTest {
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.SearchWorkingPackageByGroupByJoinWith(SearchQuery.builder().group_id(group).query("hello met").filter("1000").page(0).size(10000).build())
@@ -2912,9 +3006,9 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
 
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(userPackage));
+                        System.out.println(objectMapper.writeValueAsString(userPackage));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
 
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
@@ -2924,13 +3018,15 @@ public class UserPackageTest {
 
                     assertThat(listItem.size()).isEqualTo(0);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
 
         userPackageAPI.GetDonePackageOfStorWithPaymentStatus("NOT_PAID", "")
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))
                 .as(StepVerifier::create)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         buyer.getBuyerStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).device_id("0022929222").page(0).size(3).page(0).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
@@ -2954,7 +3050,8 @@ public class UserPackageTest {
                     assertThat(listItem.size()).isEqualTo(2);
 
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         buyer.deleteBuyer(group, "0022929222").block();
 
@@ -2974,7 +3071,8 @@ public class UserPackageTest {
                     assertThat(data.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("10000.1");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getBenifitOfPaymentByDateStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
@@ -3001,7 +3099,8 @@ public class UserPackageTest {
                     assertThat(data.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(benifitByDate.getDiscount())).isEqualTo("10000.1");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getPackageStatictisByHour(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByDateHour::getRevenue))
@@ -3020,7 +3119,8 @@ public class UserPackageTest {
                     assertThat(data.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("10000.1");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getBenifitOfPaymentByHourStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
@@ -3047,7 +3147,8 @@ public class UserPackageTest {
                     assertThat(benifitByHour.getReturn_price()).isEqualTo(0);
                     assertThat(new DecimalFormat("0.0").format(benifitByHour.getDiscount())).isEqualTo("10000.1");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getPackageTotalStatictis(PackageID.builder().group_id(group).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
@@ -3061,12 +3162,14 @@ public class UserPackageTest {
                     assertThat(data.getShip_price()).isEqualTo(20000);
                     assertThat(new DecimalFormat("0.0").format(data.getDiscount())).isEqualTo("10000.1");
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getProductBenifitStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .sort(Comparator.comparing(BenifitByProduct::getRevenue))
                 .as(StepVerifier::create)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         statisticServices.getCountCancelReturnStatictis(PackageID.builder().group_id(group).page(0).size(1000).from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).status(UserPackageDetail.Status.CREATE).build())
                 .as(StepVerifier::create)
@@ -3076,7 +3179,8 @@ public class UserPackageTest {
                     assertThat(data.getRevenue_cancel()).isEqualTo(3);
                     assertThat(data.getRevenue_return()).isEqualTo(0);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         beerAPI.getAllProductUnitOfIDs(group, Arrays.asList("sold_out", "123", "hide", "456"), Arrays.asList("", beerUnitsold_out2ID.get(), beerUnit2ID.get(), beerUnit4561ID.get(), "5555"))
                 .sort(Comparator.comparing(ProductUnit::getProduct_second_id))
@@ -3087,7 +3191,8 @@ public class UserPackageTest {
                 .consumeNextWith(data -> {
                     assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit4561ID.get());
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
         userPackageDetailCounterServices.count(group)
                 .as(StepVerifier::create)
@@ -3095,7 +3200,8 @@ public class UserPackageTest {
                     assertThat(data.getProcessing()).isEqualTo(1);
                     assertThat(data.getWeb()).isEqualTo(1);
                 })
-                .verifyComplete();
+                .expectComplete()
+                .verify();
 
     }
 }
