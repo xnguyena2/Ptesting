@@ -109,6 +109,9 @@ public class ApplicationTest extends TestConfig {
     PasswordEncoder passwordEncoder;
 
     @Autowired
+    ProductSerial productSerial;
+
+    @Autowired
     Area area;
 
     @Autowired
@@ -200,6 +203,7 @@ public class ApplicationTest extends TestConfig {
         UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(mainGroup)
                 .buyer(buyer).statisticServices(statisticServices).userPackageDetailCounterServices(userPackageDetailCounterServices)
                 .objectMapper(objectMapper)
+                .productSerial(productSerial)
                 .build()
                 .TestUserPackage();
         ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).group(mainGroup).build().Test();
@@ -311,6 +315,7 @@ public class ApplicationTest extends TestConfig {
                 .objectMapper(objectMapper).groupImport(groupImport).build().saveBeerTest();
         UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).buyer(buyer).statisticServices(statisticServices)
                 .objectMapper(objectMapper).userPackageDetailCounterServices(userPackageDetailCounterServices)
+                .productSerial(productSerial)
                 .build().TestUserPackage();
     }
 

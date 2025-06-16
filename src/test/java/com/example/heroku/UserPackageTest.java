@@ -6,12 +6,14 @@ import com.example.heroku.model.ProductUnit;
 import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.statistics.*;
 import com.example.heroku.request.beer.*;
+import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.request.client.UserID;
 import com.example.heroku.request.client.UserPackageID;
 import com.example.heroku.response.BuyerData;
 import com.example.heroku.response.PackageDataResponse;
 import com.example.heroku.response.ProductInPackageResponse;
+import com.example.heroku.services.ProductSerial;
 import com.example.heroku.services.UserPackageDetailCounterServices;
 import com.example.heroku.services.StatisticServices;
 import com.example.heroku.services.UserPackage;
@@ -50,6 +52,8 @@ public class UserPackageTest {
     com.example.heroku.services.Beer beerAPI;
 
     UserPackageDetailCounterServices userPackageDetailCounterServices;
+
+    ProductSerial productSerial;
 
     String group;
 
@@ -318,6 +322,25 @@ public class UserPackageTest {
                 .build();
         userPackageAPI.AddProductToPackage(productPackage)
                 .block();
+
+        productSerial.getAllSerial(IDContainer.builder().group_id(group).build())
+                .sort(Comparator.comparing(com.example.heroku.model.ProductSerial::getProduct_serial_id))
+                .as(StepVerifier::create)
+                .consumeNextWith(productSerial -> {
+                    assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial1");
+                    assertThat(productSerial.getPackage_second_id()).isEqualTo("package_idddddtttt");
+                    assertThat(productSerial.getStatus()).isEqualTo(com.example.heroku.model.ProductSerial.Status.SOLD);
+                })
+                .consumeNextWith(productSerial -> {
+                    assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial2");
+                    assertThat(productSerial.getPackage_second_id()).isEqualTo("package_idddddtttt");
+                    assertThat(productSerial.getStatus()).isEqualTo(com.example.heroku.model.ProductSerial.Status.SOLD);
+                })
+                .consumeNextWith(productSerial -> {
+                    assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial3");
+                    assertThat(productSerial.getStatus()).isEqualTo(com.example.heroku.model.ProductSerial.Status.SOLD);
+                })
+                .verifyComplete();
 
         userPackageAPI.GetMyPackageOfStatus(UserID.builder().id("222222").page(0).size(1000).group_id(group).build(), UserPackageDetail.Status.CREATE)
                 .sort(Comparator.comparingDouble(com.example.heroku.response.PackageDataResponse::getPrice))

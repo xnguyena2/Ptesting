@@ -23,6 +23,8 @@ public interface IImageService {
 
     void delete(String name) throws IOException;
 
+    void deleteAll() throws IOException;
+
     default String getExtension(String originalFileName) {
         return StringUtils.getFilenameExtension(originalFileName);
     }

@@ -31,14 +31,18 @@ public class Storage implements IImageService {
     @Autowired
     MyFireBase myFireBase;
 
-    private static Bucket bucket;
+    private static volatile Bucket bucket;
 
-    Bucket getBucket() {
-        if (!myFireBase.isAuthSuccess()) {
-            return null;
-        }
+    private Bucket getBucket() {
+        if (!myFireBase.isAuthSuccess()) return null;
+
         if (bucket == null) {
-            bucket = StorageClient.getInstance().bucket(properties.getBucketName());
+            synchronized (Storage.class) {
+                if (bucket == null) {
+                    bucket = StorageClient.getInstance().bucket(properties.getBucketName());
+                    log.info("Firebase bucket initialized: {}", properties.getBucketName());
+                }
+            }
         }
         return bucket;
     }
@@ -68,9 +72,15 @@ public class Storage implements IImageService {
 
         Bucket bucket = getBucket();
 
+        if (bucket == null) {
+            throw new IOException("Firebase bucket is not initialized or authentication failed.");
+        }
+
         String name = "img/" + generateFileName(file.getOriginalFilename());
 
         bucket.create(name, file.getBytes(), file.getContentType());
+
+        log.info("Saved file: {}", name);
 
         return name;
     }
@@ -78,13 +88,19 @@ public class Storage implements IImageService {
     @Override
     public String save(BufferedImage bufferedImage, String originalFileName) throws IOException {
 
-        byte[] bytes = getByteArrays(bufferedImage, getExtension(originalFileName));
-
         Bucket bucket = getBucket();
+
+        if (bucket == null) {
+            throw new IOException("Firebase bucket is not initialized or authentication failed.");
+        }
+
+        byte[] bytes = getByteArrays(bufferedImage, getExtension(originalFileName));
 
         String name = "img/" + generateFileName(originalFileName);
 
         bucket.create(name, bytes);
+
+        log.info("Saved image from BufferedImage: {}", name);
 
         return name;
     }
@@ -95,33 +111,22 @@ public class Storage implements IImageService {
         Bucket bucket = getBucket();
 
         String suffix = originalFileName.substring(originalFileName.lastIndexOf('.') + 1);
-        String contentType = "image/jpeg";
 
-        if (suffix.equalsIgnoreCase("png")) {
-            contentType = "image/png";
-        } else if (suffix.equalsIgnoreCase("mpg") || suffix.equalsIgnoreCase("mpeg")) {
-            contentType = "video/mpeg";
-        } else if (suffix.equalsIgnoreCase("mov")) {
-            contentType = "video/quicktime";
-        }
+        String contentType = switch (suffix.toLowerCase()) {
+            case "png" -> "image/png";
+            case "mpg", "mpeg" -> "video/mpeg";
+            case "mov" -> "video/quicktime";
+            default -> "image/jpeg";
+        };
 
         String name = "img/" + generateFileName(originalFileName);
 
-        System.out.println(" File : " + originalFileName);
-        System.out.println(" basefilename : " + name);
-
-
         bucket.create(name, inputStream, contentType);
 
-        System.out.println(" File : " + originalFileName + " uploaded: photoId = " + name);
+        log.info("Uploaded file: {} as {}", originalFileName, name);
 
-        String[] allImg = new String[4];
         String url = getImageUrl(name);
-        allImg[0] = name;
-        allImg[1] = url;
-        allImg[2] = url;
-        allImg[3] = url;
-        return allImg;
+        return new String[]{name, url, url, url};
     }
 
     @Override
@@ -140,14 +145,14 @@ public class Storage implements IImageService {
             boolean deleted = storage.delete(blobId);
 
             if (deleted) {
-                System.out.println("File " + name + " deleted from bucket " + properties.getBucketName());
+                log.info("File {} deleted from bucket {}", name, properties.getBucketName());
             } else {
-                System.out.println("File " + name + " not found in bucket " + properties.getBucketName());
+                log.warn("File {} not found in bucket {}", name, properties.getBucketName());
             }
         } else {
 
             Bucket bucket = getBucket();
-            if(bucket == null){
+            if (bucket == null) {
                 throw new NullPointerException("bucket is null");
             }
 
@@ -158,6 +163,31 @@ public class Storage implements IImageService {
             }
 
             blob.delete();
+            log.info("Deleted file: {}", name);
         }
     }
+
+    @Override
+    public void deleteAll() throws IOException {
+        Bucket bucket = getBucket();
+        if (bucket == null) throw new IOException("Firebase bucket not available");
+
+        int deletedCount = 0;
+        String prefix = "img/"; // only delete files under this prefix
+
+        log.info("Deleting all files with prefix: {}", prefix);
+
+        for (Blob blob : bucket.list(com.google.cloud.storage.Storage.BlobListOption.prefix(prefix)).iterateAll()) {
+            boolean deleted = blob.delete();
+            if (deleted) {
+                deletedCount++;
+                log.info("Deleted: {}", blob.getName());
+            } else {
+                log.warn("Failed to delete: {}", blob.getName());
+            }
+        }
+
+        log.info("Total files deleted: {}", deletedCount);
+    }
+
 }
