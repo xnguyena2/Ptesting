@@ -225,7 +225,7 @@ public class UserPackageTest {
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit3ID.get())
                                 .number_unit(2)
-                                .list_product_serial_id(new String[]{"serial1", "serial2"})
+                                .list_product_serial_id(new String[]{"serial1"})
                                 .build(),
                         com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("combo")
@@ -333,8 +333,8 @@ public class UserPackageTest {
                 })
                 .consumeNextWith(productSerial -> {
                     assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial2");
-                    assertThat(productSerial.getPackage_second_id()).isEqualTo("package_idddddtttt");
-                    assertThat(productSerial.getStatus()).isEqualTo(com.example.heroku.model.ProductSerial.Status.SOLD);
+                    assertThat(productSerial.getPackage_second_id()).isEqualTo(null);
+                    assertThat(productSerial.getStatus()).isEqualTo(null);
                 })
                 .consumeNextWith(productSerial -> {
                     assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial3");
@@ -669,7 +669,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
 
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
                     ProductInPackageResponse item = listItem.get(0);
@@ -683,6 +683,13 @@ public class UserPackageTest {
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(9);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
@@ -744,6 +751,20 @@ public class UserPackageTest {
                     assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(106);
                 })
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(userPackage.getList_product_serial_id()).isEqualTo(new String[]{"serial3"});
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(2);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(userPackage.getList_product_serial_id()).isEqualTo(new String[]{"serial1"});
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(2);
+                })
                 .expectComplete()
                 .verify();
 
@@ -778,6 +799,20 @@ public class UserPackageTest {
                     assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
                     assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit1ID.get());
                     assertThat(userPackage.getNumber_unit()).isEqualTo(106);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(userPackage.getList_product_serial_id()).isEqualTo(new String[]{"serial3"});
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(2);
+                })
+                .consumeNextWith(userPackage -> {
+
+                    assertThat(userPackage.getProduct_second_id()).isEqualTo("123");
+                    assertThat(userPackage.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(userPackage.getList_product_serial_id()).isEqualTo(new String[]{"serial1"});
+                    assertThat(userPackage.getNumber_unit()).isEqualTo(2);
                 })
                 .expectComplete()
                 .verify();
@@ -818,7 +853,7 @@ public class UserPackageTest {
                 .consumeNextWith(userPackage -> {
                     assertThat(userPackage.getDevice_id()).isEqualTo("222222");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(1);
+                    assertThat(listItem.size()).isEqualTo(2);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
@@ -828,6 +863,14 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(9);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+                    item = listItem.get(1);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial3"});
                 })
                 .expectComplete()
                 .verify();
@@ -854,7 +897,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(3);
+                    assertThat(listItem.size()).isEqualTo(4);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
@@ -877,6 +920,23 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(12);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("combo");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo("combo1");
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("combo");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(3);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial1"});
                 })
                 .consumeNextWith(userPackage -> {
 
@@ -940,6 +1000,13 @@ public class UserPackageTest {
                                 .number_unit(9)
                                 .build(),
                         com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit3ID.get())
+                                .discount_promotional(45)
+                                .number_unit(10)
+                                .list_product_serial_id(new String[]{"serial2"})
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("combo")
                                 .product_unit_second_id("combo1")
                                 .number_unit(3)
@@ -979,7 +1046,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getMoney_source()).isEqualTo("moneysource");
                     assertThat(userPackage.getPrint_kitchen()).isEqualTo("print_kitchen_1");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(3);
+                    assertThat(listItem.size()).isEqualTo(4);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
@@ -999,6 +1066,16 @@ public class UserPackageTest {
 
 
                     item = listItem.get(1);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(10);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
+                    assertThat(item.getDiscount_promotional()).isEqualTo(45);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(9);
@@ -1029,6 +1106,13 @@ public class UserPackageTest {
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit1ID.get())
                                 .number_unit(3)
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit3ID.get())
+                                .discount_promotional(45)
+                                .number_unit(10)
+                                .list_product_serial_id(new String[]{"serial2"})
                                 .build(),
                         com.example.heroku.model.UserPackage.builder()
                                 .product_second_id("123")
@@ -1063,9 +1147,11 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
+
+
 
                     ProductInPackageResponse item = listItem.get(0);
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
@@ -1079,6 +1165,15 @@ public class UserPackageTest {
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(4);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(10);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
+                    assertThat(item.getDiscount_promotional()).isEqualTo(45);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
@@ -1128,6 +1223,12 @@ public class UserPackageTest {
                                 .product_second_id("123")
                                 .product_unit_second_id(beerUnit2ID.get())
                                 .number_unit(4)
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit3ID.get())
+                                .list_product_serial_id(new String[]{"serial2"})
+                                .number_unit(5)
                                 .build()
                 })
                 .build();
@@ -1148,7 +1249,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
@@ -1171,6 +1272,15 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(4);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String []{"serial2"});
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .expectComplete()
                 .verify();
@@ -1189,7 +1299,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit));
 
@@ -1205,6 +1315,15 @@ public class UserPackageTest {
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(4);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String []{"serial2"});
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
@@ -1274,6 +1393,14 @@ public class UserPackageTest {
                                 .buy_price(3)
                                 .price(5)
                                 .number_unit(4)
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit3ID.get())
+                                .buy_price(3)
+                                .price(5)
+                                .number_unit(5)
+                                .list_product_serial_id(new String[]{"serial2"})
                                 .build()
                 })
                 .build();
@@ -1305,7 +1432,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getCost()).isEqualTo(444);
                     assertThat(userPackage.getProfit()).isEqualTo(7878);
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
@@ -1336,6 +1463,15 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(4);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .expectComplete()
                 .verify();
@@ -1361,7 +1497,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getCost()).isEqualTo(444);
                     assertThat(userPackage.getProfit()).isEqualTo(7878);
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
@@ -1389,6 +1525,15 @@ public class UserPackageTest {
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(4);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
@@ -1416,7 +1561,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
@@ -1444,6 +1589,15 @@ public class UserPackageTest {
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(4);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
@@ -1473,7 +1627,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(3);
+                    assertThat(listItem.size()).isEqualTo(4);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
@@ -1491,6 +1645,15 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(12);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(3);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial1"});
                 })
                 .expectComplete()
                 .verify();
@@ -1613,7 +1776,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
@@ -1643,6 +1806,15 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(4);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .consumeNextWith(userPackage -> {
 
@@ -1670,7 +1842,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(3);
+                    assertThat(listItem.size()).isEqualTo(4);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
@@ -1688,6 +1860,24 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(12);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("combo");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo("combo1");
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("combo");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(3);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial1"});
                 })
                 .expectComplete()
                 .verify();
@@ -1708,7 +1898,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
@@ -1738,6 +1928,15 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(4);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .consumeNextWith(userPackage -> {
 
@@ -1765,7 +1964,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(3);
+                    assertThat(listItem.size()).isEqualTo(4);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
@@ -1783,6 +1982,24 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(12);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("combo");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo("combo1");
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("combo");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(3);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial1"});
                 })
                 .expectComplete()
                 .verify();
@@ -1803,7 +2020,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
@@ -1833,6 +2050,15 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(4);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .consumeNextWith(userPackage -> {
 
@@ -1860,7 +2086,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(3);
+                    assertThat(listItem.size()).isEqualTo(4);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
@@ -1878,6 +2104,23 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(12);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("combo");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo("combo1");
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("combo");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(3);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial1"});
                 })
                 .expectComplete()
                 .verify();
@@ -1906,9 +2149,9 @@ public class UserPackageTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerStatictisData -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(buyerStatictisData));
+                        System.out.println(objectMapper.writeValueAsString(buyerStatictisData));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     BenifitByMonth benifitByMonth = buyerStatictisData.getBenifitByMonth();
                     assertThat(benifitByMonth.getRevenue()).isEqualTo(7868);
@@ -1921,15 +2164,15 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     List<BenifitByProduct> benifitByProducts = buyerStatictisData.getBenifitByProducts();
-                    assertThat(benifitByProducts.size()).isEqualTo(2);
-                    BenifitByProduct thung = benifitByProducts.get(0);
-                    if (thung.getProduct_unit_name().equals("lon")) {
-                        thung = benifitByProducts.get(1);
-                    }
+                    assertThat(benifitByProducts.size()).isEqualTo(3);
+                    benifitByProducts.sort(Comparator.comparing(com.example.heroku.model.statistics.BenifitByProduct::getProduct_unit_name));
+                    BenifitByProduct thung = benifitByProducts.get(1);
+
                     assertThat(thung.getProduct_name()).isEqualTo("beer tiger");
+                    assertThat(thung.getProduct_unit_name()).isEqualTo("thung");
                     assertThat(thung.getRevenue()).isEqualTo(20);
                     assertThat(thung.getProfit()).isEqualTo(8);
                     assertThat(thung.getNumber_unit()).isEqualTo(4);
@@ -2080,6 +2323,15 @@ public class UserPackageTest {
                     assertThat(data.getProduct_name()).isEqualTo("beer tiger");
                     assertThat(data.getProduct_unit_name()).isEqualTo("thung");
                 })
+                .consumeNextWith(data -> {
+                    assertThat(data.getProduct_second_id()).isEqualTo("123");
+                    assertThat(data.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(data.getNumber_unit()).isEqualTo(7);// 5 serial2 + 2 serial1
+                    assertThat(data.getRevenue()).isEqualTo(25);
+                    assertThat(data.getProfit()).isEqualTo(10);
+                    assertThat(data.getProduct_name()).isEqualTo("beer tiger");
+                    assertThat(data.getProduct_unit_name()).isEqualTo("zan");
+                })
                 .expectComplete()
                 .verify();
 
@@ -2199,6 +2451,14 @@ public class UserPackageTest {
                                 .buy_price(3)
                                 .price(5)
                                 .number_unit(4)
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit3ID.get())
+                                .buy_price(3)
+                                .price(5)
+                                .number_unit(5)
+                                .list_product_serial_id(new String[]{"serial2"})
                                 .build()
                 })
                 .build();
@@ -2222,7 +2482,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     assertThat(userPackage.getPoint()).isEqualTo(-77);
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
@@ -2253,6 +2513,15 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(4);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .consumeNextWith(userPackage -> {
 
@@ -2280,7 +2549,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(3);
+                    assertThat(listItem.size()).isEqualTo(4);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
@@ -2298,6 +2567,23 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(12);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("combo");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo("combo1");
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("combo");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(3);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial1"});
                 })
                 .expectComplete()
                 .verify();
@@ -2319,7 +2605,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     assertThat(userPackage.getPoint()).isEqualTo(-77);
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
@@ -2350,6 +2636,15 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(4);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .consumeNextWith(userPackage -> {
 
@@ -2377,7 +2672,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(3);
+                    assertThat(listItem.size()).isEqualTo(4);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
@@ -2395,6 +2690,23 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(12);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("combo");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo("combo1");
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("combo");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(3);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial1"});
                 })
                 .expectComplete()
                 .verify();
@@ -2415,7 +2727,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
@@ -2445,6 +2757,15 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(4);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .expectComplete()
                 .verify();
@@ -2453,9 +2774,9 @@ public class UserPackageTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerData -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(buyerData));
+                        System.out.println(objectMapper.writeValueAsString(buyerData));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(buyerData.getDiscount()).isEqualTo(10000);
                     assertThat(buyerData.getReal_price()).isEqualTo(7868);
@@ -2520,12 +2841,40 @@ public class UserPackageTest {
                                 .buy_price(3)
                                 .price(5)
                                 .number_unit(4)
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit3ID.get())
+                                .buy_price(3)
+                                .price(5)
+                                .number_unit(5)
+                                .list_product_serial_id(new String[]{"serial2"})
                                 .build()
                 })
                 .build();
         userPackageAPI.SavePackage(productPackage)
                 .block();
 
+        productSerial.getAllSerial(IDContainer.builder().group_id(group).build())
+                .sort(Comparator.comparing(com.example.heroku.model.ProductSerial::getProduct_serial_id))
+                .as(StepVerifier::create)
+                .consumeNextWith(productSerial -> {
+                    assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial1");
+                    assertThat(productSerial.getPackage_second_id()).isEqualTo("package_idddddtttt");
+                    assertThat(productSerial.getStatus()).isEqualTo(com.example.heroku.model.ProductSerial.Status.SOLD);
+                })
+                .consumeNextWith(productSerial -> {
+                    assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial2");
+                    assertThat(productSerial.getPackage_second_id()).isEqualTo("save_pack");
+                    assertThat(productSerial.getStatus()).isEqualTo(com.example.heroku.model.ProductSerial.Status.SOLD);
+                })
+                .consumeNextWith(productSerial -> {
+                    assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial3");
+                    assertThat(productSerial.getStatus()).isEqualTo(null);
+                })
+                .verifyComplete();
+
+        //can not cancel package that has been done
         userPackageAPI.CancelPackage(PackageID.builder().group_id(group).package_id("save_pack").build()).block();
 
 
@@ -2573,6 +2922,14 @@ public class UserPackageTest {
                                 .buy_price(3)
                                 .price(5)
                                 .number_unit(4)
+                                .build(),
+                        com.example.heroku.model.UserPackage.builder()
+                                .product_second_id("123")
+                                .product_unit_second_id(beerUnit3ID.get())
+                                .buy_price(3)
+                                .price(5)
+                                .number_unit(5)
+                                .list_product_serial_id(new String[]{"serial2"})
                                 .build()
                 })
                 .build();
@@ -2597,7 +2954,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack_temp");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("00229292223");
@@ -2627,6 +2984,15 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(4);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
                 .expectComplete()
                 .verify();
@@ -2646,7 +3012,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
@@ -2674,6 +3040,15 @@ public class UserPackageTest {
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(4);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
@@ -2699,7 +3074,7 @@ public class UserPackageTest {
                                 assertThat(beerUnit.getInventory_number()).isEqualTo(345 - 12 - 4);
                             })
                             .consumeNextWith(beerUnit -> {
-                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345 - 5 - 2);// 5 serial2 + 2 serial1
                             })
                             .expectComplete()
                             .verify();
@@ -2708,6 +3083,25 @@ public class UserPackageTest {
                 .verify();
 
         userPackageAPI.ReturnPackage(PackageID.builder().group_id(group).package_id("save_pack").build()).block();
+
+        productSerial.getAllSerial(IDContainer.builder().group_id(group).build())
+                .sort(Comparator.comparing(com.example.heroku.model.ProductSerial::getProduct_serial_id))
+                .as(StepVerifier::create)
+                .consumeNextWith(productSerial -> {
+                    assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial1");
+                    assertThat(productSerial.getPackage_second_id()).isEqualTo("package_idddddtttt");
+                    assertThat(productSerial.getStatus()).isEqualTo(com.example.heroku.model.ProductSerial.Status.SOLD);
+                })
+                .consumeNextWith(productSerial -> {
+                    assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial2");
+                    assertThat(productSerial.getPackage_second_id()).isEqualTo(null);
+                    assertThat(productSerial.getStatus()).isEqualTo(null);
+                })
+                .consumeNextWith(productSerial -> {
+                    assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial3");
+                    assertThat(productSerial.getStatus()).isEqualTo(null);
+                })
+                .verifyComplete();
 
 
         userPackageAPI.GetPackageByGrouAndStatus(UserID.builder().group_id(group).page(0).size(10000).build(), UserPackageDetail.Status.DONE)
@@ -2732,7 +3126,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                     BuyerData buyer1 = userPackage.getBuyer();
                     assertThat(buyer1.getDevice_id()).isEqualTo("0022929222");
@@ -2760,6 +3154,15 @@ public class UserPackageTest {
                     assertThat(item.getProduct_second_id()).isEqualTo("123");
                     assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit2ID.get());
                     assertThat(item.getNumber_unit()).isEqualTo(4);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(5);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial2"});
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
                 })
@@ -2796,7 +3199,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(3);
+                    assertThat(listItem.size()).isEqualTo(4);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
@@ -2814,6 +3217,23 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(12);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("combo");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo("combo1");
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("combo");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(3);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial1"});
                 })
                 .expectComplete()
                 .verify();
@@ -2848,7 +3268,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(3);
+                    assertThat(listItem.size()).isEqualTo(4);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
@@ -2866,6 +3286,23 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(12);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("combo");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo("combo1");
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("combo");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(3);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial1"});
                 })
                 .expectComplete()
                 .verify();
@@ -2900,7 +3337,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getDevice_id()).isEqualTo("soldoutttt");
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("package_idddddtttt");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(3);
+                    assertThat(listItem.size()).isEqualTo(4);
 
                     listItem.sort(Comparator.comparingDouble(com.example.heroku.response.ProductInPackageResponse::getNumber_unit).reversed());
 
@@ -2918,6 +3355,23 @@ public class UserPackageTest {
                     assertThat(item.getNumber_unit()).isEqualTo(12);
                     assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
                     assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(2);
+                    assertThat(item.getProduct_second_id()).isEqualTo("combo");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo("combo1");
+                    assertThat(item.getNumber_unit()).isEqualTo(3);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("combo");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+
+
+                    item = listItem.get(3);
+                    assertThat(item.getProduct_second_id()).isEqualTo("123");
+                    assertThat(item.getProduct_unit_second_id()).isEqualTo(beerUnit3ID.get());
+                    assertThat(item.getNumber_unit()).isEqualTo(2);
+                    assertThat(item.getBeerSubmitData().getBeerSecondID()).isEqualTo("123");
+                    assertThat(item.getBeerSubmitData().getListUnit().length).isEqualTo(1);
+                    assertThat(item.getList_product_serial_id()).isEqualTo(new String[]{"serial1"});
                 })
                 .expectComplete()
                 .verify();
@@ -2977,6 +3431,25 @@ public class UserPackageTest {
                 .build();
         userPackageAPI.SavePackage(productPackage)
                 .block();
+
+        productSerial.getAllSerial(IDContainer.builder().group_id(group).build())
+                .sort(Comparator.comparing(com.example.heroku.model.ProductSerial::getProduct_serial_id))
+                .as(StepVerifier::create)
+                .consumeNextWith(productSerial -> {
+                    assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial1");
+                    assertThat(productSerial.getPackage_second_id()).isEqualTo(null);
+                    assertThat(productSerial.getStatus()).isEqualTo(null);
+                })
+                .consumeNextWith(productSerial -> {
+                    assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial2");
+                    assertThat(productSerial.getPackage_second_id()).isEqualTo(null);
+                    assertThat(productSerial.getStatus()).isEqualTo(null);
+                })
+                .consumeNextWith(productSerial -> {
+                    assertThat(productSerial.getProduct_serial_id()).isEqualTo("serial3");
+                    assertThat(productSerial.getStatus()).isEqualTo(null);
+                })
+                .verifyComplete();
 
 
         userPackageAPI.GetWorkingPackageByGroupAfterID(UserID.builder().group_id(group).id("1000").page(0).size(10000).build())
@@ -3055,9 +3528,9 @@ public class UserPackageTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(buyerStatictisData -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(buyerStatictisData));
+                        System.out.println(objectMapper.writeValueAsString(buyerStatictisData));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     BenifitByMonth benifitByMonth = buyerStatictisData.getBenifitByMonth();
                     assertThat(benifitByMonth.getRevenue()).isEqualTo(0);
@@ -3070,7 +3543,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getPackage_second_id()).isEqualTo("save_pack");
                     assertThat(userPackage.getNote()).isEqualTo("notettt here!!");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
-                    assertThat(listItem.size()).isEqualTo(2);
+                    assertThat(listItem.size()).isEqualTo(3);
 
                 })
                 .expectComplete()

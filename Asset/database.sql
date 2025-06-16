@@ -677,7 +677,7 @@ BEGIN
 
         PERFORM update_product_serial_state_for_package(OLD.group_id, OLD.product_second_id, OLD.product_unit_second_id, OLD.list_product_serial_id, NULL, NULL);
 
-        PERFORM update_product_serial_state_for_package(NEW.group_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.list_product_serial_id, 'SOLD', NEW.package_second_id);
+        PERFORM update_product_serial_state_for_package(NEW.group_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.list_product_serial_id, CASE WHEN NEW.status = 'RETURN' OR NEW.status = 'CANCEL' THEN NULL ELSE 'SOLD' END, CASE WHEN NEW.status = 'RETURN' OR NEW.status = 'CANCEL' THEN NULL ELSE NEW.package_second_id END);
 
 --	    RETURN NEW;
     END IF;
