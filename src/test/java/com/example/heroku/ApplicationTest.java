@@ -160,7 +160,10 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void userTest() {
-        UserAccountTest.builder().userAccount(userAccount).usersInfo(usersInfo).adminName(adminName).passwordEncoder(passwordEncoder).group(mainGroup).build().test();
+        UserAccountTest.builder().userAccount(userAccount).usersInfo(usersInfo)
+                .adminName(adminName).passwordEncoder(passwordEncoder).group(mainGroup)
+                .objectMapper(objectMapper)
+                .build().test();
     }
 
     @Test
@@ -206,7 +209,7 @@ public class ApplicationTest extends TestConfig {
                 .productSerial(productSerial)
                 .build()
                 .TestUserPackage();
-        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).group(mainGroup).build().Test();
+        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).productSerial(productSerial).group(mainGroup).build().Test();
     }
 
     @Test
@@ -305,7 +308,10 @@ public class ApplicationTest extends TestConfig {
     @Test
     public void userTest2() {
         //UNIQUE id of user
-        UserAccountTest.builder().userAccount(userAccount).usersInfo(usersInfo).adminName(adminName).passwordEncoder(passwordEncoder).group(anotherGroup).build().test2();
+        UserAccountTest.builder().userAccount(userAccount).usersInfo(usersInfo)
+                .adminName(adminName).passwordEncoder(passwordEncoder).group(anotherGroup)
+                .objectMapper(objectMapper)
+                .build().test2();
     }
 
     @Test
@@ -333,7 +339,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void ProductImport2(){
-        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).group(anotherGroup).build().Test();
+        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).productSerial(productSerial).group(anotherGroup).build().Test();
     }
 
     @Test

@@ -7,6 +7,7 @@ import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.warehouse.GroupImportWithItem;
 import com.example.heroku.request.warehouse.SearchImportQuery;
 import com.example.heroku.services.GroupImport;
+import com.example.heroku.services.ProductSerial;
 import lombok.Builder;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -22,6 +23,8 @@ public class ProductImportTest {
     private GroupImport groupImport;
 
     com.example.heroku.services.Beer beerAPI;
+
+    ProductSerial productSerial;
 
     String group;
 
