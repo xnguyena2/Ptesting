@@ -242,7 +242,7 @@ public class ApplicationTest extends TestConfig {
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).testWithMainGroup(true).build().DeviceConfigTestWithoutImage();
 
         ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).objectMapper(objectMapper).group(mainGroup).testWithMainGroup(true).build().BootStrapDataWithoutImage();
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).objectMapper(objectMapper).group(mainGroup).build().BootStrapDataWithoutImageNew();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).objectMapper(objectMapper).group(mainGroup).testWithMainGroup(true).build().BootStrapDataWithoutImageNew();
 
         ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).group(mainGroup).build().Run(listImg);
 
