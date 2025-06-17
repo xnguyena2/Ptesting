@@ -423,6 +423,49 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION insert_or_update_product_serials(
+    _group_id VARCHAR,
+    _product_serial_id VARCHAR,
+    _product_second_id VARCHAR,
+    _product_unit_second_id VARCHAR,
+    _package_second_id VARCHAR,
+    _group_import_second_id VARCHAR,
+    _status VARCHAR
+)
+RETURNS VOID AS
+$$
+BEGIN
+        INSERT INTO product_serial (
+            group_id,
+            product_serial_id,
+            product_second_id,
+            product_unit_second_id,
+            package_second_id,
+            group_import_second_id,
+            status,
+            createat
+        )
+        VALUES (
+            _group_id,
+            _product_serial_id,
+            _product_second_id,
+            _product_unit_second_id,
+            _package_second_id,
+            _group_import_second_id,
+            _status,
+            NOW()
+        )
+        ON CONFLICT ON CONSTRAINT UQ_product_serial_id
+        DO UPDATE SET
+            product_second_id = EXCLUDED.product_second_id,
+            product_unit_second_id = EXCLUDED.product_unit_second_id,
+            package_second_id = EXCLUDED.package_second_id,
+            group_import_second_id = EXCLUDED.group_import_second_id,
+            status = EXCLUDED.status,
+            createat = NOW();
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE OR REPLACE FUNCTION delete_product_serial_if_status_null(
     _group_id VARCHAR,
     _product_second_id VARCHAR,
@@ -884,19 +927,19 @@ BEGIN
         FOREACH _product_serial_id IN ARRAY NEW.list_product_serial_id
         LOOP
 
-            PERFORM insert_product_serials(
+            PERFORM insert_or_update_product_serials(
                 NEW.group_id,
                 _product_serial_id,
                 NEW.product_second_id,
                 NEW.product_unit_second_id,
                 NULL,
                 NEW.group_import_second_id,
-                NULL
+                CASE WHEN NEW.type = 'EXPORT' AND NEW.status <> 'RETURN' THEN 'EXPORT' WHEN NEW.type = 'IMPORT' AND NEW.status = 'RETURN' THEN 'EXPORT' ELSE NULL END
             );
 
         END LOOP;
 
-	    RETURN NEW;
+--	    RETURN NEW;
 
     END IF;
 
@@ -996,7 +1039,7 @@ BEGIN
 
         END LOOP;
 
-	    RETURN OLD;
+--	    RETURN OLD;
     END IF;
 
 
@@ -1105,12 +1148,12 @@ BEGIN
                 NEW.product_unit_second_id,
                 NULL,
                 NEW.group_import_second_id,
-                CASE WHEN NEW.type = 'EXPORT' AND NEW.status <> 'RETURN' THEN 'EXPORT' ELSE NULL END
+                CASE WHEN NEW.type = 'EXPORT' AND NEW.status <> 'RETURN' THEN 'EXPORT' WHEN NEW.type = 'IMPORT' AND NEW.status = 'RETURN' THEN 'EXPORT' ELSE NULL END
             );
 
         END LOOP;
 
-	    RETURN NEW;
+--	    RETURN NEW;
     END IF;
 
 
