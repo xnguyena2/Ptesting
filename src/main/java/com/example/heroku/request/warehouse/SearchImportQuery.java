@@ -20,6 +20,7 @@ public class SearchImportQuery extends BaseID {
     private String group_import_second_id;
     private String product_second_id;
     private String product_unit_second_id;
+    private String search_txt;
     private LocalDateTime from;
     private LocalDateTime to;
 

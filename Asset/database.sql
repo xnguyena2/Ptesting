@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS notification (id SERIAL PRIMARY KEY, group_id VARCHAR
 CREATE TABLE IF NOT EXISTS notification_relate_user_device (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, notification_second_id VARCHAR, user_device_id VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, provider_id VARCHAR, name VARCHAR, config TEXT, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS group_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, supplier_id VARCHAR, staff_id VARCHAR, staff_name VARCHAR, supplier_name VARCHAR, supplier_phone VARCHAR, total_price float8, total_amount float8, payment float8, discount_amount float8, discount_percent float8, additional_fee float8, progress VARCHAR, note TEXT, images VARCHAR, type VARCHAR, money_source VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS group_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, supplier_id VARCHAR, staff_id VARCHAR, staff_name VARCHAR, supplier_name VARCHAR, supplier_phone VARCHAR, total_price float8, total_amount float8, payment float8, discount_amount float8, discount_percent float8, additional_fee float8, progress VARCHAR, note TEXT, images VARCHAR, type VARCHAR, money_source VARCHAR, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_unit_name_category VARCHAR, price float8, amount float8, note TEXT, type VARCHAR, list_product_serial_id VARCHAR[], status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, domain_url VARCHAR, status VARCHAR, store_type VARCHAR, each_month float8, half_year float8, each_year float8, payment_status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
@@ -68,6 +68,7 @@ CREATE INDEX product_serial_index ON product_serial(product_serial_id);
 CREATE INDEX product_serial_product_index ON product_serial(product_second_id);
 CREATE INDEX product_serial_product_unit_index ON product_serial(product_unit_second_id);
 CREATE INDEX group_import_index ON group_import(group_import_second_id);
+CREATE INDEX group_import_meta_search_index ON group_import(meta_search);
 CREATE INDEX product_import_index ON product_import(group_import_second_id);
 CREATE INDEX product_import_product_second_id_index ON product_import(product_second_id);
 CREATE INDEX product_import_product_unit_second_id_index ON product_import(product_unit_second_id);

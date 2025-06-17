@@ -109,6 +109,16 @@ public class GroupImport {
         return joinGroupImportWithProductImport.GetAllDebtOfSupplier(groupID, importType, supplier);
     }
 
+    public Flux<GroupImportWithItem> SearchByType(SearchImportQuery query) {
+        query.setSearch_txt("%" + query.getSearch_txt() + "%");
+        return joinGroupImportWithProductImport.SearchByType(query);
+    }
+
+    public Flux<GroupImportWithItem> Search(SearchImportQuery query) {
+        query.setSearch_txt("%" + query.getSearch_txt() + "%");
+        return joinGroupImportWithProductImport.Search(query);
+    }
+
     public Mono<WareHouseIncomeOutCome> GetWareHouseStatictisBetween(SearchImportQuery query){
         return statisticWareHouseIncomeOutcomeRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), ProductImport.Status.RETURN);
     }
@@ -140,6 +150,7 @@ public class GroupImport {
                 groupImport.getTotal_price(), groupImport.getTotal_amount(), groupImport.getPayment(),
                 groupImport.getDiscount_amount(), groupImport.getDiscount_percent(), groupImport.getAdditional_fee(), groupImport.getProgress(),
                 groupImport.getNote(), groupImport.getImages(), groupImport.getType(), groupImport.getMoney_source(),
+                groupImport.getMeta_search(),
                 groupImport.getStatus(), groupImport.getCreateat());
     }
 

@@ -54,9 +54,14 @@ public class GroupImport extends BaseEntity {
 
     private String money_source;
 
+    private String meta_search;
+
     private ProductImport.Status status;
 
-    // GroupImportJoinProductImport
+    /***
+     * {@link com.example.heroku.model.joinwith.GroupImportJoinProductImport}
+     * @param g
+     */
 
     public void copy(GroupImport g) {
         super.copy(g);
@@ -77,6 +82,7 @@ public class GroupImport extends BaseEntity {
         images = g.images;
         type = g.type;
         money_source = g.money_source;
+        meta_search = g.meta_search;
         status = g.status;
     }
 
