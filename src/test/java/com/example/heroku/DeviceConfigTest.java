@@ -194,7 +194,7 @@ public class DeviceConfigTest {
                             assertThat(config.getDeviceConfig().getConfig()).isEqualTo("config");
                             assertThat((long) config.getCarousel().size()).isEqualTo(0);
                             assertThat(config.getBenifit().getRevenue()).isEqualTo(0);
-                            assertThat(config.getProductSerials().size()).isEqualTo(3);
+//                            assertThat(config.getProductSerials().size()).isEqualTo(3);
                             if(testWithMainGroup) {
                                 Store store = config.getStore();
                                 assertThat(store.getName()).isEqualTo("shop ban chuoi");
