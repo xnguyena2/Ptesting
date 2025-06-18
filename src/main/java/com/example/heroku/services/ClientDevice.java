@@ -79,7 +79,6 @@ public class ClientDevice {
                         .deviceConfig(tuple.getT3())
                         .store(tuple.getT4())
                         .web_config(tuple.getT5())
-                        .carousel(List.of()) // Không có carousel
                         .build()
                 );
 
