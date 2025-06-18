@@ -74,13 +74,14 @@ public class ClientDevice {
 
         return Mono.zip(productMono, carouselMono, configMono, storeMono, webConfigMono)
                 .map(tuple -> BootStrapDataWeb.builder()
-                .products(tuple.getT1())
-                .carousel(tuple.getT2())
-                .deviceConfig(tuple.getT3())
-                .store(tuple.getT4())
-                .web_config(tuple.getT5())
-                .build()
-        );
+                        .products(tuple.getT1())
+                        .carousel(tuple.getT2())
+                        .deviceConfig(tuple.getT3())
+                        .store(tuple.getT4())
+                        .web_config(tuple.getT5())
+                        .carousel(List.of()) // Không có carousel
+                        .build()
+                );
 
     }
 
@@ -130,6 +131,7 @@ public class ClientDevice {
                         .deviceConfig(tuple.getT2())
                         .store(tuple.getT3())
                         .benifit(tuple.getT4())
+                        .carousel(List.of()) // Không có carousel
                         .build());
     }
 
@@ -171,6 +173,7 @@ public class ClientDevice {
                         .deviceConfig(tuple.getT2())
                         .store(tuple.getT3())
                         .benifit(tuple.getT4())
+                        .carousel(List.of()) // Không có carousel
                         .build());
     }
 }
