@@ -16,7 +16,7 @@ public class WebConfig {
     @Bean
     CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Arrays.asList("localhost", "http://localhost:5001", "https://localhost:5001"));
+        corsConfiguration.setAllowedOriginPatterns(Arrays.asList("http://localhost:*", "https://localhost:*"));
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.addAllowedHeader("*");
 
