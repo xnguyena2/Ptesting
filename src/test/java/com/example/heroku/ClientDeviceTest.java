@@ -164,6 +164,7 @@ public class ClientDeviceTest {
                     }
                     assertThat((long) bootStrapData.getProducts().size()).isEqualTo(4);
                     assertThat(bootStrapData.getBenifit().getRevenue()).isEqualTo(0);
+                    assertThat(bootStrapData.getProductSerials().size()).isEqualTo(3);
                     Flux.just(bootStrapData.getProducts().toArray(new BeerSubmitData[0]))
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)

@@ -4,6 +4,7 @@ import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.statistics.BenifitByMonth;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.response.BootStrapData;
 import com.example.heroku.response.BootStrapDataWeb;
@@ -44,6 +45,9 @@ public class ClientDevice {
     @Autowired
     private MapKeyValue mapKeyValue;
 
+    @Autowired
+    private ProductSerial productSerialAPI;
+
     public Mono<BootStrapDataWeb> bootStrapDataForWeb(String groupID) {
 
         // Lấy sản phẩm
@@ -71,14 +75,20 @@ public class ClientDevice {
                 .map(com.example.heroku.model.MapKeyValue::getValue_o)
                 .defaultIfEmpty(""); // ✅ fallback nếu không có web config
 
+        Mono<List<com.example.heroku.model.ProductSerial>> productSerialMono = productSerialAPI
+                .getAllSerial(IDContainer.builder().group_id(groupID).build())
+                .collectList()
+                .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
 
-        return Mono.zip(productMono, carouselMono, configMono, storeMono, webConfigMono)
+
+        return Mono.zip(productMono, carouselMono, configMono, storeMono, webConfigMono, productSerialMono)
                 .map(tuple -> BootStrapDataWeb.builder()
                         .products(tuple.getT1())
                         .carousel(tuple.getT2())
                         .deviceConfig(tuple.getT3())
                         .store(tuple.getT4())
                         .web_config(tuple.getT5())
+                        .productSerials(tuple.getT6())
                         .build()
                 );
 
@@ -124,13 +134,19 @@ public class ClientDevice {
                         .build())
                 .defaultIfEmpty(BenifitByMonth.builder().build());
 
-        return Mono.zip(productMono, configMono, storeMono, benifitMono)
+        Mono<List<com.example.heroku.model.ProductSerial>> productSerialMono = productSerialAPI
+                .getAllSerial(IDContainer.builder().group_id(groupID).build())
+                .collectList()
+                .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
+
+        return Mono.zip(productMono, configMono, storeMono, benifitMono, productSerialMono)
                 .map(tuple -> BootStrapData.builder()
                         .products(List.copyOf(tuple.getT1()))
                         .deviceConfig(tuple.getT2())
                         .store(tuple.getT3())
                         .benifit(tuple.getT4())
                         .carousel(List.of()) // Không có carousel
+                        .productSerials(tuple.getT5())
                         .build());
     }
 
@@ -165,14 +181,20 @@ public class ClientDevice {
                         .status(UserPackageDetail.Status.DONE).build())
                 .defaultIfEmpty(BenifitByMonth.builder().build()); // ✅ fallback nếu không có thống kê
 
+        Mono<List<com.example.heroku.model.ProductSerial>> productSerialMono = productSerialAPI
+                .getAllSerial(IDContainer.builder().group_id(groupID).build())
+                .collectList()
+                .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
 
-        return Mono.zip(productMono, configMono, storeMono, benifitMono)
+
+        return Mono.zip(productMono, configMono, storeMono, benifitMono, productSerialMono)
                 .map(tuple -> BootStrapData.builder()
                         .products(tuple.getT1())
                         .deviceConfig(tuple.getT2())
                         .store(tuple.getT3())
                         .benifit(tuple.getT4())
                         .carousel(List.of()) // Không có carousel
+                        .productSerials(tuple.getT5())
                         .build());
     }
 }
