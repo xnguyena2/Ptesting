@@ -17,12 +17,12 @@ public class VietNamAddress {
 
     private static VietNamAddress instance;
 
-    private AddressFromat allAddress;
+    private static AddressFromat allAddress;
 
     private VietNamAddress() {
     }
 
-    synchronized public static VietNamAddress getInstance() {
+    public static synchronized VietNamAddress getInstance() {
         if (instance == null) {
             instance = new VietNamAddress();
         }

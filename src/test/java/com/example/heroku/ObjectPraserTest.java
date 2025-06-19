@@ -58,7 +58,7 @@ public class ObjectPraserTest {
         assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
         assertThat(beerInfo.getProductUnit()[0].getName()).isEqualTo("Lon");
         assertThat(beerInfo.getProductUnit()[0].getProduct_second_id()).isEqualTo("1");
-        assertThat(NgbDateStruct.FromTimestamp(beerInfo.getProductUnit()[0].getDate_expire())).isEqualTo(NgbDateStruct.builder().day(31).month(1).year(2021).build());
+        assertThat(NgbDateStruct.fromLocalDateTime(beerInfo.getProductUnit()[0].getDate_expire())).isEqualTo(NgbDateStruct.builder().day(31).month(1).year(2021).build());
         assertThat(beerInfo.getProductUnit()[0].getDiscount()).isEqualTo(0);
         assertThat(beerInfo.getProductUnit()[0].getPrice()).isEqualTo(12000);
         assertThat(beerInfo.getProductUnit()[0].getVolumetric()).isEqualTo(0.4f);
@@ -66,7 +66,7 @@ public class ObjectPraserTest {
 
         assertThat(beerInfo.getProductUnit()[1].getName()).isEqualTo("Thùng");
         assertThat(beerInfo.getProductUnit()[1].getProduct_second_id()).isEqualTo("1");
-        assertThat(NgbDateStruct.FromTimestamp(beerInfo.getProductUnit()[1].getDate_expire())).isEqualTo(NgbDateStruct.builder().day(24).month(12).year(2020).build());
+        assertThat(NgbDateStruct.fromLocalDateTime(beerInfo.getProductUnit()[1].getDate_expire())).isEqualTo(NgbDateStruct.builder().day(24).month(12).year(2020).build());
         assertThat(beerInfo.getProductUnit()[1].getDiscount()).isEqualTo(10);
         assertThat(beerInfo.getProductUnit()[1].getPrice()).isEqualTo(200000);
         assertThat(beerInfo.getProductUnit()[1].getVolumetric()).isEqualTo(6f);

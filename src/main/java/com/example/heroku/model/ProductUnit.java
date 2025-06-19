@@ -2,15 +2,12 @@ package com.example.heroku.model;
 
 import com.example.heroku.model.entity.BaseEntity;
 import com.example.heroku.util.Util;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +44,7 @@ public class ProductUnit extends BaseEntity {
 
     private float discount;
 
-    private Timestamp date_expire;
+    private LocalDateTime date_expire;
 
     private float volumetric;
 
@@ -56,6 +53,8 @@ public class ProductUnit extends BaseEntity {
     private boolean visible;
 
     private boolean enable_warehouse;
+
+    private boolean enable_serial;
 
     private Product.ProductType product_type;
 
@@ -70,6 +69,8 @@ public class ProductUnit extends BaseEntity {
     private float group_unit_number;
 
     private String services_config;
+
+    private String[] list_product_serial_id;
 
     private Status status;
 
@@ -150,7 +151,7 @@ public class ProductUnit extends BaseEntity {
     public ProductUnit CheckDiscount() {
         if (date_expire == null)
             return this;
-        Timestamp currentTime = Util.getInstance().Now();
+        LocalDateTime currentTime = Util.getInstance().Now();
         int diff = Util.getInstance().DiffirentDays(date_expire, currentTime);
         System.out.println("Check Discount date expire: " + date_expire.toString() + ", current time: " + currentTime + ", diff: " + diff);
         if (diff < 0) {

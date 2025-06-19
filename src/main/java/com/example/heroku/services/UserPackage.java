@@ -63,7 +63,8 @@ public class UserPackage {
                                                 userPackage.getProduct_name(), userPackage.getProduct_unit_name(), userPackage.getProduct_group_unit_name(),
                                                 userPackage.getNumber_services_unit(),
                                                 userPackage.getNumber_unit(), userPackage.getStatus(),
-                                                userPackage.getDepend_to_product())
+                                                userPackage.getDepend_to_product(),
+                                                userPackage.getList_product_serial_id())
 
                                 )
                                 .then(groupImportRepository.createGroupImportForEmpty(productPackage.getGroup_id(), productPackage.getPackage_second_id(), ProductImport.ImportType.SELLING.getName(), ProductImport.Status.DONE.getName()))
@@ -187,7 +188,8 @@ public class UserPackage {
                 userPackage.getProduct_type(), userPackage.getNumber_services_unit(),
                 userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(),
                 userPackage.getDiscount_amount(), userPackage.getDiscount_percent(), userPackage.getDiscount_promotional(),
-                userPackage.getNote(), userPackage.getStatus(), userPackage.getDepend_to_product(), userPackage.getCreateat());
+                userPackage.getNote(), userPackage.getStatus(), userPackage.getDepend_to_product(),
+                userPackage.getList_product_serial_id(), userPackage.getCreateat());
     }
 
     Mono<com.example.heroku.model.UserPackage> savePackageItemWithoutCheck(com.example.heroku.model.UserPackage userPackage) {
@@ -196,7 +198,9 @@ public class UserPackage {
                 userPackage.getProduct_type(), userPackage.getNumber_services_unit(),
                 userPackage.getNumber_unit(), userPackage.getBuy_price(), userPackage.getPrice(),
                 userPackage.getDiscount_amount(), userPackage.getDiscount_percent(), userPackage.getDiscount_promotional(),
-                userPackage.getNote(), userPackage.getStatus(), userPackage.getDepend_to_product(), userPackage.getCreateat());
+                userPackage.getNote(), userPackage.getStatus(), userPackage.getDepend_to_product(),
+                userPackage.getList_product_serial_id(),
+                userPackage.getCreateat());
     }
 
     Mono<PackageDataResponse> fillPackageItem(PackageDataResponse packageDataResponse) {

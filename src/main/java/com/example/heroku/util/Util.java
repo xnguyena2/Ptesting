@@ -4,7 +4,8 @@ import jakarta.xml.bind.DatatypeConverter;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class Util {
@@ -248,15 +249,14 @@ public class Util {
 
     }
 
-    public int DiffirentDays(Timestamp t1, Timestamp current) {
-        if(t1 == null)
-            return 9999;
-        if(current == null)
-            return -9999;
-        return (int)((t1.getTime() - current.getTime()) / (1000 * 60 * 60 * 24));
+    public int DiffirentDays(LocalDateTime t1, LocalDateTime current) {
+        if (t1 == null) return 9999;
+        if (current == null) return -9999;
+
+        return (int) ChronoUnit.DAYS.between(current, t1);
     }
 
-    public Timestamp Now() {
-        return new Timestamp(new Date().getTime());
+    public LocalDateTime Now() {
+        return LocalDateTime.now();
     }
 }

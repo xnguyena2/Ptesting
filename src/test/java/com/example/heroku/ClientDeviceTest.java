@@ -6,6 +6,7 @@ import com.example.heroku.request.beer.BeerSubmitData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
+import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -15,6 +16,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Builder
 public class ClientDeviceTest {
+
+    @Autowired
+    ObjectMapper objectMapper;
+
 
     com.example.heroku.services.ClientDevice clientDeviceAPI;
 
@@ -29,9 +34,9 @@ public class ClientDeviceTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(bootStrapData));
+                        System.out.println(objectMapper.writeValueAsString(bootStrapData));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(bootStrapData.getWeb_config()).isEqualTo("webconfig");
                     assertThat((long) bootStrapData.getCarousel().size()).isEqualTo(4);
@@ -69,9 +74,9 @@ public class ClientDeviceTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(bootStrapData));
+                        System.out.println(objectMapper.writeValueAsString(bootStrapData));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat((long) bootStrapData.getProducts().size()).isEqualTo(4);
                     if(testWithMainGroup) {
@@ -106,9 +111,9 @@ public class ClientDeviceTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(bootStrapData));
+                        System.out.println(objectMapper.writeValueAsString(bootStrapData));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     if(testWithMainGroup) {
                         Store store = bootStrapData.getStore();
@@ -146,9 +151,9 @@ public class ClientDeviceTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(bootStrapData));
+                        System.out.println(objectMapper.writeValueAsString(bootStrapData));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     if(testWithMainGroup) {
                         Store store = bootStrapData.getStore();
@@ -159,6 +164,7 @@ public class ClientDeviceTest {
                     }
                     assertThat((long) bootStrapData.getProducts().size()).isEqualTo(4);
                     assertThat(bootStrapData.getBenifit().getRevenue()).isEqualTo(0);
+                    assertThat(bootStrapData.getProductSerials().size()).isEqualTo(3);
                     Flux.just(bootStrapData.getProducts().toArray(new BeerSubmitData[0]))
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
                             .as(StepVerifier::create)
@@ -184,9 +190,9 @@ public class ClientDeviceTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(bootStrapData -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(bootStrapData));
+                        System.out.println(objectMapper.writeValueAsString(bootStrapData));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat((long) bootStrapData.getProducts().size()).isEqualTo(24);
                 })

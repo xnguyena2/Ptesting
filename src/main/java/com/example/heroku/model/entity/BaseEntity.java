@@ -1,21 +1,21 @@
 package com.example.heroku.model.entity;
 
 import com.example.heroku.util.Util;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.util.ProxyUtils;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import java.sql.Timestamp;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@MappedSuperclass
 public class BaseEntity {
 
     @Id
@@ -25,7 +25,7 @@ public class BaseEntity {
 
 
     protected String group_id;
-    protected Timestamp createat;
+    protected LocalDateTime createat;
 
     public BaseEntity(BaseEntity s) {
         id = s.getId();
@@ -33,7 +33,7 @@ public class BaseEntity {
         createat = s.getCreateat();
     }
 
-    public void copy(BaseEntity b){
+    public void copy(BaseEntity b) {
         id = b.id;
         group_id = b.group_id;
         createat = b.createat;
@@ -45,9 +45,30 @@ public class BaseEntity {
     }
 
     public BaseEntity AutoFillIfNull() {
-        if(this.createat == null) {
+        if (this.createat == null) {
             this.createat = Util.getInstance().Now();
         }
         return this;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.createat == null) {
+            this.createat = Util.getInstance().Now();
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || ProxyUtils.getUserClass(this) != ProxyUtils.getUserClass(o))
+            return false;
+        BaseEntity that = (BaseEntity) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return ProxyUtils.getUserClass(this).hashCode();
     }
 }

@@ -6,7 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 
 @Data
@@ -18,21 +19,20 @@ public class NgbDateStruct {
     private int month;
     private int year;
 
-    public Timestamp ToDateTime() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, month-1, day);
-        return new Timestamp(cal.getTime().getTime());
+    // Convert to LocalDateTime (00:00:00 time)
+    public LocalDateTime toLocalDateTime() {
+        return LocalDateTime.of(year, month, day, 0, 0, 0);
     }
-    public static NgbDateStruct FromTimestamp(Timestamp time) {
-        if (time == null)
+
+    // Create NgbDateStruct from LocalDateTime
+    public static NgbDateStruct fromLocalDateTime(LocalDateTime dateTime) {
+        if (dateTime == null)
             return null;
-        long timestamp = time.getTime();
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp);
         return NgbDateStruct.builder()
-                .year(cal.get(Calendar.YEAR))
-                .month(cal.get(Calendar.MONTH)+1)
-                .day(cal.get(Calendar.DAY_OF_MONTH))
+                .year(dateTime.getYear())
+                .month(dateTime.getMonthValue())
+                .day(dateTime.getDayOfMonth())
                 .build();
     }
+
 }

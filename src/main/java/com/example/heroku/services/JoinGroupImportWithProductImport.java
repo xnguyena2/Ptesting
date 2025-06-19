@@ -68,4 +68,16 @@ public class JoinGroupImportWithProductImport {
         }
         return flattenResult(this.joinGroupImportWithProductImportRepository.getDebtOfType(groupID, importType, supplier));
     }
+
+    public Flux<GroupImportWithItem> SearchByType(SearchImportQuery query) {
+        return flattenResult(this.joinGroupImportWithProductImportRepository.searchByType(query.getGroup_id(),
+                        query.getType(),
+                        query.getSearch_txt()
+                )
+        );
+    }
+
+    public Flux<GroupImportWithItem> Search(SearchImportQuery query) {
+        return flattenResult(this.joinGroupImportWithProductImportRepository.search(query.getGroup_id(), query.getSearch_txt()));
+    }
 }

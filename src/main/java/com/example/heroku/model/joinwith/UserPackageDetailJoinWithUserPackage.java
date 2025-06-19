@@ -7,7 +7,7 @@ import com.example.heroku.response.ProductInPackageResponse;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -27,7 +27,7 @@ public class UserPackageDetailJoinWithUserPackage extends UserPackageDetail {
 
     protected Long child_id;
     protected String child_group_id;
-    protected Timestamp child_createat;
+    protected LocalDateTime child_createat;
 
     private String child_package_second_id;
     private String child_device_id;
@@ -48,6 +48,7 @@ public class UserPackageDetailJoinWithUserPackage extends UserPackageDetail {
     private UserPackageDetail.Status child_status;
     private String child_depend_to_product;
 
+    private String[] child_list_product_serial_id;
 
     public String getID() {
         return getPackage_second_id();
@@ -80,6 +81,7 @@ public class UserPackageDetailJoinWithUserPackage extends UserPackageDetail {
                 .note(child_note)
                 .status(child_status)
                 .depend_to_product(child_depend_to_product)
+                .list_product_serial_id(child_list_product_serial_id)
                 .build();
     }
 

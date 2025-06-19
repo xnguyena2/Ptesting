@@ -7,11 +7,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface StatisticBenifitOfOrderRepository extends ReactiveCrudRepository<BenifitByOrder, Long> {
 
-    @Query(value = "SELECT package_second_id, payment AS revenue, profit, price, ship_price, createat FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.status = :status AND (user_package_detail.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
-    Flux<BenifitByOrder> getStatictis(@Param("group_id") String groupID, @Param("fromtime") Timestamp from, @Param("totime") Timestamp to, @Param("status") UserPackageDetail.Status status, @Param("page")int page, @Param("size")int size);
+    @Query(value = "SELECT package_second_id, payment AS revenue, profit, price, ship_price, createat FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.status = :status AND (user_package_detail.createat BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
+    Flux<BenifitByOrder> getStatictis(@Param("group_id") String groupID, @Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to, @Param("status") UserPackageDetail.Status status, @Param("page")int page, @Param("size")int size);
 
 }

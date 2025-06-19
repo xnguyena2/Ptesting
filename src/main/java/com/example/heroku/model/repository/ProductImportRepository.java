@@ -7,18 +7,20 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface ProductImportRepository extends ReactiveCrudRepository<ProductImport, Long> {
 
 
-    @Query(value = "INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, type, status, createat ) VALUES ( :group_id, :group_import_second_id, :product_second_id, :product_unit_second_id, :product_unit_name_category, :price, :amount, :note, :type, :status, :createat ) ON CONFLICT (group_id, group_import_second_id, product_second_id, product_unit_second_id) DO UPDATE SET product_unit_name_category = :product_unit_name_category, price = :price, amount = :amount, note = :note, type = :type, status = :status, createat = :createat ")
+    @Query(value = "INSERT INTO product_import ( group_id, group_import_second_id, product_second_id, product_unit_second_id, product_unit_name_category, price, amount, note, list_product_serial_id, type, status, createat ) VALUES ( :group_id, :group_import_second_id, :product_second_id, :product_unit_second_id, :product_unit_name_category, :price, :amount, :note, :list_product_serial_id, :type, :status, :createat ) ON CONFLICT ON CONSTRAINT UQ_product_import_second_id DO UPDATE SET product_unit_name_category = :product_unit_name_category, price = :price, amount = :amount, note = :note, list_product_serial_id = :list_product_serial_id, type = :type, status = :status, createat = :createat ")
     Mono<ProductImport> inertOrUpdate(@Param("group_id") String group_id, @Param("group_import_second_id") String group_import_second_id,
                                       @Param("product_second_id") String product_second_id, @Param("product_unit_second_id") String product_unit_second_id,
                                       @Param("product_unit_name_category") String product_unit_name_category,
                                       @Param("price") float price, @Param("amount") float amount,
-                                      @Param("note") String note, @Param("type") ProductImport.ImportType type,
-                                      @Param("status") ProductImport.Status status, @Param("createat") Timestamp createat);
+                                      @Param("note") String note, @Param("list_product_serial_id") String[] list_product_serial_id,
+                                      @Param("type") ProductImport.ImportType type,
+                                      @Param("status") ProductImport.Status status, @Param("createat") LocalDateTime createat);
 
     @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id LIMIT :size OFFSET (:page * :size)")
     Flux<ProductImport> getALL(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size);
@@ -26,8 +28,8 @@ public interface ProductImportRepository extends ReactiveCrudRepository<ProductI
     @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id AND DATE_PART('day', NOW() - createat) <= :date LIMIT :size OFFSET (:page * :size)")
     Flux<ProductImport> getALLBeforeNoDate(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size, @Param("date") int date);
 
-    @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id AND (product_import.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
-    Flux<ProductImport> getALLBetween(@Param("group_id") String group_id, @Param("fromtime") Timestamp fromtime, @Param("totime") Timestamp totime, @Param("page") int page, @Param("size") int size);
+    @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id AND (product_import.createat BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
+    Flux<ProductImport> getALLBetween(@Param("group_id") String group_id, @Param("fromtime") LocalDateTime fromtime, @Param("totime") LocalDateTime totime, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id AND product_import.product_id = :id AND DATE_PART('day', NOW() - createat) <= :date LIMIT :size OFFSET (:page*:size)")
     Flux<ProductImport> getAllByProductID(@Param("group_id") String group_id, @Param("id") String productID, @Param("page") int page, @Param("size") int size, @Param("date") int date);

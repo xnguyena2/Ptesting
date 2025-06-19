@@ -9,7 +9,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface BuyerRepository extends ReactiveCrudRepository<Buyer, Long> {
 
@@ -36,7 +37,7 @@ public interface BuyerRepository extends ReactiveCrudRepository<Buyer, Long> {
                                @Param("total_price") float total_price, @Param("real_price") float real_price,
                                @Param("ship_price") float ship_price, @Param("discount") float discount, @Param("point") int point);
 
-    @Query(value = "INSERT INTO buyer(group_id, device_id, reciver_address, region_id, district_id, ward_id, reciver_fullname, phone_number, phone_number_clean, meta_search, total_price, real_price, ship_price, discount, point, status, createat) VALUES (:group_id, :device_id, :reciver_address, :region_id, :district_id, :ward_id, :reciver_fullname, :phone_number, :phone_number_clean, :meta_search, :total_price, :real_price, :ship_price, :discount, :point, :status, :createat) ON CONFLICT (group_id, device_id) DO UPDATE SET reciver_address = :reciver_address, total_price = buyer.total_price + :total_price, real_price = buyer.real_price + :real_price, ship_price = buyer.ship_price + :ship_price, discount = buyer.discount + :discount, point = buyer.point + :point, region_id = :region_id, district_id = :district_id, ward_id = :ward_id, reciver_fullname = :reciver_fullname, phone_number = :phone_number, phone_number_clean = :phone_number_clean, meta_search = :meta_search, status = :status, createat = :createat")
+    @Query(value = "INSERT INTO buyer(group_id, device_id, reciver_address, region_id, district_id, ward_id, reciver_fullname, phone_number, phone_number_clean, meta_search, total_price, real_price, ship_price, discount, point, status, createat) VALUES (:group_id, :device_id, :reciver_address, :region_id, :district_id, :ward_id, :reciver_fullname, :phone_number, :phone_number_clean, :meta_search, :total_price, :real_price, :ship_price, :discount, :point, :status, :createat) ON CONFLICT ON CONSTRAINT UQ_buyer DO UPDATE SET reciver_address = :reciver_address, total_price = buyer.total_price + :total_price, real_price = buyer.real_price + :real_price, ship_price = buyer.ship_price + :ship_price, discount = buyer.discount + :discount, point = buyer.point + :point, region_id = :region_id, district_id = :district_id, ward_id = :ward_id, reciver_fullname = :reciver_fullname, phone_number = :phone_number, phone_number_clean = :phone_number_clean, meta_search = :meta_search, status = :status, createat = :createat")
     Mono<Buyer> insertOrUpdate(@Param("group_id") String group_id, @Param("device_id") String device_id,
                                @Param("total_price") float total_price, @Param("real_price") float real_price,
                                @Param("ship_price") float ship_price, @Param("discount") float discount, @Param("point") int point,
@@ -44,5 +45,5 @@ public interface BuyerRepository extends ReactiveCrudRepository<Buyer, Long> {
                                @Param("region_id") int region_id, @Param("district_id") int district_id, @Param("ward_id") int ward_id,
                                @Param("reciver_fullname") String reciver_fullname, @Param("phone_number") String phone_number,
                                @Param("phone_number_clean") String phone_number_clean, @Param("meta_search") String meta_search,
-                               @Param("status") ActiveStatus status, @Param("createat") Timestamp createat);
+                               @Param("status") ActiveStatus status, @Param("createat") LocalDateTime createat);
 }

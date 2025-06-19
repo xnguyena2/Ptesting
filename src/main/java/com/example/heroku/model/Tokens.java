@@ -3,20 +3,18 @@ package com.example.heroku.model;
 import com.example.heroku.model.entity.BaseEntity;
 import com.example.heroku.status.ActiveStatus;
 import com.example.heroku.util.Util;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@EqualsAndHashCode(callSuper = true)
 @Table(name="tokens")
 @SuperBuilder
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Tokens extends BaseEntity {
@@ -40,7 +38,7 @@ public class Tokens extends BaseEntity {
 
     public Tokens AutoFill(String groupID) {
         AutoFill();
-        group_id = groupID;
+        setGroup_id(groupID);
         return this;
     }
 }

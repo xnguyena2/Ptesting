@@ -9,14 +9,15 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface AreaRepository extends ReactiveCrudRepository<Area, Long> {
 
-    @Query(value = "INSERT INTO area(group_id, area_id, area_name, detail, meta_search, status, createat) VALUES (:group_id, :area_id, :area_name, :detail, :meta_search, :status, :createat) ON CONFLICT (group_id, area_id) DO UPDATE SET area_name = :area_name, detail = :detail, meta_search = :meta_search, status = :status, createat = :createat")
+    @Query(value = "INSERT INTO area(group_id, area_id, area_name, detail, meta_search, status, createat) VALUES (:group_id, :area_id, :area_name, :detail, :meta_search, :status, :createat) ON CONFLICT ON CONSTRAINT UQ_area DO UPDATE SET area_name = :area_name, detail = :detail, meta_search = :meta_search, status = :status, createat = :createat")
     Mono<Area> insertOrUpdate(@Param("group_id") String group_id, @Param("area_id") String area_id, @Param("area_name") String area_name,
                                @Param("detail") String detail, @Param("meta_search") String meta_search,
-                               @Param("status") ActiveStatus status, @Param("createat") Timestamp createat);
+                               @Param("status") ActiveStatus status, @Param("createat") LocalDateTime createat);
     //search all
     @Query(value = "SELECT * FROM area WHERE area.group_id = :group_id")// ORDER BY createat DESC LIMIT :size OFFSET (:page*:size)")
     Flux<Area> findByIdNotNull(@Param("group_id")String group_id, Pageable pageable);

@@ -17,18 +17,16 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Builder
 public class BeerTest {
+
+    ObjectMapper objectMapper;
 
     com.example.heroku.services.Beer beerAPI;
 
@@ -66,56 +64,75 @@ public class BeerTest {
         AtomicReference<String> beerUnit4562ID = new AtomicReference<String>();
 
         beerAPI.CreateBeer(
-                BeerInfo
-                        .builder()
-                        .productUnit(new ProductUnit[]{
-                                ProductUnit.builder().product_second_id("123").name("thung").group_id(group)
-                                        .product_unit_second_id("adsfasdfasdfasdf")
-                                        .upc("343434")
-                                        .sku("76767676")
-                                        .wholesale_number(34)
-                                        .wholesale_price(1233)
-                                        .promotional_price(234)
-                                        .inventory_number(345)
-                                        .visible(true)
-                                        .group_unit_number(2.3f)
-                                        .group_unit_id("ggggg")
-                                        .group_unit_naname("Block")
-                                        .services_config("services_config")
-                                        .buy_price(20)
-                                        .enable_warehouse(true)
-                                        .product_type(Product.ProductType.PRODUCT)
-                                        .build(),
-                                ProductUnit.builder().product_second_id("123").name("lon").group_id(group)
-                                        .product_unit_second_id("retertghdfghsdgdfgasf")
-                                        .upc("3434345")
-                                        .sku("767676767")
-                                        .wholesale_number(43)
-                                        .wholesale_price(3321)
-                                        .promotional_price(432)
-                                        .inventory_number(543)
-                                        .visible(false)
-                                        .buy_price(40)
-                                        .enable_warehouse(true)
-                                        .build()
-                        })
-                        .product(Product
+                        BeerInfo
                                 .builder()
-                                .category(Category.CRAB.getName())
-                                .name("beer tiger")
-                                .product_second_id("123")
-                                .product_parent_id("parent_id")
-                                .group_id(group)
-                                .visible_web(true)
-                                .default_group_unit_naname("default")
-                                .number_group_unit_config("number")
-                                .warranty("warranty")
-                                .product_type(Product.ProductType.PRODUCT)
+                                .productUnit(new ProductUnit[]{
+                                        ProductUnit.builder().product_second_id("123").name("thung").group_id(group)
+                                                .product_unit_second_id("adsfasdfasdfasdf")
+                                                .upc("343434")
+                                                .sku("76767676")
+                                                .wholesale_number(34)
+                                                .wholesale_price(1233)
+                                                .promotional_price(234)
+                                                .inventory_number(345)
+                                                .visible(true)
+                                                .group_unit_number(2.3f)
+                                                .group_unit_id("ggggg")
+                                                .group_unit_naname("Block")
+                                                .services_config("services_config")
+                                                .buy_price(20)
+                                                .enable_warehouse(true)
+                                                .product_type(Product.ProductType.PRODUCT)
+                                                .build(),
+                                        ProductUnit.builder().product_second_id("123").name("lon").group_id(group)
+                                                .product_unit_second_id("retertghdfghsdgdfgasf")
+                                                .upc("3434345")
+                                                .sku("767676767")
+                                                .wholesale_number(43)
+                                                .wholesale_price(3321)
+                                                .promotional_price(432)
+                                                .inventory_number(543)
+                                                .visible(false)
+                                                .buy_price(40)
+                                                .enable_warehouse(true)
+                                                .build(),
+                                        ProductUnit.builder().product_second_id("123").name("zan").group_id(group)
+                                                .product_unit_second_id("wrttttwerwrwre")
+                                                .upc("909090909")
+                                                .sku("909090909")
+                                                .wholesale_number(34)
+                                                .wholesale_price(1233)
+                                                .promotional_price(234)
+                                                .inventory_number(345)
+                                                .visible(true)
+                                                .group_unit_number(2.3f)
+                                                .group_unit_id("ggggg")
+                                                .group_unit_naname("Block")
+                                                .services_config("services_config")
+                                                .buy_price(20)
+                                                .enable_warehouse(true)
+                                                .enable_serial(true)
+                                                .list_product_serial_id(new String[]{"serial1", "serial2", "serial3"})
+                                                .product_type(Product.ProductType.PRODUCT)
+                                                .build(),
+                                })
+                                .product(Product
+                                        .builder()
+                                        .category(Category.CRAB.getName())
+                                        .name("beer tiger")
+                                        .product_second_id("123")
+                                        .product_parent_id("parent_id")
+                                        .group_id(group)
+                                        .visible_web(true)
+                                        .default_group_unit_naname("default")
+                                        .number_group_unit_config("number")
+                                        .warranty("warranty")
+                                        .product_type(Product.ProductType.PRODUCT)
+                                        .build()
+                                        .AutoFill()
+                                )
                                 .build()
-                                .AutoFill()
-                        )
-                        .build()
-        )
+                )
                 .as(StepVerifier::create)
                 .consumeNextWith(beerSubmitData -> {
                     BeerSubmitData.BeerUnit[] productUnitList = beerSubmitData.getListUnit();
@@ -136,39 +153,39 @@ public class BeerTest {
                 .verifyComplete();
 
         beerAPI.CreateBeer(
-                BeerInfo
-                        .builder()
-                        .productUnit(new ProductUnit[]{
-                                ProductUnit
-                                        .builder()
-                                        .product_second_id("456")
-                                        .name("thung")
-                                        .group_id(group)
-                                        .build(),
-                                ProductUnit
-                                        .builder()
-                                        .product_second_id("456")
-                                        .name("lon")
-                                        .group_id(group)
-                                        .build()
-                        })
-                        .product(Product
+                        BeerInfo
                                 .builder()
-                                .category(Category.CRAB.getName())
-                                .detail("""
-                                        Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
-                                        - bia thơm ngon
-                                        - bia nhập ngoại
-                                        - bia sản xuất từ hà lan""")
-                                .name("beer tiger")
-                                .product_second_id("456")
-                                .group_id(group)
-                                .unit_category_config("hello i am config")
+                                .productUnit(new ProductUnit[]{
+                                        ProductUnit
+                                                .builder()
+                                                .product_second_id("456")
+                                                .name("thung")
+                                                .group_id(group)
+                                                .build(),
+                                        ProductUnit
+                                                .builder()
+                                                .product_second_id("456")
+                                                .name("lon")
+                                                .group_id(group)
+                                                .build()
+                                })
+                                .product(Product
+                                        .builder()
+                                        .category(Category.CRAB.getName())
+                                        .detail("""
+                                                Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
+                                                - bia thơm ngon
+                                                - bia nhập ngoại
+                                                - bia sản xuất từ hà lan""")
+                                        .name("beer tiger")
+                                        .product_second_id("456")
+                                        .group_id(group)
+                                        .unit_category_config("hello i am config")
+                                        .build()
+                                        .AutoFill()
+                                )
                                 .build()
-                                .AutoFill()
-                        )
-                        .build()
-        )
+                )
                 .as(StepVerifier::create)
                 .consumeNextWith(beerSubmitData -> {
                     BeerSubmitData.BeerUnit[] productUnitList = beerSubmitData.getListUnit();
@@ -190,91 +207,28 @@ public class BeerTest {
 
 
         beerAPI.CreateBeer(
-                BeerInfo
-                        .builder()
-                        .productUnit(new ProductUnit[]{
-                                ProductUnit
-                                        .builder()
-                                        .product_unit_second_id(beerUnit4561ID.get())
-                                        .product_second_id("456")
-                                        .price(10)
-                                        .weight(0.3f)
-                                        .discount(10)
-                                        .date_expire(Timestamp.valueOf("2021-03-31 20:45:00"))
-                                        .name("thung")
-                                        .group_id(group)
-                                        .build(),
-                                ProductUnit
-                                        .builder()
-                                        .product_unit_second_id(beerUnit4562ID.get())
-                                        .product_second_id("456")
-                                        .price(10)
-                                        .weight(0.3f)
-                                        .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
-                                        .name("lon")
-                                        .group_id(group)
-                                        .build()
-                        })
-                        .product(Product
-                                .builder()
-                                .category(Category.CRAB.getName())
-                                .detail("""
-                                        Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
-                                        - bia thơm ngon
-                                        - bia nhập ngoại
-                                        - bia sản xuất từ hà lan""")
-                                .name("beer tiger")
-                                .product_second_id("456")
-                                .unit_category_config("hello i am config")
-                                .group_id(group)
-                                .visible_web(true)
-                                .build()
-                                .AutoFill()
-                        )
-                        .build()
-        )
-                .as(StepVerifier::create)
-                .consumeNextWith(beerSubmitData -> {
-                    BeerSubmitData.BeerUnit[] productUnitList = beerSubmitData.getListUnit();
-                    BeerSubmitData.BeerUnit f = productUnitList[0];
-                    BeerSubmitData.BeerUnit s = productUnitList[1];
-                    if(f.getName().equals("lon")){
-                        assertThat(f.getBeer_unit_second_id()).isEqualTo(beerUnit4562ID.get());
-                        assertThat(s.getBeer_unit_second_id()).isEqualTo(beerUnit4561ID.get());
-                    } else {
-                        assertThat(f.getBeer_unit_second_id()).isEqualTo(beerUnit4561ID.get());
-                        assertThat(s.getBeer_unit_second_id()).isEqualTo(beerUnit4562ID.get());
-                    }
-                })
-                .verifyComplete();
-
-
-
-        beerAPI.CreateBeer(
                         BeerInfo
                                 .builder()
                                 .productUnit(new ProductUnit[]{
                                         ProductUnit
                                                 .builder()
-                                                .product_unit_second_id("combo1")
-                                                .product_second_id("combo")
+                                                .product_unit_second_id(beerUnit4561ID.get())
+                                                .product_second_id("456")
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
-                                                .date_expire(Timestamp.valueOf("2021-03-31 20:45:00"))
+                                                .date_expire(LocalDateTime.parse("2021-03-31T20:45:00"))
                                                 .name("thung")
-                                                .product_type(Product.ProductType.COMBO)
                                                 .group_id(group)
                                                 .build(),
                                         ProductUnit
                                                 .builder()
-                                                .product_unit_second_id("combo2")
-                                                .product_second_id("combo")
+                                                .product_unit_second_id(beerUnit4562ID.get())
+                                                .product_second_id("456")
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
-                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .date_expire(Util.getInstance().Now())
                                                 .name("lon")
                                                 .group_id(group)
                                                 .build()
@@ -288,32 +242,94 @@ public class BeerTest {
                                                 - bia nhập ngoại
                                                 - bia sản xuất từ hà lan""")
                                         .name("beer tiger")
-                                        .product_second_id("combo")
+                                        .product_second_id("456")
                                         .unit_category_config("hello i am config")
                                         .group_id(group)
-                                        .product_type(Product.ProductType.COMBO)
                                         .visible_web(true)
                                         .build()
                                         .AutoFill()
                                 )
-                                .listComboItem(new ProductComboItem[]{
-                                        ProductComboItem.builder()
-                                                .product_unit_second_id("combo1")
-                                                .item_product_second_id("123")
-                                                .item_product_unit_second_id("retertghdfghsdgdfgasf")
-                                                .unit_number(2.5f)
-                                                .build(),
-                                        ProductComboItem.builder().build(),
-                                        ProductComboItem.builder()
-                                                .product_unit_second_id("combo1")
-                                                .item_product_second_id("456")
-                                                .item_product_unit_second_id(beerUnit4561ID.get())
-                                                .unit_number(0.5f)
-                                                .build(),
-                                        ProductComboItem.builder().build(),
-                                })
                                 .build()
-                ).block();
+                )
+                .as(StepVerifier::create)
+                .consumeNextWith(beerSubmitData -> {
+                    BeerSubmitData.BeerUnit[] productUnitList = beerSubmitData.getListUnit();
+                    BeerSubmitData.BeerUnit f = productUnitList[0];
+                    BeerSubmitData.BeerUnit s = productUnitList[1];
+                    if (f.getName().equals("lon")) {
+                        assertThat(f.getBeer_unit_second_id()).isEqualTo(beerUnit4562ID.get());
+                        assertThat(s.getBeer_unit_second_id()).isEqualTo(beerUnit4561ID.get());
+                    } else {
+                        assertThat(f.getBeer_unit_second_id()).isEqualTo(beerUnit4561ID.get());
+                        assertThat(s.getBeer_unit_second_id()).isEqualTo(beerUnit4562ID.get());
+                    }
+                })
+                .verifyComplete();
+
+
+        beerAPI.CreateBeer(
+                BeerInfo
+                        .builder()
+                        .productUnit(new ProductUnit[]{
+                                ProductUnit
+                                        .builder()
+                                        .product_unit_second_id("combo1")
+                                        .product_second_id("combo")
+                                        .price(10)
+                                        .weight(0.3f)
+                                        .discount(10)
+                                        .date_expire(LocalDateTime.parse("2021-03-31T20:45:00"))
+                                        .name("thung")
+                                        .product_type(Product.ProductType.COMBO)
+                                        .group_id(group)
+                                        .build(),
+                                ProductUnit
+                                        .builder()
+                                        .product_unit_second_id("combo2")
+                                        .product_second_id("combo")
+                                        .price(10)
+                                        .weight(0.3f)
+                                        .discount(10)
+                                        .date_expire(Util.getInstance().Now())
+                                        .name("lon")
+                                        .group_id(group)
+                                        .build()
+                        })
+                        .product(Product
+                                .builder()
+                                .category(Category.CRAB.getName())
+                                .detail("""
+                                        Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
+                                        - bia thơm ngon
+                                        - bia nhập ngoại
+                                        - bia sản xuất từ hà lan""")
+                                .name("beer tiger")
+                                .product_second_id("combo")
+                                .unit_category_config("hello i am config")
+                                .group_id(group)
+                                .product_type(Product.ProductType.COMBO)
+                                .visible_web(true)
+                                .build()
+                                .AutoFill()
+                        )
+                        .listComboItem(new ProductComboItem[]{
+                                ProductComboItem.builder()
+                                        .product_unit_second_id("combo1")
+                                        .item_product_second_id("123")
+                                        .item_product_unit_second_id("retertghdfghsdgdfgasf")
+                                        .unit_number(2.5f)
+                                        .build(),
+                                ProductComboItem.builder().build(),
+                                ProductComboItem.builder()
+                                        .product_unit_second_id("combo1")
+                                        .item_product_second_id("456")
+                                        .item_product_unit_second_id(beerUnit4561ID.get())
+                                        .unit_number(0.5f)
+                                        .build(),
+                                ProductComboItem.builder().build(),
+                        })
+                        .build()
+        ).block();
 
         beerAPI.CreateBeer(
                         BeerInfo
@@ -325,7 +341,7 @@ public class BeerTest {
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
-                                                .date_expire(Timestamp.valueOf("2021-03-31 20:45:00"))
+                                                .date_expire(LocalDateTime.parse("2021-03-31T20:45:00"))
                                                 .name("thung")
                                                 .group_id(group)
                                                 .build(),
@@ -335,7 +351,7 @@ public class BeerTest {
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
-                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .date_expire(Util.getInstance().Now())
                                                 .name("lon")
                                                 .group_id(group)
                                                 .build()
@@ -364,12 +380,12 @@ public class BeerTest {
                 .verifyComplete();
 
         String firstID = this.beerAPI.UpdateProductUnitWareHouseSetting(ProductUnitUpdate.builder()
-                        .group_id(group)
-                        .product_second_id("123")
-                        .product_unit_second_id(beerUnit1231ID.get())
-                        .enable_warehouse(false)
-                        .status(ProductUnit.Status.AVARIABLE)
-                        .inventory_number(111)
+                .group_id(group)
+                .product_second_id("123")
+                .product_unit_second_id(beerUnit1231ID.get())
+                .enable_warehouse(false)
+                .status(ProductUnit.Status.AVARIABLE)
+                .inventory_number(111)
                 .build()).block();
 
         this.beerAPI.GetBeerByID(group, "123")
@@ -382,7 +398,7 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
                     assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
-                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(3);
                     Flux.just(beerInfo.getProductUnit())
                             .sort(Comparator.comparing(ProductUnit::getName))
                             .as(StepVerifier::create)
@@ -413,6 +429,21 @@ public class BeerTest {
                                 assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                                 assertThat(beerUnit.getDate_expire()).isNull();
                             })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("zan");
+                                assertThat(beerUnit.getUpc()).isEqualTo("909090909");
+                                assertThat(beerUnit.getSku()).isEqualTo("909090909");
+                                assertThat(beerUnit.getWholesale_number()).isEqualTo(34);
+                                assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
+                                assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.isVisible()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_serial()).isEqualTo(true);
+                                assertThat(beerUnit.getList_product_serial_id()).isEqualTo(new String[]{"serial1", "serial2", "serial3"});
+                                assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
+                                assertThat(beerUnit.getDate_expire()).isNull();
+                            })
                             .verifyComplete();
                 })
                 .verifyComplete();
@@ -437,7 +468,7 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
-                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(3);
                     assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                     assertThat(beerInfo.getProduct().getDefault_group_unit_naname()).isEqualTo("default");
                     assertThat(beerInfo.getProduct().getNumber_group_unit_config()).isEqualTo("number");
@@ -473,6 +504,21 @@ public class BeerTest {
                                 assertThat(beerUnit.getGroup_unit_number()).isEqualTo(2.3f);
                                 assertThat(beerUnit.getGroup_unit_id()).isEqualTo("ggggg");
                             })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("zan");
+                                assertThat(beerUnit.getUpc()).isEqualTo("909090909");
+                                assertThat(beerUnit.getSku()).isEqualTo("909090909");
+                                assertThat(beerUnit.getWholesale_number()).isEqualTo(34);
+                                assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
+                                assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.isVisible()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_serial()).isEqualTo(true);
+                                assertThat(beerUnit.getList_product_serial_id()).isEqualTo(new String[]{"serial1", "serial2", "serial3"});
+                                assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
+                                assertThat(beerUnit.getDate_expire()).isNull();
+                            })
                             .verifyComplete();
                 })
                 .verifyComplete();
@@ -493,7 +539,7 @@ public class BeerTest {
                     assertThat(beerInfo.getProduct().getCategory()).isEqualTo(Category.CRAB.getName());
                     assertThat(beerInfo.getProduct().getMeta_search()).isEqualTo("beer tiger");
                     assertThat(beerInfo.getProduct().isVisible_web()).isEqualTo(true);
-                    assertThat(beerInfo.getProductUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getProductUnit().length).isEqualTo(3);
                     assertThat(beerInfo.getProduct().getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                     assertThat(beerInfo.getProduct().getDefault_group_unit_naname()).isEqualTo("default");
                     assertThat(beerInfo.getProduct().getNumber_group_unit_config()).isEqualTo("number");
@@ -529,6 +575,21 @@ public class BeerTest {
                                 assertThat(beerUnit.getGroup_unit_number()).isEqualTo(2.3f);
                                 assertThat(beerUnit.getGroup_unit_id()).isEqualTo("ggggg");
                             })
+                            .consumeNextWith(beerUnit -> {
+                                assertThat(beerUnit.getName()).isEqualTo("zan");
+                                assertThat(beerUnit.getUpc()).isEqualTo("909090909");
+                                assertThat(beerUnit.getSku()).isEqualTo("909090909");
+                                assertThat(beerUnit.getWholesale_number()).isEqualTo(34);
+                                assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
+                                assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.isVisible()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
+                                assertThat(beerUnit.isEnable_serial()).isEqualTo(true);
+                                assertThat(beerUnit.getList_product_serial_id()).isEqualTo(new String[]{"serial1", "serial2", "serial3"});
+                                assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
+                                assertThat(beerUnit.getDate_expire()).isNull();
+                            })
                             .verifyComplete();
                 })
                 .verifyComplete();
@@ -554,14 +615,14 @@ public class BeerTest {
                                 assertThat(beerUnit.getName()).isEqualTo("lon");
                                 assertThat(beerUnit.getSku()).isNull();
                                 assertThat(beerUnit.getUpc()).isNull();
-                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(new Timestamp(new Date().getTime())));
+                                assertThat(NgbDateStruct.fromLocalDateTime(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.fromLocalDateTime(Util.getInstance().Now()));
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
                                 assertThat(beerUnit.getSku()).isNull();
                                 assertThat(beerUnit.getUpc()).isNull();
-                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(Timestamp.valueOf("2021-03-31 20:45:00")));
-                                assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), new Timestamp(new Date().getTime())) >= 0).isEqualTo(false);
+                                assertThat(NgbDateStruct.fromLocalDateTime(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.fromLocalDateTime(LocalDateTime.parse("2021-03-31T20:45:00")));
+                                assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), Util.getInstance().Now()) >= 0).isEqualTo(false);
                             })
                             .verifyComplete();
                 })
@@ -589,14 +650,14 @@ public class BeerTest {
                                 assertThat(beerUnit.getName()).isEqualTo("lon");
                                 assertThat(beerUnit.getSku()).isNull();
                                 assertThat(beerUnit.getUpc()).isNull();
-                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(new Timestamp(new Date().getTime())));
+                                assertThat(NgbDateStruct.fromLocalDateTime(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.fromLocalDateTime(Util.getInstance().Now()));
                             })
                             .consumeNextWith(beerUnit -> {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
                                 assertThat(beerUnit.getSku()).isNull();
                                 assertThat(beerUnit.getUpc()).isNull();
-                                assertThat(NgbDateStruct.FromTimestamp(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.FromTimestamp(Timestamp.valueOf("2021-03-31 20:45:00")));
-                                assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), new Timestamp(new Date().getTime())) >= 0).isEqualTo(false);
+                                assertThat(NgbDateStruct.fromLocalDateTime(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.fromLocalDateTime(LocalDateTime.parse("2021-03-31T20:45:00")));
+                                assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), Util.getInstance().Now()) >= 0).isEqualTo(false);
                             })
                             .verifyComplete();
                 })
@@ -630,9 +691,9 @@ public class BeerTest {
                     .as(StepVerifier::create)
                     .consumeNextWith(resultWithCount -> {
                         try {
-                            System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                            System.out.println(objectMapper.writeValueAsString(resultWithCount));
                         } catch (JsonProcessingException e) {
-                            e.printStackTrace();
+                            throw new RuntimeException(e);
                         }
                         assertThat(resultWithCount.getCount()).isEqualTo(2);
                         Mono.just(resultWithCount.getResult())
@@ -654,9 +715,9 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
                     Mono.just(resultWithCount.getResult())
@@ -677,9 +738,9 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
                     Mono.just(resultWithCount.getResult())
@@ -700,9 +761,9 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(4);
                     Mono.just(resultWithCount.getResult())
@@ -729,9 +790,9 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(4);
                     Mono.just(resultWithCount.getResult())
@@ -758,9 +819,9 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(4);
                     Mono.just(resultWithCount.getResult())
@@ -787,9 +848,9 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(4);
                     Mono.just(resultWithCount.getResult())
@@ -816,9 +877,9 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(4);
                     Mono.just(resultWithCount.getResult())
@@ -845,9 +906,9 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
                     Mono.just(resultWithCount.getResult())
@@ -870,9 +931,9 @@ public class BeerTest {
                     .as(StepVerifier::create)
                     .consumeNextWith(resultWithCount -> {
                         try {
-                            System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                            System.out.println(objectMapper.writeValueAsString(resultWithCount));
                         } catch (JsonProcessingException e) {
-                            e.printStackTrace();
+                            throw new RuntimeException(e);
                         }
                         assertThat(resultWithCount.getCount()).isEqualTo(2);
                         Mono.just(resultWithCount.getResult())
@@ -894,9 +955,9 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
                     Mono.just(resultWithCount.getResult())
@@ -917,12 +978,12 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
-                    
+
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -941,12 +1002,12 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
-                    
+
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -965,12 +1026,12 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
-                    
+
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -989,12 +1050,12 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
-                    
+
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -1013,12 +1074,12 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
-                    
+
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -1037,12 +1098,12 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
-                    
+
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -1061,12 +1122,12 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
-                    
+
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -1085,12 +1146,12 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
-                    
+
                     Mono.just(resultWithCount.getResult())
                             .flatMapMany(Flux::fromIterable)
                             .sort(Comparator.comparing(BeerSubmitData::getBeerSecondID))
@@ -1111,7 +1172,7 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("123");
-                    assertThat(beerInfo.getListUnit().length).isEqualTo(2);
+                    assertThat(beerInfo.getListUnit().length).isEqualTo(3);
                 })
                 .consumeNextWith(beerInfo -> {
                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
@@ -1132,9 +1193,9 @@ public class BeerTest {
                     .as(StepVerifier::create)
                     .consumeNextWith(searchResult -> {
                         try {
-                            System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                            System.out.println(objectMapper.writeValueAsString(searchResult));
                         } catch (JsonProcessingException e) {
-                            e.printStackTrace();
+                            throw new RuntimeException(e);
                         }
                         assertThat(searchResult.getCount()).isEqualTo(4);
 
@@ -1144,7 +1205,7 @@ public class BeerTest {
                                 .as(StepVerifier::create)
                                 .consumeNextWith(beerSubmitData -> {
                                     assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(3);
                                 })
                                 .consumeNextWith(beerInfo -> {
                                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
@@ -1168,12 +1229,12 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                        System.out.println(objectMapper.writeValueAsString(searchResult));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(searchResult.getCount()).isEqualTo(4);
-                    
+
 
                     Mono.just(searchResult.getResult())
                             .flatMapMany(Flux::fromIterable)
@@ -1181,7 +1242,7 @@ public class BeerTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(3);
                             })
                             .consumeNextWith(beerInfo -> {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
@@ -1203,12 +1264,12 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                        System.out.println(objectMapper.writeValueAsString(searchResult));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(searchResult.getCount()).isEqualTo(4);
-                    
+
 
                     Mono.just(searchResult.getResult())
                             .flatMapMany(Flux::fromIterable)
@@ -1216,7 +1277,7 @@ public class BeerTest {
                             .as(StepVerifier::create)
                             .consumeNextWith(beerSubmitData -> {
                                 assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                                assertThat(beerSubmitData.getListUnit().length).isEqualTo(3);
                             })
                             .consumeNextWith(beerInfo -> {
                                 assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
@@ -1238,9 +1299,9 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                        System.out.println(objectMapper.writeValueAsString(searchResult));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(searchResult.getCount()).isEqualTo(0);
 
@@ -1252,9 +1313,9 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                        System.out.println(objectMapper.writeValueAsString(searchResult));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(searchResult.getCount()).isEqualTo(0);
 
@@ -1266,9 +1327,9 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(searchResult -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                        System.out.println(objectMapper.writeValueAsString(searchResult));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(searchResult.getCount()).isEqualTo(0);
 
@@ -1283,9 +1344,9 @@ public class BeerTest {
                     .as(StepVerifier::create)
                     .consumeNextWith(searchResult -> {
                         try {
-                            System.out.println(new ObjectMapper().writeValueAsString(searchResult));
+                            System.out.println(objectMapper.writeValueAsString(searchResult));
                         } catch (JsonProcessingException e) {
-                            e.printStackTrace();
+                            throw new RuntimeException(e);
                         }
                         assertThat(searchResult.getCount()).isEqualTo(4);
 
@@ -1296,7 +1357,7 @@ public class BeerTest {
                                 .as(StepVerifier::create)
                                 .consumeNextWith(beerSubmitData -> {
                                     assertThat(beerSubmitData.getBeerSecondID()).isEqualTo("123");
-                                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(2);
+                                    assertThat(beerSubmitData.getListUnit().length).isEqualTo(3);
                                 })
                                 .consumeNextWith(beerInfo -> {
                                     assertThat(beerInfo.getBeerSecondID()).isEqualTo("456");
@@ -1317,73 +1378,28 @@ public class BeerTest {
 
 
         beerAPI.CreateBeer(
-                BeerInfo
-                        .builder()
-                        .productUnit(new ProductUnit[]{
-                                ProductUnit
-                                        .builder()
-                                        .product_unit_second_id(beerUnit4561ID.get())
-                                        .product_second_id("444")
-                                        .price(10)
-                                        .weight(0.3f)
-                                        .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
-                                        .name("thung")
-                                        .group_id(group)
-                                        .build(),
-                                ProductUnit
-                                        .builder()
-                                        .product_unit_second_id(beerUnit4562ID.get())
-                                        .product_second_id("444")
-                                        .price(10)
-                                        .weight(0.3f)
-                                        .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
-                                        .name("lon")
-                                        .group_id(group)
-                                        .build()
-                        })
-                        .product(Product
-                                .builder()
-                                .category(Category.CRAB.getName())
-                                .detail("""
-                                        Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
-                                        - bia thơm ngon
-                                        - bia nhập ngoại
-                                        - bia sản xuất từ hà lan""")
-                                .name("beer tiger")
-                                .group_id(group)
-                                .product_second_id("444").build()
-                                .AutoFill()
-                        )
-                        .build()
-        )
-                .as(StepVerifier::create)
-                .expectError();
-
-
-
-        beerAPI.CreateBeer(
                         BeerInfo
                                 .builder()
                                 .productUnit(new ProductUnit[]{
                                         ProductUnit
                                                 .builder()
+                                                .product_unit_second_id(beerUnit4561ID.get())
                                                 .product_second_id("444")
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
-                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .date_expire(Util.getInstance().Now())
                                                 .name("thung")
                                                 .group_id(group)
                                                 .build(),
                                         ProductUnit
                                                 .builder()
+                                                .product_unit_second_id(beerUnit4562ID.get())
                                                 .product_second_id("444")
                                                 .price(10)
                                                 .weight(0.3f)
                                                 .discount(10)
-                                                .date_expire(new Timestamp(new Date().getTime()))
+                                                .date_expire(Util.getInstance().Now())
                                                 .name("lon")
                                                 .group_id(group)
                                                 .build()
@@ -1402,7 +1418,51 @@ public class BeerTest {
                                         .AutoFill()
                                 )
                                 .build()
-                ).block();
+                )
+                .as(StepVerifier::create)
+                .expectError();
+
+
+        beerAPI.CreateBeer(
+                BeerInfo
+                        .builder()
+                        .productUnit(new ProductUnit[]{
+                                ProductUnit
+                                        .builder()
+                                        .product_second_id("444")
+                                        .price(10)
+                                        .weight(0.3f)
+                                        .discount(10)
+                                        .date_expire(Util.getInstance().Now())
+                                        .name("thung")
+                                        .group_id(group)
+                                        .build(),
+                                ProductUnit
+                                        .builder()
+                                        .product_second_id("444")
+                                        .price(10)
+                                        .weight(0.3f)
+                                        .discount(10)
+                                        .date_expire(Util.getInstance().Now())
+                                        .name("lon")
+                                        .group_id(group)
+                                        .build()
+                        })
+                        .product(Product
+                                .builder()
+                                .category(Category.CRAB.getName())
+                                .detail("""
+                                        Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
+                                        - bia thơm ngon
+                                        - bia nhập ngoại
+                                        - bia sản xuất từ hà lan""")
+                                .name("beer tiger")
+                                .group_id(group)
+                                .product_second_id("444").build()
+                                .AutoFill()
+                        )
+                        .build()
+        ).block();
 
         this.beerAPI.GetBeerByID(group, "444")
                 .map(BeerSubmitData::GetBeerInfo)
@@ -1442,7 +1502,7 @@ public class BeerTest {
                                         .price(price)
                                         .weight(0.3f)
                                         .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
+                                        .date_expire(Util.getInstance().Now())
                                         .name("thung")
                                         .group_id(group)
                                         .build(),
@@ -1452,7 +1512,7 @@ public class BeerTest {
                                         .price(10000)
                                         .weight(0.3f)
                                         .discount(10)
-                                        .date_expire(new Timestamp(new Date().getTime()))
+                                        .date_expire(Util.getInstance().Now())
                                         .name("lon")
                                         .group_id(group)
                                         .build()

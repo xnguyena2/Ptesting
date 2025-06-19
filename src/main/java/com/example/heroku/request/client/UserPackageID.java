@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -19,7 +19,7 @@ public class UserPackageID extends BaseID {
     private String product_second_id;
     private String product_unit_second_id;
     private long after_id;
-    private Timestamp from;
-    private Timestamp to;
+    private LocalDateTime from;
+    private LocalDateTime to;
     private UserPackageDetail.Status status;
 }

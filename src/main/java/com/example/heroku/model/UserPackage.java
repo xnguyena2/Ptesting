@@ -1,7 +1,6 @@
 package com.example.heroku.model;
 
 import com.example.heroku.model.entity.BaseEntity;
-import com.example.heroku.util.Util;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -51,11 +50,18 @@ public class UserPackage extends BaseEntity {
 
     private String depend_to_product;
 
+    private String[] list_product_serial_id;
+
     private UserPackageDetail.Status status;
 
     /**
      * please take a look at {@link com.example.heroku.model.joinwith.UserPackageDetailJoinWithUserPackage}
      **/
+
+    /**
+     * {@link com.example.heroku.model.repository.UserPackageRepository}
+     *
+     */
 
     public UserPackage(UserPackage s) {
         super(s);
@@ -77,11 +83,15 @@ public class UserPackage extends BaseEntity {
         this.note = s.note;
         this.status = s.status;
         this.depend_to_product = s.depend_to_product;
+        this.list_product_serial_id = s.list_product_serial_id;
     }
 
     public UserPackage AutoFill() {
         if (status == null) {
             status = UserPackageDetail.Status.CREATE;
+        }
+        if(list_product_serial_id == null) {
+            list_product_serial_id = new String[]{};
         }
         super.AutoFillIfNull();
         return this;

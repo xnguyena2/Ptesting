@@ -5,7 +5,7 @@ import com.example.heroku.request.datetime.NgbDateStruct;
 import lombok.Builder;
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Data
@@ -38,12 +38,12 @@ public class VoucherData {
     private String[] listBeer;
 
 
-    public Timestamp GetExpirDateTime() {
+    public LocalDateTime GetExpirDateTime() {
         if (dateExpir == null)
             return null;
         if (dateExpir.getDay() == 0 && dateExpir.getMonth() == 0 && dateExpir.getYear() == 0)
             return null;
-        return dateExpir.ToDateTime();
+        return dateExpir.toLocalDateTime();
     }
 
     public Voucher GetVoucher() {
@@ -71,7 +71,7 @@ public class VoucherData {
         setDiscount(v.getDiscount());
         setAmount(v.getAmount());
         setReuse(v.getReuse());
-        setDateExpir(NgbDateStruct.FromTimestamp(v.getDate_expire()));
+        setDateExpir(NgbDateStruct.fromLocalDateTime(v.getDate_expire()));
         setStatus(v.getStatus().getName());
         setFor_all_product(v.isFor_all_product());
         setFor_all_user(v.isFor_all_user());

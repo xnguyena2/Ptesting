@@ -1,5 +1,6 @@
 package com.example.heroku.startup;
 
+import com.example.heroku.firebase.Storage;
 import com.example.heroku.request.data.UpdatePassword;
 import com.example.heroku.request.store.StoreInitData;
 import com.example.heroku.services.Store;
@@ -38,9 +39,6 @@ public class DataInitializer {
     private String adminStore;
 
     @Autowired
-    com.example.heroku.services.Image imageAPI;
-
-    @Autowired
     DatabaseClient databaseClient;
 
     @Autowired
@@ -48,6 +46,9 @@ public class DataInitializer {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    Storage storage;
 
     @EventListener(value = ApplicationReadyEvent.class)
     public void init() throws NoSuchAlgorithmException {
@@ -58,9 +59,11 @@ public class DataInitializer {
             log.warn("Reset all Database!");
             System.out.println("Reset all Database!");
 
-            imageAPI.DeleteAll().subscribe();
-
-            //PhotoLib.getInstance().deleteAll();
+            try {
+                storage.deleteAll();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             try {
                 String dropSQL = new String(Files.readAllBytes(Paths.get("Asset/drop.sql")));

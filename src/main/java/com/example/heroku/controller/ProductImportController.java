@@ -171,4 +171,28 @@ public class ProductImportController {
                 .build()
                 .toMono();
     }
+
+    @PostMapping("/admin/searchtype")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<GroupImportWithItem> SearchType(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchImportQuery query) {
+        System.out.println("Search by group import ID: " + query.getGroup_id() + ", type: " + query.getType());
+        return WrapPermissionAction.<GroupImportWithItem>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> groupImport.SearchByType(query))
+                .build()
+                .toFlux();
+    }
+
+    @PostMapping("/admin/search")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<GroupImportWithItem> Search(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchImportQuery query) {
+        System.out.println("Search by group import ID: " + query.getGroup_id());
+        return WrapPermissionAction.<GroupImportWithItem>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> groupImport.Search(query))
+                .build()
+                .toFlux();
+    }
 }

@@ -1,20 +1,18 @@
 package com.example.heroku.model.repository;
 
 import com.example.heroku.model.Product;
-import com.example.heroku.model.UserFCM;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
 
-    @Query(value = "INSERT INTO product( group_id, product_second_id, product_parent_id, name, detail, category, unit_category_config, meta_search, visible_web, default_group_unit_naname, number_group_unit_config, warranty, product_type, status, createat ) VALUES ( :group_id, :product_second_id, :product_parent_id, :name, :detail, :category, :unit_category_config, :meta_search, :visible_web, :default_group_unit_naname, :number_group_unit_config, :warranty, :product_type, :status, :createat ) ON CONFLICT (group_id, product_second_id) DO UPDATE SET product_parent_id = :product_parent_id, name = :name, detail = :detail, category = :category, unit_category_config = :unit_category_config, number_group_unit_config = :number_group_unit_config, warranty = :warranty, default_group_unit_naname = :default_group_unit_naname, meta_search = :meta_search, visible_web = :visible_web, product_type = :product_type, status = :status, createat = :createat")
+    @Query(value = "INSERT INTO product( group_id, product_second_id, product_parent_id, name, detail, category, unit_category_config, meta_search, visible_web, default_group_unit_naname, number_group_unit_config, warranty, product_type, status, createat ) VALUES ( :group_id, :product_second_id, :product_parent_id, :name, :detail, :category, :unit_category_config, :meta_search, :visible_web, :default_group_unit_naname, :number_group_unit_config, :warranty, :product_type, :status, :createat ) ON CONFLICT ON CONSTRAINT UQ_product_second_id DO UPDATE SET product_parent_id = :product_parent_id, name = :name, detail = :detail, category = :category, unit_category_config = :unit_category_config, number_group_unit_config = :number_group_unit_config, warranty = :warranty, default_group_unit_naname = :default_group_unit_naname, meta_search = :meta_search, visible_web = :visible_web, product_type = :product_type, status = :status, createat = :createat")
     Mono<Product> saveProduct(@Param("group_id") String group_id, @Param("product_second_id") String product_second_id,
                               @Param("product_parent_id") String product_parent_id,
                               @Param("name") String name, @Param("detail") String detail,
@@ -23,7 +21,7 @@ public interface BeerRepository extends ReactiveCrudRepository<Product, Long> {
                               @Param("default_group_unit_naname") String default_group_unit_naname, @Param("number_group_unit_config") String number_group_unit_config,
                               @Param("warranty") String warranty,
                               @Param("product_type") Product.ProductType product_type,
-                              @Param("status") Product.Status status, @Param("createat") Timestamp createat);
+                              @Param("status") Product.Status status, @Param("createat") LocalDateTime createat);
 
 
     @Query(value = "SELECT * FROM product WHERE product.product_second_id = :id AND product.group_id = :group_id")

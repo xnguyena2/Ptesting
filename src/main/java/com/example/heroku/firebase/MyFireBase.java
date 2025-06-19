@@ -32,13 +32,14 @@ public class MyFireBase {
     @Value("${firebase.admin.credential}")
     private String firebaseCredential;
 
+    @Getter
     private boolean isAuthSuccess = false;
 
     @Getter
     private Storage storage;
 
-    @EventListener
-    public void init(ApplicationReadyEvent event) {
+    @EventListener(ApplicationReadyEvent.class)
+    public void init() {
         this.auth();
     }
 
@@ -54,28 +55,19 @@ public class MyFireBase {
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(credentials)
                     .build();
-            try {
-                storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
 
-            } catch (Exception e) {
-                log.debug("initializing storage error...");
-                e.printStackTrace();
+            if (FirebaseApp.getApps().isEmpty()) {
+                FirebaseApp.initializeApp(options);
             }
+            storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
 
-            FirebaseApp.initializeApp(options);
             isAuthSuccess = true;
-            System.out.println("initializing firebase success...");
             log.debug("initializing firebase success...");
+
         } catch (IOException ioEx) {
-            System.out.println("initializing firebase error...");
-            log.debug("initializing firebase error...");
-            ioEx.printStackTrace();
+            log.error("Failed to initialize Firebase", ioEx);
         }
 
-    }
-
-    public boolean isAuthSuccess() {
-        return isAuthSuccess;
     }
 
     public String SendNotification(String title, String msg, String token) {
@@ -103,12 +95,12 @@ public class MyFireBase {
 
             String response = FirebaseMessaging.getInstance().send(message);
 
-            System.out.println("Successfully sent message: " + response);
+            log.info("Successfully sent FCM message: {}", response);
             return response;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.error("Failed to send FCM message", ex);
+            return "Failed to send notification.";
         }
-        return "Not success!";
     }
 
     public void SendNotification2Admin(String title, String msg) {
@@ -131,11 +123,10 @@ public class MyFireBase {
                     .build();
 
             String response = FirebaseMessaging.getInstance().send(message);
-
-            System.out.println("Successfully sent message: " + response);
+            log.info("Successfully sent topic message: {}", response);
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.error("Failed to send admin notification", ex);
         }
     }
 }

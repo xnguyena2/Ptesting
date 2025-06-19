@@ -4,7 +4,8 @@ import com.example.heroku.services.Store;
 import lombok.Builder;
 import reactor.test.StepVerifier;
 
-import java.sql.Timestamp;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -110,7 +111,7 @@ public class StoreTest {
                 .verifyComplete();
 
         storeServices.getAllStoreCreateBetween(com.example.heroku.request.warehouse.SearchImportQuery.builder()
-                        .from(Timestamp.valueOf("2023-11-01 00:00:00")).to(Timestamp.valueOf("2300-11-01 00:00:00")).build())
+                        .from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).build())
                 .filter(store -> store.getGroup_id().equals(group))
                 .as(StepVerifier::create)
                 .consumeNextWith(store -> {

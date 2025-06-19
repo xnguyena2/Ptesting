@@ -9,15 +9,16 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 public interface TableDetailRepository extends ReactiveCrudRepository<TableDetail, Long> {
 
-    @Query(value = "INSERT INTO table_detail(group_id, area_id, table_id, table_name, package_second_id, detail, status, createat) VALUES (:group_id, :area_id, :table_id, :table_name, :package_second_id, :detail, :status, :createat) ON CONFLICT (group_id, area_id, table_id) DO UPDATE SET table_name = :table_name, package_second_id = :package_second_id, detail = :detail, status = :status, createat = :createat")
+    @Query(value = "INSERT INTO table_detail(group_id, area_id, table_id, table_name, package_second_id, detail, status, createat) VALUES (:group_id, :area_id, :table_id, :table_name, :package_second_id, :detail, :status, :createat) ON CONFLICT ON CONSTRAINT UQ_table_detail DO UPDATE SET table_name = :table_name, package_second_id = :package_second_id, detail = :detail, status = :status, createat = :createat")
     Mono<TableDetail> insertOrUpdate(@Param("group_id") String group_id, @Param("area_id") String area_id, @Param("table_id") String table_id,
                                      @Param("table_name") String table_name, @Param("package_second_id") String package_second_id,
                                      @Param("detail") String detail,
-                                     @Param("status") ActiveStatus status, @Param("createat") Timestamp createat);
+                                     @Param("status") ActiveStatus status, @Param("createat") LocalDateTime createat);
     //search all
     @Query(value = "SELECT * FROM table_detail WHERE table_detail.group_id = :group_id")// ORDER BY createat DESC LIMIT :size OFFSET (:page*:size)")
     Flux<TableDetail> findByIdNotNull(@Param("group_id")String group_id, Pageable pageable);

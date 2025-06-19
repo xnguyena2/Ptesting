@@ -2,7 +2,9 @@ package com.example.heroku.services;
 
 import com.example.heroku.model.UserPackageDetail;
 import com.example.heroku.model.statistics.BenifitByMonth;
+import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
+import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.client.PackageID;
 import com.example.heroku.response.BootStrapData;
 import com.example.heroku.response.BootStrapDataWeb;
@@ -12,10 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.sql.Timestamp;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -42,52 +45,52 @@ public class ClientDevice {
     @Autowired
     private MapKeyValue mapKeyValue;
 
+    @Autowired
+    private ProductSerial productSerialAPI;
+
     public Mono<BootStrapDataWeb> bootStrapDataForWeb(String groupID) {
 
-        return
-                this.storeServices.getStoreDomainUrl(groupID)
-                        .switchIfEmpty(Mono.just(com.example.heroku.model.Store.builder().group_id(groupID).build()))
-                        .map(store -> (BootStrapDataWeb) BootStrapDataWeb.builder()
-                                .store(store)
-                                .carousel(new ArrayList<>())
-                                .products(new ArrayList<>())
-                                .build()
-                        )
-                        .flatMap(bootStrapData ->
-                                beerAPI.GetAllBeerByJoinFirstForWeb(SearchQuery.builder().group_id(bootStrapData.getStore().getGroup_id()).page(0).size(24).build())
-                                        .map(beerSubmitData ->
-                                                bootStrapData.getProducts().add(beerSubmitData)
-                                        ).then(
-                                                Mono.just(bootStrapData)
-                                        )
-                        )
-                        .flatMap(bootStrapData ->
-                                imageAPI.GetAll(bootStrapData.getStore().getGroup_id(), "Carousel")
-                                        .switchIfEmpty(Mono.just(com.example.heroku.model.Image.builder().build()))
-                                        .map(image ->
-                                                {
-                                                    if (image.getImgid() == null)
-                                                        return false;
-                                                    return bootStrapData.getCarousel().add(image.getLarge());
-                                                }
-                                        ).then(Mono.just(bootStrapData))
-                        )
-                        .flatMap(bootStrapData ->
-                                this.deviceConfigAPI.GetConfig(bootStrapData.getStore().getGroup_id())
-                                        .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().color("#333333").build()))
-                                        .map(bootStrapData::setDeviceConfig)
-                                        .then(Mono.just(bootStrapData))
-                        )
-                        .flatMap(bootStrapData ->
-                                this.mapKeyValue.getByID(bootStrapData.getStore().getGroup_id(), WEB_CONFIG)
-                                        .switchIfEmpty(Mono.just(com.example.heroku.model.MapKeyValue.builder().build()))
-                                        .map(mapKeyValue -> {
-                                            if (mapKeyValue.getValue_o() == null) {
-                                                return bootStrapData;
-                                            }
-                                            return bootStrapData.setWeb_config(mapKeyValue.getValue_o());
-                                        })
-                        );
+        // Lấy sản phẩm
+        Mono<List<BeerSubmitData>> productMono = beerAPI.GetAllBeerByJoinFirstForWeb(
+                        SearchQuery.builder().
+                                group_id(groupID).page(0).size(24).build()
+                )
+                .collectList()
+                .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
+
+        Mono<List<String>> carouselMono = imageAPI.GetAll(groupID, "Carousel")
+                .map(com.example.heroku.model.Image::getLarge)
+                .collectList()
+                .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
+
+        // Lấy device config
+        Mono<com.example.heroku.model.DeviceConfig> configMono = this.deviceConfigAPI.GetConfig(groupID)
+                .defaultIfEmpty(com.example.heroku.model.DeviceConfig.builder().group_id(groupID).color("#333333").build()); // ✅ fallback nếu không có config
+
+        // Lấy store
+        Mono<com.example.heroku.model.Store> storeMono = storeServices.getStoreDomainUrl(groupID)
+                .defaultIfEmpty(com.example.heroku.model.Store.builder().group_id(groupID).build()); // ✅ fallback nếu không có store
+
+        Mono<String> webConfigMono = this.mapKeyValue.getByID(groupID, WEB_CONFIG)
+                .map(com.example.heroku.model.MapKeyValue::getValue_o)
+                .defaultIfEmpty(""); // ✅ fallback nếu không có web config
+
+        Mono<List<com.example.heroku.model.ProductSerial>> productSerialMono = productSerialAPI
+                .getAllSerial(IDContainer.builder().group_id(groupID).build())
+                .collectList()
+                .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
+
+
+        return Mono.zip(productMono, carouselMono, configMono, storeMono, webConfigMono, productSerialMono)
+                .map(tuple -> BootStrapDataWeb.builder()
+                        .products(tuple.getT1())
+                        .carousel(tuple.getT2())
+                        .deviceConfig(tuple.getT3())
+                        .store(tuple.getT4())
+                        .web_config(tuple.getT5())
+                        .productSerials(tuple.getT6())
+                        .build()
+                );
 
     }
 
@@ -107,74 +110,91 @@ public class ClientDevice {
     }
 
     public Mono<BootStrapData> adminBootStrapWithoutCarouselData(String groupID) {
+        Mono<List<BeerSubmitData>> productMono = beerAPI
+                .GetAllBeer(SearchQuery.builder().group_id(groupID).page(0).size(10000).build())
+                .collectList()
+                .defaultIfEmpty(List.of());
 
-        return Mono.just(
-                        BootStrapData.builder()
-                                .carousel(new ArrayList<>())
-                                .products(new ArrayList<>())
-                                .build())
-                .flatMap(bootStrapData ->
-                        beerAPI.GetAllBeer(SearchQuery.builder().group_id(groupID).page(0).size(10000).build())
-                                .map(beerSubmitData ->
-                                        bootStrapData.getProducts().add(beerSubmitData)
-                                ).then(
-                                        Mono.just(bootStrapData)
-                                )
-                )
-                .flatMap(bootStrapData ->
-                        this.deviceConfigAPI.GetConfig(groupID)
-                                .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().group_id(groupID).build()))
-                                .map(bootStrapData::setDeviceConfig)
-                )
-                .flatMap(bootStrapData ->
-                        this.storeServices.getStore(groupID)
-                                .switchIfEmpty(Mono.just(com.example.heroku.model.Store.builder().build()))
-                                .map(bootStrapData::setStore)
-                )
-                .flatMap(bootStrapData ->
-                        this.statisticServices.getPackageTotalStatictis(PackageID.builder()
-                                        .group_id(groupID)
-                                        .from(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0)))
-                                        .to(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"))))
-                                        .status(UserPackageDetail.Status.DONE).build())
-                                .switchIfEmpty(Mono.just(BenifitByMonth.builder().build()))
-                                .map(bootStrapData::setBenifit)
-                );
+        Mono<com.example.heroku.model.DeviceConfig> configMono = deviceConfigAPI
+                .GetConfig(groupID)
+                .defaultIfEmpty(com.example.heroku.model.DeviceConfig.builder().group_id(groupID).build());
+
+        Mono<com.example.heroku.model.Store> storeMono = storeServices
+                .getStore(groupID)
+                .defaultIfEmpty(com.example.heroku.model.Store.builder().build());
+
+        Mono<BenifitByMonth> benifitMono = statisticServices
+                .getPackageTotalStatictis(PackageID.builder()
+                        .group_id(groupID)
+                        .from(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"))
+                                .withDayOfMonth(1)
+                                .withHour(0).withMinute(0).withSecond(0).withNano(0))
+                        .to(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
+                        .status(UserPackageDetail.Status.DONE)
+                        .build())
+                .defaultIfEmpty(BenifitByMonth.builder().build());
+
+        Mono<List<com.example.heroku.model.ProductSerial>> productSerialMono = productSerialAPI
+                .getAllSerial(IDContainer.builder().group_id(groupID).build())
+                .collectList()
+                .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
+
+        return Mono.zip(productMono, configMono, storeMono, benifitMono, productSerialMono)
+                .map(tuple -> BootStrapData.builder()
+                        .products(List.copyOf(tuple.getT1()))
+                        .deviceConfig(tuple.getT2())
+                        .store(tuple.getT3())
+                        .benifit(tuple.getT4())
+                        .carousel(List.of()) // Không có carousel
+                        .productSerials(tuple.getT5())
+                        .build());
     }
 
     public Mono<BootStrapData> adminBootStrapWithoutCarouselDataBenifitOfCurrentDate(String groupID) {
 
-        return Mono.just(
-                        BootStrapData.builder()
-                                .carousel(new ArrayList<>())
-                                .products(new ArrayList<>())
-                                .build())
-                .flatMap(bootStrapData ->
-                        beerAPI.GetAllBeerByJoinWithImageFirst(SearchQuery.builder().group_id(groupID).page(0).size(10000).build())
-                                .map(beerSubmitData ->
-                                        bootStrapData.getProducts().add(beerSubmitData)
-                                ).then(
-                                        Mono.just(bootStrapData)
-                                )
-                )
-                .flatMap(bootStrapData ->
-                        this.deviceConfigAPI.GetConfig(groupID)
-                                .switchIfEmpty(Mono.just(com.example.heroku.model.DeviceConfig.builder().group_id(groupID).build()))
-                                .map(bootStrapData::setDeviceConfig)
-                )
-                .flatMap(bootStrapData ->
-                        this.storeServices.getStore(groupID)
-                                .switchIfEmpty(Mono.just(com.example.heroku.model.Store.builder().build()))
-                                .map(bootStrapData::setStore)
-                )
-                .flatMap(bootStrapData ->
-                        this.statisticServices.getPackageTotalStatictis(PackageID.builder()
-                                        .group_id(groupID)
-                                        .from(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withHour(0).withMinute(0).withSecond(0).withNano(0)))
-                                        .to(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"))))
-                                        .status(UserPackageDetail.Status.DONE).build())
-                                .switchIfEmpty(Mono.just(BenifitByMonth.builder().build()))
-                                .map(bootStrapData::setBenifit)
-                );
+        // Lấy sản phẩm
+        Mono<List<BeerSubmitData>> productMono = beerAPI
+                .GetAllBeerByJoinWithImageFirst(SearchQuery.builder()
+                        .group_id(groupID)
+                        .page(0)
+                        .size(10000)
+                        .build())
+                .collectList()
+                .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
+
+        // Lấy device config
+        Mono<com.example.heroku.model.DeviceConfig> configMono = deviceConfigAPI
+                .GetConfig(groupID)
+                .defaultIfEmpty(com.example.heroku.model.DeviceConfig.builder().group_id(groupID).build()); // ✅ fallback nếu không có config
+
+        // Lấy store
+        Mono<com.example.heroku.model.Store> storeMono = storeServices
+                .getStore(groupID)
+                .defaultIfEmpty(com.example.heroku.model.Store.builder().group_id(groupID).build()); // ✅ fallback nếu không có store
+
+        // Lấy thống kê lợi nhuận hôm nay
+        Mono<BenifitByMonth> benifitMono = statisticServices
+                .getPackageTotalStatictis(PackageID.builder()
+                        .group_id(groupID)
+                        .from(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).withHour(0).withMinute(0).withSecond(0).withNano(0))
+                        .to(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
+                        .status(UserPackageDetail.Status.DONE).build())
+                .defaultIfEmpty(BenifitByMonth.builder().build()); // ✅ fallback nếu không có thống kê
+
+        Mono<List<com.example.heroku.model.ProductSerial>> productSerialMono = productSerialAPI
+                .getAllSerial(IDContainer.builder().group_id(groupID).build())
+                .collectList()
+                .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
+
+
+        return Mono.zip(productMono, configMono, storeMono, benifitMono, productSerialMono)
+                .map(tuple -> BootStrapData.builder()
+                        .products(tuple.getT1())
+                        .deviceConfig(tuple.getT2())
+                        .store(tuple.getT3())
+                        .benifit(tuple.getT4())
+                        .carousel(List.of()) // Không có carousel
+                        .productSerials(tuple.getT5())
+                        .build());
     }
 }

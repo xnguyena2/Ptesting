@@ -3,6 +3,7 @@ package com.example.heroku;
 import com.example.heroku.model.repository.ImageRepository;
 import com.example.heroku.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -26,6 +27,9 @@ public class ApplicationTest extends TestConfig {
             "C:\\Users\\phong\\Downloads\\phong\\984-900x500.jpg"
     };
 
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Autowired
     StatisticServices statisticServices;
@@ -105,6 +109,9 @@ public class ApplicationTest extends TestConfig {
     PasswordEncoder passwordEncoder;
 
     @Autowired
+    ProductSerial productSerial;
+
+    @Autowired
     Area area;
 
     @Autowired
@@ -153,7 +160,10 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void userTest() {
-        UserAccountTest.builder().userAccount(userAccount).usersInfo(usersInfo).adminName(adminName).passwordEncoder(passwordEncoder).group(mainGroup).build().test();
+        UserAccountTest.builder().userAccount(userAccount).usersInfo(usersInfo)
+                .adminName(adminName).passwordEncoder(passwordEncoder).group(mainGroup)
+                .objectMapper(objectMapper)
+                .build().test();
     }
 
     @Test
@@ -191,9 +201,15 @@ public class ApplicationTest extends TestConfig {
     @Test
     @Order(4)
     public void testUserAddBeerToPackage() {
-        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).groupImport(groupImport).build().saveBeerTest();
-        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(mainGroup).buyer(buyer).statisticServices(statisticServices).userPackageDetailCounterServices(userPackageDetailCounterServices).build().TestUserPackage();
-        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).group(mainGroup).build().Test();
+        BeerTest.builder().beerAPI(beerAPI).group(mainGroup)
+                .objectMapper(objectMapper).groupImport(groupImport).build().saveBeerTest();
+        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(mainGroup)
+                .buyer(buyer).statisticServices(statisticServices).userPackageDetailCounterServices(userPackageDetailCounterServices)
+                .objectMapper(objectMapper)
+                .productSerial(productSerial)
+                .build()
+                .TestUserPackage();
+        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).productSerial(productSerial).group(mainGroup).build().Test();
     }
 
     @Test
@@ -220,19 +236,20 @@ public class ApplicationTest extends TestConfig {
     @Order(5)
     public void testBootStrapData() {
 
-        BeerTest.builder().beerAPI(beerAPI).group(mainGroup).groupImport(groupImport).build().saveBeerTest();
+        BeerTest.builder().beerAPI(beerAPI).group(mainGroup)
+                .objectMapper(objectMapper).groupImport(groupImport).build().saveBeerTest();
 
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).testWithMainGroup(true).build().DeviceConfigTestWithoutImage();
 
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).testWithMainGroup(true).build().BootStrapDataWithoutImage();
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).build().BootStrapDataWithoutImageNew();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).objectMapper(objectMapper).group(mainGroup).testWithMainGroup(true).build().BootStrapDataWithoutImage();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).objectMapper(objectMapper).group(mainGroup).testWithMainGroup(true).build().BootStrapDataWithoutImageNew();
 
         ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).group(mainGroup).build().Run(listImg);
 
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(mainGroup).testWithMainGroup(true).build().DeviceConfigTest();
 
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).testWithMainGroup(true).build().BootStrapData();
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(mainGroup).testWithMainGroup(true).build().BootStrapDataNew();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).objectMapper(objectMapper).group(mainGroup).testWithMainGroup(true).build().BootStrapData();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).objectMapper(objectMapper).group(mainGroup).testWithMainGroup(true).build().BootStrapDataNew();
     }
 
     @Test
@@ -291,14 +308,21 @@ public class ApplicationTest extends TestConfig {
     @Test
     public void userTest2() {
         //UNIQUE id of user
-        UserAccountTest.builder().userAccount(userAccount).usersInfo(usersInfo).adminName(adminName).passwordEncoder(passwordEncoder).group(anotherGroup).build().test2();
+        UserAccountTest.builder().userAccount(userAccount).usersInfo(usersInfo)
+                .adminName(adminName).passwordEncoder(passwordEncoder).group(anotherGroup)
+                .objectMapper(objectMapper)
+                .build().test2();
     }
 
     @Test
     @Order(6)
     public void BeerTest2() {
-        BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).groupImport(groupImport).build().saveBeerTest();
-        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).buyer(buyer).statisticServices(statisticServices).userPackageDetailCounterServices(userPackageDetailCounterServices).build().TestUserPackage();
+        BeerTest.builder().beerAPI(beerAPI).group(anotherGroup)
+                .objectMapper(objectMapper).groupImport(groupImport).build().saveBeerTest();
+        UserPackageTest.builder().userPackageAPI(userPackageAPI).beerAPI(beerAPI).group(anotherGroup).buyer(buyer).statisticServices(statisticServices)
+                .objectMapper(objectMapper).userPackageDetailCounterServices(userPackageDetailCounterServices)
+                .productSerial(productSerial)
+                .build().TestUserPackage();
     }
 
     @Test
@@ -315,7 +339,7 @@ public class ApplicationTest extends TestConfig {
 
     @Test
     public void ProductImport2(){
-        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).group(anotherGroup).build().Test();
+        ProductImportTest.builder().beerAPI(beerAPI).groupImport(groupImport).productSerial(productSerial).group(anotherGroup).build().Test();
     }
 
     @Test
@@ -357,19 +381,20 @@ public class ApplicationTest extends TestConfig {
     @Order(8)
     public void testBootStrapData2() {
 
-        BeerTest.builder().beerAPI(beerAPI).group(anotherGroup).groupImport(groupImport).build().saveBeerTest();
+        BeerTest.builder().beerAPI(beerAPI).group(anotherGroup)
+                .objectMapper(objectMapper).groupImport(groupImport).build().saveBeerTest();
 
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(anotherGroup).build().DeviceConfigTestWithoutImage();
 
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapDataWithoutImage();
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapDataWithoutImageNew();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).objectMapper(objectMapper).group(anotherGroup).build().BootStrapDataWithoutImage();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).objectMapper(objectMapper).group(anotherGroup).build().BootStrapDataWithoutImageNew();
 
         ImageTest.builder().imageAPI(imageAPI).imageRepository(imageRepository).group(anotherGroup).build().Run(listImg);
 
         DeviceConfigTest.builder().deviceConfig(this.deviceConfig).clientDevice(this.clientDevice).group(anotherGroup).build().DeviceConfigTest();
 
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapData();
-        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).group(anotherGroup).build().BootStrapDataNew();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).objectMapper(objectMapper).group(anotherGroup).build().BootStrapData();
+        ClientDeviceTest.builder().clientDeviceAPI(clientDeviceAPI).objectMapper(objectMapper).group(anotherGroup).build().BootStrapDataNew();
     }
 
     @Test

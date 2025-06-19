@@ -2,12 +2,12 @@ package com.example.heroku.model.statistics;
 
 import lombok.Data;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 @Data
 public class BenifitByOrder {
-    private Timestamp createat;
+    private LocalDateTime createat;
     private String package_second_id;
     private float revenue;
     private float profit;

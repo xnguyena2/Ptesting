@@ -6,7 +6,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -21,7 +21,7 @@ public class NotificationRelateUserDevice extends BaseEntity {
 
     private String user_device_id;
 
-    private Timestamp createat;
+    private LocalDateTime createat;
 
     private Status status;
 

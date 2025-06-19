@@ -1,7 +1,6 @@
 package com.example.heroku.model;
 
 import com.example.heroku.model.entity.BaseEntity;
-import com.example.heroku.util.Util;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -33,14 +32,22 @@ public class ProductImport extends BaseEntity {
 
     private String note;
 
+    private String[] list_product_serial_id;
+
     private ImportType type;
 
     private Status status;
 
-    // GroupImportJoinProductImport
+    /***
+     * {@link com.example.heroku.model.joinwith.GroupImportJoinProductImport}
+     * @return
+     */
 
 
     public ProductImport AutoFill() {
+        if(list_product_serial_id == null) {
+            list_product_serial_id = new String[]{};
+        }
         return (ProductImport) super.AutoFillIfNull();
     }
 

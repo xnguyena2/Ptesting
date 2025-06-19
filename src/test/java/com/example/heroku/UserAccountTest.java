@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Builder
 public class UserAccountTest {
 
+    ObjectMapper objectMapper;
 
     private String adminName;
 
@@ -77,9 +78,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(usersInfo -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(usersInfo));
+                        System.out.println(objectMapper.writeValueAsString(usersInfo));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(usersInfo.getUsername()).isEqualTo("binhdiepquin");
                     assertThat(usersInfo.getUser_fullname()).isEqualTo(null);
@@ -89,9 +90,9 @@ public class UserAccountTest {
                 })
                 .consumeNextWith(usersInfo -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(usersInfo));
+                        System.out.println(objectMapper.writeValueAsString(usersInfo));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(usersInfo.getUsername()).isEqualTo("phong test");
                     assertThat(usersInfo.getUser_fullname()).isEqualTo(null);
@@ -101,9 +102,9 @@ public class UserAccountTest {
                 })
                 .consumeNextWith(usersInfo -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(usersInfo));
+                        System.out.println(objectMapper.writeValueAsString(usersInfo));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(usersInfo.getUser_fullname()).isEqualTo("pong");
                     assertThat(usersInfo.getPhone()).isEqualTo("121");
@@ -117,9 +118,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(usersInfo -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(usersInfo));
+                        System.out.println(objectMapper.writeValueAsString(usersInfo));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(usersInfo.getUsername()).isEqualTo("binhdiepquin");
                     assertThat(usersInfo.getUser_fullname()).isEqualTo(null);
@@ -129,9 +130,9 @@ public class UserAccountTest {
                 })
                 .consumeNextWith(usersInfo -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(usersInfo));
+                        System.out.println(objectMapper.writeValueAsString(usersInfo));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(usersInfo.getUsername()).isEqualTo("phong test");
                     assertThat(usersInfo.getUser_fullname()).isEqualTo(null);
@@ -141,9 +142,9 @@ public class UserAccountTest {
                 })
                 .consumeNextWith(usersInfo -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(usersInfo));
+                        System.out.println(objectMapper.writeValueAsString(usersInfo));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(usersInfo.getUser_fullname()).isEqualTo("pong");
                     assertThat(usersInfo.getPhone()).isEqualTo("121");
@@ -156,9 +157,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(3);
                     Mono.just(resultWithCount.getResult())
@@ -182,9 +183,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getUsername()).isEqualTo("phong test");
                     assertThat(resultWithCount.getPassword()).isEqualTo(null);
@@ -195,9 +196,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getUsername()).isEqualTo("phong test");
                     assertThat(passwordEncoder.matches("phong test pass", resultWithCount.getPassword())).isEqualTo(true);
@@ -210,9 +211,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getUsername()).isEqualTo("phong test");
                     assertThat(passwordEncoder.matches("phong update pass", resultWithCount.getPassword())).isEqualTo(true);
@@ -236,9 +237,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(3);
                     Mono.just(resultWithCount.getResult())
@@ -264,9 +265,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(2);
                     Mono.just(resultWithCount.getResult())
@@ -289,9 +290,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
                     Mono.just(resultWithCount.getResult())
@@ -319,9 +320,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
                     Mono.just(resultWithCount.getResult())
@@ -339,9 +340,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getUsername()).isEqualTo("phong test2");
                     assertThat(resultWithCount.getPassword()).isEqualTo(null);
@@ -352,9 +353,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getUsername()).isEqualTo("phong test2");
                     assertThat(passwordEncoder.matches("phong test pass", resultWithCount.getPassword())).isEqualTo(true);
@@ -367,9 +368,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getUsername()).isEqualTo("phong test2");
                     assertThat(passwordEncoder.matches("phong update pass2", resultWithCount.getPassword())).isEqualTo(true);
@@ -393,9 +394,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(1);
                     Mono.just(resultWithCount.getResult())
@@ -415,9 +416,9 @@ public class UserAccountTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(resultWithCount -> {
                     try {
-                        System.out.println(new ObjectMapper().writeValueAsString(resultWithCount));
+                        System.out.println(objectMapper.writeValueAsString(resultWithCount));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                     assertThat(resultWithCount.getCount()).isEqualTo(0);
                     assertThat(resultWithCount.getResult()).isEqualTo(null);
