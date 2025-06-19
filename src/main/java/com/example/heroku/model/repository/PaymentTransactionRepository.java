@@ -33,6 +33,6 @@ public interface PaymentTransactionRepository extends ReactiveCrudRepository<Pay
     @Query(value = "SELECT DISTINCT ON (category) category FROM payment_transaction WHERE payment_transaction.group_id = :group_id")
     Flux<PaymentTransation> getAllCategory(@Param("group_id") String group_id);
 
-    @Query(value = "SELECT * FROM payment_transaction WHERE payment_transaction.group_id = :group_id AND (payment_transaction.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime)")
+    @Query(value = "SELECT * FROM payment_transaction WHERE payment_transaction.group_id = :group_id AND (payment_transaction.createat BETWEEN :fromtime AND :totime)")
     Flux<PaymentTransation> getStatictis(@Param("group_id") String groupID, @Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to);
 }

@@ -28,7 +28,7 @@ public interface ProductImportRepository extends ReactiveCrudRepository<ProductI
     @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id AND DATE_PART('day', NOW() - createat) <= :date LIMIT :size OFFSET (:page * :size)")
     Flux<ProductImport> getALLBeforeNoDate(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size, @Param("date") int date);
 
-    @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id AND (product_import.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
+    @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id AND (product_import.createat BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
     Flux<ProductImport> getALLBetween(@Param("group_id") String group_id, @Param("fromtime") LocalDateTime fromtime, @Param("totime") LocalDateTime totime, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "SELECT * FROM product_import WHERE product_import.group_id = :group_id AND product_import.product_id = :id AND DATE_PART('day', NOW() - createat) <= :date LIMIT :size OFFSET (:page*:size)")

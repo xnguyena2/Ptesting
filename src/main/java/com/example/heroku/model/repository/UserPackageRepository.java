@@ -17,7 +17,7 @@ public interface UserPackageRepository extends ReactiveCrudRepository<UserPackag
     @Query(value = "SELECT * FROM user_package WHERE user_package.group_id = :group_id AND user_package.device_id = :device_id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")
     Flux<UserPackage> GetDevicePackage(@Param("group_id") String group_id, @Param("device_id") String device_id, @Param("page") int page, @Param("size") int size);
 
-    @Query(value = "SELECT * FROM user_package WHERE user_package.group_id = :group_id AND user_package.status = :status AND user_package.product_second_id = :product_second_id AND user_package.product_unit_second_id = :product_unit_second_id AND (user_package.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
+    @Query(value = "SELECT * FROM user_package WHERE user_package.group_id = :group_id AND user_package.status = :status AND user_package.product_second_id = :product_second_id AND user_package.product_unit_second_id = :product_unit_second_id AND (user_package.createat BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
     Flux<UserPackage> GetByStatusBetween(@Param("group_id") String group_id, @Param("product_second_id") String product_second_id, @Param("product_unit_second_id") String product_unit_second_id, @Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to, @Param("status") UserPackageDetail.Status status, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "SELECT * FROM user_package WHERE user_package.group_id = :group_id AND user_package.status = :status AND user_package.product_second_id = :product_second_id ORDER BY createat DESC LIMIT :size OFFSET (:page * :size)")

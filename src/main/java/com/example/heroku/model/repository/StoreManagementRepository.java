@@ -39,7 +39,7 @@ public interface StoreManagementRepository extends ReactiveCrudRepository<Store,
     @Query(value = "SELECT store.* FROM (SELECT DISTINCT user_package_detail.group_id FROM user_package_detail WHERE meta_search LIKE :meta_search AND user_package_detail.status = 'DONE') AS groupid INNER JOIN (SELECT * FROM store WHERE store.payment_status IS NULL) AS store ON store.group_id = groupid.group_id")
     Flux<Store> getAllStoreBaseonDonePackage(@Param("meta_search")String metaSearch);
 
-    @Query(value = "SELECT * FROM store WHERE store.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime")
+    @Query(value = "SELECT * FROM store WHERE store.createat BETWEEN :fromtime AND :totime")
     Flux<Store> getAllStoreCreateBetween(@Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to);
 
 

@@ -55,7 +55,7 @@ public class StatisticPackageOrderDetailController {
     @PostMapping("/admin/getbyproductid")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BenifitByDate> getbyproductid(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("get report getbyproductid: " + query.getGroup_id());
+        System.out.println("get report getbyproductid: " + query.getGroup_id() + ", from: " + query.getFrom() + ", to: " + query.getTo());
         return WrapPermissionAction.<BenifitByDate>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())

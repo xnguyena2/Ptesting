@@ -38,7 +38,7 @@ public interface GroupImportRepository extends ReactiveCrudRepository<GroupImpor
     @Query(value = "SELECT * FROM group_import WHERE group_import.group_id = :group_id AND DATE_PART('day', NOW() - createat) <= :date LIMIT :size OFFSET (:page * :size)")
     Flux<GroupImport> getALLBeforeNoDate(@Param("group_id") String group_id, @Param("page") int page, @Param("size") int size, @Param("date") int date);
 
-    @Query(value = "SELECT * FROM group_import WHERE group_import.group_id = :group_id AND (group_import.createat AT TIME ZONE '+07' BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
+    @Query(value = "SELECT * FROM group_import WHERE group_import.group_id = :group_id AND (group_import.createat BETWEEN :fromtime AND :totime) LIMIT :size OFFSET (:page * :size)")
     Flux<GroupImport> getALLBetween(@Param("group_id") String group_id, @Param("fromtime") LocalDateTime fromtime, @Param("totime") LocalDateTime totime, @Param("page") int page, @Param("size") int size);
 
     @Query(value = "DELETE FROM group_import WHERE group_import.group_id = :group_id AND group_import.group_import_second_id = :id")

@@ -18,6 +18,7 @@ public class WebConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOriginPatterns(Arrays.asList("http://localhost:*", "https://localhost:*"));
         corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
