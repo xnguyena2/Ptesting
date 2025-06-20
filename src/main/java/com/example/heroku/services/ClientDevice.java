@@ -48,49 +48,54 @@ public class ClientDevice {
     @Autowired
     private ProductSerial productSerialAPI;
 
-    public Mono<BootStrapDataWeb> bootStrapDataForWeb(String groupID) {
-
-        // Lấy sản phẩm
-        Mono<List<BeerSubmitData>> productMono = beerAPI.GetAllBeerByJoinFirstForWeb(
-                        SearchQuery.builder().
-                                group_id(groupID).page(0).size(24).build()
-                )
-                .collectList()
-                .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
-
-        Mono<List<String>> carouselMono = imageAPI.GetAll(groupID, "Carousel")
-                .map(com.example.heroku.model.Image::getLarge)
-                .collectList()
-                .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
-
-        // Lấy device config
-        Mono<com.example.heroku.model.DeviceConfig> configMono = this.deviceConfigAPI.GetConfig(groupID)
-                .defaultIfEmpty(com.example.heroku.model.DeviceConfig.builder().group_id(groupID).color("#333333").build()); // ✅ fallback nếu không có config
-
+    public Mono<BootStrapDataWeb> bootStrapDataForWeb(String domainID) {
         // Lấy store
-        Mono<com.example.heroku.model.Store> storeMono = storeServices.getStoreDomainUrl(groupID)
-                .defaultIfEmpty(com.example.heroku.model.Store.builder().group_id(groupID).build()); // ✅ fallback nếu không có store
+        return storeServices.getStoreDomainUrl(domainID)
+                .defaultIfEmpty(com.example.heroku.model.Store.builder().domain_url(domainID).group_id(domainID).build()) // ✅ fallback nếu không có store
+                .flatMap(store -> {
 
-        Mono<String> webConfigMono = this.mapKeyValue.getByID(groupID, WEB_CONFIG)
-                .map(com.example.heroku.model.MapKeyValue::getValue_o)
-                .defaultIfEmpty(""); // ✅ fallback nếu không có web config
+                    String groupID = store.getGroup_id();
 
-        Mono<List<com.example.heroku.model.ProductSerial>> productSerialMono = productSerialAPI
-                .getAllSerial(IDContainer.builder().group_id(groupID).build())
-                .collectList()
-                .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
+                    // Lấy sản phẩm
+                    Mono<List<BeerSubmitData>> productMono = beerAPI.GetAllBeerByJoinFirstForWeb(
+                                    SearchQuery.builder().
+                                            group_id(groupID).page(0).size(24).build()
+                            )
+                            .collectList()
+                            .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
+
+                    Mono<List<String>> carouselMono = imageAPI.GetAll(groupID, "Carousel")
+                            .map(com.example.heroku.model.Image::getLarge)
+                            .collectList()
+                            .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
+
+                    // Lấy device config
+                    Mono<com.example.heroku.model.DeviceConfig> configMono = this.deviceConfigAPI.GetConfig(groupID)
+                            .defaultIfEmpty(com.example.heroku.model.DeviceConfig.builder().group_id(groupID).color("#333333").build()); // ✅ fallback nếu không có config
 
 
-        return Mono.zip(productMono, carouselMono, configMono, storeMono, webConfigMono, productSerialMono)
-                .map(tuple -> BootStrapDataWeb.builder()
-                        .products(tuple.getT1())
-                        .carousel(tuple.getT2())
-                        .deviceConfig(tuple.getT3())
-                        .store(tuple.getT4())
-                        .web_config(tuple.getT5())
-                        .productSerials(tuple.getT6())
-                        .build()
-                );
+                    Mono<String> webConfigMono = this.mapKeyValue.getByID(groupID, WEB_CONFIG)
+                            .map(com.example.heroku.model.MapKeyValue::getValue_o)
+                            .defaultIfEmpty(""); // ✅ fallback nếu không có web config
+
+                    Mono<List<com.example.heroku.model.ProductSerial>> productSerialMono = productSerialAPI
+                            .getAllSerial(IDContainer.builder().group_id(groupID).build())
+                            .collectList()
+                            .defaultIfEmpty(new ArrayList<>()); // ✅ đảm bảo không empty
+
+
+                    return Mono.zip(productMono, carouselMono, configMono, Mono.just(store), webConfigMono, productSerialMono)
+                            .map(tuple -> BootStrapDataWeb.builder()
+                                    .products(tuple.getT1())
+                                    .carousel(tuple.getT2())
+                                    .deviceConfig(tuple.getT3())
+                                    .store(tuple.getT4())
+                                    .web_config(tuple.getT5())
+                                    .productSerials(tuple.getT6())
+                                    .build()
+                            );
+
+                });
 
     }
 
