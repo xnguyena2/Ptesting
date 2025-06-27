@@ -979,6 +979,7 @@ public class UserPackageTest {
                 .meta_search("hello meta search")
                 .money_source("moneysource")
                 .print_kitchen("print_kitchen")
+                .update_note("update_note")
                 .status(UserPackageDetail.Status.CREATE)
                 .product_units(new com.example.heroku.model.UserPackage[]{
                         com.example.heroku.model.UserPackage.builder()
@@ -1045,6 +1046,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getMeta_search()).isEqualTo("hello meta search");
                     assertThat(userPackage.getMoney_source()).isEqualTo("moneysource");
                     assertThat(userPackage.getPrint_kitchen()).isEqualTo("print_kitchen_1");
+                    assertThat(userPackage.getUpdate_note()).isEqualTo("update_note");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(4);
 
