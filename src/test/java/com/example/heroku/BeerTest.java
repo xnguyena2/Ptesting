@@ -59,6 +59,7 @@ public class BeerTest {
 
         AtomicReference<String> beerUnit1231ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit1232ID = new AtomicReference<String>();
+        AtomicReference<String> beerUnit1233ID = new AtomicReference<String>();
 
         AtomicReference<String> beerUnit4561ID = new AtomicReference<String>();
         AtomicReference<String> beerUnit4562ID = new AtomicReference<String>();
@@ -136,18 +137,24 @@ public class BeerTest {
                 .as(StepVerifier::create)
                 .consumeNextWith(beerSubmitData -> {
                     BeerSubmitData.BeerUnit[] productUnitList = beerSubmitData.getListUnit();
-                    BeerSubmitData.BeerUnit f = productUnitList[0];
-                    BeerSubmitData.BeerUnit s = productUnitList[1];
+                    Flux.just(productUnitList)
+                            .sort(Comparator.comparing(BeerSubmitData.BeerUnit::getName))
+                            .as(StepVerifier::create)
+                            .consumeNextWith(beerUnit -> {
 
-                    if (f.getName().equals("lon")) {
-                        beerUnit1231ID.set(f.getBeer_unit_second_id());
-                        beerUnit1232ID.set(s.getBeer_unit_second_id());
-                    } else {
-                        beerUnit1232ID.set(f.getBeer_unit_second_id());
-                        beerUnit1231ID.set(s.getBeer_unit_second_id());
-                    }
-                    assertThat(f.getBeer_unit_second_id()).isNotNull();
-                    assertThat(s.getBeer_unit_second_id()).isNotNull();
+                                beerUnit1231ID.set(beerUnit.getBeer_unit_second_id());
+                                assertThat(beerUnit.getBeer_unit_second_id()).isNotNull();
+                            })
+                            .consumeNextWith(beerUnit -> {
+
+                                beerUnit1232ID.set(beerUnit.getBeer_unit_second_id());
+                                assertThat(beerUnit.getBeer_unit_second_id()).isNotNull();
+                            })
+                            .consumeNextWith(beerUnit -> {
+
+                                beerUnit1233ID.set(beerUnit.getBeer_unit_second_id());
+                                assertThat(beerUnit.getBeer_unit_second_id()).isNotNull();
+                            }).verifyComplete();
 
                 })
                 .verifyComplete();
@@ -388,6 +395,16 @@ public class BeerTest {
                 .inventory_number(111)
                 .build()).block();
 
+        String firstID_1 = this.beerAPI.UpdateProductUnitWareHouseSetting(ProductUnitUpdate.builder()
+                .group_id(group)
+                .product_second_id("123")
+                .product_unit_second_id(beerUnit1233ID.get())
+                .enable_warehouse(true)
+                .status(ProductUnit.Status.AVARIABLE)
+                .inventory_number(555)
+                .list_product_serial_id(new String[]{"serial1", "serial2", "serial3", "serial22", "serial33"})
+                .build()).block();
+
         this.beerAPI.GetBeerByID(group, "123")
                 .map(BeerSubmitData::GetBeerInfo)
                 .as(StepVerifier::create)
@@ -436,11 +453,11 @@ public class BeerTest {
                                 assertThat(beerUnit.getWholesale_number()).isEqualTo(34);
                                 assertThat(beerUnit.getWholesale_price()).isEqualTo(1233);
                                 assertThat(beerUnit.getPromotional_price()).isEqualTo(234);
-                                assertThat(beerUnit.getInventory_number()).isEqualTo(345);
+                                assertThat(beerUnit.getInventory_number()).isEqualTo(555);
                                 assertThat(beerUnit.isVisible()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_serial()).isEqualTo(true);
-                                assertThat(beerUnit.getList_product_serial_id()).isEqualTo(new String[]{"serial1", "serial2", "serial3"});
+                                assertThat(beerUnit.getList_product_serial_id()).isEqualTo(new String[]{"serial1", "serial2", "serial3", "serial22", "serial33"});
                                 assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                                 assertThat(beerUnit.getDate_expire()).isNull();
                             })
@@ -456,9 +473,23 @@ public class BeerTest {
                 .inventory_number(543)
                 .build()).block();
 
+        this.groupImport.Return(IDContainer.builder().group_id(group).id(firstID_1).build()).block();
+
+        // update again so it can delete all old serial and create new serial
+        String firstID_12 = this.beerAPI.UpdateProductUnitWareHouseSetting(ProductUnitUpdate.builder()
+                .group_id(group)
+                .product_second_id("123")
+                .product_unit_second_id(beerUnit1233ID.get())
+                .enable_warehouse(true)
+                .status(ProductUnit.Status.AVARIABLE)
+                .inventory_number(346)// diff inventory must allow update
+                .list_product_serial_id(new String[]{"serial1", "serial2", "serial3"})
+                .build()).block();
+
 //because update from 543 -> 111 enable_warehouse is false so not create group import so when return it do nothing
         this.groupImport.Return(IDContainer.builder().group_id(group).id(firstID).build()).block();
         this.groupImport.Return(IDContainer.builder().group_id(group).id(secondID).build()).block();
+        this.groupImport.Return(IDContainer.builder().group_id(group).id(firstID_12).build()).block();
 
         this.beerAPI.GetBeerByID(group, "123")
                 .map(BeerSubmitData::GetBeerInfo)

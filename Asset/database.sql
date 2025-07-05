@@ -420,7 +420,8 @@ BEGIN
             _group_import_second_id,
             _status,
             NOW()
-        );
+        )
+        ON CONFLICT ON CONSTRAINT UQ_product_serial_id DO NOTHING;
 END;
 $$ LANGUAGE plpgsql;
 
