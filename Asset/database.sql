@@ -527,25 +527,40 @@ RETURNS VOID AS
 $$
 DECLARE
     _product_serial_id VARCHAR;
+    _status VARCHAR;
 BEGIN
     FOREACH _product_serial_id IN ARRAY _list_product_serial_id
     LOOP
-        INSERT INTO product_serial (
-            group_id,
-            product_serial_id,
-            product_second_id,
-            product_unit_second_id,
-            group_import_second_id,
-            createat
-        )
-        VALUES (
-            _group_id,
-            _product_serial_id,
-            _product_second_id,
-            _product_unit_second_id,
-            _group_import_second_id,
-            NOW()
-        );
+        SELECT status INTO _status
+        FROM product_serial
+        WHERE product_serial_id = _product_serial_id AND group_id = _group_id;
+
+        IF FOUND THEN
+            -- Đã tồn tại
+            IF _status IS NULL THEN
+                RAISE EXCEPTION 'dumplicate uq_product_serial_id, Product serial "%" already exists and status IS NULL', _product_serial_id;
+            END IF;
+            -- Nếu status IS NOT NULL thì bỏ qua
+        ELSE
+
+            INSERT INTO product_serial (
+                group_id,
+                product_serial_id,
+                product_second_id,
+                product_unit_second_id,
+                group_import_second_id,
+                createat
+            )
+            VALUES (
+                _group_id,
+                _product_serial_id,
+                _product_second_id,
+                _product_unit_second_id,
+                _group_import_second_id,
+                NOW()
+            );
+
+        END IF;
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
