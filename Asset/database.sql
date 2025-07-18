@@ -742,7 +742,7 @@ BEGIN
 --	    RETURN NEW;
     END IF;
 
-    _inventory_number_new = CASE
+    _inventory_number_new := CASE
                         WHEN NEW.status <> 'RETURN' AND NEW.status <> 'CANCEL' THEN _inventory_number + OLD.number_unit - NEW.number_unit
                         WHEN NEW.status = 'RETURN' OR NEW.status = 'CANCEL' THEN _inventory_number + OLD.number_unit
                         ELSE _inventory_number
@@ -971,7 +971,7 @@ BEGIN
     END IF;
 
 
-    _inventory_number_new = CASE
+    _inventory_number_new := CASE
                         WHEN NEW.type = 'IMPORT' THEN _inventory_number + NEW.amount
                         WHEN NEW.type = 'EXPORT' THEN _inventory_number - NEW.amount
                         WHEN NEW.type = 'CHECK_WAREHOUSE' THEN NEW.amount
@@ -1064,7 +1064,7 @@ BEGIN
     END IF;
 
 
-    _inventory_number_new = CASE
+    _inventory_number_new := CASE
                         WHEN OLD.type = 'IMPORT' THEN _inventory_number - OLD.amount
                         WHEN OLD.type = 'EXPORT' THEN _inventory_number + OLD.amount
                         WHEN OLD.type = 'UPDATE_NUMBER' THEN 0
@@ -1178,7 +1178,7 @@ BEGIN
     END IF;
 
 
-    _inventory_number_new = CASE
+    _inventory_number_new := CASE
                         WHEN NEW.type = 'IMPORT' AND NEW.status <> 'RETURN' THEN _inventory_number + NEW.amount - OLD.amount
                         WHEN NEW.type = 'IMPORT' AND NEW.status = 'RETURN' THEN _inventory_number - NEW.amount
                         WHEN NEW.type = 'EXPORT' AND NEW.status <> 'RETURN' THEN _inventory_number - NEW.amount + OLD.amount
@@ -1364,19 +1364,19 @@ BEGIN
 	    RETURN NEW;
     END IF;
 
-    _note = CASE
+    _note := CASE
     WHEN NEW.arg_action_type = 'SELLING' THEN 'SELLING: ' || (NEW.inventory_number - OLD.inventory_number)
     WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'RETURN: ' || (NEW.inventory_number - OLD.inventory_number)
     ELSE 'update inventory from:' || OLD.inventory_number || ' to: ' || NEW.inventory_number
     END;
 
-    _type = CASE
+    _type := CASE
     WHEN NEW.arg_action_type = 'SELLING' THEN 'SELLING'
     WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'SELLING_RETURN'
     ELSE 'UPDATE_NUMBER'
     END;
 
-    _status =CASE
+    _status := CASE
     WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'RETURN'
     ELSE 'DONE' END;
 
@@ -1520,7 +1520,7 @@ DECLARE
    _arg_action_type VARCHAR;
 BEGIN
 
-    _item_num = CASE
+    _item_num := CASE
                 WHEN _old_status <> 'RETURN' AND _old_status <> 'CANCEL' AND _new_status <> 'RETURN' AND _new_status <> 'CANCEL' THEN - (_old_item_num - _new_item_num)
                 WHEN _old_status <> _new_status AND _old_status <> 'RETURN' AND _old_status <> 'CANCEL' AND (_new_status = 'RETURN' OR _new_status = 'CANCEL') THEN - _old_item_num
                 WHEN _old_status <> _new_status AND (_old_status = 'RETURN' OR _old_status = 'CANCEL') AND _new_status <> 'RETURN' AND _new_status = 'CANCEL' THEN _old_item_num
@@ -1528,7 +1528,7 @@ BEGIN
                 ELSE 0
                END;
 
-    _arg_action_type = CASE WHEN (_new_status = 'RETURN' OR _new_status = 'CANCEL') THEN 'SELLING_RETURN' ELSE 'SELLING' END;
+    _arg_action_type := CASE WHEN (_new_status = 'RETURN' OR _new_status = 'CANCEL') THEN 'SELLING_RETURN' ELSE 'SELLING' END;
 
     PERFORM change_inventory_combo_item(_group_id, _product_second_id, _product_unit_second_id, _item_num, _arg_action_id, _arg_action_type);
 
@@ -1544,6 +1544,7 @@ CREATE OR REPLACE FUNCTION change_inventory_combo_item(_group_id VARCHAR, _produ
 $$
 DECLARE
    _item RECORD;
+   _group_unit_number float8;
 BEGIN
 
 --  check if all item enough inventory_number
@@ -1552,7 +1553,8 @@ BEGIN
     INNER JOIN
      (SELECT * FROM product_unit WHERE group_id = _group_id AND enable_warehouse = TRUE) AS product_unit
     ON product_combo_item.item_product_second_id = product_unit.product_second_id AND product_combo_item.item_product_unit_second_id = product_unit.product_unit_second_id
-    WHERE product_combo_item.unit_number * _item_num > product_unit.inventory_number)
+    WHERE (COALESCE(product_unit.group_unit_number, 1)) * product_combo_item.unit_number * _item_num
+                  > product_unit.inventory_number)
     THEN
 	    RAISE NOTICE 'change_inventory_combo_item: inventory_number small than number_unit, product_unit_second_id: %' , _product_unit_second_id;
     END IF;
@@ -1564,9 +1566,15 @@ BEGIN
       (SELECT * FROM product_unit WHERE group_id = _group_id AND enable_warehouse = TRUE) AS product_unit
      ON product_combo_item.item_product_second_id = product_unit.product_second_id AND product_combo_item.item_product_unit_second_id = product_unit.product_unit_second_id
     LOOP
+
+        _group_unit_number := CASE
+            WHEN _item.group_unit_number IS NULL OR _item.group_unit_number <= 0 THEN 1
+            ELSE _item.group_unit_number
+        END;
+
         UPDATE product_unit
         SET
-            inventory_number = product_unit.inventory_number - _item.unit_number * _item_num,
+            inventory_number = product_unit.inventory_number - _item.unit_number * _group_unit_number * _item_num,
             arg_action_id = _arg_action_id,
             arg_action_type = _arg_action_type
         WHERE group_id = _item.group_id AND product_second_id = _item.product_second_id AND product_unit_second_id = _item.product_unit_second_id;
