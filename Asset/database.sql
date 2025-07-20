@@ -938,7 +938,8 @@ BEGIN
 
     IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
-	    RAISE EXCEPTION 'trigger_on_insert_product_import: product not enable warehouse';
+	    RAISE NOTICE 'trigger_on_insert_product_import: product not enable warehouse';
+	    RETURN NEW;
     END IF;
 
 
@@ -1141,7 +1142,8 @@ BEGIN
 
     IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
-	    RAISE EXCEPTION 'trigger_on_update_product_import: product not enable warehouse';
+	    RAISE NOTICE 'trigger_on_update_product_import: product not enable warehouse';
+	    RETURN NEW;
     END IF;
 
     IF _enable_serial = TRUE
