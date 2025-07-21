@@ -39,6 +39,22 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, 
     Mono<ProductUnit> updateInventoryAndEnableWarehouse(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id, @Param("product_unit_second_id")String product_unit_second_id, @Param("inventory_number") float inventory_number, @Param("enable_warehouse") boolean enable_warehouse, @Param("status") ProductUnit.Status status,
                                                         @Param("arg_action_id")String arg_action_id, @Param("arg_action_type")String arg_action_type);
 
+    @Query(value = """
+            UPDATE product_unit
+            SET list_product_serial_id = :list_product_serial_id,
+                inventory_number = :inventory_number,
+                enable_warehouse = :enable_warehouse,
+                status = :status,
+                arg_action_id = :arg_action_id,
+                arg_action_type = :arg_action_type
+            WHERE product_unit.group_id = :group_id
+              AND product_unit.product_second_id = :product_second_id
+              AND product_unit.product_unit_second_id = :product_unit_second_id
+            """)
+    Mono<ProductUnit> updateListSerialAndInventoryAndEnableWarehouse(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id, @Param("product_unit_second_id")String product_unit_second_id,
+                                                        @Param("list_product_serial_id") String[] list_product_serial_id, @Param("inventory_number") float inventory_number, @Param("enable_warehouse") boolean enable_warehouse, @Param("status") ProductUnit.Status status,
+                                                        @Param("arg_action_id")String arg_action_id, @Param("arg_action_type")String arg_action_type);
+
     @Query(value = "SELECT * FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :product_second_id")
     Flux<ProductUnit> findByBeerID(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id);
 

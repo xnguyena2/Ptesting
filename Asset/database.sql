@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS user_fcm (id SERIAL PRIMARY KEY, group_id VARCHAR NOT
 CREATE TABLE IF NOT EXISTS user_address (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, address_id VARCHAR, device_id VARCHAR, reciver_fullname VARCHAR, phone_number VARCHAR, house_number VARCHAR, region INTEGER, district INTEGER, ward INTEGER, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
 
-CREATE TABLE IF NOT EXISTS user_package_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, staff_id VARCHAR, staff_name VARCHAR, package_type VARCHAR, area_id VARCHAR, area_name VARCHAR, table_id VARCHAR, table_name VARCHAR, voucher VARCHAR, price float8, payment float8, discount_amount float8, discount_percent float8, discount_promotional float8, discount_by_point float8, additional_fee float8, additional_config VARCHAR, ship_price float8, deliver_ship_price float8, cost float8, profit float8, point INTEGER, note VARCHAR, image VARCHAR, progress VARCHAR, meta_search VARCHAR, money_source VARCHAR, print_kitchen VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS user_package_detail (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, staff_id VARCHAR, staff_name VARCHAR, package_type VARCHAR, area_id VARCHAR, area_name VARCHAR, table_id VARCHAR, table_name VARCHAR, voucher VARCHAR, price float8, payment float8, discount_amount float8, discount_percent float8, discount_promotional float8, discount_by_point float8, additional_fee float8, additional_config VARCHAR, ship_price float8, deliver_ship_price float8, cost float8, profit float8, point INTEGER, note VARCHAR, image VARCHAR, progress VARCHAR, meta_search VARCHAR, money_source VARCHAR, print_kitchen VARCHAR, update_note VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS user_package (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, package_second_id VARCHAR, device_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_name VARCHAR, product_unit_name VARCHAR, product_group_unit_name VARCHAR, product_type VARCHAR, number_services_unit float8, number_unit float8, buy_price float8, price float8, discount_amount float8, discount_percent float8, discount_promotional float8, note VARCHAR, status VARCHAR, depend_to_product VARCHAR, list_product_serial_id VARCHAR[], createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
 
@@ -420,7 +420,8 @@ BEGIN
             _group_import_second_id,
             _status,
             NOW()
-        );
+        )
+        ON CONFLICT ON CONSTRAINT UQ_product_serial_id DO NOTHING;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -526,25 +527,40 @@ RETURNS VOID AS
 $$
 DECLARE
     _product_serial_id VARCHAR;
+    _status VARCHAR;
 BEGIN
     FOREACH _product_serial_id IN ARRAY _list_product_serial_id
     LOOP
-        INSERT INTO product_serial (
-            group_id,
-            product_serial_id,
-            product_second_id,
-            product_unit_second_id,
-            group_import_second_id,
-            createat
-        )
-        VALUES (
-            _group_id,
-            _product_serial_id,
-            _product_second_id,
-            _product_unit_second_id,
-            _group_import_second_id,
-            NOW()
-        );
+        SELECT status INTO _status
+        FROM product_serial
+        WHERE product_serial_id = _product_serial_id AND group_id = _group_id;
+
+        IF FOUND THEN
+            -- Đã tồn tại
+            IF _status IS NULL THEN
+                RAISE EXCEPTION 'dumplicate uq_product_serial_id, Product serial "%" already exists and status IS NULL', _product_serial_id;
+            END IF;
+            -- Nếu status IS NOT NULL thì bỏ qua
+        ELSE
+
+            INSERT INTO product_serial (
+                group_id,
+                product_serial_id,
+                product_second_id,
+                product_unit_second_id,
+                group_import_second_id,
+                createat
+            )
+            VALUES (
+                _group_id,
+                _product_serial_id,
+                _product_second_id,
+                _product_unit_second_id,
+                _group_import_second_id,
+                NOW()
+            );
+
+        END IF;
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
@@ -726,7 +742,7 @@ BEGIN
 --	    RETURN NEW;
     END IF;
 
-    _inventory_number_new = CASE
+    _inventory_number_new := CASE
                         WHEN NEW.status <> 'RETURN' AND NEW.status <> 'CANCEL' THEN _inventory_number + OLD.number_unit - NEW.number_unit
                         WHEN NEW.status = 'RETURN' OR NEW.status = 'CANCEL' THEN _inventory_number + OLD.number_unit
                         ELSE _inventory_number
@@ -836,8 +852,12 @@ BEGIN
 
     ELSE
 
-        INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
-            VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, NEW.package_second_id, 'PAYMENT_ORDER', 'INCOME', NEW.payment - OLD.payment, 'SELLING', NEW.money_source, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.package_second_id), 'CREATE', NOW() );
+        IF NEW.payment <> OLD.payment
+        THEN
+            INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
+                VALUES ( NEW.group_id, gen_random_uuid(), NEW.device_id, NEW.package_second_id, NEW.package_second_id, 'PAYMENT_ORDER', 'INCOME', NEW.payment - OLD.payment, 'SELLING', NEW.money_source, CONCAT(CASE WHEN NEW.status = 'DONE' THEN 'DONE-' ELSE 'PAYMENT-' END, NEW.package_second_id), 'CREATE', NOW() );
+
+        END IF;
 
     END IF;
 
@@ -868,7 +888,7 @@ BEGIN
     END IF;
 
 --  add to payment transaction
-    IF NEW.payment > 0 AND (NEW.status <> 'CANCEL' OR NEW.status <> 'RETURN')
+    IF NEW.payment > 0 AND (NEW.status NOT IN ('CANCEL', 'RETURN'))
     THEN
 
         INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
@@ -918,7 +938,8 @@ BEGIN
 
     IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
-	    RAISE EXCEPTION 'trigger_on_insert_product_import: product not enable warehouse';
+	    RAISE NOTICE 'trigger_on_insert_product_import: product not enable warehouse';
+	    RETURN NEW;
     END IF;
 
 
@@ -951,7 +972,7 @@ BEGIN
     END IF;
 
 
-    _inventory_number_new = CASE
+    _inventory_number_new := CASE
                         WHEN NEW.type = 'IMPORT' THEN _inventory_number + NEW.amount
                         WHEN NEW.type = 'EXPORT' THEN _inventory_number - NEW.amount
                         WHEN NEW.type = 'CHECK_WAREHOUSE' THEN NEW.amount
@@ -1044,7 +1065,7 @@ BEGIN
     END IF;
 
 
-    _inventory_number_new = CASE
+    _inventory_number_new := CASE
                         WHEN OLD.type = 'IMPORT' THEN _inventory_number - OLD.amount
                         WHEN OLD.type = 'EXPORT' THEN _inventory_number + OLD.amount
                         WHEN OLD.type = 'UPDATE_NUMBER' THEN 0
@@ -1121,7 +1142,8 @@ BEGIN
 
     IF _enable_warehouse <> TRUE OR _enable_warehouse IS NULL
     THEN
-	    RAISE EXCEPTION 'trigger_on_update_product_import: product not enable warehouse';
+	    RAISE NOTICE 'trigger_on_update_product_import: product not enable warehouse';
+	    RETURN NEW;
     END IF;
 
     IF _enable_serial = TRUE
@@ -1158,7 +1180,7 @@ BEGIN
     END IF;
 
 
-    _inventory_number_new = CASE
+    _inventory_number_new := CASE
                         WHEN NEW.type = 'IMPORT' AND NEW.status <> 'RETURN' THEN _inventory_number + NEW.amount - OLD.amount
                         WHEN NEW.type = 'IMPORT' AND NEW.status = 'RETURN' THEN _inventory_number - NEW.amount
                         WHEN NEW.type = 'EXPORT' AND NEW.status <> 'RETURN' THEN _inventory_number - NEW.amount + OLD.amount
@@ -1344,19 +1366,19 @@ BEGIN
 	    RETURN NEW;
     END IF;
 
-    _note = CASE
+    _note := CASE
     WHEN NEW.arg_action_type = 'SELLING' THEN 'SELLING: ' || (NEW.inventory_number - OLD.inventory_number)
     WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'RETURN: ' || (NEW.inventory_number - OLD.inventory_number)
     ELSE 'update inventory from:' || OLD.inventory_number || ' to: ' || NEW.inventory_number
     END;
 
-    _type = CASE
+    _type := CASE
     WHEN NEW.arg_action_type = 'SELLING' THEN 'SELLING'
     WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'SELLING_RETURN'
     ELSE 'UPDATE_NUMBER'
     END;
 
-    _status =CASE
+    _status := CASE
     WHEN NEW.arg_action_type = 'SELLING_RETURN' THEN 'RETURN'
     ELSE 'DONE' END;
 
@@ -1500,7 +1522,7 @@ DECLARE
    _arg_action_type VARCHAR;
 BEGIN
 
-    _item_num = CASE
+    _item_num := CASE
                 WHEN _old_status <> 'RETURN' AND _old_status <> 'CANCEL' AND _new_status <> 'RETURN' AND _new_status <> 'CANCEL' THEN - (_old_item_num - _new_item_num)
                 WHEN _old_status <> _new_status AND _old_status <> 'RETURN' AND _old_status <> 'CANCEL' AND (_new_status = 'RETURN' OR _new_status = 'CANCEL') THEN - _old_item_num
                 WHEN _old_status <> _new_status AND (_old_status = 'RETURN' OR _old_status = 'CANCEL') AND _new_status <> 'RETURN' AND _new_status = 'CANCEL' THEN _old_item_num
@@ -1508,7 +1530,7 @@ BEGIN
                 ELSE 0
                END;
 
-    _arg_action_type = CASE WHEN (_new_status = 'RETURN' OR _new_status = 'CANCEL') THEN 'SELLING_RETURN' ELSE 'SELLING' END;
+    _arg_action_type := CASE WHEN (_new_status = 'RETURN' OR _new_status = 'CANCEL') THEN 'SELLING_RETURN' ELSE 'SELLING' END;
 
     PERFORM change_inventory_combo_item(_group_id, _product_second_id, _product_unit_second_id, _item_num, _arg_action_id, _arg_action_type);
 
@@ -1524,6 +1546,7 @@ CREATE OR REPLACE FUNCTION change_inventory_combo_item(_group_id VARCHAR, _produ
 $$
 DECLARE
    _item RECORD;
+   _group_unit_number float8;
 BEGIN
 
 --  check if all item enough inventory_number
@@ -1532,7 +1555,8 @@ BEGIN
     INNER JOIN
      (SELECT * FROM product_unit WHERE group_id = _group_id AND enable_warehouse = TRUE) AS product_unit
     ON product_combo_item.item_product_second_id = product_unit.product_second_id AND product_combo_item.item_product_unit_second_id = product_unit.product_unit_second_id
-    WHERE product_combo_item.unit_number * _item_num > product_unit.inventory_number)
+    WHERE (COALESCE(product_unit.group_unit_number, 1)) * product_combo_item.unit_number * _item_num
+                  > product_unit.inventory_number)
     THEN
 	    RAISE NOTICE 'change_inventory_combo_item: inventory_number small than number_unit, product_unit_second_id: %' , _product_unit_second_id;
     END IF;
@@ -1544,9 +1568,15 @@ BEGIN
       (SELECT * FROM product_unit WHERE group_id = _group_id AND enable_warehouse = TRUE) AS product_unit
      ON product_combo_item.item_product_second_id = product_unit.product_second_id AND product_combo_item.item_product_unit_second_id = product_unit.product_unit_second_id
     LOOP
+
+        _group_unit_number := CASE
+            WHEN _item.group_unit_number IS NULL OR _item.group_unit_number <= 0 THEN 1
+            ELSE _item.group_unit_number
+        END;
+
         UPDATE product_unit
         SET
-            inventory_number = product_unit.inventory_number - _item.unit_number * _item_num,
+            inventory_number = product_unit.inventory_number - _item.unit_number * _group_unit_number * _item_num,
             arg_action_id = _arg_action_id,
             arg_action_type = _arg_action_type
         WHERE group_id = _item.group_id AND product_second_id = _item.product_second_id AND product_unit_second_id = _item.product_unit_second_id;

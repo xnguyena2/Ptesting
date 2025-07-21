@@ -94,7 +94,7 @@ public class BeerController {
                         .onErrorResume(throwable -> {
                                     String msg = throwable.getMessage();
                                     System.out.println(msg);
-                                    if (!msg.contains("uq_product_unit_upc") && !msg.contains("uq_product_unit_sku")) {
+                                    if (!msg.contains("uq_product_unit_upc") && !msg.contains("uq_product_unit_sku") && !msg.contains("uq_product_serial_id")) {
                                         throw new RuntimeException(throwable);
                                     }
                                     beerInfo.setName(msg);
