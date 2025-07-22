@@ -56,6 +56,8 @@ public class GroupImport extends BaseEntity {
 
     private String meta_search;
 
+    private boolean not_update_transaction;
+
     private ProductImport.Status status;
 
     /***
@@ -83,6 +85,7 @@ public class GroupImport extends BaseEntity {
         type = g.type;
         money_source = g.money_source;
         meta_search = g.meta_search;
+        not_update_transaction = g.not_update_transaction;
         status = g.status;
     }
 

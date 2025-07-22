@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS notification (id SERIAL PRIMARY KEY, group_id VARCHAR
 CREATE TABLE IF NOT EXISTS notification_relate_user_device (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, notification_second_id VARCHAR, user_device_id VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS shipping_provider (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, provider_id VARCHAR, name VARCHAR, config TEXT, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS group_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, supplier_id VARCHAR, staff_id VARCHAR, staff_name VARCHAR, supplier_name VARCHAR, supplier_phone VARCHAR, total_price float8, total_amount float8, payment float8, discount_amount float8, discount_percent float8, additional_fee float8, progress VARCHAR, note TEXT, images VARCHAR, type VARCHAR, money_source VARCHAR, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS group_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, supplier_id VARCHAR, staff_id VARCHAR, staff_name VARCHAR, supplier_name VARCHAR, supplier_phone VARCHAR, total_price float8, total_amount float8, payment float8, discount_amount float8, discount_percent float8, additional_fee float8, progress VARCHAR, note TEXT, images VARCHAR, type VARCHAR, money_source VARCHAR, meta_search VARCHAR, not_update_transaction BOOL, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, group_import_second_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, product_unit_name_category VARCHAR, price float8, amount float8, note TEXT, type VARCHAR, list_product_serial_id VARCHAR[], status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, domain_url VARCHAR, status VARCHAR, store_type VARCHAR, each_month float8, half_year float8, each_year float8, payment_status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
@@ -591,7 +591,7 @@ BEGIN
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
 
 
-    IF _product_type = 'COMBO'
+    IF _product_type = 'COMBO' || _product_type = 'PRODUCT_HAS_COMPONENTS'
     THEN
         PERFORM change_inventory_combo_item(NEW.group_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.number_unit, NEW.package_second_id, 'SELLING');
 	    RETURN NEW;
@@ -654,7 +654,7 @@ BEGIN
     WHERE OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id;
 
 
-    IF _product_type = 'COMBO'
+    IF _product_type = 'COMBO' || _product_type = 'PRODUCT_HAS_COMPONENTS'
     THEN
         PERFORM change_inventory_combo_item(OLD.group_id, OLD.product_second_id, OLD.product_unit_second_id, -OLD.number_unit, OLD.package_second_id, 'SELLING_RETURN');
 	    RETURN OLD;
@@ -720,7 +720,7 @@ BEGIN
 
 
 
-    IF _product_type = 'COMBO'
+    IF _product_type = 'COMBO' || _product_type = 'PRODUCT_HAS_COMPONENTS'
     THEN
         PERFORM update_inventory_combo_item(NEW.group_id, NEW.product_second_id, NEW.product_unit_second_id, OLD.number_unit, NEW.number_unit, NEW.package_second_id, OLD.status, NEW.status);
 	    RETURN NEW;
@@ -1275,7 +1275,7 @@ BEGIN
 
         PERFORM delete_depend_payment_and_debt(NEW.group_id, NEW.group_import_second_id);
 
-    ELSEIF NEW.payment - OLD.payment > 0 AND NEW.status <> 'RETURN'
+    ELSEIF NEW.payment - OLD.payment > 0 AND NEW.status <> 'RETURN' AND (NEW.not_update_transaction = FALSE || NEW.not_update_transaction IS NULL)
     THEN
 
         INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
@@ -1301,7 +1301,7 @@ BEGIN
     END IF;
 
 --  add to payment transaction
-    IF NEW.payment > 0 AND NEW.status <> 'RETURN'
+    IF NEW.payment > 0 AND NEW.status <> 'RETURN' AND (NEW.not_update_transaction = FALSE || NEW.not_update_transaction IS NULL)
     THEN
 
         INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
