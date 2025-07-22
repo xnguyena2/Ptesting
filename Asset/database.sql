@@ -591,7 +591,7 @@ BEGIN
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
 
 
-    IF _product_type = 'COMBO' || _product_type = 'PRODUCT_HAS_COMPONENTS'
+    IF _product_type = 'COMBO' OR _product_type = 'PRODUCT_HAS_COMPONENTS'
     THEN
         PERFORM change_inventory_combo_item(NEW.group_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.number_unit, NEW.package_second_id, 'SELLING');
 	    RETURN NEW;
@@ -654,7 +654,7 @@ BEGIN
     WHERE OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id;
 
 
-    IF _product_type = 'COMBO' || _product_type = 'PRODUCT_HAS_COMPONENTS'
+    IF _product_type = 'COMBO' OR _product_type = 'PRODUCT_HAS_COMPONENTS'
     THEN
         PERFORM change_inventory_combo_item(OLD.group_id, OLD.product_second_id, OLD.product_unit_second_id, -OLD.number_unit, OLD.package_second_id, 'SELLING_RETURN');
 	    RETURN OLD;
@@ -720,7 +720,7 @@ BEGIN
 
 
 
-    IF _product_type = 'COMBO' || _product_type = 'PRODUCT_HAS_COMPONENTS'
+    IF _product_type = 'COMBO' OR _product_type = 'PRODUCT_HAS_COMPONENTS'
     THEN
         PERFORM update_inventory_combo_item(NEW.group_id, NEW.product_second_id, NEW.product_unit_second_id, OLD.number_unit, NEW.number_unit, NEW.package_second_id, OLD.status, NEW.status);
 	    RETURN NEW;
