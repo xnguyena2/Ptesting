@@ -925,9 +925,9 @@ DECLARE
 BEGIN
 
 --  return should update status not insert
-    IF NEW.status = 'RETURN' OR NEW.type = 'UPDATE_NUMBER' OR NEW.type = 'DELETE_PRODUCT' OR NEW.type = 'SELLING' OR NEW.type = 'SELLING_RETURN'
+    IF NEW.status = 'RETURN' OR NEW.type IN ('UPDATE_NUMBER', 'DELETE_PRODUCT', 'SELLING', 'SELLING_RETURN')
     THEN
-	    RETURN NEW;
+        RETURN NEW;
     END IF;
 
     SELECT enable_warehouse, enable_serial, inventory_number, buy_price
@@ -1129,7 +1129,7 @@ BEGIN
     END IF;
 
 
-    IF NEW.status <> 'RETURN' AND (OLD.amount = NEW.amount OR NEW.type = 'UPDATE_NUMBER') OR NEW.type = 'DELETE_PRODUCT' OR NEW.type = 'SELLING' OR NEW.type = 'SELLING_RETURN'
+    IF NEW.status <> 'RETURN' AND (OLD.amount = NEW.amount OR NEW.type IN ('UPDATE_NUMBER', 'DELETE_PRODUCT', 'SELLING', 'SELLING_RETURN'))
     THEN
 	    RETURN NEW;
     END IF;
@@ -1275,7 +1275,7 @@ BEGIN
 
         PERFORM delete_depend_payment_and_debt(NEW.group_id, NEW.group_import_second_id);
 
-    ELSEIF NEW.payment - OLD.payment > 0 AND NEW.status <> 'RETURN' AND (NEW.not_update_transaction = FALSE || NEW.not_update_transaction IS NULL)
+    ELSEIF NEW.payment - OLD.payment > 0 AND NEW.status <> 'RETURN' AND (NEW.not_update_transaction = FALSE OR NEW.not_update_transaction IS NULL)
     THEN
 
         INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
@@ -1301,7 +1301,7 @@ BEGIN
     END IF;
 
 --  add to payment transaction
-    IF NEW.payment > 0 AND NEW.status <> 'RETURN' AND (NEW.not_update_transaction = FALSE || NEW.not_update_transaction IS NULL)
+    IF NEW.payment > 0 AND NEW.status <> 'RETURN' AND (NEW.not_update_transaction = FALSE OR NEW.not_update_transaction IS NULL)
     THEN
 
         INSERT INTO payment_transaction( group_id, transaction_second_id, device_id, package_second_id, action_id, action_type, transaction_type, amount, category, money_source, note, status, createat )
