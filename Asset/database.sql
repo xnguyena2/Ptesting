@@ -1129,7 +1129,7 @@ BEGIN
     END IF;
 
 
-    IF NEW.status <> 'RETURN' AND (OLD.amount = NEW.amount OR NEW.type IN ('UPDATE_NUMBER', 'DELETE_PRODUCT', 'SELLING', 'SELLING_RETURN'))
+    IF (NEW.status <> 'RETURN' AND (OLD.amount = NEW.amount OR NEW.type = 'UPDATE_NUMBER')) OR NEW.type IN ('UPDATE_NUMBER', 'DELETE_PRODUCT', 'SELLING', 'SELLING_RETURN')
     THEN
 	    RETURN NEW;
     END IF;
