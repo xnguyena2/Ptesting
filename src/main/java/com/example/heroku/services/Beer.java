@@ -9,8 +9,6 @@ import com.example.heroku.request.beer.*;
 import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import reactor.core.publisher.Flux;
@@ -82,7 +80,7 @@ public class Beer {
                         .flatMap(beerUnit -> this.beerUnitRepository.save(beerUnit))
                 )
                 .then(Mono.just(info.getProduct()).flatMap(beerInfo -> {
-                    if (beerInfo.getProduct_type() == Product.ProductType.COMBO) {
+                    if (beerInfo.getProduct_type() == Product.ProductType.COMBO || beerInfo.getProduct_type() == Product.ProductType.PRODUCT_HAS_COMPONENTS) {
                         return productComboItemRepository.deleteByProductID(beerInfo.getGroup_id(), beerInfo.getProduct_second_id())
                                 .then(Mono.just(info).flatMap(beerInfo1 -> {
                                             if (beerInfo1.getListComboItem() != null && beerInfo1.getListComboItem().length > 0) {

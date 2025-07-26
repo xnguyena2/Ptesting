@@ -150,7 +150,7 @@ public class GroupImport {
                 groupImport.getTotal_price(), groupImport.getTotal_amount(), groupImport.getPayment(),
                 groupImport.getDiscount_amount(), groupImport.getDiscount_percent(), groupImport.getAdditional_fee(), groupImport.getProgress(),
                 groupImport.getNote(), groupImport.getImages(), groupImport.getType(), groupImport.getMoney_source(),
-                groupImport.getMeta_search(),
+                groupImport.getMeta_search(), groupImport.isNot_update_transaction(),
                 groupImport.getStatus(), groupImport.getCreateat());
     }
 

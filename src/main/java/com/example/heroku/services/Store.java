@@ -6,7 +6,9 @@ import com.example.heroku.request.store.StoreInitData;
 import com.example.heroku.request.warehouse.SearchImportQuery;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -63,7 +65,16 @@ public class Store {
         newAccount.getRoles().clear();
         newAccount.getRoles().add(Util.ROLE.ROLE_ADMIN.getName());
 
-        return initialStoreWithoutCheckRole(storeInitData);
+        return initialStoreWithoutCheckRole(storeInitData)
+                .onErrorResume(throwable -> {
+                            String msg = throwable.getMessage();
+                            System.out.println(msg);
+                            if (!msg.contains("uq_users_name")) {
+                                throw new RuntimeException(throwable);
+                            }
+                            return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, msg));
+                        }
+                );
     }
 
     public Mono<com.example.heroku.model.Store> initialStoreWithoutCheckRole(StoreInitData storeInitData) {
