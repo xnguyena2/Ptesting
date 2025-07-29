@@ -81,6 +81,8 @@ public class UserPackageDetail  extends BaseEntity {
 
     private String update_note;
 
+    private String customer_info;
+
     private Status status;
 
 
@@ -126,6 +128,7 @@ public class UserPackageDetail  extends BaseEntity {
         money_source = s.money_source;
         print_kitchen = s.print_kitchen;
         update_note = s.update_note;
+        customer_info = s.customer_info;
         status = s.status;
     }
 
