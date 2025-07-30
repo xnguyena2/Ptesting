@@ -20,7 +20,7 @@ public interface ProductImportPriceRepository extends ReactiveCrudRepository<Pro
                       product_unit_second_id,
                       json_agg(json_build_object('price', price, 'amount', amount, 'createat', createat)) AS price_change
                FROM product_import
-               WHERE group_id = :group_id AND type = :type AND (createat BETWEEN :fromtime AND :totime)
+               WHERE group_id = :group_id AND type = :type AND status = :status AND (createat BETWEEN :fromtime AND :totime)
                GROUP BY product_second_id,
                         product_unit_second_id) AS product_import
             LEFT JOIN
@@ -33,6 +33,6 @@ public interface ProductImportPriceRepository extends ReactiveCrudRepository<Pro
                WHERE group_id = :group_id) AS product_unit ON product_import.product_second_id = product_unit.product_second_id
             AND product_import.product_unit_second_id = product_unit.product_unit_second_id
             """)
-    Flux<ProductPriceChange> getPriceRangeOfType(@Param("group_id") String groupID, @Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to, @Param("type") ProductImport.ImportType type);
+    Flux<ProductPriceChange> getPriceRangeOfType(@Param("group_id") String groupID, @Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to, @Param("type") ProductImport.ImportType type, @Param("status") ProductImport.Status status);
 
 }

@@ -1401,7 +1401,7 @@ public class ProductImportTest {
 
 
 
-        groupImport.GetPriceRange(SearchImportQuery.builder().from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).page(0).size(100).type(ProductImport.ImportType.EXPORT).group_id(group).build())
+        groupImport.GetPriceRange(SearchImportQuery.builder().from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).page(0).size(100).type(ProductImport.ImportType.EXPORT).status(ProductImport.Status.DONE).group_id(group).build())
                 .sort(Comparator.comparing(com.example.heroku.model.productprice.ProductPriceChange::getProduct_unit_second_id))
                 .as(StepVerifier::create)
                 .recordWith(ArrayList::new)

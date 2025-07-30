@@ -13,6 +13,6 @@ public class ProductPriceChange {
     ProductImportPriceRepository productImportPriceRepository;
 
     public Flux<com.example.heroku.model.productprice.ProductPriceChange> GetPriceRange(SearchImportQuery query) {
-        return productImportPriceRepository.getPriceRangeOfType(query.getGroup_id(), query.getFrom(), query.getTo(), query.getType());
+        return productImportPriceRepository.getPriceRangeOfType(query.getGroup_id(), query.getFrom(), query.getTo(), query.getType(), query.getStatus());
     }
 }
