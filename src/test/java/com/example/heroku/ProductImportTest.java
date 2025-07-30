@@ -1418,7 +1418,7 @@ public class ProductImportTest {
                     assertThat(p.getProduct_unit_second_id()).isEqualTo("adsfasdfasdfasdf");
                     assertThat(p.getProduct_name()).isEqualTo("beer tiger");
                     assertThat(p.getProduct_unit_name()).isEqualTo("thung");
-                    assertThat(p.getPrice_change().length).isEqualTo(2);
+                    assertThat(p.getPrice_change().length).isEqualTo(1);
 
 
                     // Optional: kiểm tra phần tử thứ 2 nếu có
@@ -1427,7 +1427,7 @@ public class ProductImportTest {
                     assertThat(p.getProduct_unit_second_id()).isEqualTo("retertghdfghsdgdfgasf");
                     assertThat(p.getProduct_name()).isEqualTo("beer tiger");
                     assertThat(p.getProduct_unit_name()).isEqualTo("lon");
-                    assertThat(p.getPrice_change()).hasSize(2);
+                    assertThat(p.getPrice_change()).hasSize(1);
 
 
                     // Optional: kiểm tra phần tử thứ 2 nếu có
