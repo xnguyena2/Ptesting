@@ -1,6 +1,7 @@
 package com.example.heroku;
 
 import com.example.heroku.model.ProductImport;
+import com.example.heroku.model.productprice.ProductPriceChange;
 import com.example.heroku.request.beer.BeerSubmitData;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.carousel.IDContainer;
@@ -13,8 +14,10 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -1393,6 +1396,47 @@ public class ProductImportTest {
                     assertThat(item.getAmount()).isEqualTo(10);
                     assertThat(item.getNote()).isEqualTo("note2");
 
+                })
+                .verifyComplete();
+
+
+
+        groupImport.GetPriceRange(SearchImportQuery.builder().from(LocalDateTime.parse("2023-11-01T00:00:00")).to(LocalDateTime.parse("2300-11-01T00:00:00")).page(0).size(100).type(ProductImport.ImportType.EXPORT).group_id(group).build())
+                .sort(Comparator.comparing(com.example.heroku.model.productprice.ProductPriceChange::getProduct_unit_second_id))
+                .as(StepVerifier::create)
+                .recordWith(ArrayList::new)
+                .expectNextCount(3)
+                .consumeRecordedWith(col -> {
+                    List<ProductPriceChange> list = new ArrayList<>(col); // ép về List
+                    // Kiểm tra số phần tử
+                    assertThat(list).hasSize(3);
+
+                    ProductPriceChange p = list.get(0);
+
+
+                    assertThat(p.getProduct_second_id()).isEqualTo("123");
+                    assertThat(p.getProduct_unit_second_id()).isEqualTo("adsfasdfasdfasdf");
+                    assertThat(p.getProduct_name()).isEqualTo("beer tiger");
+                    assertThat(p.getProduct_unit_name()).isEqualTo("thung");
+                    assertThat(p.getPrice_change().length).isEqualTo(2);
+
+
+                    // Optional: kiểm tra phần tử thứ 2 nếu có
+                    p = list.get(1);
+                    assertThat(p.getProduct_second_id()).isEqualTo("123");
+                    assertThat(p.getProduct_unit_second_id()).isEqualTo("retertghdfghsdgdfgasf");
+                    assertThat(p.getProduct_name()).isEqualTo("beer tiger");
+                    assertThat(p.getProduct_unit_name()).isEqualTo("lon");
+                    assertThat(p.getPrice_change()).hasSize(2);
+
+
+                    // Optional: kiểm tra phần tử thứ 2 nếu có
+                    p = list.get(2);
+                    assertThat(p.getProduct_second_id()).isEqualTo("123");
+                    assertThat(p.getProduct_unit_second_id()).isEqualTo("wrttttwerwrwre");
+                    assertThat(p.getProduct_name()).isEqualTo("beer tiger");
+                    assertThat(p.getProduct_unit_name()).isEqualTo("zan");
+                    assertThat(p.getPrice_change()).hasSize(1);
                 })
                 .verifyComplete();
 

@@ -37,6 +37,9 @@ public class GroupImport {
     @Autowired
     StatisticWareHouseIncomeOutcomeRepository statisticWareHouseIncomeOutcomeRepository;
 
+    @Autowired
+    ProductPriceChange productPriceChange;
+
 
     public Mono<ResponseEntity<Format>> SaveGroupImport(GroupImportWithItem groupImportWithItem) {
 
@@ -121,6 +124,10 @@ public class GroupImport {
 
     public Mono<WareHouseIncomeOutCome> GetWareHouseStatictisBetween(SearchImportQuery query){
         return statisticWareHouseIncomeOutcomeRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), ProductImport.Status.RETURN);
+    }
+
+    public Flux<com.example.heroku.model.productprice.ProductPriceChange> GetPriceRange(SearchImportQuery query){
+        return productPriceChange.GetPriceRange(query);
     }
 
     private Mono<GroupImportWithItem> saveGroupDetail(GroupImportWithItem productPackage) {
