@@ -14,6 +14,8 @@ public interface ProductImportPriceRepository extends ReactiveCrudRepository<Pro
     @Query(value = """
             SELECT product_import.*,
                    product.name AS product_name,
+                   product.category AS category,
+                   product.product_type AS product_type,
                    product_unit.name AS product_unit_name
             FROM
               (SELECT product_second_id,
