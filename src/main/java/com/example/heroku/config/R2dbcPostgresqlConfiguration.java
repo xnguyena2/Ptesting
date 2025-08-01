@@ -1,5 +1,8 @@
 package com.example.heroku.config;
 
+import com.example.heroku.config.maper.JsonToProductPriceItemArrayConverter;
+import com.example.heroku.config.maper.ProductPriceItemArrayToJsonConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.r2dbc.pool.ConnectionPool;
 import io.r2dbc.pool.ConnectionPoolConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
@@ -15,6 +18,8 @@ import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableTransactionManagement
@@ -45,6 +50,21 @@ public class R2dbcPostgresqlConfiguration extends AbstractR2dbcConfiguration {
 
     @Value("${spring.postgresql.timeidle}")
     private long timeidle;
+
+    // Inject ObjectMapper here, just like in your previous R2dbcConfig
+    private final ObjectMapper objectMapper;
+
+    public R2dbcPostgresqlConfiguration(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    protected List<Object> getCustomConverters() {
+        List<Object> converters = new ArrayList<>();
+        converters.add(new JsonToProductPriceItemArrayConverter(objectMapper));
+        converters.add(new ProductPriceItemArrayToJsonConverter(objectMapper));
+        return converters;
+    }
 
     @Bean
     @Override

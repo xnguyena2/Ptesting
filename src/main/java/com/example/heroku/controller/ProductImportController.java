@@ -1,6 +1,7 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.Users;
+import com.example.heroku.model.productprice.ProductPriceChange;
 import com.example.heroku.model.statistics.WareHouseIncomeOutCome;
 import com.example.heroku.request.beer.SearchQuery;
 import com.example.heroku.request.carousel.IDContainer;
@@ -192,6 +193,18 @@ public class ProductImportController {
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
                 .fluxAction(q -> groupImport.Search(query))
+                .build()
+                .toFlux();
+    }
+
+    @PostMapping("/admin/getpricechange")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<ProductPriceChange> GetProductImportPriceChange(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid SearchImportQuery query) {
+        System.out.println("get product import price change between from: " + query.getFrom() + ", to: " + query.getTo() + ", group: " + query.getGroup_id());
+        return WrapPermissionAction.<ProductPriceChange>builder()
+                .principal(principal)
+                .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
+                .fluxAction(q -> groupImport.GetPriceRange(query))
                 .build()
                 .toFlux();
     }

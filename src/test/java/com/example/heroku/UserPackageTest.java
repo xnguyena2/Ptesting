@@ -980,6 +980,7 @@ public class UserPackageTest {
                 .money_source("moneysource")
                 .print_kitchen("print_kitchen")
                 .update_note("update_note")
+                .customer_info("customer_info")
                 .status(UserPackageDetail.Status.CREATE)
                 .product_units(new com.example.heroku.model.UserPackage[]{
                         com.example.heroku.model.UserPackage.builder()
@@ -1047,6 +1048,7 @@ public class UserPackageTest {
                     assertThat(userPackage.getMoney_source()).isEqualTo("moneysource");
                     assertThat(userPackage.getPrint_kitchen()).isEqualTo("print_kitchen_1");
                     assertThat(userPackage.getUpdate_note()).isEqualTo("update_note");
+                    assertThat(userPackage.getCustomer_info()).isEqualTo("customer_info");
                     List<ProductInPackageResponse> listItem = userPackage.getItems();
                     assertThat(listItem.size()).isEqualTo(4);
 

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 
 @Configuration
 public class JacksonConfig {
@@ -22,7 +23,9 @@ public class JacksonConfig {
     // Format: 2024-04-22T09:11:22.993 or with Z
     private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
-            .optionalStart().appendPattern(".SSS").optionalEnd()
+            .optionalStart()
+            .appendFraction(ChronoField.NANO_OF_SECOND, 0, 6, true)
+            .optionalEnd()
             .toFormatter();
 
     @Bean
