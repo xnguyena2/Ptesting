@@ -24,7 +24,7 @@ public class JacksonConfig {
     private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
             .optionalStart()
-            .appendFraction(ChronoField.NANO_OF_SECOND, 0, 6, true)
+            .appendFraction(ChronoField.NANO_OF_SECOND, 1, 6, true) // old .appendFraction(ChronoField.NANO_OF_SECOND, 0, 6, true)
             .optionalEnd()
             .toFormatter();
 
