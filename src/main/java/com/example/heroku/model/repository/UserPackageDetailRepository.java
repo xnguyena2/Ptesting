@@ -121,9 +121,6 @@ public interface UserPackageDetailRepository extends ReactiveCrudRepository<User
     @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.package_second_id = :package_second_id")
     Mono<UserPackageDetail> GetPackageDetailByID(@Param("group_id") String group_id, @Param("package_second_id") String package_id);
 
-    @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.package_second_id = :package_second_id")
-    Mono<UserPackageDetail> GetPackageDetailById(@Param("group_id") String group_id, @Param("package_second_id") String package_id);
-
     @Query(value = "SELECT * FROM user_package_detail WHERE user_package_detail.group_id = :group_id AND user_package_detail.package_second_id = :package_second_id AND user_package_detail.table_id = :table_id AND (user_package_detail.status IS NULL OR user_package_detail.status = :status) ORDER BY createat DESC LIMIT 1")
     Mono<UserPackageDetail> GetPackageDetailByIdOfStatus(@Param("group_id") String group_id, @Param("package_second_id") String package_id, @Param("table_id") String table_id, @Param("status") UserPackageDetail.Status status);
 
