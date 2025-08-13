@@ -49,9 +49,9 @@ public class StatisticServices {
 
     public Mono<BenifitOfOrderAndPaymentTransactionByDate> getBenifitOfPaymentByDateStatictis(PackageID query) {
         BenifitOfOrderAndPaymentTransactionByDate result = BenifitOfOrderAndPaymentTransactionByDate.builder().build();
-        return statisticBenifitRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus())
+        return statisticBenifitRepository.getStatictis(query.getGroup_id(), "'+07'", query.getFrom(), query.getTo(), query.getStatus())
                 .collectList().map(result::setBenifitByDate)
-                .flatMap(benifitOfOrderAndPaymentTransactionByDate -> statisticBenifitPaymentTransactionByDateRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo())
+                .flatMap(benifitOfOrderAndPaymentTransactionByDate -> statisticBenifitPaymentTransactionByDateRepository.getStatictis(query.getGroup_id(), "'+07'", query.getFrom(), query.getTo())
                         .collectList().map(benifitOfOrderAndPaymentTransactionByDate::setBenifitTransactionByDate)
                 )
                 .flatMap(benifitOfOrderAndPaymentTransactionByDate -> statisticBenifitPaymentTransactionByCategoryRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo())
@@ -62,9 +62,9 @@ public class StatisticServices {
 
     public Mono<BenifitOfOrderAndPaymentTransactionByHour> getBenifitOfPaymentByHourStatictis(PackageID query) {
         BenifitOfOrderAndPaymentTransactionByHour result = BenifitOfOrderAndPaymentTransactionByHour.builder().build();
-        return statisticBenifitByHourRepository.getStatictisByHour(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus())
+        return statisticBenifitByHourRepository.getStatictisByHour(query.getGroup_id(), "'+07'", query.getFrom(), query.getTo(), query.getStatus())
                 .collectList().map(result::setBenifitByHour)
-                .flatMap(benifitOfOrderAndPaymentTransactionByDate -> statisticBenifitPaymentTransactionByHourRepository.getStatictisByHour(query.getGroup_id(), query.getFrom(), query.getTo())
+                .flatMap(benifitOfOrderAndPaymentTransactionByDate -> statisticBenifitPaymentTransactionByHourRepository.getStatictisByHour(query.getGroup_id(), "'+07'", query.getFrom(), query.getTo())
                         .collectList().map(benifitOfOrderAndPaymentTransactionByDate::setBenifitTransactionByHour)
                 )
                 .flatMap(benifitOfOrderAndPaymentTransactionByDate -> statisticBenifitPaymentTransactionByCategoryRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo())
@@ -74,11 +74,11 @@ public class StatisticServices {
     }
 
     public Flux<BenifitByDate> getPackageStatictis(PackageID query) {
-        return statisticBenifitRepository.getStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
+        return statisticBenifitRepository.getStatictis(query.getGroup_id(), "'+07'", query.getFrom(), query.getTo(), query.getStatus());
     }
 
     public Flux<BenifitByDateHour> getPackageStatictisByHour(PackageID query) {
-        return statisticBenifitByHourRepository.getStatictisByHour(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
+        return statisticBenifitByHourRepository.getStatictisByHour(query.getGroup_id(), "'+07'", query.getFrom(), query.getTo(), query.getStatus());
     }
 
     public Mono<BenifitByMonth> getPackageTotalStatictis(PackageID query) {
