@@ -14,4 +14,5 @@ public class BenifitByMonth {
     private double ship_price;
     private double discount;
     private int buyer;
+    private double payment_order;
 }

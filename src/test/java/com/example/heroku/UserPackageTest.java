@@ -2288,6 +2288,7 @@ public class UserPackageTest {
                     assertThat(data.getCost()).isEqualTo(444);
                     assertThat(data.getProfit()).isEqualTo(7878);
                     assertThat(data.getRevenue()).isEqualTo(7868);
+                    assertThat(data.getPayment_order()).isEqualTo(7868);
                     assertThat(data.getCount()).isEqualTo(3);
                     assertThat(data.getBuyer()).isEqualTo(2);
                     assertThat(data.getPrice()).isEqualTo(4);
@@ -3656,6 +3657,7 @@ public class UserPackageTest {
                     assertThat(data.getCost()).isEqualTo(0);
                     assertThat(data.getProfit()).isEqualTo(0);
                     assertThat(data.getRevenue()).isEqualTo(0);
+                    assertThat(data.getPayment_order()).isEqualTo(0);
                     assertThat(data.getPrice()).isEqualTo(1);
                     assertThat(data.getCount()).isEqualTo(1);
                     assertThat(data.getBuyer()).isEqualTo(1);
