@@ -8,6 +8,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 
 public interface StatisticBenifitByHourRepository extends ReactiveCrudRepository<BenifitByDateHour, Long> {
@@ -34,6 +35,6 @@ public interface StatisticBenifitByHourRepository extends ReactiveCrudRepository
               AND (user_package_detail.createat AT TIME ZONE :time_zone BETWEEN :fromtime AND :totime)
             GROUP BY local_time
             """)
-    Flux<BenifitByDateHour> getStatictisByHour(@Param("group_id") String groupID, @Param("time_zone") String time_zone,
+    Flux<BenifitByDateHour> getStatictisByHour(@Param("group_id") String groupID, @Param("time_zone") ZoneId time_zone,
                                                @Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to, @Param("status") UserPackageDetail.Status status);
 }
