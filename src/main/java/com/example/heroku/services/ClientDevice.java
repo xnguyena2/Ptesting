@@ -131,10 +131,10 @@ public class ClientDevice {
         Mono<BenifitByMonth> benifitMono = statisticServices
                 .getPackageTotalStatictis(PackageID.builder()
                         .group_id(groupID)
-                        .from(LocalDateTime.now(ZoneId.of("UTC"))
+                        .from(LocalDateTime.now()
                                 .withDayOfMonth(1)
                                 .withHour(0).withMinute(0).withSecond(0).withNano(0))
-                        .to(LocalDateTime.now(ZoneId.of("UTC")))
+                        .to(LocalDateTime.now())
                         .status(UserPackageDetail.Status.DONE)
                         .build())
                 .defaultIfEmpty(BenifitByMonth.builder().build());
@@ -181,8 +181,8 @@ public class ClientDevice {
         Mono<BenifitByMonth> benifitMono = statisticServices
                 .getPackageTotalStatictis(PackageID.builder()
                         .group_id(groupID)
-                        .from(LocalDateTime.now(ZoneId.of("UTC")).withHour(0).withMinute(0).withSecond(0).withNano(0))
-                        .to(LocalDateTime.now(ZoneId.of("UTC")))
+                        .from(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0))
+                        .to(LocalDateTime.now())
                         .status(UserPackageDetail.Status.DONE).build())
                 .defaultIfEmpty(BenifitByMonth.builder().build()); // ✅ fallback nếu không có thống kê
 

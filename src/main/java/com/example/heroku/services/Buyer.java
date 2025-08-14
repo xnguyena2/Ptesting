@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.ZoneId;
+
 @Component
 public class Buyer {
     @Autowired
@@ -74,7 +76,7 @@ public class Buyer {
 
     public Mono<BuyerStatictisData> getBuyerStatictis(PackageID query) {
         BuyerStatictisData buyerStatictisData = BuyerStatictisData.builder().build();
-        return statisticTotalBenifitRepository.getTotalStatictisOfBuyer(query.getGroup_id(), query.getDevice_id(), query.getFrom(), query.getTo(), query.getStatus())
+        return statisticTotalBenifitRepository.getTotalStatictisOfBuyer(query.getGroup_id(), query.getDevice_id(), ZoneId.of("Asia/Ho_Chi_Minh"), query.getFrom(), query.getTo(), query.getStatus())
                 .map(benifitByMonth -> {
                     buyerStatictisData.setBenifitByMonth(benifitByMonth);
                     return buyerStatictisData;
