@@ -31,7 +31,7 @@ public class StatisticPackageOrderDetailController {
     @PostMapping("/admin/getfinalbenifitbydate")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<BenifitOfOrderAndPaymentTransactionByDate> getFinalBenifitByDate(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("get final benifit by date: " + query.getGroup_id());
+        System.out.println("get final benifit by date: " + query.getGroup_id() + ", from: " + query.getFrom() + ", to: " + query.getTo());
         return WrapPermissionAction.<BenifitOfOrderAndPaymentTransactionByDate>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
@@ -43,7 +43,7 @@ public class StatisticPackageOrderDetailController {
     @PostMapping("/admin/getfinalbenifitbyhour")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<BenifitOfOrderAndPaymentTransactionByHour> getFinalBenifitByHour(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("get final benifig by hour: " + query.getGroup_id());
+        System.out.println("get final benifig by hour: " + query.getGroup_id() + ", from: " + query.getFrom() + ", to: " + query.getTo());
         return WrapPermissionAction.<BenifitOfOrderAndPaymentTransactionByHour>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
@@ -77,7 +77,7 @@ public class StatisticPackageOrderDetailController {
     @PostMapping("/admin/getbyhour")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BenifitByDateHour> getbyproductidofhours(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("get report getbyproductid of hours: " + query.getGroup_id());
+        System.out.println("get report getbyproductid of hours: " + query.getGroup_id() + ", from: " + query.getFrom() + ", to: " + query.getTo());
         return WrapPermissionAction.<BenifitByDateHour>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
@@ -89,7 +89,7 @@ public class StatisticPackageOrderDetailController {
     @PostMapping("/admin/totalinmonth")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<BenifitByMonth> getTotalbyproductid(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("getTotalbyproductid: " + query.getGroup_id());
+        System.out.println("getTotalbyproductid: " + query.getGroup_id() + ", from: " + query.getFrom() + ", to: " + query.getTo());
         return WrapPermissionAction.<BenifitByMonth>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
@@ -101,7 +101,7 @@ public class StatisticPackageOrderDetailController {
     @PostMapping("/admin/product")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BenifitByProduct> getProductBenifitStatictis(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("get by product: " + query.getGroup_id());
+        System.out.println("get by product: " + query.getGroup_id() + ", from: " + query.getFrom() + ", to: " + query.getTo());
         return WrapPermissionAction.<BenifitByProduct>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
@@ -123,7 +123,7 @@ public class StatisticPackageOrderDetailController {
     @PostMapping("/admin/buyer")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BenifitByBuyer> getBuyerBenifitStatictis(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("get by buyer: " + query.getGroup_id());
+        System.out.println("get by buyer: " + query.getGroup_id() + ", from: " + query.getFrom() + ", to: " + query.getTo());
         return WrapPermissionAction.<BenifitByBuyer>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
@@ -135,7 +135,7 @@ public class StatisticPackageOrderDetailController {
     @PostMapping("/admin/staff")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BenifitByBuyer> getStaffBenifitStatictis(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("get by staff: " + query.getGroup_id());
+        System.out.println("get by staff: " + query.getGroup_id() + ", from: " + query.getFrom() + ", to: " + query.getTo());
         return WrapPermissionAction.<BenifitByBuyer>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
@@ -147,7 +147,7 @@ public class StatisticPackageOrderDetailController {
     @PostMapping("/admin/order")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<BenifitByOrder> getOrderBenifitStatictis(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("get by order: " + query.getGroup_id());
+        System.out.println("get by order: " + query.getGroup_id() + ", from: " + query.getFrom() + ", to: " + query.getTo());
         return WrapPermissionAction.<BenifitByOrder>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
@@ -169,7 +169,7 @@ public class StatisticPackageOrderDetailController {
     @PostMapping("/admin/countreturncancel")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<CountOrderByDate> getOrderErrorStatictis(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("get by order: " + query.getGroup_id());
+        System.out.println("get by order: " + query.getGroup_id() + ", from: " + query.getFrom() + ", to: " + query.getTo());
         return WrapPermissionAction.<CountOrderByDate>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
