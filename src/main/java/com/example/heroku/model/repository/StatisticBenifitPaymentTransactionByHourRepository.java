@@ -7,7 +7,6 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 
 public interface StatisticBenifitPaymentTransactionByHourRepository extends ReactiveCrudRepository<BenifitByDateHour, Long> {
@@ -23,7 +22,7 @@ public interface StatisticBenifitPaymentTransactionByHourRepository extends Reac
             FROM payment_transaction
             WHERE payment_transaction.group_id = :group_id
               AND payment_transaction.package_second_id IS NULL
-              AND (payment_transaction.createat AT TIME ZONE :time_zone BETWEEN :fromtime AND :totime)
+              AND (payment_transaction.createat BETWEEN :fromtime AND :totime)
             GROUP BY local_time
             """)
     Flux<BenifitByDateHour> getStatictisByHour(@Param("group_id") String groupID, @Param("time_zone") String time_zone,

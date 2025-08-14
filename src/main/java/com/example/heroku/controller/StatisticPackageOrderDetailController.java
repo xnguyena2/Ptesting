@@ -169,7 +169,7 @@ public class StatisticPackageOrderDetailController {
     @PostMapping("/admin/countreturncancel")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<CountOrderByDate> getOrderErrorStatictis(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID query) {
-        System.out.println("get by order: " + query.getGroup_id() + ", from: " + query.getFrom() + ", to: " + query.getTo());
+        System.out.println("count return or cancel order: " + query.getGroup_id() + ", from: " + query.getFrom() + ", to: " + query.getTo());
         return WrapPermissionAction.<CountOrderByDate>builder()
                 .principal(principal)
                 .query(SearchQuery.builder().group_id(query.getGroup_id()).build())
