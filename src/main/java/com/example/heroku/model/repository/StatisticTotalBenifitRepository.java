@@ -35,7 +35,7 @@ public interface StatisticTotalBenifitRepository extends ReactiveCrudRepository<
                  AND payment_transaction.action_type = 'PAYMENT_ORDER'
                  AND (payment_transaction.createat AT TIME ZONE :time_zone BETWEEN :fromtime AND :totime)) payment_transaction
             """)
-    Mono<BenifitByMonth> getTotalStatictis(@Param("group_id") String groupID, @Param("time_zone") ZoneId time_zone,
+    Mono<BenifitByMonth> getTotalStatictis(@Param("group_id") String groupID, @Param("time_zone") String time_zone,
                                            @Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to, @Param("status") UserPackageDetail.Status status);
 
     @Query(value = """
@@ -54,6 +54,6 @@ public interface StatisticTotalBenifitRepository extends ReactiveCrudRepository<
               AND user_package_detail.status = :status
               AND (user_package_detail.createat AT TIME ZONE :time_zone BETWEEN :fromtime AND :totime)
             """)
-    Mono<BenifitByMonth> getTotalStatictisOfBuyer(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("time_zone") ZoneId time_zone,
+    Mono<BenifitByMonth> getTotalStatictisOfBuyer(@Param("group_id") String groupID, @Param("device_id") String device_id, @Param("time_zone") String time_zone,
                                                   @Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to, @Param("status") UserPackageDetail.Status status);
 }
