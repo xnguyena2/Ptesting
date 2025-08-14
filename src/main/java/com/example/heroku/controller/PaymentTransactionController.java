@@ -48,14 +48,14 @@ public class PaymentTransactionController {
     @PostMapping("/getbytime")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<PaymentTransactionBuyer> getBettwenTimeWithBuyer(@RequestBody @Valid PackageID packageID) {
-        System.out.println("get transaction of group id: " + packageID.getGroup_id());
+        System.out.println("get transaction of group id: " + packageID.getGroup_id() + ", from: " + packageID.getFrom() + ", to: " + packageID.getTo());
         return paymentTransation.getAllTransactionBettwen(packageID);
     }
 
     @PostMapping("/getbytimewithoutbuyer")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<com.example.heroku.model.PaymentTransation> getBettwenTime(@RequestBody @Valid PackageID packageID) {
-        System.out.println("get transaction without buyer of group id: " + packageID.getGroup_id());
+        System.out.println("get transaction without buyer of group id: " + packageID.getGroup_id() + ", from: " + packageID.getFrom() + ", to: " + packageID.getTo());
         return paymentTransation.getAllTransactionBettwenWithoutBuyer(packageID);
     }
 
