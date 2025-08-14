@@ -26,6 +26,6 @@ public interface StatisticBenifitPaymentTransactionByHourRepository extends Reac
               AND (payment_transaction.createat AT TIME ZONE :time_zone BETWEEN :fromtime AND :totime)
             GROUP BY local_time
             """)
-    Flux<BenifitByDateHour> getStatictisByHour(@Param("group_id") String groupID, @Param("time_zone") ZoneId time_zone,
+    Flux<BenifitByDateHour> getStatictisByHour(@Param("group_id") String groupID, @Param("time_zone") String time_zone,
                                                @Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to);
 }

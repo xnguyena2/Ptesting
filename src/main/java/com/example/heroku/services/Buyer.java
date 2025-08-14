@@ -76,7 +76,7 @@ public class Buyer {
 
     public Mono<BuyerStatictisData> getBuyerStatictis(PackageID query) {
         BuyerStatictisData buyerStatictisData = BuyerStatictisData.builder().build();
-        return statisticTotalBenifitRepository.getTotalStatictisOfBuyer(query.getGroup_id(), query.getDevice_id(), ZoneId.of("Asia/Ho_Chi_Minh"), query.getFrom(), query.getTo(), query.getStatus())
+        return statisticTotalBenifitRepository.getTotalStatictisOfBuyer(query.getGroup_id(), query.getDevice_id(), "'+07'", query.getFrom(), query.getTo(), query.getStatus())
                 .map(benifitByMonth -> {
                     buyerStatictisData.setBenifitByMonth(benifitByMonth);
                     return buyerStatictisData;
