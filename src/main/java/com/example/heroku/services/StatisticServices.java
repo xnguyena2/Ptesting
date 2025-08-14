@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.ZoneId;
-
 @Component
 public class StatisticServices {
 
@@ -84,7 +82,7 @@ public class StatisticServices {
     }
 
     public Mono<BenifitByMonth> getPackageTotalStatictis(PackageID query) {
-        return statisticTotalBenifitRepository.getTotalStatictis(query.getGroup_id(), "'+07'", query.getFrom(), query.getTo(), query.getStatus());
+        return statisticTotalBenifitRepository.getTotalStatictis(query.getGroup_id(), query.getFrom(), query.getTo(), query.getStatus());
     }
 
     public Flux<BenifitByProduct> getProductBenifitStatictis(PackageID query) {

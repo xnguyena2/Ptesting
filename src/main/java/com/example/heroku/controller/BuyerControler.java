@@ -1,7 +1,6 @@
 package com.example.heroku.controller;
 
 import com.example.heroku.model.Buyer;
-import com.example.heroku.model.Image;
 import com.example.heroku.model.Users;
 import com.example.heroku.model.statistics.DebtOfBuyer;
 import com.example.heroku.request.beer.SearchQuery;
@@ -13,7 +12,6 @@ import com.example.heroku.response.BuyerData;
 import com.example.heroku.response.BuyerStatictisData;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -43,7 +41,7 @@ public class BuyerControler {
     @PostMapping("/admin/getdetail")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<BuyerStatictisData> getDetail(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid PackageID packageID) {
-        System.out.println("group_id: " + packageID.getGroup_id() + ", buyer getdetail, " + " id: " + packageID.getDevice_id());
+        System.out.println("group_id: " + packageID.getGroup_id() + ", buyer getdetail, " + " id: " + packageID.getDevice_id() + ", from: " + packageID.getFrom() + ", to: " + packageID.getTo());
         return WrapPermissionGroupWithPrincipalAction.<BuyerStatictisData>builder()
                 .principal(principal)
                 .subject(packageID::getGroup_id)
