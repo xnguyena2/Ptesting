@@ -15,8 +15,10 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,12 +130,33 @@ public class ClientDevice {
                 .getStore(groupID)
                 .defaultIfEmpty(com.example.heroku.model.Store.builder().build());
 
+
+        // Thiết lập múi giờ Việt Nam
+        ZoneId vietnamZone = ZoneId.of("Asia/Ho_Chi_Minh");
+
+        // 1. Start of month in Vietnam
+        LocalDateTime startOfMonthVN = LocalDate.now(vietnamZone)
+                .withDayOfMonth(1)  // go to 1st day of month
+                .atStartOfDay();    // midnight
+
+        // 2. Current time in Vietnam
+        LocalDateTime nowVN = LocalDateTime.now(vietnamZone);
+
+        // 3. Convert both to UTC LocalDateTime
+        LocalDateTime startOfMonthUTC  = startOfMonthVN
+                .atZone(vietnamZone)         // attach Vietnam zone
+                .withZoneSameInstant(ZoneOffset.UTC) // shift to UTC
+                .toLocalDateTime();
+
+        LocalDateTime nowUTC = nowVN
+                .atZone(vietnamZone)
+                .withZoneSameInstant(ZoneOffset.UTC)
+                .toLocalDateTime();
         Mono<BenifitByMonth> benifitMono = statisticServices
                 .getPackageTotalStatictis(PackageID.builder()
                         .group_id(groupID)
-                        .from(LocalDateTime.now()
-                                .withHour(0).withMinute(0).withSecond(0).withNano(0).atZone(ZoneId.of("Asia/Ho_Chi_Minh")).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime())
-                        .to(LocalDateTime.now().atZone(ZoneId.of("Asia/Ho_Chi_Minh")).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime())
+                        .from(startOfMonthUTC)
+                        .to(nowUTC)
                         .status(UserPackageDetail.Status.DONE)
                         .build())
                 .defaultIfEmpty(BenifitByMonth.builder().build());
@@ -176,13 +199,33 @@ public class ClientDevice {
                 .getStore(groupID)
                 .defaultIfEmpty(com.example.heroku.model.Store.builder().group_id(groupID).build()); // ✅ fallback nếu không có store
 
+
+
+        // Thiết lập múi giờ Việt Nam
+        ZoneId vietnamZone = ZoneId.of("Asia/Ho_Chi_Minh");
+
+        // 1. Start of today in Vietnam
+        LocalDateTime startOfDayVN = LocalDate.now(vietnamZone).atStartOfDay();
+
+        // 2. Current time in Vietnam
+        LocalDateTime nowVN = LocalDateTime.now(vietnamZone);
+
+        // 3. Convert both to UTC LocalDateTime
+        LocalDateTime startOfDayUTC = startOfDayVN
+                .atZone(vietnamZone)         // attach Vietnam zone
+                .withZoneSameInstant(ZoneOffset.UTC) // shift to UTC
+                .toLocalDateTime();
+
+        LocalDateTime nowUTC = nowVN
+                .atZone(vietnamZone)
+                .withZoneSameInstant(ZoneOffset.UTC)
+                .toLocalDateTime();
         // Lấy thống kê lợi nhuận hôm nay
         Mono<BenifitByMonth> benifitMono = statisticServices
                 .getPackageTotalStatictis(PackageID.builder()
                         .group_id(groupID)
-                        .from(LocalDateTime.now()
-                                .withHour(0).withMinute(0).withSecond(0).withNano(0).atZone(ZoneId.of("Asia/Ho_Chi_Minh")).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime())
-                        .to(LocalDateTime.now().atZone(ZoneId.of("Asia/Ho_Chi_Minh")).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime())
+                        .from(startOfDayUTC)
+                        .to(nowUTC)
                         .status(UserPackageDetail.Status.DONE).build())
                 .defaultIfEmpty(BenifitByMonth.builder().build()); // ✅ fallback nếu không có thống kê
 
