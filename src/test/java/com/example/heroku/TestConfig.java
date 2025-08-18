@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "JDBC_DATABASE_URL=jdbc:postgresql://dpg-d0ko3mjuibrs739mkrng-a.singapore-postgres.render.com/sale_management_dev_m5rd",
         "POSTGRESQL_PORT=5432",
         "POSTGRESQL_DB=sale_management_dev_m5rd",
-        "POSTGRESQL_EXTERNAL_URL=r2dbc:postgresql://sale_management_dev_1oob_user:fdTqlqnMWlSIP54Av7P2IK99Gp4ZwhBN@dpg-d1sfat7diees73fhk210-a.singapore-postgres.render.com/sale_management_dev_1oob?sslmode=require",
+        "POSTGRESQL_EXTERNAL_URL=r2dbc:postgresql://sale_management_dev_cid3_user:F031SGLRC0uRYaoQfjwZdLf2Uh1gFPHC@dpg-d2hitsi4d50c739evh30-a.singapore-postgres.render.com/sale_management_dev_cid3?sslmode=require",
         "POSTGRESQL_HOST=dpg-d0ko3mjuibrs739mkrng-a.singapore-postgres.render.com",
         "DB_USER_NAME=sale_management_dev_m5rd_user",
         "DB_PASSWORD=lwmnzH0im5bxfwz9pMpucfNj6J46l690",
