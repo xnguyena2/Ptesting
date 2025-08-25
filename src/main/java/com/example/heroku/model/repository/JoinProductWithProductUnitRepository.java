@@ -303,8 +303,7 @@ public interface JoinProductWithProductUnitRepository extends ReactiveCrudReposi
                AND pu.group_id = :group_id
             LEFT JOIN image i
                 ON p.product_second_id = i.category
-               AND i.group_id = :group_id
-            WHERE pu.inventory_number > 0;
+               AND i.group_id = :group_id;
             """)
     Flux<ProductJoinWithProductUnit> getIfProductNotHideAndForWebAllImg(@Param("group_id")String groupID, @Param("page")int page, @Param("size")int size);
 
