@@ -13,7 +13,52 @@ import java.util.List;
 
 public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, Long> {
 
-    @Query(value = "INSERT INTO product_unit( group_id, product_second_id, product_unit_second_id, name, sku, upc, price, wholesale_price, wholesale_number, promotional_price, inventory_number, buy_price, discount, date_expire, volumetric, weight, visible, enable_warehouse, enable_serial, list_product_serial_id, group_unit_id, group_unit_naname, group_unit_number, services_config, arg_action_id, arg_action_type, status, createat ) VALUES ( :group_id, :product_second_id, :product_unit_second_id, :name, :sku, :upc, :price, :wholesale_price, :wholesale_number, :promotional_price, :inventory_number, :buy_price, :discount, :date_expire, :volumetric, :weight, :visible, :enable_warehouse, :enable_serial, :list_product_serial_id, :group_unit_id, :group_unit_naname, :group_unit_number, :services_config, :arg_action_id, :arg_action_type, :status, :createat ) ON CONFLICT ON CONSTRAINT UQ_product_unit_second_id DO UPDATE SET name = :name, sku = :sku, upc = :upc, price = :price, wholesale_price = :wholesale_price, wholesale_number = :wholesale_number, promotional_price = :promotional_price, inventory_number = :inventory_number, buy_price = :buy_price, discount = :discount, date_expire = :date_expire, volumetric = :volumetric, weight = :weight, visible = :visible, enable_warehouse = :enable_warehouse, enable_serial = :enable_serial, list_product_serial_id = :list_product_serial_id, group_unit_id = :group_unit_id, group_unit_naname = :group_unit_naname, group_unit_number = :group_unit_number, services_config = :services_config, arg_action_id = :arg_action_id, arg_action_type = :arg_action_type, status = :status, createat = :createat")
+    @Query(value = """
+            INSERT INTO product_unit (
+                group_id, product_second_id, product_unit_second_id, name, sku, upc,
+                price, wholesale_price, wholesale_number, promotional_price,
+                inventory_number, buy_price, discount, date_expire, volumetric, weight,
+                visible, enable_warehouse, enable_serial, list_product_serial_id,
+                product_type, has_component, group_unit_id, group_unit_naname, group_unit_number, services_config,
+                arg_action_id, arg_action_type, status, createat
+            ) VALUES (
+                :group_id, :product_second_id, :product_unit_second_id, :name, :sku, :upc,
+                :price, :wholesale_price, :wholesale_number, :promotional_price,
+                :inventory_number, :buy_price, :discount, :date_expire, :volumetric, :weight,
+                :visible, :enable_warehouse, :enable_serial, :list_product_serial_id,
+                :product_type, :has_component, :group_unit_id, :group_unit_naname, :group_unit_number, :services_config,
+                :arg_action_id, :arg_action_type, :status, :createat
+            )
+            ON CONFLICT ON CONSTRAINT UQ_product_unit_second_id
+            DO UPDATE SET
+                name = EXCLUDED.name,
+                sku = EXCLUDED.sku,
+                upc = EXCLUDED.upc,
+                price = EXCLUDED.price,
+                wholesale_price = EXCLUDED.wholesale_price,
+                wholesale_number = EXCLUDED.wholesale_number,
+                promotional_price = EXCLUDED.promotional_price,
+                inventory_number = EXCLUDED.inventory_number,
+                buy_price = EXCLUDED.buy_price,
+                discount = EXCLUDED.discount,
+                date_expire = EXCLUDED.date_expire,
+                volumetric = EXCLUDED.volumetric,
+                weight = EXCLUDED.weight,
+                visible = EXCLUDED.visible,
+                enable_warehouse = EXCLUDED.enable_warehouse,
+                enable_serial = EXCLUDED.enable_serial,
+                list_product_serial_id = EXCLUDED.list_product_serial_id,
+                product_type = EXCLUDED.product_type,
+                has_component = EXCLUDED.has_component,
+                group_unit_id = EXCLUDED.group_unit_id,
+                group_unit_naname = EXCLUDED.group_unit_naname,
+                group_unit_number = EXCLUDED.group_unit_number,
+                services_config = EXCLUDED.services_config,
+                arg_action_id = EXCLUDED.arg_action_id,
+                arg_action_type = EXCLUDED.arg_action_type,
+                status = EXCLUDED.status,
+                createat = EXCLUDED.createat
+            """)
     Mono<ProductUnit> saveProductUnit(@Param("group_id") String group_id, @Param("product_second_id") String product_second_id,
                                       @Param("product_unit_second_id") String product_unit_second_id, @Param("name") String name,
                                       @Param("sku") String sku, @Param("upc") String upc,
@@ -25,10 +70,11 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, 
                                       @Param("visible") boolean visible, @Param("enable_warehouse") boolean enable_warehouse, @Param("enable_serial") String enable_serial,
                                       @Param("list_product_serial_id") String[] list_product_serial_id,
                                       @Param("group_unit_id") String group_unit_id, @Param("group_unit_naname") String group_unit_naname, @Param("group_unit_number") float group_unit_number,
-                                      @Param("product_type") Product.ProductType product_type, @Param("services_config") String services_config,
+                                      @Param("product_type") Product.ProductType product_type, @Param("has_component") boolean has_component, @Param("services_config") String services_config,
                                       @Param("arg_action_id") String arg_action_id, @Param("arg_action_type") String arg_action_type,
                                       @Param("status") ProductUnit.Status status,
                                       @Param("createat") LocalDateTime createat);
+
     @Query(value = "DELETE FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :product_second_id")
     Mono<ProductUnit> deleteByBeerId(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id);
 

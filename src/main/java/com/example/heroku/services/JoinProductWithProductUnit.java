@@ -98,15 +98,6 @@ public class JoinProductWithProductUnit {
     }
 
     @Deprecated
-    public Flux<BeerSubmitData> GetAllBeerByJoinFirstNotHideForWeb(SearchQuery query) {
-        return flattenResult(this.joinProductWithProductUnitRepository.getIfProductNotHideAndForWeb(query.getGroup_id(), query.getPage(), query.getSize()));
-    }
-
-    public Mono<BeerSubmitData> GetProductAndUnit(String groupID, String productID, String productUnitID) {
-        return flattenResult(this.joinProductWithProductUnitRepository.getProductAndOnly1Unit(groupID, productID, productUnitID));
-    }
-
-    @Deprecated
     public Flux<BeerSubmitData> GetAllBeerByJoinOfPackage(String groupID, String packageID) {
         return this.joinProductWithProductUnitRepository.getProductAndUnitOfPackage(groupID, packageID)
                 .map(productJoinWithProductUnit -> ProductJoinWithProductUnit.GenerateBeerSubmitData(Collections.singletonList(productJoinWithProductUnit)));

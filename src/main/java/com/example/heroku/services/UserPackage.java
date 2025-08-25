@@ -228,17 +228,6 @@ public class UserPackage {
                         .then(Mono.just(packageDataResponse));
     }
 
-    @Deprecated
-    Mono<PackageDataResponse> fillProductAndBuyer(PackageDataResponse packageDataResponse, Map<String, List<Image>> mapImg) {
-        return
-                beerAPI.GetAllProductOfPackage(packageDataResponse.getGroup_id(), packageDataResponse.getPackage_second_id(), mapImg)
-                        .collectList().map(packageDataResponse::setProductData)
-                        .then(buyer.FindByDeviceID(packageDataResponse.getGroup_id(), packageDataResponse.getDevice_id())
-                                .handle((buyerData, synchronousSink) -> synchronousSink.next(packageDataResponse.setBuyer(buyerData)))
-                        )
-                        .then(Mono.just(packageDataResponse));
-    }
-
 
     public Flux<PackageDataResponse> GetMyPackage(UserID userID) {
         return userPackageDetailRepository.GetDevicePackageDetail(userID.getGroup_id(), userID.getId(), userID.getPage(), userID.getSize())

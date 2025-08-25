@@ -80,7 +80,7 @@ public class Beer {
                         .flatMap(beerUnit -> this.beerUnitRepository.save(beerUnit))
                 )
                 .then(Mono.just(info.getProduct()).flatMap(beerInfo -> {
-                    if (beerInfo.getProduct_type() == Product.ProductType.COMBO || beerInfo.getProduct_type() == Product.ProductType.PRODUCT_HAS_COMPONENTS) {
+                    if (beerInfo.getProduct_type() == Product.ProductType.COMBO) {
                         return productComboItemRepository.deleteByProductID(beerInfo.getGroup_id(), beerInfo.getProduct_second_id())
                                 .then(Mono.just(info).flatMap(beerInfo1 -> {
                                             if (beerInfo1.getListComboItem() != null && beerInfo1.getListComboItem().length > 0) {
@@ -171,24 +171,6 @@ public class Beer {
     public Mono<BeerSubmitData> GetBeerByID(String  groupID, String id) {
         return beerRepository.findBySecondID(groupID, id)
                 .flatMap(this::CoverToSubmitData);
-    }
-
-    @Deprecated
-    public Mono<BeerSubmitData> GetBeerByIDWithUnit(String  groupID, String productID, String productUnitID) {
-        return this.joinProductWithProductUnit.GetProductAndUnit(groupID, productID, productUnitID)
-                .flatMap(this::_setImg4SubmitData);
-    }
-
-    @Deprecated
-    public Mono<BeerSubmitData> GetBeerByIDWithUnit(String  groupID, String productID, String productUnitID, Map<String, List<com.example.heroku.model.Image>> mapImg) {
-        return this.joinProductWithProductUnit.GetProductAndUnit(groupID, productID, productUnitID)
-                .map(beerSubmitData -> beerSubmitData.SetImg(mapImg));
-    }
-
-    @Deprecated
-    public Flux<BeerSubmitData> GetAllProductOfPackage(String  groupID, String packageID, Map<String, List<com.example.heroku.model.Image>> mapImg) {
-        return this.joinProductWithProductUnit.GetAllBeerByJoinOfPackageAllImg(groupID, packageID)
-                .map(beerSubmitData -> beerSubmitData.SetImg(mapImg));
     }
 
     public Flux<BeerSubmitData> GetAllProductOfPackage(String  groupID, String packageID) {
