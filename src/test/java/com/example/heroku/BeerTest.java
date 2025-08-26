@@ -113,7 +113,6 @@ public class BeerTest {
                                                 .buy_price(20)
                                                 .enable_warehouse(true)
                                                 .enable_serial(true)
-                                                .has_component(true)
                                                 .list_product_serial_id(new String[]{"serial1", "serial2", "serial3"})
                                                 .product_type(Product.ProductType.PRODUCT)
                                                 .build(),
@@ -289,6 +288,7 @@ public class BeerTest {
                                         .date_expire(LocalDateTime.parse("2021-03-31T20:45:00"))
                                         .name("thung")
                                         .product_type(Product.ProductType.COMBO)
+                                        .has_component(true)
                                         .group_id(group)
                                         .build(),
                                 ProductUnit
@@ -458,7 +458,6 @@ public class BeerTest {
                                 assertThat(beerUnit.isVisible()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_serial()).isEqualTo(true);
-                                assertThat(beerUnit.isHas_component()).isEqualTo(true);
                                 assertThat(beerUnit.getList_product_serial_id()).isEqualTo(new String[]{"serial1", "serial2", "serial3", "serial22", "serial33"});
                                 assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                                 assertThat(beerUnit.getDate_expire()).isNull();
@@ -548,7 +547,6 @@ public class BeerTest {
                                 assertThat(beerUnit.isVisible()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_serial()).isEqualTo(true);
-                                assertThat(beerUnit.isHas_component()).isEqualTo(true);
                                 assertThat(beerUnit.getList_product_serial_id()).isEqualTo(new String[]{"serial1", "serial2", "serial3"});
                                 assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                                 assertThat(beerUnit.getDate_expire()).isNull();
@@ -620,7 +618,6 @@ public class BeerTest {
                                 assertThat(beerUnit.isVisible()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_warehouse()).isEqualTo(true);
                                 assertThat(beerUnit.isEnable_serial()).isEqualTo(true);
-                                assertThat(beerUnit.isHas_component()).isEqualTo(true);
                                 assertThat(beerUnit.getList_product_serial_id()).isEqualTo(new String[]{"serial1", "serial2", "serial3"});
                                 assertThat(beerUnit.getProduct_type()).isEqualTo(Product.ProductType.PRODUCT);
                                 assertThat(beerUnit.getDate_expire()).isNull();
@@ -691,6 +688,7 @@ public class BeerTest {
                                 assertThat(beerUnit.getName()).isEqualTo("thung");
                                 assertThat(beerUnit.getSku()).isNull();
                                 assertThat(beerUnit.getUpc()).isNull();
+                                assertThat(beerUnit.isHas_component()).isEqualTo(true);
                                 assertThat(NgbDateStruct.fromLocalDateTime(beerUnit.getDate_expire())).isEqualTo(NgbDateStruct.fromLocalDateTime(LocalDateTime.parse("2021-03-31T20:45:00")));
                                 assertThat(Util.getInstance().DiffirentDays(beerUnit.getDate_expire(), Util.getInstance().Now()) >= 0).isEqualTo(false);
                             })
