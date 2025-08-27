@@ -106,6 +106,28 @@ public class BeerController {
                 .build().toMono();
     }
 
+    @PostMapping("/admin/updateproductcomponent")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<ResponseEntity<BeerSubmitData>> updateProductComponent(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid BeerSubmitData beerInfo) {
+        BeerInfo beerInf = beerInfo.GetBeerInfo();
+        System.out.println("group: " + beerInf.getProduct().getGroup_id() + ", update product componenet: " + beerInf.getProduct().getName());
+        return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<BeerSubmitData>>builder()
+                .principal(principal)
+                .subject(beerInfo::getGroup_id)
+                .monoAction(() -> beerAPI.updateProductComponent(beerInf)
+                        .map(ResponseEntity::ok)
+                        .onErrorResume(throwable -> {
+                                    String msg = throwable.getMessage();
+                                    System.out.println(msg);
+                                    beerInfo.setName(msg);
+                                    return Mono.just(org.springframework.http.ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                            .body(beerInfo));
+                                }
+                        )
+                )
+                .build().toMono();
+    }
+
     @PostMapping("/admin/getcomboitem")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<ComboItemJoinProductUnitAndProduct> getComboItem(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {

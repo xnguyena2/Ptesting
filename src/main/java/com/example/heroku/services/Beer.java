@@ -96,6 +96,27 @@ public class Beer {
                 .then(Mono.just(BeerSubmitData.FromProductInfo(info)));
     }
 
+    public Mono<BeerSubmitData> updateProductComponent(@Valid @ModelAttribute BeerInfo info) {
+        info.CorrectData();
+        return Mono.just(info.getProduct())
+                .thenMany(Flux.just(info.getProductUnit())
+                        .flatMap(beerUnit ->
+                                this.beerUnitRepository.updateHasComponent(beerUnit.getGroup_id(), beerUnit.getProduct_second_id(), beerUnit.getProduct_unit_second_id(), beerUnit.isHas_component())
+                                        .then(Mono.just(beerUnit))
+                        )
+                )
+                .map(productUnit ->
+                        productComboItemRepository.deleteByProductUnitID(productUnit.getGroup_id(), productUnit.getProduct_second_id(), productUnit.getProduct_unit_second_id())
+                )
+                .then(Mono.just(info).flatMap(beerInfo -> {
+                    if (beerInfo.getListComboItem().length > 0) {
+                        return productComboItemRepository.saveAll(Flux.just(beerInfo.getListComboItem()).map(productComboItem -> productComboItem.AutoFill(beerInfo.getProduct().getGroup_id(), beerInfo.getProduct().getProduct_second_id()))).then(Mono.just(beerInfo));
+                    }
+                    return Mono.just(beerInfo);
+                }))
+                .then(Mono.just(BeerSubmitData.FromProductInfo(info)));
+    }
+
     public Flux<ComboItemJoinProductUnitAndProduct> GetAllCompoItem(IDContainer idContainer) {
         return comboItemJoinProductUnitAndProductRepository.findByProductID(idContainer.getGroup_id(), idContainer.getId());
     }

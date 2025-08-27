@@ -288,7 +288,6 @@ public class BeerTest {
                                         .date_expire(LocalDateTime.parse("2021-03-31T20:45:00"))
                                         .name("thung")
                                         .product_type(Product.ProductType.COMBO)
-                                        .has_component(true)
                                         .group_id(group)
                                         .build(),
                                 ProductUnit
@@ -302,6 +301,61 @@ public class BeerTest {
                                         .name("lon")
                                         .group_id(group)
                                         .build()
+                        })
+                        .product(Product
+                                .builder()
+                                .category(Category.CRAB.getName())
+                                .detail("""
+                                        Đây là beer tiger có nồn độ cồn cao nên chú ý khi sử dụng:
+                                        - bia thơm ngon
+                                        - bia nhập ngoại
+                                        - bia sản xuất từ hà lan""")
+                                .name("beer tiger")
+                                .product_second_id("combo")
+                                .unit_category_config("hello i am config")
+                                .group_id(group)
+                                .product_type(Product.ProductType.COMBO)
+                                .visible_web(true)
+                                .build()
+                                .AutoFill()
+                        )
+                        .listComboItem(new ProductComboItem[]{
+                                ProductComboItem.builder()
+                                        .product_unit_second_id("combo1")
+                                        .item_product_second_id("123")
+                                        .item_product_unit_second_id("retertghdfghsdgdfgasf")
+                                        .unit_number(2.5f)
+                                        .build(),
+                                ProductComboItem.builder().build(),
+                                ProductComboItem.builder()
+                                        .product_unit_second_id("combo1")
+                                        .item_product_second_id("456")
+                                        .item_product_unit_second_id(beerUnit4561ID.get())
+                                        .unit_number(0.5f)
+                                        .build(),
+                                ProductComboItem.builder().build(),
+                        })
+                        .build()
+        ).block();
+
+
+        beerAPI.updateProductComponent(
+                BeerInfo
+                        .builder()
+                        .productUnit(new ProductUnit[]{
+                                ProductUnit
+                                        .builder()
+                                        .product_unit_second_id("combo1")
+                                        .product_second_id("combo")
+                                        .price(10)
+                                        .weight(0.3f)
+                                        .discount(10)
+                                        .date_expire(LocalDateTime.parse("2021-03-31T20:45:00"))
+                                        .name("thung")
+                                        .product_type(Product.ProductType.COMBO)
+                                        .has_component(true)
+                                        .group_id(group)
+                                        .build(),
                         })
                         .product(Product
                                 .builder()
