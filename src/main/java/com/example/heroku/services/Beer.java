@@ -105,7 +105,7 @@ public class Beer {
                                         .then(Mono.just(beerUnit))
                         )
                 )
-                .map(productUnit ->
+                .flatMap(productUnit ->
                         productComboItemRepository.deleteByProductUnitID(productUnit.getGroup_id(), productUnit.getProduct_second_id(), productUnit.getProduct_unit_second_id())
                 )
                 .then(Mono.just(info).flatMap(beerInfo -> {
