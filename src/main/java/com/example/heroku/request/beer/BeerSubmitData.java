@@ -65,6 +65,7 @@ public class BeerSubmitData {
                     .enable_serial(beerUnit.enable_serial)
                     .list_product_serial_id(beerUnit.list_product_serial_id)
                     .product_type(beerUnit.product_type)
+                    .has_component(beerUnit.has_component)
                     .group_unit_id(beerUnit.group_unit_id)
                     .group_unit_number(beerUnit.group_unit_number)
                     .group_unit_naname(beerUnit.group_unit_naname)
@@ -147,6 +148,7 @@ public class BeerSubmitData {
                     .enable_serial(item.isEnable_serial())
                     .list_product_serial_id(item.getList_product_serial_id())
                     .product_type(item.getProduct_type())
+                    .has_component(item.isHas_component())
                     .group_unit_id(item.getGroup_unit_id())
                     .group_unit_number(item.getGroup_unit_number())
                     .group_unit_naname(item.getGroup_unit_naname())
@@ -216,6 +218,7 @@ public class BeerSubmitData {
         private boolean enable_warehouse;
         private boolean enable_serial;
         private Product.ProductType product_type;
+        private boolean has_component;
         private String group_unit_naname;
         private String group_unit_id;
         private float group_unit_number;

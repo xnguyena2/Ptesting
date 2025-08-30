@@ -45,8 +45,13 @@ public class Product extends BaseEntity {
 
     private String warranty;
 
-    //update ProductJoinWithProductUnit
-    //update BeerSubmitData
+    /***
+     * {@link com.example.heroku.model.joinwith.ProductJoinWithProductUnit}
+     */
+
+    /***
+     * {@link com.example.heroku.request.beer.BeerSubmitData}
+     */
 
     private String appendToken(String token, String appendTxt) {
         if (appendTxt != null && !appendTxt.isEmpty()) {

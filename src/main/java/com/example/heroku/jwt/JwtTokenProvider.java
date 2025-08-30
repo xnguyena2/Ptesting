@@ -177,7 +177,7 @@ public class JwtTokenProvider {
             return (int) (diff / (1000 * 60 * 60 * 24));
         } catch (JwtException | IllegalArgumentException e) {
             log.info("Invalid JWT token: {}", e.getMessage());
-            log.trace("Invalid JWT token trace.", e);
+//            log.trace("Invalid JWT token trace.", e);
         }
         return -1;
     }

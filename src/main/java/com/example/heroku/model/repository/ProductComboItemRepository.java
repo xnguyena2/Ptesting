@@ -13,4 +13,7 @@ public interface ProductComboItemRepository extends ReactiveCrudRepository<Produ
 
     @Query(value = "DELETE FROM product_combo_item WHERE product_combo_item.group_id = :group_id AND product_combo_item.product_second_id = :product_second_id")
     Mono<ProductComboItem> deleteByProductID(@Param("group_id") String groupID, @Param("product_second_id") String product_second_id);
+
+    @Query(value = "DELETE FROM product_combo_item WHERE product_combo_item.group_id = :group_id AND product_combo_item.product_second_id = :product_second_id AND product_combo_item.product_unit_second_id = :product_unit_second_id")
+    Mono<ProductComboItem> deleteByProductUnitID(@Param("group_id") String groupID, @Param("product_second_id") String product_second_id, @Param("product_unit_second_id") String product_unit_second_id);
 }

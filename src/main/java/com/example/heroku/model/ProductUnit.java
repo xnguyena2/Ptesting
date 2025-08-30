@@ -58,6 +58,8 @@ public class ProductUnit extends BaseEntity {
 
     private Product.ProductType product_type;
 
+    private boolean has_component;
+
     private String arg_action_id;
 
     private String arg_action_type;

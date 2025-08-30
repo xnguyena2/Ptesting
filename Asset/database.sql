@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users_info (id SERIAL PRIMARY KEY, group_id VARCHAR N
 CREATE TABLE IF NOT EXISTS search_token (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, tokens TSVECTOR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS product (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_parent_id VARCHAR, name VARCHAR, detail TEXT, category VARCHAR, unit_category_config VARCHAR, meta_search TEXT, visible_web BOOL, default_group_unit_naname VARCHAR, number_group_unit_config VARCHAR, warranty VARCHAR, product_type VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
-CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, enable_serial BOOL, list_product_serial_id VARCHAR[], product_type VARCHAR, group_unit_id VARCHAR, group_unit_naname VARCHAR, group_unit_number float8, services_config VARCHAR, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS product_unit (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, name VARCHAR, sku VARCHAR, upc VARCHAR, buy_price float8, price float8, promotional_price float8, inventory_number float8, wholesale_price float8, wholesale_number INTEGER, discount float8, date_expire TIMESTAMP, volumetric float8, weight float8, visible BOOL, enable_warehouse BOOL, enable_serial BOOL, list_product_serial_id VARCHAR[], product_type VARCHAR, has_component BOOL, group_unit_id VARCHAR, group_unit_naname VARCHAR, group_unit_number float8, services_config VARCHAR, arg_action_id VARCHAR, arg_action_type VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_combo_item (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_second_id VARCHAR, product_unit_second_id VARCHAR, item_product_second_id VARCHAR, item_product_unit_second_id VARCHAR, unit_number float8, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_serial (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, product_serial_id VARCHAR, product_second_id VARCHAR, product_unit_second_id VARCHAR, group_import_second_id VARCHAR, package_second_id VARCHAR, warranty VARCHAR, note VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
@@ -576,6 +576,7 @@ DECLARE
    _enable_warehouse BOOL;
    _enable_serial BOOL;
    _product_type VARCHAR;
+   _has_component BOOL;
    _product_serial_id VARCHAR;
 BEGIN
 
@@ -585,13 +586,13 @@ BEGIN
     END IF;
 
 
-    SELECT enable_warehouse, enable_serial, inventory_number, product_type
-    INTO _enable_warehouse, _enable_serial, _inventory_number, _product_type
+    SELECT enable_warehouse, enable_serial, inventory_number, product_type, has_component
+    INTO _enable_warehouse, _enable_serial, _inventory_number, _product_type, _has_component
     FROM product_unit
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
 
 
-    IF _product_type = 'COMBO' OR _product_type = 'PRODUCT_HAS_COMPONENTS'
+    IF _product_type = 'COMBO' OR _has_component = TRUE
     THEN
         PERFORM change_inventory_combo_item(NEW.group_id, NEW.product_second_id, NEW.product_unit_second_id, NEW.number_unit, NEW.package_second_id, 'SELLING');
 	    RETURN NEW;
@@ -639,6 +640,7 @@ DECLARE
    _enable_warehouse BOOL;
    _enable_serial BOOL;
    _product_type VARCHAR;
+   _has_component BOOL;
    _product_serial_id VARCHAR;
 BEGIN
 
@@ -648,13 +650,13 @@ BEGIN
     END IF;
 
 
-    SELECT enable_warehouse, enable_serial, inventory_number, product_type
-    INTO _enable_warehouse, _enable_serial, _inventory_number, _product_type
+    SELECT enable_warehouse, enable_serial, inventory_number, product_type, has_component
+    INTO _enable_warehouse, _enable_serial, _inventory_number, _product_type, _has_component
     FROM product_unit
     WHERE OLD.group_id = product_unit.group_id AND OLD.product_second_id = product_unit.product_second_id AND OLD.product_unit_second_id = product_unit.product_unit_second_id;
 
 
-    IF _product_type = 'COMBO' OR _product_type = 'PRODUCT_HAS_COMPONENTS'
+    IF _product_type = 'COMBO' OR _has_component = TRUE
     THEN
         PERFORM change_inventory_combo_item(OLD.group_id, OLD.product_second_id, OLD.product_unit_second_id, -OLD.number_unit, OLD.package_second_id, 'SELLING_RETURN');
 	    RETURN OLD;
@@ -696,6 +698,7 @@ DECLARE
    _inventory_number_new float8;
    _enable_warehouse BOOL;
    _product_type VARCHAR;
+   _has_component BOOL;
    _enable_serial BOOL;
    _product_serial_id VARCHAR;
 BEGIN
@@ -713,14 +716,14 @@ BEGIN
     END IF;
 
 
-    SELECT enable_warehouse, enable_serial, inventory_number, product_type
-    INTO _enable_warehouse, _enable_serial, _inventory_number, _product_type
+    SELECT enable_warehouse, enable_serial, inventory_number, product_type, has_component
+    INTO _enable_warehouse, _enable_serial, _inventory_number, _product_type, _has_component
     FROM product_unit
     WHERE NEW.group_id = product_unit.group_id AND NEW.product_second_id = product_unit.product_second_id AND NEW.product_unit_second_id = product_unit.product_unit_second_id;
 
 
 
-    IF _product_type = 'COMBO' OR _product_type = 'PRODUCT_HAS_COMPONENTS'
+    IF _product_type = 'COMBO' OR _has_component = TRUE
     THEN
         PERFORM update_inventory_combo_item(NEW.group_id, NEW.product_second_id, NEW.product_unit_second_id, OLD.number_unit, NEW.number_unit, NEW.package_second_id, OLD.status, NEW.status);
 	    RETURN NEW;

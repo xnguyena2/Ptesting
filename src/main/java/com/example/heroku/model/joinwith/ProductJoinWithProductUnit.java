@@ -61,6 +61,7 @@ public class ProductJoinWithProductUnit extends Product {
     private String child_group_unit_naname;
     private float child_group_unit_number;
     private ProductType child_product_type;
+    private boolean child_has_component;
     private String child_services_config;
     private String child_arg_action_id;
     private String child_arg_action_type;
@@ -116,6 +117,7 @@ public class ProductJoinWithProductUnit extends Product {
                 .group_unit_naname(child_group_unit_naname)
                 .group_unit_number(child_group_unit_number)
                 .product_type(child_product_type)
+                .has_component(child_has_component)
                 .services_config(child_services_config)
                 .arg_action_id(child_arg_action_id)
                 .arg_action_type(child_arg_action_type)
