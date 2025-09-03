@@ -140,8 +140,7 @@ public class Product extends BaseEntity {
         PRODUCT("PRODUCT"),
         SUBPRODUCT("SUBPRODUCT"),
         COMBO("COMBO"),
-        MATERIAL("MATERIAL"),
-        PRODUCT_HAS_COMPONENTS("PRODUCT_HAS_COMPONENTS");
+        MATERIAL("MATERIAL");
 
 
         private String name;
