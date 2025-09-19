@@ -101,7 +101,7 @@ public class Beer {
         return Mono.just(info.getProduct())
                 .thenMany(Flux.just(info.getProductUnit())
                         .flatMap(beerUnit ->
-                                this.beerUnitRepository.updateHasComponent(beerUnit.getGroup_id(), beerUnit.getProduct_second_id(), beerUnit.getProduct_unit_second_id(), beerUnit.isHas_component())
+                                this.beerUnitRepository.updateHasComponent(beerUnit.getGroup_id(), beerUnit.getProduct_second_id(), beerUnit.getProduct_unit_second_id(), beerUnit.isHas_component(), beerUnit.getBuy_price())
                                         .then(Mono.just(beerUnit))
                         )
                 )
