@@ -113,6 +113,6 @@ public interface BeerUnitRepository extends ReactiveCrudRepository<ProductUnit, 
     @Query(value = "SELECT * FROM product_unit WHERE product_unit.group_id = :group_id AND product_unit.product_second_id IN (:product_second_ids) AND product_unit.product_unit_second_id IN (:product_unit_second_ids) AND ( product_unit.status IS NULL OR ( product_unit.status != 'SOLD_OUT' AND product_unit.status != 'HIDE' ) )")
     Flux<ProductUnit> getListUnitByListIDs(@Param("group_id")String groupID, @Param("product_second_ids") List<String> product_second_ids, @Param("product_unit_second_ids") List<String> product_unit_second_ids);
 
-    @Query(value = "UPDATE product_unit SET has_component = :has_component WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :product_second_id AND product_unit.product_unit_second_id = :product_unit_second_id")
-    Mono<ProductUnit> updateHasComponent(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id, @Param("product_unit_second_id")String product_unit_second_id, @Param("has_component") boolean has_component);
+    @Query(value = "UPDATE product_unit SET has_component = :has_component, price = :price, buy_price = :buy_price WHERE product_unit.group_id = :group_id AND product_unit.product_second_id = :product_second_id AND product_unit.product_unit_second_id = :product_unit_second_id")
+    Mono<ProductUnit> updateHasComponent(@Param("group_id")String groupID, @Param("product_second_id")String product_second_id, @Param("product_unit_second_id")String product_unit_second_id, @Param("has_component") boolean has_component, @Param("price") float price, @Param("buy_price") float buy_price);
 }

@@ -348,6 +348,7 @@ public class BeerTest {
                                         .product_unit_second_id("combo1")
                                         .product_second_id("combo")
                                         .price(10)
+                                        .buy_price(9)
                                         .weight(0.3f)
                                         .discount(10)
                                         .date_expire(LocalDateTime.parse("2021-03-31T20:45:00"))
