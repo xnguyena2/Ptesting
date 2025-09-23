@@ -127,5 +127,22 @@ public class StoreTest {
 
                 })
                 .verifyComplete();
+
+        storeServices.getAllStore(com.example.heroku.request.warehouse.SearchImportQuery.builder().build())
+                .filter(store -> store.getGroup_id().equals(group))
+                .as(StepVerifier::create)
+                .consumeNextWith(store -> {
+                    assertThat(store.getGroup_id()).isEqualTo(group);
+                    assertThat(store.getDomain_url()).isEqualTo(group + "hello");
+                    assertThat(store.getPhone()).isEqualTo("12121211213344");
+                    assertThat(store.getName()).isEqualTo("store name4");
+                    assertThat(store.getTime_open()).isEqualTo("time open4");
+                    assertThat(store.getAddress()).isEqualTo("address4");
+                    assertThat(store.getPayment_status()).isEqualTo("NOT_PAID");
+                    assertThat(store.getStatus()).isEqualTo(com.example.heroku.model.Store.Status.CLOSE);
+                    assertThat(store.getStore_type()).isEqualTo(com.example.heroku.model.Store.StoreType.DONTHAVETABLE);
+
+                })
+                .verifyComplete();
     }
 }

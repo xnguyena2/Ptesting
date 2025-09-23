@@ -1,7 +1,9 @@
 package com.example.heroku.controller.root;
 
 import com.example.heroku.model.Store;
+import com.example.heroku.request.carousel.IDContainer;
 import com.example.heroku.request.warehouse.SearchImportQuery;
+import com.example.heroku.services.DeleteAllData;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,9 @@ public class RootStoreController {
 
     @Autowired
     private com.example.heroku.services.Store storeServices;
+
+    @Autowired
+    private DeleteAllData deleteAllData;
 
     @PostMapping("/updatepaymentstatus")
     @CrossOrigin(origins = Util.HOST_URL)
@@ -39,5 +44,17 @@ public class RootStoreController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<Store> getAllBetween(@RequestBody @Valid SearchImportQuery searchImportQuery) {
         return storeServices.getAllStoreCreateBetween(searchImportQuery);
+    }
+
+    @PostMapping("/getall")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<Store> getAll(@RequestBody @Valid SearchImportQuery searchImportQuery) {
+        return storeServices.getAllStore(searchImportQuery);
+    }
+
+    @PostMapping("/deleteallstoredata")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Mono<Boolean> deleteAllStoreData(@RequestBody @Valid IDContainer idContainer) {
+        return deleteAllData.deleteByGroupID(idContainer.getGroup_id());
     }
 }

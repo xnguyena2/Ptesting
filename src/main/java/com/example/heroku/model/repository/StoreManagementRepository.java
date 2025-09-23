@@ -1,6 +1,7 @@
 package com.example.heroku.model.repository;
 
 import com.example.heroku.model.Store;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -41,6 +42,8 @@ public interface StoreManagementRepository extends ReactiveCrudRepository<Store,
 
     @Query(value = "SELECT * FROM store WHERE store.createat BETWEEN :fromtime AND :totime")
     Flux<Store> getAllStoreCreateBetween(@Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to);
+
+    Flux<Store> findAll(Pageable pageable);
 
 
 }
