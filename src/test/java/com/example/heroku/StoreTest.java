@@ -128,7 +128,10 @@ public class StoreTest {
                 })
                 .verifyComplete();
 
-        storeServices.getAllStore(com.example.heroku.request.warehouse.SearchImportQuery.builder().build())
+        storeServices.getAllStore(com.example.heroku.request.warehouse.SearchImportQuery.builder()
+                        .page(0).size(100).search_txt("ASC")
+                        .size(10)
+                        .build())
                 .filter(store -> store.getGroup_id().equals(group))
                 .as(StepVerifier::create)
                 .consumeNextWith(store -> {

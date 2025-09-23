@@ -43,7 +43,7 @@ public interface StoreManagementRepository extends ReactiveCrudRepository<Store,
     @Query(value = "SELECT * FROM store WHERE store.createat BETWEEN :fromtime AND :totime")
     Flux<Store> getAllStoreCreateBetween(@Param("fromtime") LocalDateTime from, @Param("totime") LocalDateTime to);
 
+    @Query(value = "SELECT * FROM store")
     Flux<Store> findAll(Pageable pageable);
-
 
 }
