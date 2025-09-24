@@ -31,21 +31,21 @@ public class DebtTransactionController {
     @DeleteMapping("/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<com.example.heroku.model.DebtTransation> deleteTransaction(@RequestBody @Valid IDContainer idContainer) {
-        System.out.println("delete debt: " + idContainer.getId());
+        System.out.println("delete debt: " + idContainer.getId() + ", group id: " + idContainer.getGroup_id());
         return debtTransation.delete(idContainer);
     }
 
     @DeleteMapping("/deletebyaction")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<com.example.heroku.model.DebtTransation> deleteByActionID(@RequestBody @Valid IDContainer idContainer) {
-        System.out.println("delete debt by action id: " + idContainer.getId());
+        System.out.println("delete debt by action id: " + idContainer.getId() + ", group id: " + idContainer.getGroup_id());
         return debtTransation.deleteOfPackgeID(idContainer);
     }
 
     @GetMapping("/getbypackage")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<com.example.heroku.model.DebtTransation> getByPackageID(@RequestBody @Valid IDContainer idContainer) {
-        System.out.println("get debt of package id: " + idContainer.getId());
+        System.out.println("get debt of package id: " + idContainer.getId() + ", group id: " + idContainer.getGroup_id());
         return debtTransation.getAllTransactionByPackageID(idContainer);
     }
 
@@ -94,7 +94,7 @@ public class DebtTransactionController {
     @PostMapping("/getpendingdebtofbuyer")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<DebtImportAndUserPackge> getAllPendingDebtOfBuyer(@RequestBody @Valid PendingDebtOfBuyer pendingDebtOfBuyer) {
-        System.out.println("get all group import and package debt of all buyer group id: " + pendingDebtOfBuyer.getGroup_id() + ", buyer: " + pendingDebtOfBuyer.getDevice_id() + ", type: " + pendingDebtOfBuyer.getType());
+        System.out.println("get all group import and package debt of all buyer group id: " + pendingDebtOfBuyer.getGroup_id() + ", buyer: " + pendingDebtOfBuyer.getDevice_id() + ", type: " + pendingDebtOfBuyer.getType() + ", group: " + pendingDebtOfBuyer.getGroup_id());
         return debtTransation.getAllDebtGroupImportAndPackageofBuyer(pendingDebtOfBuyer);
     }
 }

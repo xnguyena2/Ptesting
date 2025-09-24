@@ -6,6 +6,9 @@ import com.example.heroku.request.store.StoreInitData;
 import com.example.heroku.request.warehouse.SearchImportQuery;
 import com.example.heroku.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
@@ -39,6 +42,16 @@ public class Store {
 
     public Flux<com.example.heroku.model.Store> getAllStoreCreateBetween(SearchImportQuery searchImportQuery) {
         return storeManagementRepository.getAllStoreCreateBetween(searchImportQuery.getFrom(), searchImportQuery.getTo());
+    }
+
+    public Flux<com.example.heroku.model.Store> getAllStore(SearchImportQuery searchImportQuery) {
+        Sort.Direction direction = "DESC".equals(searchImportQuery.getSearch_txt()) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(
+                searchImportQuery.getPage(),
+                searchImportQuery.getSize(),
+                Sort.by(direction, "createat")
+        );
+        return storeManagementRepository.findAll(pageable);
     }
 
     public Mono<com.example.heroku.model.Store> getStoreDomainUrl(String domain) {

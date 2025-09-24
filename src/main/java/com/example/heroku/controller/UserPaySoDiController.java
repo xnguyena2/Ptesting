@@ -19,7 +19,8 @@ public class UserPaySoDiController {
 
     @GetMapping("/payments")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Flux<UserPaySoDi> findByGroupID(@AuthenticationPrincipal Mono<Users> principal) {
-        return principal.flatMapMany(users -> userPaySoDiService.findByGroupId(users.getGroup_id()));
+    public Flux<UserPaySoDi> findByGroupID(@AuthenticationPrincipal Users principal) {
+        System.out.println("Get SoDi payments for group: " + principal.getGroup_id());
+        return userPaySoDiService.findByGroupId(principal.getGroup_id());
     }
 }

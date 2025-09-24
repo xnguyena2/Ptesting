@@ -29,7 +29,7 @@ public class DeleteAllData {
                 );
     }
 
-    Mono<Boolean> deleteByGroupID(String groupID) {
+    public Mono<Boolean> deleteByGroupID(String groupID) {
         return imageAPI.JustDeleteImageFromFlickByGroupID(groupID)
                 .then(deleteRepository.deleteByGroupId(groupID));
     }

@@ -21,20 +21,21 @@ public class PaymentTransactionController {
     @PostMapping("/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<PaymentTransactionBuyer> addTransactionInfo(@RequestBody @Valid PaymentTransactionBuyer transation) {
+        System.out.println("add transaction group: " + transation.getGroup_id() + ", id: " + transation.getTransaction_second_id());
         return paymentTransation.insertOrUpdate(transation);
     }
 
     @DeleteMapping("/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<com.example.heroku.model.PaymentTransation> deleteTransaction(@RequestBody @Valid IDContainer idContainer) {
-        System.out.println("delete transaction: " + idContainer.getId());
+        System.out.println("delete transaction: " + idContainer.getId() + ", group id: " + idContainer.getGroup_id());
         return paymentTransation.delete(idContainer);
     }
 
     @GetMapping("/getbypackage")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<PaymentTransactionBuyer> getByPackageIDWithBuyer(@RequestBody @Valid IDContainer idContainer) {
-        System.out.println("get transaction of package id: " + idContainer.getId());
+        System.out.println("get transaction of package id: " + idContainer.getId() + ", group id: " + idContainer.getGroup_id());
         return paymentTransation.getAllTransactionByPackageID(idContainer);
     }
 
@@ -62,7 +63,7 @@ public class PaymentTransactionController {
     @GetMapping("/getbypackagewithoutbuyer")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<com.example.heroku.model.PaymentTransation> getByPackageID(@RequestBody @Valid IDContainer idContainer) {
-        System.out.println("get transaction without buyer of package id: " + idContainer.getId());
+        System.out.println("get transaction without buyer of package id: " + idContainer.getId() + ", group id: " + idContainer.getGroup_id());
         return paymentTransation.getAllTransactionByPackageIDWithoutBuyer(idContainer);
     }
 }

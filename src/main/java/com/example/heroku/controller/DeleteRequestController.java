@@ -22,6 +22,7 @@ public class DeleteRequestController {
     @PostMapping("/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<DeleteRequest> createRequest(@RequestBody @Valid IDContainer idContainer) {
+        System.out.println("Create delete request for id: " + idContainer.getId() + " in group: " + idContainer.getGroup_id());
         return deleteRequest.createRequest(idContainer.getId());
     }
 
@@ -29,13 +30,14 @@ public class DeleteRequestController {
     @PostMapping("/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<DeleteRequest> deleteRequest(@RequestBody @Valid IDContainer idContainer) {
-
+        System.out.println("Delete delete request for id: " + idContainer.getId() + ", in group: " + idContainer.getGroup_id());
         return deleteRequest.deleteByID(idContainer.getId());
     }
 
     @PostMapping("/getall")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<DeleteRequest> getAllRequest(@RequestBody @Valid SearchQuery query) {
+        System.out.println("Get all delete request in group: " + query.getGroup_id());
         return deleteRequest.getAllRequest(query);
     }
 
