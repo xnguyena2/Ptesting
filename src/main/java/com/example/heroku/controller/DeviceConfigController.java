@@ -33,7 +33,8 @@ public class DeviceConfigController {
 
     @GetMapping("/get/{groupid}")
     @CrossOrigin(origins = Util.HOST_URL)
-    public Mono<com.example.heroku.model.DeviceConfig> getDeviceColor(@PathVariable("groupid") String groupID){
+    public Mono<com.example.heroku.model.DeviceConfig> getDeviceColor(@PathVariable("groupid") String groupID) {
+        System.out.println("Get config of group: " + groupID);
         return deviceConfigAPI.GetConfig(groupID);
     }
 }

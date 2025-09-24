@@ -36,6 +36,8 @@ public class TokenController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> createTokenForStaff(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid TokenID tokenID) {
 
+        System.out.println("admin Create token for user: " + tokenID.getUser_id() + " in group: " + tokenID.getGroup_id() + ", with time life: " + tokenID.getTime_life_mili_secs());
+
         return userRepository.findByUsername(tokenID.getUser_id())
                 .map(u -> {
                             u.setPassword(u.getPassword().trim());
@@ -56,6 +58,7 @@ public class TokenController {
     @PostMapping("/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> createToken(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
+        System.out.println("Create token for user: " + idContainer.getId() + " in group: " + idContainer.getGroup_id());
         return principal.flatMap(users -> userRepository.findByUsername(users.getUsername())
                         .map(u -> {
                                     u.setPassword(u.getPassword().trim());
@@ -77,6 +80,7 @@ public class TokenController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> deleteToken(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
 
+        System.out.println("Delete token for user: " + idContainer.getId() + " in group: " + idContainer.getGroup_id());
         return WrapPermissionGroupWithPrincipalAction.<Tokens>builder()
                 .principal(principal)
                 .subject(idContainer::getGroup_id)
@@ -89,6 +93,7 @@ public class TokenController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> deleteTokenByUser(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
 
+        System.out.println("Delete all token of user: " + idContainer.getId() + " in group: " + idContainer.getGroup_id());
         return WrapPermissionGroupWithPrincipalAction.<Tokens>builder()
                 .principal(principal)
                 .subject(idContainer::getGroup_id)
@@ -101,6 +106,7 @@ public class TokenController {
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> invalidToken(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
 
+        System.out.println("Mark invalid token for user: " + idContainer.getId() + " in group: " + idContainer.getGroup_id());
         return WrapPermissionGroupWithPrincipalAction.<Tokens>builder()
                 .principal(principal)
                 .subject(idContainer::getGroup_id)
@@ -111,18 +117,21 @@ public class TokenController {
     @PostMapping("/getall")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<Tokens> getAllToken(@AuthenticationPrincipal Users principal, @RequestBody @Valid SearchQuery query) {
+        System.out.println("Get all token with query: " + query.getGroup_id());
         return tokens.getAllToken(query);
     }
 
     @PostMapping("/getallbyuser")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<Tokens> getAllTokenByUserID(@AuthenticationPrincipal Users principal, @RequestBody @Valid SearchQuery query) {
+        System.out.println("Get all token of user: " + query.getQuery() + " in group: " + query.getGroup_id());
         return tokens.getAllTokenByUserID(query);
     }
 
     @GetMapping("/get/{tokenid}")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> getToken(@PathVariable("tokenid") String tokenid) {
+        System.out.println("Get token by id: " + tokenid);
         return tokens.getToken(tokenid);
     }
 }

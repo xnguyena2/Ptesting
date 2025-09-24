@@ -32,6 +32,7 @@ public class RootTokenController {
     @PostMapping("/create")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> createTokenWithoutPermission(@RequestBody @Valid IDContainer idContainer) {
+        System.out.println("ADMIN Create token for user: " + idContainer.getId() + " in group: " + idContainer.getGroup_id());
         return userRepository.findByUsername(idContainer.getId())
                 .map(u -> {
                             u.setPassword(u.getPassword().trim());
@@ -45,12 +46,14 @@ public class RootTokenController {
     @PostMapping("/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Tokens> deleteToken(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
+        System.out.println("ADMIN Delete token for user: " + idContainer.getId() + " in group: " + idContainer.getGroup_id());
         return tokens.deleteByID(idContainer.getGroup_id(), idContainer.getId());
     }
 
     @PostMapping("/getall")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<Tokens> getAllToken(@RequestBody @Valid SearchQuery query) {
+        System.out.println("ADMIN Get all token with query: " + query.getGroup_id());
         return tokens.getAllToken(query);
     }
 }

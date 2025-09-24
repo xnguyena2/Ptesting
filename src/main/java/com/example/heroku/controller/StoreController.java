@@ -25,6 +25,7 @@ public class StoreController {
     @PostMapping("/update")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<Store> updateStore(@RequestBody @Valid Store store) {
+        System.out.println("Update store: " + store.getGroup_id());
         return storeServices.update(store);
     }
 }

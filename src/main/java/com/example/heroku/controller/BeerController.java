@@ -59,7 +59,7 @@ public class BeerController {
     @PostMapping("/admin/img/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> deleteIMG(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer img) {
-        System.out.println("delete imgae: " + img.getId());
+        System.out.println("delete imgae: " + img.getId() + ", groupid: " + img.getGroup_id());
         return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<Format>>builder()
                 .principal(principal)
                 .subject(img::getGroup_id)
@@ -131,7 +131,7 @@ public class BeerController {
     @PostMapping("/admin/getcomboitem")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<ComboItemJoinProductUnitAndProduct> getComboItem(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid IDContainer idContainer) {
-        System.out.println("get combo item of beer: " + idContainer.getId());
+        System.out.println("get combo item of beer: " + idContainer.getId() + ", groupid: " + idContainer.getGroup_id());
         return WrapPermissionGroupWithPrincipalAction.<ComboItemJoinProductUnitAndProduct>builder()
                 .principal(principal)
                 .subject(idContainer::getGroup_id)
@@ -166,28 +166,28 @@ public class BeerController {
     @PostMapping("/getall")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<SearchResult<BeerSubmitData>> getAll(@RequestBody @Valid SearchQuery query) {
-        System.out.println("get all beer: " + query.getPage());
+        System.out.println("get all beer: " + query.getPage() + ", size: " + query.getSize() + ", groupid: " + query.getGroup_id());
         return beerAPI.CountGetAllBeer(query);
     }
 
     @PostMapping("/search")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<SearchResult<BeerSubmitData>> search(@RequestBody @Valid SearchQuery query) {
-        System.out.println("Search beer: " + query.getQuery());
+        System.out.println("Search beer: " + query.getQuery() + ", page: " + query.getPage() + ", size: " + query.getSize() + ", groupid: " + query.getGroup_id());
         return beerAPI.CountSearchBeer(query);
     }
 
     @PostMapping("/category")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<SearchResult<BeerSubmitData>> category(@RequestBody @Valid SearchQuery query) {
-        System.out.println("category beer: " + query.getQuery());
+        System.out.println("category beer: " + query.getQuery() + ", page: " + query.getPage() + ", size: " + query.getSize() + ", groupid: " + query.getGroup_id());
         return beerAPI.CountGetAllBeerByCategory(query);
     }
 
     @GetMapping("/detail/{groupid}/{id}")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<BeerSubmitData> detail(@PathVariable("groupid") String groupID, @PathVariable("id") String beerID) {
-        System.out.println("Detail of beer: " + beerID);
+        System.out.println("Detail of beer: " + beerID + ", groupid: " + groupID);
         return beerAPI.GetBeerByID(groupID, beerID);
     }
 }

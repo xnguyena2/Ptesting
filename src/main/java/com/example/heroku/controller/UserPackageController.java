@@ -41,21 +41,21 @@ public class UserPackageController {
     @PostMapping("/add")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> addBeerToPackage(@RequestBody @Valid ProductPackage productPackage) {
-        System.out.println("add beer to package: " + productPackage.getPackage_second_id());
+        System.out.println("add beer to package: " + productPackage.getPackage_second_id() + ", group: " + productPackage.getGroup_id());
         return userPackageAPI.AddProductToPackage(productPackage.SetProductPackageForWeb());
     }
 
     @PostMapping("/update")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> addOrUpdatePackage(@RequestBody @Valid ProductPackage productPackage) {
-        System.out.println("save package: " + productPackage.getPackage_second_id());
+        System.out.println("save package: " + productPackage.getPackage_second_id() + ", group: " + productPackage.getGroup_id());
         return userPackageAPI.SavePackage(productPackage);
     }
 
     @PostMapping("/updatenotcheckwithtransacction")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> addOrUpdatePackageWithoutCheckWithTransaction(@RequestBody @Valid ProductPackgeWithTransaction productPackgeWithTransaction) {
-        System.out.println("save package without check with transaction : " + productPackgeWithTransaction.getProductPackage().getPackage_second_id());
+        System.out.println("save package without check with transaction : " + productPackgeWithTransaction.getProductPackage().getPackage_second_id() + ", group: " + productPackgeWithTransaction.getProductPackage().getGroup_id());
         return userPackageAPI.SavePackageWithoutCheckWithTransaction(productPackgeWithTransaction);
     }
 
@@ -95,7 +95,7 @@ public class UserPackageController {
     @PostMapping("/admin/delete")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> deletePackage(@RequestBody @Valid PackageID packageID) {
-        System.out.println("delete package: " + packageID.getPackage_id());
+        System.out.println("delete package: " + packageID.getPackage_id() + ", group: " + packageID.getGroup_id());
         return userPackageAPI.DeletePackage(packageID);
     }
 
@@ -103,6 +103,7 @@ public class UserPackageController {
     @PostMapping("/remove")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<com.example.heroku.model.UserPackage> removeFromPckage(@RequestBody @Valid PackageItemRemove beerUnitDelete) {
+        System.out.println("remove item from package device: " + beerUnitDelete.getDevice_id() + ", group: " + beerUnitDelete.getGroup_id());
         return userPackageAPI.DeleteByBeerUnit(beerUnitDelete, UserPackageDetail.Status.WEB_TEMP);
     }
 
@@ -110,7 +111,7 @@ public class UserPackageController {
     @PostMapping("/getbydevice")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<PackageDataResponse> getAll(@RequestBody @Valid UserID userID) {
-        System.out.println("Get all my package: " + userID.getId());
+        System.out.println("Get all my package: " + userID.getId() + ", group: " + userID.getGroup_id());
         return userPackageAPI.GetMyPackage(userID);
     }
 
@@ -118,7 +119,7 @@ public class UserPackageController {
     @PostMapping("/getmyworkiung")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<PackageDataResponse> getMyWorking(@RequestBody @Valid UserID userID) {
-        System.out.println("Get all my working package: " + userID.getId());
+        System.out.println("Get all my working package: " + userID.getId() + ", group: " + userID.getGroup_id());
         return userPackageAPI.GetMyPackageWorking(userID);
     }
 
@@ -126,7 +127,7 @@ public class UserPackageController {
     @PostMapping("/getmypackageprocessing")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<PackageDataResponse> getMyPackage(@RequestBody @Valid UserID userID) {
-        System.out.println("Get all my package by status create: " + userID.getId());
+        System.out.println("Get all my package by status create: " + userID.getId() + ", group: " + userID.getGroup_id());
         if (userID.getAfter_id() > 0) {
             return userPackageAPI.GetMyPackageOfStatusAfterID(userID, UserPackageDetail.Status.CREATE);
         }
@@ -137,7 +138,7 @@ public class UserPackageController {
     @PostMapping("/getmypackagereturn")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<PackageDataResponse> getMyPackageReturn(@RequestBody @Valid UserID userID) {
-        System.out.println("Get all my package by status return: " + userID.getId());
+        System.out.println("Get all my package by status return: " + userID.getId() + ", group: " + userID.getGroup_id());
         if (userID.getAfter_id() > 0) {
             return userPackageAPI.GetMyPackageOfStatusAfterID(userID, UserPackageDetail.Status.RETURN);
         }
@@ -148,7 +149,7 @@ public class UserPackageController {
     @PostMapping("/getbydeviceforweb")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<PackageDataResponse> getAllOfWeb(@RequestBody @Valid UserID packageID) {
-        System.out.println("Get all my package for web: " + packageID.getId());
+        System.out.println("Get all my package for web: " + packageID.getId() + ", group: " + packageID.getGroup_id());
         return userPackageAPI.GetMyPackageOfStatus(UserID.builder().group_id(packageID.getGroup_id()).id(packageID.getId()).page(packageID.getPage()).size(packageID.getSize()).build(), UserPackageDetail.Status.WEB_TEMP);
     }
 
@@ -187,6 +188,7 @@ public class UserPackageController {
     @GetMapping("/countprocessingandweb/{groupid}")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<com.example.heroku.response.CounterUserPackageDetailNumberOfProcessingAndWeb> getProcessingAndWebCounter(@PathVariable("groupid") String groupID) {
+        System.out.println("Get count of processing and web package by group: " + groupID);
         return  userPackageDetailCounterServices.count(groupID);
     }
 
@@ -218,7 +220,7 @@ public class UserPackageController {
     @PostMapping("/buyerfromwebsubmit")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> buyerFromWebSubmitPackage(@RequestBody @Valid ProductPackage productPackage) {
-        System.out.println("buyer from web submit package: " + productPackage.getPackage_second_id());
+        System.out.println("buyer from web submit package: " + productPackage.getPackage_second_id() + ", group: " + productPackage.getGroup_id());
         return userPackageAPI.BuyerFromWebSubmitPackage(productPackage);
     }
 
@@ -234,14 +236,14 @@ public class UserPackageController {
     @PostMapping("/cancel")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> cancelPackage(@RequestBody @Valid PackageID packageID) {
-        System.out.println("cancel package: " + packageID.getPackage_id());
+        System.out.println("cancel package: " + packageID.getPackage_id() + ", group: " + packageID.getGroup_id());
         return userPackageAPI.CancelPackage(packageID);
     }
 
     @PostMapping("/clean")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<com.example.heroku.model.UserPackage> clean(@RequestBody @Valid UserID userID) {
-        System.out.println("clean all package with device_id: " + userID.getId());
+        System.out.println("clean all package with device_id: " + userID.getId() + ", group: " + userID.getGroup_id());
         return userPackageAPI.DeleteByUserID(userID, UserPackageDetail.Status.WEB_TEMP);
     }
 

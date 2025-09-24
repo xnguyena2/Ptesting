@@ -51,7 +51,7 @@ public class ClientDeviceController {
     @PostMapping("/admin/register")
     @CrossOrigin(origins = Util.HOST_URL)
     public Mono<ResponseEntity<Format>> register(@AuthenticationPrincipal Mono<Users> principal, @RequestBody @Valid Register userInfo) {
-        System.out.println("register new user: " + userInfo.getId());
+        System.out.println("register new user: " + userInfo.getId() + ", group: " + userInfo.getGroup_id());
         return WrapPermissionGroupWithPrincipalAction.<ResponseEntity<Format>>builder()
                 .principal(principal)
                 .subject(userInfo::getGroup_id)
