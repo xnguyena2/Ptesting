@@ -19,7 +19,7 @@ public interface StoreManagementRepository extends ReactiveCrudRepository<Store,
     @Query(value = "SELECT * FROM store WHERE store.group_id = :group_id")
     Mono<Store> getStore(@Param("group_id") String groupID);
 
-    @Query(value = "SELECT * FROM store WHERE LOWER(store.group_id) LIKE :search OR payment_status LKE :search OR LOWER(store.name) LIKE :search OR LOWER(store.address) LIKE :search OR LOWER(store.phone) LIKE :search")
+    @Query(value = "SELECT * FROM store WHERE LOWER(store.group_id) LIKE :search OR payment_status LIKE :search OR LOWER(store.name) LIKE :search OR LOWER(store.address) LIKE :search OR LOWER(store.phone) LIKE :search")
     Flux<Store> findStore(@Param("search") String search);
 
     @Query(value = "SELECT * FROM store WHERE store.domain_url = :domain_url")
