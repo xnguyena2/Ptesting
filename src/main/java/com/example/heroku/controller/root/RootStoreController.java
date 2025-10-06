@@ -43,6 +43,13 @@ public class RootStoreController {
         return storeServices.getAllStoreBaseonDonePackage(txt);
     }
 
+    @GetMapping("/allpaid/{txt}")
+    @CrossOrigin(origins = Util.HOST_URL)
+    public Flux<Store> getAllPaid() {
+        System.out.println("ADMIN get all paid!");
+        return storeServices.getAllPaid();
+    }
+
     @PostMapping("/getallbetween")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<Store> getAllBetween(@RequestBody @Valid SearchImportQuery searchImportQuery) {

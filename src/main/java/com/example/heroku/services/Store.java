@@ -32,12 +32,16 @@ public class Store {
         return storeManagementRepository.getStore(groupID);
     }
 
-    public Flux<com.example.heroku.model.Store> findStore(String groupID) {
-        return storeManagementRepository.findStore("%" + groupID.toLowerCase() + "%");
+    public Flux<com.example.heroku.model.Store> findStore(String searchTxt) {
+        return storeManagementRepository.findStore("%" + searchTxt.toLowerCase() + "%");
+    }
+
+    public Flux<com.example.heroku.model.Store> getAllPaid() {
+        return storeManagementRepository.getAllPaid();
     }
 
     public Flux<com.example.heroku.model.Store> getAllStoreBaseonDonePackage(String metaSearch) {
-        return storeManagementRepository.getAllStoreBaseonDonePackage("%" + metaSearch + "%");
+        return storeManagementRepository.searchStoreNotPaidOfDonePackageDetailMetaSearch("%" + metaSearch + "%");
     }
 
     public Flux<com.example.heroku.model.Store> getAllStoreCreateBetween(SearchImportQuery searchImportQuery) {
