@@ -43,7 +43,7 @@ public class RootStoreController {
         return storeServices.getAllStoreBaseonDonePackage(txt);
     }
 
-    @GetMapping("/allpaid/{txt}")
+    @GetMapping("/allpaid")
     @CrossOrigin(origins = Util.HOST_URL)
     public Flux<Store> getAllPaid() {
         System.out.println("ADMIN get all paid!");
