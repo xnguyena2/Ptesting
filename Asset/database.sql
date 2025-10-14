@@ -1589,8 +1589,8 @@ CREATE OR REPLACE FUNCTION update_buyer_debt()
   AS
 $$
 DECLARE
-    _group_id BIGINT;
-    _device_id BIGINT;
+    _group_id VARCHAR;
+    _device_id VARCHAR;
     _debt_in_come FLOAT8 := 0;
     _debt_out_come FLOAT8 := 0;
 BEGIN
