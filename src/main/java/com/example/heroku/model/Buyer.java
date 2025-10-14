@@ -18,7 +18,9 @@ import javax.persistence.Table;
 @AllArgsConstructor
 public class Buyer extends BaseEntity {
 
-    //PaymentTransactionJoinBuyer
+    /***
+     * {@link com.example.heroku.model.joinwith.PaymentTransactionJoinBuyer}
+     */
 
     private String device_id;
 
@@ -45,6 +47,10 @@ public class Buyer extends BaseEntity {
     private float discount;
 
     private int point;
+
+    private float debt_in_come;
+
+    private float debt_out_come;
 
     private String meta_search;
 
