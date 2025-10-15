@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS product_import (id SERIAL PRIMARY KEY, group_id VARCH
 
 CREATE TABLE IF NOT EXISTS store (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, name VARCHAR, time_open VARCHAR, address VARCHAR, phone VARCHAR, domain_url VARCHAR, status VARCHAR, store_type VARCHAR, each_month float8, half_year float8, each_year float8, payment_status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
-CREATE TABLE IF NOT EXISTS buyer (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, total_price float8, real_price float8, ship_price float8, discount float8, point INTEGER, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS buyer (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, device_id VARCHAR, reciver_address VARCHAR, region_id INTEGER, district_id INTEGER, ward_id INTEGER, reciver_fullname VARCHAR, phone_number VARCHAR, phone_number_clean VARCHAR, total_price float8, real_price float8, ship_price float8, discount float8, point INTEGER, debt_in_come float8, debt_out_come float8, meta_search VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS payment_transaction (id SERIAL PRIMARY KEY, group_id VARCHAR NOT NULL, transaction_second_id VARCHAR NOT NULL, device_id VARCHAR, package_second_id VARCHAR, action_id VARCHAR, action_type VARCHAR, transaction_type VARCHAR, amount float8, category VARCHAR, money_source VARCHAR, note VARCHAR, status VARCHAR, createat TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
@@ -1581,6 +1581,56 @@ BEGIN
 	RETURN;
 END;
 $$;
+
+
+CREATE OR REPLACE FUNCTION update_buyer_debt()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+DECLARE
+    _group_id VARCHAR;
+    _device_id VARCHAR;
+    _debt_in_come FLOAT8 := 0;
+    _debt_out_come FLOAT8 := 0;
+BEGIN
+    -- Xác định group_id & device_id tương ứng (vì DELETE không có NEW)
+    IF (TG_OP = 'DELETE') THEN
+        _group_id := OLD.group_id;
+        _device_id := OLD.device_id;
+    ELSE
+        _group_id := NEW.group_id;
+        _device_id := NEW.device_id;
+    END IF;
+
+    -- Tính tổng thu & chi cho buyer trong cùng group_id và device_id
+    SELECT
+        COALESCE(SUM(CASE WHEN transaction_type = 'INCOME' THEN amount ELSE 0 END), 0),
+        COALESCE(SUM(CASE WHEN transaction_type = 'OUTCOME' THEN amount ELSE 0 END), 0)
+    INTO _debt_in_come, _debt_out_come
+    FROM debt_transaction
+    WHERE group_id = _group_id
+      AND device_id = _device_id;
+
+    -- Cập nhật lại bảng buyer
+    UPDATE buyer
+    SET
+        debt_in_come = _debt_in_come,
+        debt_out_come = _debt_out_come
+    WHERE group_id = _group_id
+      AND device_id = _device_id;
+
+    -- Trả lại bản ghi phù hợp với loại trigger
+    IF (TG_OP = 'DELETE') THEN
+        RETURN OLD;
+    ELSE
+        RETURN NEW;
+    END IF;
+END;
+$$;
+
+CREATE OR REPLACE TRIGGER trg_update_buyer_debt AFTER INSERT OR UPDATE OR DELETE ON debt_transaction FOR EACH ROW EXECUTE FUNCTION update_buyer_debt();
+
 
 
 

@@ -16,8 +16,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PaymentTransactionJoinBuyer extends PaymentTransation {
 
+    /***
+     * {@link com.example.heroku.model.Buyer}
+     */
 
-    // Buyer
 
 
     protected String buyer_group_id;
@@ -49,6 +51,10 @@ public class PaymentTransactionJoinBuyer extends PaymentTransation {
 
     private int point;
 
+    private float debt_in_come;
+
+    private float debt_out_come;
+
     private String meta_search;
 
     private ActiveStatus buyer_status;
@@ -73,6 +79,8 @@ public class PaymentTransactionJoinBuyer extends PaymentTransation {
                 .ship_price(this.ship_price)
                 .discount(this.discount)
                 .point(this.point)
+                .debt_in_come(this.debt_in_come)
+                .debt_out_come(this.debt_out_come)
                 .meta_search(this.meta_search)
                 .status(this.buyer_status)
                 .build();
