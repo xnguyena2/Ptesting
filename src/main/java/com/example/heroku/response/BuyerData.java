@@ -39,6 +39,8 @@ public class BuyerData extends Buyer {
         setDiscount(b.getDiscount());
         setMeta_search(b.getMeta_search());
         setStatus(b.getStatus());
+        setDebt_in_come(b.getDebt_in_come());
+        setDebt_out_come(b.getDebt_out_come());
 
         try {
             setRegion(VietNamAddress.getInstance().GetRegionName(b.getRegion_id()));
